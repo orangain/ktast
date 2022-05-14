@@ -1,5 +1,0 @@
-rootProject.name = 'kastree'
-include ':ast:ast-common',
-        ':ast:ast-jvm',
-        ':ast-psi'
-
