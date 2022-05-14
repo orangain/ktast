@@ -12,7 +12,7 @@ java {
 }
 
 dependencies {
-    compile(project(":ast:ast-jvm"))
+    compile(project(":ast"))
     compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     compile("org.jetbrains.kotlin:kotlin-compiler-embeddable:$kotlinVersion")
     testCompile("junit:junit:4.12")
