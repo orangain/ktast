@@ -2,7 +2,7 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 import org.gradle.api.tasks.testing.logging.TestLogEvent.*
 
 plugins {
-    kotlin("jvm") version "1.3.21"
+    kotlin("jvm") version "1.6.21"
 }
 
 val kotlinVersion: String by rootProject.extra
@@ -12,12 +12,12 @@ java {
 }
 
 dependencies {
-    compile(project(":ast"))
-    compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    compile("org.jetbrains.kotlin:kotlin-compiler-embeddable:$kotlinVersion")
-    testCompile("junit:junit:4.12")
-    testCompile("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
-    testCompile("org.jetbrains.kotlin:kotlin-test:$kotlinVersion")
+    implementation(project(":ast"))
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.jetbrains.kotlin:kotlin-compiler-embeddable:$kotlinVersion")
+    testImplementation("junit:junit:4.12")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlinVersion")
 }
 
 tasks {

@@ -1,4 +1,4 @@
-val kotlinVersion by extra { "1.3.21" }
+val kotlinVersion by extra { "1.6.21" }
 
 allprojects {
     group = "com.github.cretz.kastree"

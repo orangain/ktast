@@ -1,5 +1,5 @@
 plugins {
-    kotlin("multiplatform") version "1.3.21"
+    kotlin("multiplatform") version "1.6.21"
 }
 
 val kotlinVersion: String by rootProject.extra
