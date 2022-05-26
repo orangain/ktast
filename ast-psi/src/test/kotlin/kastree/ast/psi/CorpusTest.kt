@@ -30,11 +30,11 @@ class CorpusTest(private val unit: Corpus.Unit) {
             val origFile = Parser(origExtrasConv).parseFile(origCode)
             if (debug) println("----ORIG----\n$origCode\n------------")
             if (debug) println("ORIG AST: $origFile")
-            if (debug) elemMap.forEach {
-                println("ELEM MAP OF ${it.value} - ${it.value.text.replace("\n", "\\n")} - ${it.key}")
-                origExtrasConv.extrasBefore(it.key).forEach { println("  BEFORE: $it") }
-                origExtrasConv.extrasWithin(it.key).forEach { println("  WITHIN: $it") }
-                origExtrasConv.extrasAfter(it.key).forEach { println("  AFTER: $it") }
+            if (debug) elemMap.forEach { (key, value) ->
+                println("ELEM MAP OF $value - ${value.text.replace("\n", "\\n")} - $key")
+                origExtrasConv.extrasBefore(key).forEach { println("  BEFORE: $it") }
+                origExtrasConv.extrasWithin(key).forEach { println("  WITHIN: $it") }
+                origExtrasConv.extrasAfter(key).forEach { println("  AFTER: $it") }
             }
 
             val newExtrasConv = Converter.WithExtras()
