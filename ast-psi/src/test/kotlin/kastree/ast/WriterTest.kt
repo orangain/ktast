@@ -33,7 +33,7 @@ class WriterTest {
         assertParseAndWriteExact("""val x = "" as String""")
     }
 
-    fun assertParseAndWriteExact(code: String) {
+    private fun assertParseAndWriteExact(code: String) {
 
         val node = Parser.parseFile(code)
         val identityNode = MutableVisitor.preVisit(node) { v, _ -> v }

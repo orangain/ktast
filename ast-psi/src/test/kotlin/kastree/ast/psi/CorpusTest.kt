@@ -12,7 +12,7 @@ import java.util.*
 import kotlin.test.assertEquals
 
 @RunWith(Parameterized::class)
-class CorpusTest(val unit: Corpus.Unit) {
+class CorpusTest(private val unit: Corpus.Unit) {
 
     @Test
     fun testParseAndConvert() {

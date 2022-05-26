@@ -7,13 +7,13 @@ import java.nio.file.Paths
 import kotlin.streams.toList
 
 object Corpus {
-    val overrideErrors = mapOf(
+    private val overrideErrors = mapOf(
         Paths.get("kdoc", "Simple.kt") to listOf("Unclosed comment")
     )
 
     val default by lazy { localTestData + kotlinRepoTestData }
 
-    val kotlinRepoTestData by lazy {
+    private val kotlinRepoTestData by lazy {
         // Recursive from $KOTLIN_REPO/compiler/testData/psi/**/*.kt
         loadTestDataFromDir(Paths.get(
             System.getenv("KOTLIN_REPO") ?: error("No KOTLIN_REPO env var"),
@@ -21,11 +21,11 @@ object Corpus {
         ).also { require(Files.isDirectory(it)) { "Dir not found at $it" } })
     }
 
-    val localTestData by lazy {
+    private val localTestData by lazy {
         loadTestDataFromDir(File(javaClass.getResource("/localTestData").toURI()).toPath())
     }
 
-    fun loadTestDataFromDir(root: Path) = Files.walk(root).filter { it.toString().endsWith(".kt") }.toList().map {
+    private fun loadTestDataFromDir(root: Path) = Files.walk(root).filter { it.toString().endsWith(".kt") }.toList().map {
         val relativePath = root.relativize(it)
         Unit.FromFile(
             relativePath = relativePath,
