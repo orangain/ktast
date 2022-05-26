@@ -20,7 +20,7 @@ class CorpusTest(private val unit: Corpus.Unit) {
         // convert to our AST, write out our AST, re-parse what we wrote, re-convert, and compare
         try {
             val elemMap = IdentityHashMap<Node, PsiElement>()
-            val origExtrasConv = object : Converter.WithExtras() {
+            val origExtrasConv = object : ConverterWithExtras() {
                 override fun onNode(node: Node, elem: PsiElement) {
                     elemMap[node] = elem
                     super.onNode(node, elem)
@@ -37,7 +37,7 @@ class CorpusTest(private val unit: Corpus.Unit) {
                 origExtrasConv.extrasAfter(key).forEach { println("  AFTER: $it") }
             }
 
-            val newExtrasConv = Converter.WithExtras()
+            val newExtrasConv = ConverterWithExtras()
             val newCode = Writer.write(origFile, origExtrasConv)
             if (debug) println("----NEW----\n$newCode\n-----------")
             val newFile = Parser(newExtrasConv).parseFile(newCode)

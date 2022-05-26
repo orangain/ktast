@@ -1,5 +1,7 @@
 package kastree.ast
 
+import kastree.ast.psi.Converter
+import kastree.ast.psi.ConverterWithExtras
 import kastree.ast.psi.Parser
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -33,19 +35,33 @@ class WriterTest {
         assertParseAndWriteExact("""val x = "" as String""")
     }
 
+    @Test
+    fun testComments() {
+        assertParseAndWriteExact("""val x = "" // x is empty""")
+    }
+
+    @Test
+    fun testEmptyLines() {
+        assertParseAndWriteExact("""
+            val x = ""
+            
+            val y = 0
+        """.trimIndent())
+    }
     private fun assertParseAndWriteExact(code: String) {
 
-        val node = Parser.parseFile(code)
+        val converter = ConverterWithExtras()
+        val node = Parser(converter).parseFile(code)
         val identityNode = MutableVisitor.preVisit(node) { v, _ -> v }
 
         assertEquals(
             code.trim(),
-            Writer.write(node).trim(),
+            Writer.write(node, converter).trim(),
             "Parse -> Write for $code, not equal")
 
         assertEquals(
             code.trim(),
-            Writer.write(identityNode).trim(),
+            Writer.write(identityNode, converter).trim(),
             "Parse -> Identity Transform -> Write for $code, failed")
 
 

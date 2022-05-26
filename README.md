@@ -70,7 +70,7 @@ a converter that holds the extras:
 ```kotlin
 // ...
 
-val extrasMap = Converter.WithExtras()
+val extrasMap = ConverterWithExtras()
 val file = Parser(extrasMap).parseFile(code)
 // extrasMap is an instance of kastree.ast.ExtrasMap
 ```
