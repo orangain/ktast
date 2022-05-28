@@ -220,11 +220,14 @@ open class MutableVisitor {
                     is Node.Expr.Const -> this
                     is Node.Expr.Lambda -> copy(
                         params = visitChildren(params, newCh),
-                        stmts = visitChildren(stmts, newCh)
+                        body = visitChildren(body, newCh)
                     )
                     is Node.Expr.Lambda.Param -> copy(
                         vars = visitChildren(vars, newCh),
                         destructType = visitChildren(destructType, newCh)
+                    )
+                    is Node.Expr.Lambda.Body -> copy(
+                        stmts = visitChildren(stmts, newCh)
                     )
                     is Node.Expr.This -> this
                     is Node.Expr.Super -> copy(

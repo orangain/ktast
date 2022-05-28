@@ -305,12 +305,14 @@ open class Writer(
                 is Node.Expr.Lambda -> {
                     append('{')
                     if (params.isNotEmpty()) append(' ').also { children(params, ", ", "", " ->") }
-                    childrenLines(stmts)
-                    append('}')
+                    children(body).append('}')
                 }
                 is Node.Expr.Lambda.Param -> {
                     childVars(vars)
                     if (destructType != null) append(": ").also { children(destructType) }
+                }
+                is Node.Expr.Lambda.Body -> {
+                    if (stmts.isNotEmpty()) lineEnd().indented { childrenLines(stmts) }.lineBegin()
                 }
                 is Node.Expr.This -> {
                     append("this")

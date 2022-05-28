@@ -100,7 +100,11 @@ open class Converter {
 
     open fun convertLambda(v: KtLambdaExpression) = Node.Expr.Lambda(
         params = v.valueParameters.map(::convertLambdaParam),
-        stmts = (v.bodyExpression?.statements ?: listOf()).map(::convertStmtNo)
+        body = v.bodyExpression?.let(::convertLambdaBody)
+    ).map(v)
+
+    open fun convertLambdaBody(v: KtBlockExpression) = Node.Expr.Lambda.Body(
+        stmts = v.statements.map(::convertStmtNo)
     ).map(v)
 
     open fun convertLambdaParam(v: KtParameter) = Node.Expr.Lambda.Param(

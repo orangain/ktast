@@ -78,11 +78,12 @@ class ParserTest {
               Node.Decl.Func
                 Node.Decl.Func.Body.Expr
                   Node.Expr.Lambda
-                    BEFORE: Node.Extra.Comment
-                    Node.Stmt.Decl
-                      Node.Decl.Property
-                        Node.Decl.Property.Var
-                        Node.Expr.StringTmpl
+                    Node.Expr.Lambda.Body
+                      BEFORE: Node.Extra.Comment
+                      Node.Stmt.Decl
+                        Node.Decl.Property
+                          Node.Decl.Property.Var
+                          Node.Expr.StringTmpl
         """.trimIndent())
     }
 

@@ -222,11 +222,14 @@ open class Visitor {
             is Node.Expr.Const -> {}
             is Node.Expr.Lambda -> {
                 visitChildren(params)
-                visitChildren(stmts)
+                visitChildren(body)
             }
             is Node.Expr.Lambda.Param -> {
                 visitChildren(vars)
                 visitChildren(destructType)
+            }
+            is Node.Expr.Lambda.Body -> {
+                visitChildren(stmts)
             }
             is Node.Expr.This -> {}
             is Node.Expr.Super -> {

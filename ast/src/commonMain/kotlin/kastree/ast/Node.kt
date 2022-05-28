@@ -322,13 +322,15 @@ sealed class Node {
         }
         data class Lambda(
             val params: List<Param>,
-            val stmts: List<Stmt>
+            val body: Body?
         ) : Expr() {
             data class Param(
                 // Multiple means destructure, null means underscore
                 val vars: List<Decl.Property.Var?>,
                 val destructType: Type?
             ) : Expr()
+
+            data class Body(val stmts: List<Stmt>) : Expr()
         }
         data class This(
             val label: String?
