@@ -69,21 +69,44 @@ class ParserTest {
     @Test
     fun testFunctionExpression() {
         assertParsedAs("""
-            fun setup() = {
-                // do something
-                val x = ""
-            }
+            fun calc() = 1 + 2
         """.trimIndent(), """
             Node.File
               Node.Decl.Func
                 Node.Decl.Func.Body.Expr
-                  Node.Expr.Lambda
-                    Node.Expr.Lambda.Body
-                      BEFORE: Node.Extra.Comment
-                      Node.Stmt.Decl
-                        Node.Decl.Property
-                          Node.Decl.Property.Var
-                          Node.Expr.StringTmpl
+                  Node.Expr.BinaryOp
+                    Node.Expr.Const
+                    Node.Expr.BinaryOp.Oper.Token
+                    Node.Expr.Const
+        """.trimIndent()
+        )
+    }
+
+    @Test
+    fun testLambdaExpression() {
+        assertParsedAs("""
+            fun setup() {
+                run {
+                    // do something
+                    val x = ""
+                }
+            }
+        """.trimIndent(), """
+            Node.File
+              Node.Decl.Func
+                Node.Decl.Func.Body.Block
+                  Node.Expr.Block
+                    Node.Stmt.Expr
+                      Node.Expr.Call
+                        Node.Expr.Name
+                        Node.Expr.Call.TrailLambda
+                          Node.Expr.Lambda
+                            Node.Expr.Lambda.Body
+                              BEFORE: Node.Extra.Comment
+                              Node.Stmt.Decl
+                                Node.Decl.Property
+                                  Node.Decl.Property.Var
+                                  Node.Expr.StringTmpl
         """.trimIndent())
     }
 
