@@ -17,7 +17,10 @@ class WriterTest {
 
     @Test
     fun testTypeParameterModifiers() {
-        assertParseAndWriteExact("fun delete(p: Array<out String>?) {}")
+        assertParseAndWriteExact("""
+            fun delete(p: Array<out String>?) {
+            }
+        """.trimIndent())
     }
 
     @Test
@@ -48,6 +51,28 @@ class WriterTest {
             val y = 0
         """.trimIndent())
     }
+
+    @Test
+    fun testFunctionBlock() {
+        assertParseAndWriteExact("""
+            fun setup() {
+                // do something
+                val x = ""
+                val y = 3
+                // last
+            }
+        """.trimIndent())
+    }
+
+    @Test
+    fun testFunctionBlockHavingOnlyComment() {
+        assertParseAndWriteExact("""
+            fun setup() {
+                // do something
+            }
+        """.trimIndent())
+    }
+
     private fun assertParseAndWriteExact(code: String) {
 
         val converter = ConverterWithExtras()

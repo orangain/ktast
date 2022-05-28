@@ -393,8 +393,15 @@ open class Writer(
                 is Node.Expr.Property ->
                     children(decl)
                 is Node.Expr.Block -> {
-                    if (stmts.isEmpty()) append("{}")
-                    else lineEnd("{").indented { childrenLines(stmts) }.lineBegin("}")
+                    lineEnd("{").indented {
+                        if (stmts.isNotEmpty()) {
+                            childrenLines(stmts)
+                        }
+                        if (parent is Node.Decl.Func.Body.Block) {
+                            parent.writeExtrasWithin()
+                        }
+                    }
+                    lineBegin("}")
                 }
                 is Node.Stmt.Decl -> {
                     children(decl)
@@ -425,7 +432,13 @@ open class Writer(
     protected open fun Node.writeExtrasBefore() {
         if (extrasMap == null) return
         // Write everything before
-        writeExtras(extrasMap.extrasBefore(this))
+        writeExtras(extrasMap.extrasBefore(this), continueIndent = true)
+    }
+
+    protected open fun Node.writeExtrasWithin() {
+        if (extrasMap == null) return
+        // Write everything within
+        writeExtras(extrasMap.extrasWithin(this), continueIndent = false)
     }
 
     protected open fun Node.writeExtrasAfter() {
@@ -433,7 +446,7 @@ open class Writer(
         // Write everything after that doesn't start a line or end a line
         writeExtras(extrasMap.extrasAfter(this).takeWhile {
             it is Node.Extra.Comment && !it.startsLine && !it.endsLine
-        })
+        }, continueIndent = false)
     }
 
     protected open fun Node.writeExtrasLineEnd() {
@@ -441,18 +454,24 @@ open class Writer(
         // Write everything after the first non-line starter/ender
         writeExtras(extrasMap.extrasAfter(this).dropWhile {
             it is Node.Extra.Comment && !it.startsLine && !it.endsLine
-        })
+        }, continueIndent = false)
     }
 
-    protected open fun Node.writeExtras(extras: List<Node.Extra>) {
+    protected open fun Node.writeExtras(extras: List<Node.Extra>, continueIndent: Boolean) {
+        fun writeLine(text: String = "") = if (continueIndent) {
+                lineEnd(text).lineBegin()
+            } else {
+                lineBegin(text).lineEnd()
+            }
+
         extras.forEach {
             when (it) {
                 is Node.Extra.BlankLines -> {
                     (2..it.count).forEach { line() }
-                    lineEnd().lineBegin()
+                    writeLine()
                 }
                 is Node.Extra.Comment -> {
-                    if (it.startsLine && it.endsLine) lineEnd(it.text).lineBegin() else {
+                    if (it.startsLine && it.endsLine) writeLine(it.text) else {
                         if (!it.startsLine) append(' ')
                         append(it.text)
                         if (!it.endsLine) append(' ')
