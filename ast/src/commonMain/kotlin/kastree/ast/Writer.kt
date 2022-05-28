@@ -305,7 +305,8 @@ open class Writer(
                 is Node.Expr.Brace -> {
                     append('{')
                     if (params.isNotEmpty()) append(' ').also { children(params, ", ", "", " ->") }
-                    children(block).append('}')
+                    childrenLines(stmts)
+                    append('}')
                 }
                 is Node.Expr.Brace.Param -> {
                     childVars(vars)
@@ -389,7 +390,7 @@ open class Writer(
                     children(func)
                 is Node.Expr.Property ->
                     children(decl)
-                is Node.Block -> {
+                is Node.Expr.Block -> {
                     // Special case, no braces if the parent is a brace
                     if (parent is Node.Expr.Brace) {
                         if (stmts.isNotEmpty()) lineEnd().indented { childrenLines(stmts) }.lineBegin()

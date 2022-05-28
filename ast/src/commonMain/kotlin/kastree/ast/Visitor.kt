@@ -222,7 +222,7 @@ open class Visitor {
             is Node.Expr.Const -> {}
             is Node.Expr.Brace -> {
                 visitChildren(params)
-                visitChildren(block)
+                visitChildren(stmts)
             }
             is Node.Expr.Brace.Param -> {
                 visitChildren(vars)
@@ -292,7 +292,7 @@ open class Visitor {
             is Node.Expr.Property ->  {
                 visitChildren(decl)
             }
-            is Node.Block -> {
+            is Node.Expr.Block -> {
                 visitChildren(stmts)
             }
             is Node.Stmt.Decl -> {

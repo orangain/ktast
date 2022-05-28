@@ -220,7 +220,7 @@ open class MutableVisitor {
                     is Node.Expr.Const -> this
                     is Node.Expr.Brace -> copy(
                         params = visitChildren(params, newCh),
-                        block = visitChildren(block, newCh)
+                        stmts = visitChildren(stmts, newCh)
                     )
                     is Node.Expr.Brace.Param -> copy(
                         vars = visitChildren(vars, newCh),
@@ -296,7 +296,7 @@ open class MutableVisitor {
                     is Node.Expr.Property -> copy(
                         decl = visitChildren(decl, newCh)
                     )
-                    is Node.Block -> copy(
+                    is Node.Expr.Block -> copy(
                         stmts = visitChildren(stmts, newCh)
                     )
                     is Node.Stmt.Decl -> copy(

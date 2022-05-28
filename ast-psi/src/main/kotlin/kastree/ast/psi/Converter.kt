@@ -1,17 +1,14 @@
 package kastree.ast.psi
 
-import kastree.ast.ExtrasMap
 import kastree.ast.Node
 import org.jetbrains.kotlin.KtNodeTypes
 import org.jetbrains.kotlin.com.intellij.lang.ASTNode
-import org.jetbrains.kotlin.com.intellij.psi.PsiComment
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
 import org.jetbrains.kotlin.descriptors.annotations.AnnotationUseSiteTarget
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.*
-import java.util.*
 
 open class Converter {
     protected open fun onNode(node: Node, elem: PsiElement) { }
@@ -97,23 +94,13 @@ open class Converter {
         rhs = convertExpr(v.selectorExpression ?: error("No qualified rhs for $v"))
     ).map(v)
 
-    open fun convertBlock(v: KtBlockExpression) = Node.Block(
+    open fun convertBlock(v: KtBlockExpression) = Node.Expr.Block(
         stmts = v.statements.map(::convertStmtNo)
-    ).map(v)
-
-    open fun convertBrace(v: KtBlockExpression) = Node.Expr.Brace(
-        params = emptyList(),
-        block = convertBlock(v)
-    ).map(v)
-
-    open fun convertBrace(v: KtFunctionLiteral) = Node.Expr.Brace(
-        params = v.valueParameters.map(::convertBraceParam),
-        block = v.bodyExpression?.let(::convertBlock)
     ).map(v)
 
     open fun convertBrace(v: KtLambdaExpression) = Node.Expr.Brace(
         params = v.valueParameters.map(::convertBraceParam),
-        block = v.bodyExpression?.let(::convertBlock)
+        stmts = (v.bodyExpression?.statements ?: listOf()).map(::convertStmtNo)
     ).map(v)
 
     open fun convertBraceParam(v: KtParameter) = Node.Expr.Brace.Param(
@@ -261,8 +248,8 @@ open class Converter {
         is KtParenthesizedExpression -> convertParen(v)
         is KtStringTemplateExpression -> convertStringTmpl(v)
         is KtConstantExpression -> convertConst(v)
-        is KtBlockExpression -> convertBrace(v)
-        is KtFunctionLiteral -> convertBrace(v)
+        is KtBlockExpression -> convertBlock(v)
+        is KtFunctionLiteral -> error("Supposed to be unreachable here. KtFunctionLiteral is expected to be inside of KtLambdaExpression.")
         is KtLambdaExpression -> convertBrace(v)
         is KtThisExpression -> convertThis(v)
         is KtSuperExpression -> convertSuper(v)
