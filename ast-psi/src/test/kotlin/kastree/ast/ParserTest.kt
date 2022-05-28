@@ -67,6 +67,21 @@ class ParserTest {
     }
 
     @Test
+    fun testFunctionBlockHavingOnlyComment() {
+        assertParsedAs("""
+            fun setup() {
+                // do something
+            }
+        """.trimIndent(), """
+            Node.File
+              Node.Decl.Func
+                Node.Decl.Func.Body.Block
+                  WITHIN: Node.Extra.Comment
+                  Node.Expr.Block
+        """.trimIndent())
+    }
+
+    @Test
     fun testFunctionExpression() {
         assertParsedAs("""
             fun calc() = 1 + 2
@@ -107,6 +122,29 @@ class ParserTest {
                                 Node.Decl.Property
                                   Node.Decl.Property.Var
                                   Node.Expr.StringTmpl
+        """.trimIndent())
+    }
+
+    @Test
+    fun testLambdaExpressionHavingOnlyComment() {
+        assertParsedAs("""
+            fun setup() {
+                run {
+                    // do something
+                }
+            }
+        """.trimIndent(), """
+            Node.File
+              Node.Decl.Func
+                Node.Decl.Func.Body.Block
+                  Node.Expr.Block
+                    Node.Stmt.Expr
+                      Node.Expr.Call
+                        Node.Expr.Name
+                        Node.Expr.Call.TrailLambda
+                          Node.Expr.Lambda
+                            BEFORE: Node.Extra.Comment
+                            Node.Expr.Lambda.Body
         """.trimIndent())
     }
 
