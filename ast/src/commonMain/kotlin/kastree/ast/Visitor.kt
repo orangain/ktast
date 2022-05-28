@@ -220,11 +220,11 @@ open class Visitor {
                 visitChildren(expr)
             }
             is Node.Expr.Const -> {}
-            is Node.Expr.Brace -> {
+            is Node.Expr.Lambda -> {
                 visitChildren(params)
                 visitChildren(stmts)
             }
-            is Node.Expr.Brace.Param -> {
+            is Node.Expr.Lambda.Param -> {
                 visitChildren(vars)
                 visitChildren(destructType)
             }

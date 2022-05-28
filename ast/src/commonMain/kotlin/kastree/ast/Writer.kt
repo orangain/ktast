@@ -302,13 +302,13 @@ open class Writer(
                     append("\${").also { children(expr) }.append('}')
                 is Node.Expr.Const ->
                     append(value)
-                is Node.Expr.Brace -> {
+                is Node.Expr.Lambda -> {
                     append('{')
                     if (params.isNotEmpty()) append(' ').also { children(params, ", ", "", " ->") }
                     childrenLines(stmts)
                     append('}')
                 }
-                is Node.Expr.Brace.Param -> {
+                is Node.Expr.Lambda.Param -> {
                     childVars(vars)
                     if (destructType != null) append(": ").also { children(destructType) }
                 }
@@ -391,10 +391,7 @@ open class Writer(
                 is Node.Expr.Property ->
                     children(decl)
                 is Node.Expr.Block -> {
-                    // Special case, no braces if the parent is a brace
-                    if (parent is Node.Expr.Brace) {
-                        if (stmts.isNotEmpty()) lineEnd().indented { childrenLines(stmts) }.lineBegin()
-                    } else if (stmts.isEmpty()) append("{}")
+                    if (stmts.isEmpty()) append("{}")
                     else lineEnd("{").indented { childrenLines(stmts) }.lineBegin("}")
                 }
                 is Node.Stmt.Decl -> {
@@ -591,7 +588,7 @@ open class Writer(
         // As a special case, if there is a function call stmt w/ no trailing lambda followed by a brace
         // stmt, the call needs a semicolon
         if (v !is Node.Stmt.Expr || v.expr !is Node.Expr.Call || v.expr.lambda != null) return false
-        return next is Node.Stmt.Expr && next.expr is Node.Expr.Brace
+        return next is Node.Stmt.Expr && next.expr is Node.Expr.Lambda
     }
 
     protected fun Node.children(v: List<Node?>, sep: String = "", prefix: String = "", postfix: String = "") =

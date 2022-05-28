@@ -77,7 +77,7 @@ class ParserTest {
             Node.File
               Node.Decl.Func
                 Node.Decl.Func.Body.Expr
-                  Node.Expr.Brace
+                  Node.Expr.Lambda
                     BEFORE: Node.Extra.Comment
                     Node.Stmt.Decl
                       Node.Decl.Property

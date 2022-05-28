@@ -320,7 +320,7 @@ sealed class Node {
         ) : Expr() {
             enum class Form { BOOLEAN, CHAR, INT, FLOAT, NULL }
         }
-        data class Brace(
+        data class Lambda(
             val params: List<Param>,
             val stmts: List<Stmt>
         ) : Expr() {
@@ -397,7 +397,7 @@ sealed class Node {
             data class TrailLambda(
                 override val anns: List<Modifier.AnnotationSet>,
                 val label: String?,
-                val func: Brace
+                val func: Lambda
             ) : Node(), WithAnnotations
         }
         data class ArrayAccess(

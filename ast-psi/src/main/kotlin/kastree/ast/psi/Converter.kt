@@ -98,12 +98,12 @@ open class Converter {
         stmts = v.statements.map(::convertStmtNo)
     ).map(v)
 
-    open fun convertBrace(v: KtLambdaExpression) = Node.Expr.Brace(
-        params = v.valueParameters.map(::convertBraceParam),
+    open fun convertLambda(v: KtLambdaExpression) = Node.Expr.Lambda(
+        params = v.valueParameters.map(::convertLambdaParam),
         stmts = (v.bodyExpression?.statements ?: listOf()).map(::convertStmtNo)
     ).map(v)
 
-    open fun convertBraceParam(v: KtParameter) = Node.Expr.Brace.Param(
+    open fun convertLambdaParam(v: KtParameter) = Node.Expr.Lambda.Param(
         vars = convertPropertyVars(v),
         destructType = if (v.destructuringDeclaration != null) v.typeReference?.let(::convertType) else null
     ).map(v)
@@ -137,7 +137,7 @@ open class Converter {
         return Node.Expr.Call.TrailLambda(
             anns = anns,
             label = label,
-            func = convertBrace(expr)
+            func = convertLambda(expr)
         ).map(v)
     }
 
@@ -250,7 +250,7 @@ open class Converter {
         is KtConstantExpression -> convertConst(v)
         is KtBlockExpression -> convertBlock(v)
         is KtFunctionLiteral -> error("Supposed to be unreachable here. KtFunctionLiteral is expected to be inside of KtLambdaExpression.")
-        is KtLambdaExpression -> convertBrace(v)
+        is KtLambdaExpression -> convertLambda(v)
         is KtThisExpression -> convertThis(v)
         is KtSuperExpression -> convertSuper(v)
         is KtWhenExpression -> convertWhen(v)
