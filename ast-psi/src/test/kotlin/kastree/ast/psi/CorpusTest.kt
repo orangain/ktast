@@ -19,9 +19,9 @@ class CorpusTest(private val unit: Corpus.Unit) {
         // In order to test, we parse the test code (failing and validating errors if present),
         // convert to our AST, write out our AST, re-parse what we wrote, re-convert, and compare
         try {
-            val elemMap = IdentityHashMap<Node, PsiElement>()
+            val elemMap = IdentityHashMap<Node, PsiElement?>()
             val origExtrasConv = object : ConverterWithExtras() {
-                override fun onNode(node: Node, elem: PsiElement) {
+                override fun onNode(node: Node, elem: PsiElement?) {
                     elemMap[node] = elem
                     super.onNode(node, elem)
                 }
@@ -31,7 +31,7 @@ class CorpusTest(private val unit: Corpus.Unit) {
             if (debug) println("----ORIG----\n$origCode\n------------")
             if (debug) println("ORIG AST: $origFile")
             if (debug) elemMap.forEach { (key, value) ->
-                println("ELEM MAP OF $value - ${value.text.replace("\n", "\\n")} - $key")
+                println("ELEM MAP OF $value - ${value?.text?.replace("\n", "\\n")} - $key")
                 origExtrasConv.extrasBefore(key).forEach { println("  BEFORE: $it") }
                 origExtrasConv.extrasWithin(key).forEach { println("  WITHIN: $it") }
                 origExtrasConv.extrasAfter(key).forEach { println("  AFTER: $it") }

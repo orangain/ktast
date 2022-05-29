@@ -11,7 +11,7 @@ import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.*
 
 open class Converter {
-    protected open fun onNode(node: Node, elem: PsiElement) { }
+    protected open fun onNode(node: Node, elem: PsiElement?) { }
 
     open fun convertAnnotated(v: KtAnnotatedExpression) = Node.Expr.Annotated(
         anns = convertAnnotationSets(v),
@@ -692,6 +692,7 @@ open class Converter {
     ).map(v)
 
     protected open fun <T: Node> T.map(v: PsiElement) = also { onNode(it, v) }
+    protected open fun <T: Node> T.mapNotCorrespondsPsiElement(v: PsiElement) = also { onNode(it, null) }
 
     class Unsupported(message: String) : UnsupportedOperationException(message)
 

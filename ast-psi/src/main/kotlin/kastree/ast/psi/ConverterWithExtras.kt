@@ -33,9 +33,9 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
     internal val allExtrasBefore get() = extrasBefore
     internal val allExtrasAfter get() = extrasAfter
 
-    override fun onNode(node: Node, elem: PsiElement) {
+    override fun onNode(node: Node, elem: PsiElement?) {
         // We ignore whitespace and comments here to prevent recursion
-        if (elem is PsiWhiteSpace || elem is PsiComment) return
+        if (elem is PsiWhiteSpace || elem is PsiComment || elem == null) return
         // If we've done this elem before, just set this node as the curr and move on
         val elemId = System.identityHashCode(elem)
         nodesToPsiIdentities[node] = elemId
