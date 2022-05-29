@@ -6,6 +6,7 @@ import org.jetbrains.kotlin.com.intellij.lang.ASTNode
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
 import org.jetbrains.kotlin.descriptors.annotations.AnnotationUseSiteTarget
+import org.jetbrains.kotlin.lexer.KtSingleValueToken
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.*
@@ -412,6 +413,8 @@ open class Converter {
         vars = v.entries.map(::convertPropertyVar),
         typeConstraints = emptyList(),
         delegated = false,
+        // Unfortunately KtDestructuringDeclaration does not expose equalsToken property.
+        equalsToken = v.node.findChildByType(KtTokens.EQ)?.psi?.let(::convertEqualsToken),
         expr = v.initializer?.let(::convertExpr),
         accessors = null
     ).map(v)
@@ -427,6 +430,7 @@ open class Converter {
         ).mapNotCorrespondsPsiElement(v)),
         typeConstraints = v.typeConstraints.map(::convertTypeConstraint),
         delegated = v.hasDelegateExpression(),
+        equalsToken = v.equalsToken?.let(::convertEqualsToken),
         expr = v.delegateExpressionOrInitializer?.let(::convertExpr),
         accessors = v.accessors.map(::convertPropertyAccessor).let {
             if (it.isEmpty()) null else Node.Decl.Property.Accessors(
@@ -435,6 +439,12 @@ open class Converter {
             )
         }
     ).map(v)
+
+    open fun convertEqualsToken(v: PsiElement) = if (v.text == "=")
+        Node.Expr.BinaryOp.Oper.Token(Node.Expr.BinaryOp.Token.ASSN)
+            .map(v)
+    else
+        error("Equals token is expected but got ${v.text}")
 
     open fun convertPropertyAccessor(v: KtPropertyAccessor) =
         if (v.isGetter) Node.Decl.Property.Accessor.Get(

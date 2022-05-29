@@ -19,7 +19,8 @@ class ParserTest {
                 Node.Decl.Property.Var
                   Node.Expr.Name
                   AFTER: Node.Extra.Whitespace
-                BEFORE: Node.Extra.Whitespace
+                Node.Expr.BinaryOp.Oper.Token
+                AFTER: Node.Extra.Whitespace
                 Node.Expr.StringTmpl
         """.trimIndent())
     }
@@ -36,7 +37,8 @@ class ParserTest {
                 Node.Decl.Property.Var
                   Node.Expr.Name
                   AFTER: Node.Extra.Whitespace
-                BEFORE: Node.Extra.Whitespace
+                Node.Expr.BinaryOp.Oper.Token
+                AFTER: Node.Extra.Whitespace
                 Node.Expr.StringTmpl
                 AFTER: Node.Extra.Whitespace
                 AFTER: Node.Extra.Comment
@@ -58,7 +60,8 @@ class ParserTest {
                 Node.Decl.Property.Var
                   Node.Expr.Name
                   AFTER: Node.Extra.Whitespace
-                BEFORE: Node.Extra.Whitespace
+                Node.Expr.BinaryOp.Oper.Token
+                AFTER: Node.Extra.Whitespace
                 Node.Expr.StringTmpl
         """.trimIndent())
     }
@@ -88,7 +91,8 @@ class ParserTest {
                         Node.Decl.Property.Var
                           Node.Expr.Name
                           AFTER: Node.Extra.Whitespace
-                        BEFORE: Node.Extra.Whitespace
+                        Node.Expr.BinaryOp.Oper.Token
+                        AFTER: Node.Extra.Whitespace
                         Node.Expr.StringTmpl
                       AFTER: Node.Extra.Whitespace
         """.trimIndent())
@@ -171,7 +175,8 @@ class ParserTest {
                                   Node.Decl.Property.Var
                                     Node.Expr.Name
                                     AFTER: Node.Extra.Whitespace
-                                  BEFORE: Node.Extra.Whitespace
+                                  Node.Expr.BinaryOp.Oper.Token
+                                  AFTER: Node.Extra.Whitespace
                                   Node.Expr.StringTmpl
                             AFTER: Node.Extra.Whitespace
                       AFTER: Node.Extra.Whitespace

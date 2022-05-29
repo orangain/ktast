@@ -119,7 +119,7 @@ open class Writer(
                     childVars(vars)
                     childTypeConstraints(typeConstraints)
                     if (expr != null) {
-                        if (delegated) append("by") else append("=")
+                        if (delegated) append("by") else children(equalsToken)
                         children(expr)
                     }
                     if (accessors != null) children(accessors)

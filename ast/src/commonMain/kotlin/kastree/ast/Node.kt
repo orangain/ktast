@@ -110,6 +110,7 @@ sealed class Node {
             val vars: List<Var?>,
             val typeConstraints: List<TypeConstraint>,
             val delegated: Boolean,
+            val equalsToken: Expr.BinaryOp.Oper.Token?,
             val expr: Expr?,
             val accessors: Accessors?
         ) : Decl(), WithModifiers {

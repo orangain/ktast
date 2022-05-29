@@ -82,6 +82,7 @@ open class MutableVisitor {
                         receiverType = visitChildren(receiverType, newCh),
                         vars = visitChildren(vars, newCh),
                         typeConstraints = visitChildren(typeConstraints, newCh),
+                        equalsToken = visitChildren(equalsToken, newCh),
                         expr = visitChildren(expr, newCh),
                         accessors = visitChildren(accessors, newCh)
                     )

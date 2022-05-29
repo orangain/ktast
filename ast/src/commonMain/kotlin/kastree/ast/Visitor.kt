@@ -78,6 +78,7 @@ open class Visitor {
                 visitChildren(receiverType)
                 visitChildren(vars)
                 visitChildren(typeConstraints)
+                visitChildren(equalsToken)
                 visitChildren(expr)
                 visitChildren(accessors)
             }
