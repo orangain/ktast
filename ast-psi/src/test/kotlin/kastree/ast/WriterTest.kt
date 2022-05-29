@@ -1,6 +1,5 @@
 package kastree.ast
 
-import kastree.ast.psi.Converter
 import kastree.ast.psi.ConverterWithExtras
 import kastree.ast.psi.Parser
 import org.junit.Test
@@ -69,6 +68,30 @@ class WriterTest {
         assertParseAndWriteExact("""
             fun setup() {
                 // do something
+            }
+        """.trimIndent())
+    }
+
+    @Test
+    fun testLambdaExpression() {
+        assertParseAndWriteExact("""
+            fun setup() {
+                run {
+                    // do something
+                    val x = ""
+                }
+            }
+        """.trimIndent())
+    }
+
+    @Test
+    fun testLambdaExpressionHavingOnlyComment() {
+        // TODO: Improve formatting of the line comment before Node.Expr.Lambda.Body.
+        assertParseAndWriteExact("""
+            fun setup() {
+                run {
+            // do something
+                        }
             }
         """.trimIndent())
     }
