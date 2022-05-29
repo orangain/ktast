@@ -316,7 +316,7 @@ open class MutableVisitor {
                         args = visitChildren(args, newCh)
                     )
                     is Node.Modifier.Lit -> this
-                    is Node.Extra.BlankLines -> this
+                    is Node.Extra.Whitespace -> this
                     is Node.Extra.Comment -> this
                     else -> error("Unrecognized node: $this")
                 }

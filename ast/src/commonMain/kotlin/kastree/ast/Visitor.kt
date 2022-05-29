@@ -312,7 +312,7 @@ open class Visitor {
                 visitChildren(args)
             }
             is Node.Modifier.Lit -> {}
-            is Node.Extra.BlankLines -> {}
+            is Node.Extra.Whitespace -> {}
             is Node.Extra.Comment -> {}
         }
     }

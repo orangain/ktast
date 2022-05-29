@@ -447,13 +447,11 @@ sealed class Node {
     }
 
     sealed class Extra : Node() {
-        data class BlankLines(
-            val count: Int
+        data class Whitespace(
+            val text: String,
         ) : Extra()
         data class Comment(
             val text: String,
-            val startsLine: Boolean,
-            val endsLine: Boolean
         ) : Extra()
     }
 }

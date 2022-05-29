@@ -5,20 +5,6 @@ open class Writer(
     val extrasMap: ExtrasMap? = null,
     val includeExtraBlankLines: Boolean = extrasMap == null
 ) : Visitor() {
-
-    protected var indent = ""
-    protected var elemsSinceLastLine = emptyList<Node>()
-
-    protected fun endLine() = also {
-        val elems = elemsSinceLastLine
-        elemsSinceLastLine = emptyList()
-        elems.forEach { it.writeExtrasLineEnd() }
-        append('\n')
-    }
-    protected fun line() = endLine()
-    protected fun line(str: String) = append(indent).append(str).endLine()
-    protected fun lineBegin(str: String = "") = append(indent).append(str)
-    protected fun lineEnd(str: String = "") = append(str).endLine()
     protected fun append(ch: Char) = also { app.append(ch) }
     protected fun append(str: String) = also { app.append(str) }
     protected fun appendName(name: String) =
@@ -29,10 +15,6 @@ open class Writer(
             appendName(name)
         }
     }
-    protected fun <T> indented(fn: () -> T): T = run {
-        indent += "    "
-        fn().also { indent = indent.dropLast(4) }
-    }
 
     fun write(v: Node) { visit(v, v) }
 
@@ -41,7 +23,7 @@ open class Writer(
         v?.apply {
             when (this) {
                 is Node.File -> {
-                    if (anns.isNotEmpty()) childAnns().line()
+                    if (anns.isNotEmpty()) childAnns()
                     childrenLines(pkg, extraEndLines = 1)
                     childrenLines(imports, extraEndLines = 1)
                     childrenLines(decls, extraMidLines = 1)
@@ -69,20 +51,20 @@ open class Writer(
                         children(parents, ", ")
                     }
                     childTypeConstraints(typeConstraints)
-                    if (members.isNotEmpty()) lineEnd(" {").indented {
+                    if (members.isNotEmpty()) append("{").run {
                         // First, do all the enum entries if there are any
                         val enumEntries = members.map { it as? Node.Decl.EnumEntry }.takeWhile { it != null }
                         enumEntries.forEachIndexed { index, enumEntry ->
-                            lineBegin().also { children(enumEntry) }
+                            children(enumEntry)
                             when (index) {
-                                members.size - 1 -> lineEnd()
-                                enumEntries.size - 1 -> lineEnd(";").line()
-                                else -> lineEnd(",")
+                                members.size - 1 -> this
+                                enumEntries.size - 1 -> append(";")
+                                else -> append(",")
                             }
                         }
                         // Now the rest of the members
                         childrenLines(members.drop(enumEntries.size), extraMidLines = 1)
-                    }.lineBegin("}")
+                    }.append("}")
 
                     // As a special case, if an object is nameless and bodyless, we should give it an empty body
                     // to avoid ambiguities with the next item
@@ -138,7 +120,7 @@ open class Writer(
                         if (delegated) append(" by ") else append(" = ")
                         children(expr)
                     }
-                    if (accessors != null) lineEnd().indented { children(accessors) }
+                    if (accessors != null) children(accessors)
                 }
                 is Node.Decl.Property.Var -> {
                     appendName(name)
@@ -183,9 +165,9 @@ open class Writer(
                 is Node.Decl.EnumEntry -> {
                     childMods().appendName(name)
                     if (args.isNotEmpty()) parenChildren(args)
-                    if (members.isNotEmpty()) lineEnd(" {").indented {
+                    if (members.isNotEmpty()) append("{").run {
                         childrenLines(members, extraMidLines = 1)
-                    }.lineBegin("}")
+                    }.append("}")
                 }
                 is Node.TypeParam -> {
                     childMods(newlines = false).appendName(name)
@@ -199,10 +181,10 @@ open class Writer(
                     }.append(')')
                 is Node.TypeRef.Func -> {
                     if (receiverType != null) children(receiverType).append('.')
-                    parenChildren(params).append(" -> ").also { children(type) }
+                    parenChildren(params).append("->").also { children(type) }
                 }
                 is Node.TypeRef.Func.Param -> {
-                    if (name != null) appendName(name).append(": ")
+                    if (name != null) appendName(name).append(":")
                     children(type)
                 }
                 is Node.TypeRef.Simple ->
@@ -216,31 +198,31 @@ open class Writer(
                 is Node.Type ->
                     childModsBeforeType(ref).also { children(ref) }
                 is Node.ValueArg -> {
-                    if (name != null) appendName(name).append(" = ")
+                    if (name != null) appendName(name).append("=")
                     if (asterisk) append('*')
                     children(expr)
                 }
                 is Node.Expr.If -> {
-                    append("if (").also { children(expr) }.append(") ")
+                    append("if (").also { children(expr) }.append(")")
                     children(body)
                     if (elseBody != null) append(" else ").also { children(elseBody) }
                 }
                 is Node.Expr.Try -> {
-                    append("try ")
+                    append("try")
                     children(block)
-                    if (catches.isNotEmpty()) children(catches, " ", prefix = " ")
+                    if (catches.isNotEmpty()) children(catches, "", prefix = "")
                     if (finallyBlock != null) append(" finally ").also { children(finallyBlock) }
                 }
                 is Node.Expr.Try.Catch -> {
                     append("catch (")
                     childAnns(sameLine = true)
-                    appendName(varName).append(": ").also { children(varType) }.append(") ")
+                    appendName(varName).append(": ").also { children(varType) }.append(")")
                     children(block)
                 }
                 is Node.Expr.For -> {
                     append("for (")
                     childAnns(sameLine = true)
-                    childVars(vars).append(" in ").also { children(inExpr) }.append(") ")
+                    childVars(vars).append("in").also { children(inExpr) }.append(") ")
                     children(body)
                 }
                 is Node.Expr.While -> {
@@ -305,9 +287,8 @@ open class Writer(
                 is Node.Expr.Lambda -> {
                     append("{")
                     if (params.isNotEmpty()) append(' ').also { children(params, ", ", "", " ->") }
-                    lineEnd().indented {
-                        children(body)
-                    }.lineBegin("}")
+                    children(body)
+                    append("}")
                 }
                 is Node.Expr.Lambda.Param -> {
                     childVars(vars)
@@ -328,36 +309,38 @@ open class Writer(
                 is Node.Expr.When -> {
                     append("when")
                     if (expr != null) append('(').also { children(expr) }.append(')')
-                    lineEnd(" {").indented { childrenLines(entries) }.lineBegin("}")
+                    append("{")
+                    childrenLines(entries)
+                    append("}")
                 }
                 is Node.Expr.When.Entry -> {
                     if (conds.isEmpty()) append("else")
-                    else children(conds, ", ")
-                    append(" -> ").also { children(body) }
+                    else children(conds, ",")
+                    append("->").also { children(body) }
                 }
                 is Node.Expr.When.Cond.Expr ->
                     children(expr)
                 is Node.Expr.When.Cond.In -> {
                     if (not) append('!')
-                    append("in ").also { children(expr) }
+                    append("in").also { children(expr) }
                 }
                 is Node.Expr.When.Cond.Is -> {
                     if (not) append('!')
-                    append("is ").also { children(type) }
+                    append("is").also { children(type) }
                 }
                 is Node.Expr.Object -> {
                     append("object")
                     if (parents.isNotEmpty()) append(" : ").also { children(parents, ", ") }
-                    if (members.isEmpty()) append(" {}") else lineEnd(" {").indented {
+                    if (members.isEmpty()) append("{}") else append("{").run {
                         childrenLines(members, extraMidLines = 1)
-                    }.lineBegin("}")
+                    }.append("}")
                 }
                 is Node.Expr.Throw ->
-                    append("throw ").also { children(expr) }
+                    append("throw").also { children(expr) }
                 is Node.Expr.Return -> {
                     append("return")
                     if (label != null) append('@').appendName(label)
-                    if (expr != null) append(' ').also { children(expr) }
+                    if (expr != null) children(expr)
                 }
                 is Node.Expr.Continue -> {
                     append("continue")
@@ -368,34 +351,34 @@ open class Writer(
                     if (label != null) append('@').appendName(label)
                 }
                 is Node.Expr.CollLit ->
-                    children(exprs, ", ", "[", "]")
+                    children(exprs, ",", "[", "]")
                 is Node.Expr.Name ->
                     appendName(name)
                 is Node.Expr.Labeled ->
-                    appendName(label).append("@ ").also { children(expr) }
+                    appendName(label).append("@").also { children(expr) }
                 is Node.Expr.Annotated ->
                     childAnnsBeforeExpr(expr).also { children(expr) }
                 is Node.Expr.Call -> {
                     children(expr)
                     bracketedChildren(typeArgs)
                     if (args.isNotEmpty() || lambda == null) parenChildren(args)
-                    if (lambda != null) append(' ').also { children(lambda) }
+                    if (lambda != null) { children(lambda) }
                 }
                 is Node.Expr.Call.TrailLambda -> {
-                    if (anns.isNotEmpty()) childAnns(sameLine = true).append(' ')
-                    if (label != null) appendName(label).append("@ ")
+                    if (anns.isNotEmpty()) childAnns(sameLine = true)
+                    if (label != null) appendName(label).append("@")
                     children(func)
                 }
                 is Node.Expr.ArrayAccess -> {
                     children(expr)
-                    children(indices, ", ", "[", "]")
+                    children(indices, ",", "[", "]")
                 }
                 is Node.Expr.AnonFunc ->
                     children(func)
                 is Node.Expr.Property ->
                     children(decl)
                 is Node.Expr.Block -> {
-                    lineEnd("{").indented {
+                    append("{").run {
                         if (stmts.isNotEmpty()) {
                             childrenLines(stmts)
                         }
@@ -403,7 +386,7 @@ open class Writer(
                             parent.writeExtrasWithin()
                         }
                     }
-                    lineBegin("}")
+                    append("}")
                 }
                 is Node.Stmt.Decl -> {
                     children(decl)
@@ -414,7 +397,7 @@ open class Writer(
                     append('@')
                     if (target != null) append(target.name.toLowerCase()).append(':')
                     if (anns.size == 1) children(anns)
-                    else children(anns, " ", "[", "]")
+                    else children(anns, "", "[", "]")
                 }
                 is Node.Modifier.AnnotationSet.Annotation -> {
                     appendNames(names, ".")
@@ -428,7 +411,6 @@ open class Writer(
             }
         }
         v?.writeExtrasAfter()
-        v?.also { elemsSinceLastLine += it }
     }
 
     protected open fun Node.writeExtrasBefore() {
@@ -446,38 +428,17 @@ open class Writer(
     protected open fun Node.writeExtrasAfter() {
         if (extrasMap == null) return
         // Write everything after that doesn't start a line or end a line
-        writeExtras(extrasMap.extrasAfter(this).takeWhile {
-            it is Node.Extra.Comment && !it.startsLine && !it.endsLine
-        }, continueIndent = false)
-    }
-
-    protected open fun Node.writeExtrasLineEnd() {
-        if (extrasMap == null) return
-        // Write everything after the first non-line starter/ender
-        writeExtras(extrasMap.extrasAfter(this).dropWhile {
-            it is Node.Extra.Comment && !it.startsLine && !it.endsLine
-        }, continueIndent = false)
+        writeExtras(extrasMap.extrasAfter(this), continueIndent = false)
     }
 
     protected open fun Node.writeExtras(extras: List<Node.Extra>, continueIndent: Boolean) {
-        fun writeLine(text: String = "") = if (continueIndent) {
-                lineEnd(text).lineBegin()
-            } else {
-                lineBegin(text).lineEnd()
-            }
-
         extras.forEach {
             when (it) {
-                is Node.Extra.BlankLines -> {
-                    (2..it.count).forEach { line() }
-                    writeLine()
+                is Node.Extra.Whitespace -> {
+                    append(it.text)
                 }
                 is Node.Extra.Comment -> {
-                    if (it.startsLine && it.endsLine) writeLine(it.text) else {
-                        if (!it.startsLine) append(' ')
-                        append(it.text)
-                        if (!it.endsLine) append(' ')
-                    }
+                    append(it.text)
                 }
             }
         }
@@ -503,7 +464,7 @@ open class Writer(
     protected fun Node.WithAnnotations.childAnns(sameLine: Boolean = false) = this@Writer.also {
         if (anns.isNotEmpty()) (this@childAnns as Node).apply {
             if (sameLine) children(anns, " ", "", " ")
-            else anns.forEach { ann -> lineBegin().also { children(ann) }.lineEnd() }
+            else anns.forEach { ann -> children(ann) }
         }
     }
 
@@ -528,10 +489,6 @@ open class Writer(
             if (mods.isNotEmpty()) this@childMods.apply {
                 mods.forEachIndexed { index, mod ->
                     children(mod)
-                    if (newlines && (mod is Node.Modifier.AnnotationSet ||
-                            mods.getOrNull(index + 1) is Node.Modifier.AnnotationSet))
-                        lineEnd().lineBegin()
-                    else append(' ')
                 }
             }
         }
@@ -545,7 +502,7 @@ open class Writer(
             val shouldAddParens = lastAnn != null &&
                 (ref is Node.TypeRef.Paren || (ref is Node.TypeRef.Func && (
                     ref.receiverType == null || ref.receiverType.ref is Node.TypeRef.Paren)))
-            (this as Node).children(mods, " ")
+            (this as Node).children(mods, "")
             if (shouldAddParens) append("()")
             append(' ')
         }
@@ -558,14 +515,14 @@ open class Writer(
         if (v.isNotEmpty()) {
             append('<')
             v.forEachIndexed { index, node ->
-                if (index > 0) append(", ")
+                if (index > 0) append(",")
                 if (node == null) append('*') else children(node)
             }
             append('>').append(appendIfNotEmpty)
         }
     }
 
-    protected fun Node.parenChildren(v: List<Node?>) = children(v, ", ", "(", ")")
+    protected fun Node.parenChildren(v: List<Node?>) = children(v, ",", "(", ")")
 
     protected fun Node.childrenLines(v: Node?, extraMidLines: Int = 0, extraEndLines: Int = 0) =
         this@Writer.also { if (v != null) childrenLines(listOf(v), extraMidLines, extraEndLines) }
@@ -573,12 +530,9 @@ open class Writer(
     protected fun Node.childrenLines(v: List<Node?>, extraMidLines: Int = 0, extraEndLines: Int = 0) =
         this@Writer.also {
             v.forEachIndexed { index, node ->
-                lineBegin().also { children(node) }
-                if (stmtRequiresEmptyBraceSetBeforeLineEnd(node, v.getOrNull(index + 1))) append(" {}")
+                children(node)
+                if (stmtRequiresEmptyBraceSetBeforeLineEnd(node, v.getOrNull(index + 1))) append("{}")
                 if (stmtRequiresSemicolonSetBeforeLineEnd(node, v.getOrNull(index + 1))) append(';')
-                lineEnd()
-                if (includeExtraBlankLines)
-                    (0 until if (index == v.size - 1) extraEndLines else extraMidLines).forEach { line() }
             }
         }
 
