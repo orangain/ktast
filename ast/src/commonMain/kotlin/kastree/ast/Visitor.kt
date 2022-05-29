@@ -23,6 +23,7 @@ open class Visitor {
             is Node.Import -> {}
             is Node.Decl.Structured -> {
                 visitChildren(mods)
+                visitChildren(name)
                 visitChildren(typeParams)
                 visitChildren(primaryConstructor)
                 visitChildren(parentAnns)
@@ -51,6 +52,7 @@ open class Visitor {
                 visitChildren(mods)
                 visitChildren(typeParams)
                 visitChildren(receiverType)
+                visitChildren(name)
                 visitChildren(paramTypeParams)
                 visitChildren(params)
                 visitChildren(type)
@@ -59,6 +61,7 @@ open class Visitor {
             }
             is Node.Decl.Func.Param -> {
                 visitChildren(mods)
+                visitChildren(name)
                 visitChildren(type)
                 visitChildren(default)
             }
@@ -78,6 +81,7 @@ open class Visitor {
                 visitChildren(accessors)
             }
             is Node.Decl.Property.Var -> {
+                visitChildren(name)
                 visitChildren(type)
             }
             is Node.Decl.Property.Accessors -> {
@@ -97,6 +101,7 @@ open class Visitor {
             }
             is Node.Decl.TypeAlias -> {
                 visitChildren(mods)
+                visitChildren(name)
                 visitChildren(typeParams)
                 visitChildren(type)
             }
@@ -111,15 +116,18 @@ open class Visitor {
             }
             is Node.Decl.EnumEntry -> {
                 visitChildren(mods)
+                visitChildren(name)
                 visitChildren(args)
                 visitChildren(members)
             }
             is Node.TypeParam -> {
                 visitChildren(mods)
+                visitChildren(name)
                 visitChildren(type)
             }
             is Node.TypeConstraint -> {
                 visitChildren(anns)
+                visitChildren(name)
                 visitChildren(type)
             }
             is Node.TypeRef.Paren -> {
@@ -132,12 +140,14 @@ open class Visitor {
                 visitChildren(type)
             }
             is Node.TypeRef.Func.Param -> {
+                visitChildren(name)
                 visitChildren(type)
             }
             is Node.TypeRef.Simple -> {
                 visitChildren(pieces)
             }
             is Node.TypeRef.Simple.Piece -> {
+                visitChildren(name)
                 visitChildren(typeParams)
             }
             is Node.TypeRef.Nullable -> {
@@ -149,6 +159,7 @@ open class Visitor {
                 visitChildren(ref)
             }
             is Node.ValueArg -> {
+                visitChildren(name)
                 visitChildren(expr)
             }
             is Node.Expr.If -> {
@@ -196,6 +207,7 @@ open class Visitor {
             is Node.Expr.UnaryOp.Oper -> {}
             is Node.Expr.DoubleColonRef.Callable -> {
                 visitChildren(recv)
+                visitChildren(name)
             }
             is Node.Expr.DoubleColonRef.Class -> {
                 visitChildren(recv)

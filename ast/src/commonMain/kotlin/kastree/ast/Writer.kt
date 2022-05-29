@@ -9,6 +9,7 @@ open class Writer(
     protected fun append(str: String) = also { app.append(str) }
     protected fun appendName(name: String) =
         if (name.shouldEscapeIdent) append("`$name`") else append(name)
+    protected fun appendName(name: Node.Expr.Name) = appendName(name.name)
     protected fun appendNames(names: List<String>, sep: String) = also {
         names.forEachIndexed { index, name ->
             if (index > 0) append(sep)
@@ -42,7 +43,7 @@ open class Writer(
                         Node.Decl.Structured.Form.OBJECT -> "object "
                         Node.Decl.Structured.Form.COMPANION_OBJECT -> "companion object "
                     })
-                    if (form != Node.Decl.Structured.Form.COMPANION_OBJECT || name != "Companion") appendName(name)
+                    if (form != Node.Decl.Structured.Form.COMPANION_OBJECT || name.name != "Companion") appendName(name)
                     bracketedChildren(typeParams)
                     children(primaryConstructor)
                     if (parents.isNotEmpty()) {
@@ -70,7 +71,7 @@ open class Writer(
                     // to avoid ambiguities with the next item
                     // See: https://youtrack.jetbrains.com/issue/KT-25581
                     if ((form == Node.Decl.Structured.Form.COMPANION_OBJECT ||
-                        form == Node.Decl.Structured.Form.OBJECT) && name == "Companion" && members.isEmpty())
+                        form == Node.Decl.Structured.Form.OBJECT) && name.name == "Companion" && members.isEmpty())
                         append("{}")
                 }
                 is Node.Decl.Structured.Parent.CallConstructor -> {
@@ -109,15 +110,15 @@ open class Writer(
                 is Node.Decl.Func.Body.Block ->
                     children(block)
                 is Node.Decl.Func.Body.Expr ->
-                    append("= ").also { children(expr) }
+                    append("=").also { children(expr) }
                 is Node.Decl.Property -> {
-                    childMods().append(if (readOnly) "val " else "var ")
-                    bracketedChildren(typeParams, " ")
+                    childMods().append(if (readOnly) "val" else "var")
+                    bracketedChildren(typeParams, "")
                     if (receiverType != null) children(receiverType).append('.')
                     childVars(vars)
                     childTypeConstraints(typeConstraints)
                     if (expr != null) {
-                        if (delegated) append(" by ") else append(" = ")
+                        if (delegated) append("by") else append("=")
                         children(expr)
                     }
                     if (accessors != null) children(accessors)
