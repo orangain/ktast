@@ -77,6 +77,7 @@ open class MutableVisitor {
                     )
                     is Node.Decl.Property -> copy(
                         mods = visitChildren(mods, newCh),
+                        valOrVar = visitChildren(valOrVar, newCh),
                         typeParams = visitChildren(typeParams, newCh),
                         receiverType = visitChildren(receiverType, newCh),
                         vars = visitChildren(vars, newCh),
@@ -328,6 +329,7 @@ open class MutableVisitor {
                         args = visitChildren(args, newCh)
                     )
                     is Node.Modifier.Lit -> this
+                    is Node.Keyword -> this
                     is Node.Extra.Whitespace -> this
                     is Node.Extra.Comment -> this
                     else -> error("Unrecognized node: $this")

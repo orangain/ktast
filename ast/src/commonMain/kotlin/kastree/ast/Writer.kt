@@ -112,7 +112,8 @@ open class Writer(
                 is Node.Decl.Func.Body.Expr ->
                     append("=").also { children(expr) }
                 is Node.Decl.Property -> {
-                    childMods().append(if (readOnly) "val" else "var")
+                    childMods()
+                    children(valOrVar)
                     bracketedChildren(typeParams, "")
                     if (receiverType != null) children(receiverType).append('.')
                     childVars(vars)
@@ -407,6 +408,7 @@ open class Writer(
                 }
                 is Node.Modifier.Lit ->
                     append(keyword.name.toLowerCase())
+                is Node.Keyword -> append(value)
                 else ->
                     error("Unrecognized node type: $this")
             }

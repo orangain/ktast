@@ -1,14 +1,12 @@
 package kastree.ast.psi
 
 import kastree.ast.Node
-import kastree.ast.psi.Converter.Companion.mapNotCorrespondsPsiElement
 import org.jetbrains.kotlin.KtNodeTypes
 import org.jetbrains.kotlin.com.intellij.lang.ASTNode
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
 import org.jetbrains.kotlin.descriptors.annotations.AnnotationUseSiteTarget
 import org.jetbrains.kotlin.lexer.KtTokens
-import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.*
 
@@ -408,7 +406,7 @@ open class Converter {
 
     open fun convertProperty(v: KtDestructuringDeclaration) = Node.Decl.Property(
         mods = convertModifiers(v),
-        readOnly = !v.isVar,
+        valOrVar = v.valOrVarKeyword?.let(::convertKeyword) ?: error("Missing valOrVarKeyword"),
         typeParams = emptyList(),
         receiverType = null,
         vars = v.entries.map(::convertPropertyVar),
@@ -420,7 +418,7 @@ open class Converter {
 
     open fun convertProperty(v: KtProperty) = Node.Decl.Property(
         mods = convertModifiers(v),
-        readOnly = !v.isVar,
+        valOrVar = convertKeyword(v.valOrVarKeyword),
         typeParams = v.typeParameters.map(::convertTypeParam),
         receiverType = v.receiverTypeReference?.let(::convertType),
         vars = listOf(Node.Decl.Property.Var(
@@ -698,6 +696,9 @@ open class Converter {
         body = convertExpr(v.body ?: error("No while body for $v")),
         doWhile = v is KtDoWhileExpression
     ).map(v)
+
+    open fun convertKeyword(v: PsiElement) = Node.Keyword.of(v.text)
+        .map(v)
 
     protected open fun <T: Node> T.map(v: PsiElement) = also { onNode(it, v) }
     protected open fun <T: Node> T.mapNotCorrespondsPsiElement(v: PsiElement) = also { onNode(it, null) }

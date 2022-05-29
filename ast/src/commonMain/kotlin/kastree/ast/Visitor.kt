@@ -73,6 +73,7 @@ open class Visitor {
             }
             is Node.Decl.Property -> {
                 visitChildren(mods)
+                visitChildren(valOrVar)
                 visitChildren(typeParams)
                 visitChildren(receiverType)
                 visitChildren(vars)
@@ -324,6 +325,7 @@ open class Visitor {
                 visitChildren(args)
             }
             is Node.Modifier.Lit -> {}
+            is Node.Keyword -> {}
             is Node.Extra.Whitespace -> {}
             is Node.Extra.Comment -> {}
         }

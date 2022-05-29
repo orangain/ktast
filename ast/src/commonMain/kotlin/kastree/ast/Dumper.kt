@@ -73,7 +73,6 @@ class Dumper(
             when (this) {
                 is Node.Modifier.Lit -> mapOf("keyword" to keyword)
                 is Node.Decl.Func -> mapOf("name" to name)
-                is Node.Decl.Property -> mapOf("readOnly" to readOnly)
                 is Node.Decl.Property.Var -> mapOf("name" to name)
                 is Node.Expr.Name -> mapOf("name" to name)
                 is Node.Expr.Const -> mapOf("value" to value)

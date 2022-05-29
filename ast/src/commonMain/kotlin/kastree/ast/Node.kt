@@ -103,7 +103,7 @@ sealed class Node {
         }
         data class Property(
             override val mods: List<Modifier>,
-            val readOnly: Boolean,
+            val valOrVar: Keyword.ValOrVar,
             val typeParams: List<TypeParam>,
             val receiverType: Type?,
             // Always at least one, more than one is destructuring, null is underscore in destructure
@@ -443,6 +443,22 @@ sealed class Node {
             IN, OUT, NOINLINE, CROSSINLINE, VARARG, REIFIED,
             TAILREC, OPERATOR, INFIX, INLINE, EXTERNAL, SUSPEND, CONST,
             ACTUAL, EXPECT
+        }
+    }
+
+    sealed class Keyword(val value: String) : Node() {
+        data class ValOrVar(val token: ValOrVarToken) : Keyword(token.name.lowercase())
+
+        enum class ValOrVarToken {
+            VAL, VAR,
+        }
+
+        companion object {
+            private val valOrVarValues = ValOrVarToken.values().associateBy { it.name.lowercase() }
+
+            fun of(value: String) =
+                valOrVarValues[value]?.let { ValOrVar(it) }
+                    ?: error("Unsupported value: $value")
         }
     }
 
