@@ -9,7 +9,6 @@ open class Writer(
     protected fun append(str: String) = also { app.append(str) }
     protected fun appendName(name: String) =
         if (name.shouldEscapeIdent) append("`$name`") else append(name)
-    protected fun appendName(name: Node.Expr.Name) = appendName(name.name)
     protected fun appendNames(names: List<String>, sep: String) = also {
         names.forEachIndexed { index, name ->
             if (index > 0) append(sep)
@@ -43,7 +42,7 @@ open class Writer(
                         Node.Decl.Structured.Form.OBJECT -> "object "
                         Node.Decl.Structured.Form.COMPANION_OBJECT -> "companion object "
                     })
-                    if (form != Node.Decl.Structured.Form.COMPANION_OBJECT || name.name != "Companion") appendName(name)
+                    if (form != Node.Decl.Structured.Form.COMPANION_OBJECT || name.name != "Companion") children(name)
                     bracketedChildren(typeParams)
                     children(primaryConstructor)
                     if (parents.isNotEmpty()) {
@@ -93,7 +92,7 @@ open class Writer(
                     if (name != null || typeParams.isNotEmpty() || receiverType != null) append(' ')
                     bracketedChildren(typeParams, " ")
                     if (receiverType != null) children(receiverType).append(".")
-                    name?.also { appendName(it) }
+                    name?.also { children(it) }
                     bracketedChildren(paramTypeParams)
                     parenChildren(params)
                     if (type != null) append(": ").also { children(type) }
@@ -103,7 +102,7 @@ open class Writer(
                 is Node.Decl.Func.Param -> {
                     if (mods.isNotEmpty()) childMods(newlines = false).append(' ')
                     if (readOnly == true) append("val ") else if (readOnly == false) append("var ")
-                    appendName(name)
+                    children(name)
                     if (type != null) append(": ").also { children(type) }
                     if (default != null) append(" = ").also { children(default) }
                 }
@@ -125,7 +124,7 @@ open class Writer(
                     if (accessors != null) children(accessors)
                 }
                 is Node.Decl.Property.Var -> {
-                    appendName(name)
+                    children(name)
                     if (type != null) append(": ").also { children(type) }
                 }
                 is Node.Decl.Property.Accessors -> {
@@ -152,7 +151,8 @@ open class Writer(
                     }
                 }
                 is Node.Decl.TypeAlias -> {
-                    childMods().append("typealias ").appendName(name)
+                    childMods().append("typealias")
+                    children(name)
                     bracketedChildren(typeParams).append(" = ")
                     children(type)
                 }
@@ -165,18 +165,24 @@ open class Writer(
                 is Node.Decl.Constructor.DelegationCall ->
                     append(target.name.toLowerCase()).also { parenChildren(args) }
                 is Node.Decl.EnumEntry -> {
-                    childMods().appendName(name)
+                    childMods()
+                    children(name)
                     if (args.isNotEmpty()) parenChildren(args)
                     if (members.isNotEmpty()) append("{").run {
                         childrenLines(members, extraMidLines = 1)
                     }.append("}")
                 }
                 is Node.TypeParam -> {
-                    childMods(newlines = false).appendName(name)
+                    childMods(newlines = false)
+                    children(name)
                     if (type != null) append(": ").also { children(type) }
                 }
-                is Node.TypeConstraint ->
-                    childAnns(sameLine = true).appendName(name).append(": ").also { children(type) }
+                is Node.TypeConstraint -> {
+                    childAnns(sameLine = true)
+                    children(name)
+                    append(":")
+                    children(type)
+                }
                 is Node.TypeRef.Paren ->
                     append('(').also {
                         childModsBeforeType(type).also { children(type) }
@@ -186,13 +192,13 @@ open class Writer(
                     parenChildren(params).append("->").also { children(type) }
                 }
                 is Node.TypeRef.Func.Param -> {
-                    if (name != null) appendName(name).append(":")
+                    if (name != null) children(name).append(":")
                     children(type)
                 }
                 is Node.TypeRef.Simple ->
                     children(pieces, ".")
                 is Node.TypeRef.Simple.Piece ->
-                    appendName(name).also { bracketedChildren(typeParams) }
+                    children(name).also { bracketedChildren(typeParams) }
                 is Node.TypeRef.Nullable ->
                     children(type).append('?')
                 is Node.TypeRef.Dynamic ->
@@ -200,7 +206,7 @@ open class Writer(
                 is Node.Type ->
                     childModsBeforeType(ref).also { children(ref) }
                 is Node.ValueArg -> {
-                    if (name != null) appendName(name).append("=")
+                    if (name != null) children(name).append("=")
                     if (asterisk) append('*')
                     children(expr)
                 }
@@ -253,7 +259,8 @@ open class Writer(
                     append(token.str)
                 is Node.Expr.DoubleColonRef.Callable -> {
                     if (recv != null) children(recv)
-                    append("::").appendName(name)
+                    append("::")
+                    children(name)
                 }
                 is Node.Expr.DoubleColonRef.Class -> {
                     if (recv != null) children(recv)
@@ -364,7 +371,9 @@ open class Writer(
                     children(expr)
                     bracketedChildren(typeArgs)
                     if (args.isNotEmpty() || lambda == null) parenChildren(args)
-                    if (lambda != null) { children(lambda) }
+                    if (lambda != null) {
+                        children(lambda)
+                    }
                 }
                 is Node.Expr.Call.TrailLambda -> {
                     if (anns.isNotEmpty()) childAnns(sameLine = true)
