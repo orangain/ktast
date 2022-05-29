@@ -14,7 +14,12 @@ class ParserTest {
         """.trimIndent(), """
             Node.File
               Node.Decl.Property
+                Node.Keyword.ValOrVar
+                AFTER: Node.Extra.Whitespace
                 Node.Decl.Property.Var
+                  Node.Expr.Name
+                  AFTER: Node.Extra.Whitespace
+                BEFORE: Node.Extra.Whitespace
                 Node.Expr.StringTmpl
         """.trimIndent())
     }
@@ -26,9 +31,15 @@ class ParserTest {
         """.trimIndent(), """
             Node.File
               Node.Decl.Property
+                Node.Keyword.ValOrVar
+                AFTER: Node.Extra.Whitespace
                 Node.Decl.Property.Var
+                  Node.Expr.Name
+                  AFTER: Node.Extra.Whitespace
+                BEFORE: Node.Extra.Whitespace
                 Node.Expr.StringTmpl
-              AFTER: Node.Extra.Comment
+                AFTER: Node.Extra.Whitespace
+                AFTER: Node.Extra.Comment
         """.trimIndent())
     }
 
@@ -39,9 +50,15 @@ class ParserTest {
             val x = ""
         """.trimIndent(), """
             Node.File
-              BEFORE: Node.Extra.Comment
               Node.Decl.Property
+                BEFORE: Node.Extra.Comment
+                BEFORE: Node.Extra.Whitespace
+                Node.Keyword.ValOrVar
+                AFTER: Node.Extra.Whitespace
                 Node.Decl.Property.Var
+                  Node.Expr.Name
+                  AFTER: Node.Extra.Whitespace
+                BEFORE: Node.Extra.Whitespace
                 Node.Expr.StringTmpl
         """.trimIndent())
     }
@@ -56,13 +73,24 @@ class ParserTest {
         """.trimIndent(), """
             Node.File
               Node.Decl.Func
+                BEFORE: Node.Extra.Whitespace
+                Node.Expr.Name
                 Node.Decl.Func.Body.Block
+                  BEFORE: Node.Extra.Whitespace
                   Node.Expr.Block
-                    BEFORE: Node.Extra.Comment
                     Node.Stmt.Decl
+                      BEFORE: Node.Extra.Whitespace
+                      BEFORE: Node.Extra.Comment
+                      BEFORE: Node.Extra.Whitespace
                       Node.Decl.Property
+                        Node.Keyword.ValOrVar
+                        AFTER: Node.Extra.Whitespace
                         Node.Decl.Property.Var
+                          Node.Expr.Name
+                          AFTER: Node.Extra.Whitespace
+                        BEFORE: Node.Extra.Whitespace
                         Node.Expr.StringTmpl
+                      AFTER: Node.Extra.Whitespace
         """.trimIndent())
     }
 
@@ -75,9 +103,14 @@ class ParserTest {
         """.trimIndent(), """
             Node.File
               Node.Decl.Func
+                BEFORE: Node.Extra.Whitespace
+                Node.Expr.Name
                 Node.Decl.Func.Body.Block
-                  WITHIN: Node.Extra.Comment
+                  BEFORE: Node.Extra.Whitespace
                   Node.Expr.Block
+                    WITHIN: Node.Extra.Whitespace
+                    WITHIN: Node.Extra.Comment
+                    WITHIN: Node.Extra.Whitespace
         """.trimIndent())
     }
 
@@ -88,10 +121,16 @@ class ParserTest {
         """.trimIndent(), """
             Node.File
               Node.Decl.Func
+                WITHIN: Node.Extra.Whitespace
+                BEFORE: Node.Extra.Whitespace
+                Node.Expr.Name
                 Node.Decl.Func.Body.Expr
+                  BEFORE: Node.Extra.Whitespace
                   Node.Expr.BinaryOp
                     Node.Expr.Const
+                    BEFORE: Node.Extra.Whitespace
                     Node.Expr.BinaryOp.Oper.Token
+                    AFTER: Node.Extra.Whitespace
                     Node.Expr.Const
         """.trimIndent()
         )
@@ -109,19 +148,33 @@ class ParserTest {
         """.trimIndent(), """
             Node.File
               Node.Decl.Func
+                BEFORE: Node.Extra.Whitespace
+                Node.Expr.Name
                 Node.Decl.Func.Body.Block
+                  BEFORE: Node.Extra.Whitespace
                   Node.Expr.Block
                     Node.Stmt.Expr
+                      BEFORE: Node.Extra.Whitespace
                       Node.Expr.Call
                         Node.Expr.Name
+                        AFTER: Node.Extra.Whitespace
                         Node.Expr.Call.TrailLambda
                           Node.Expr.Lambda
+                            BEFORE: Node.Extra.Whitespace
                             Node.Expr.Lambda.Body
-                              BEFORE: Node.Extra.Comment
                               Node.Stmt.Decl
+                                BEFORE: Node.Extra.Comment
+                                BEFORE: Node.Extra.Whitespace
                                 Node.Decl.Property
+                                  Node.Keyword.ValOrVar
+                                  AFTER: Node.Extra.Whitespace
                                   Node.Decl.Property.Var
+                                    Node.Expr.Name
+                                    AFTER: Node.Extra.Whitespace
+                                  BEFORE: Node.Extra.Whitespace
                                   Node.Expr.StringTmpl
+                            AFTER: Node.Extra.Whitespace
+                      AFTER: Node.Extra.Whitespace
         """.trimIndent())
     }
 
@@ -136,15 +189,23 @@ class ParserTest {
         """.trimIndent(), """
             Node.File
               Node.Decl.Func
+                BEFORE: Node.Extra.Whitespace
+                Node.Expr.Name
                 Node.Decl.Func.Body.Block
+                  BEFORE: Node.Extra.Whitespace
                   Node.Expr.Block
                     Node.Stmt.Expr
+                      BEFORE: Node.Extra.Whitespace
                       Node.Expr.Call
                         Node.Expr.Name
+                        AFTER: Node.Extra.Whitespace
                         Node.Expr.Call.TrailLambda
                           Node.Expr.Lambda
-                            BEFORE: Node.Extra.Comment
+                            BEFORE: Node.Extra.Whitespace
                             Node.Expr.Lambda.Body
+                              WITHIN: Node.Extra.Comment
+                            AFTER: Node.Extra.Whitespace
+                      AFTER: Node.Extra.Whitespace
         """.trimIndent())
     }
 
