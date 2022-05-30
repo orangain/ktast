@@ -6,7 +6,6 @@ import org.jetbrains.kotlin.com.intellij.lang.ASTNode
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
 import org.jetbrains.kotlin.descriptors.annotations.AnnotationUseSiteTarget
-import org.jetbrains.kotlin.lexer.KtSingleValueToken
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.*
@@ -345,21 +344,19 @@ open class Converter {
 
     open fun convertModifiers(v: KtModifierList?) = v?.node?.children().orEmpty().mapNotNull { node ->
         // We go over the node children because we want to preserve order
-        node.psi.let {
-            when (it) {
+        node.psi.let { psi ->
+            when (psi) {
                 is KtAnnotationEntry -> Node.Modifier.AnnotationSet(
-                    target = it.useSiteTarget?.let(::convertAnnotationSetTarget),
-                    anns = listOf(convertAnnotation(it))
-                ).map(it)
-                is KtAnnotation -> convertAnnotationSet(it)
+                    target = psi.useSiteTarget?.let(::convertAnnotationSetTarget),
+                    anns = listOf(convertAnnotation(psi))
+                ).map(psi)
+                is KtAnnotation -> convertAnnotationSet(psi)
                 is PsiWhiteSpace -> null
-                else -> when (node.text) {
-                    // We ignore some modifiers because we handle them elsewhere
-                    "enum", "companion" -> null
-                    else -> modifiersByText[node.text]?.let {
-                        Node.Modifier.Lit(it).let { lit -> (node.psi as? KtElement)?.let { lit.map(it) } ?: lit }
-                    } ?: error("Unrecognized modifier: ${node.text}")
-                }
+                else -> (
+                        modifiersByText[node.text]?.let { keyword ->
+                            Node.Modifier.Lit(keyword)
+                        } ?: error("Unrecognized modifier: ${node.text}")
+                        ).map(psi)
             }
         }
     }.toList()
@@ -407,7 +404,7 @@ open class Converter {
 
     open fun convertProperty(v: KtDestructuringDeclaration) = Node.Decl.Property(
         mods = convertModifiers(v),
-        valOrVar = v.valOrVarKeyword?.let(::convertKeyword) ?: error("Missing valOrVarKeyword"),
+        valOrVar = v.valOrVarKeyword?.let(::convertValOrVarKeyword) ?: error("Missing valOrVarKeyword"),
         typeParams = emptyList(),
         receiverType = null,
         vars = v.entries.map(::convertPropertyVar),
@@ -421,7 +418,7 @@ open class Converter {
 
     open fun convertProperty(v: KtProperty) = Node.Decl.Property(
         mods = convertModifiers(v),
-        valOrVar = convertKeyword(v.valOrVarKeyword),
+        valOrVar = convertValOrVarKeyword(v.valOrVarKeyword),
         typeParams = v.typeParameters.map(::convertTypeParam),
         receiverType = v.receiverTypeReference?.let(::convertType),
         vars = listOf(Node.Decl.Property.Var(
@@ -512,17 +509,7 @@ open class Converter {
 
     open fun convertStructured(v: KtClassOrObject) = Node.Decl.Structured(
         mods = convertModifiers(v),
-        form = when (v) {
-            is KtClass -> when {
-                v.isEnum() -> Node.Decl.Structured.Form.ENUM_CLASS
-                v.isInterface() -> Node.Decl.Structured.Form.INTERFACE
-                else -> Node.Decl.Structured.Form.CLASS
-            }
-            is KtObjectDeclaration ->
-                if (v.isCompanion()) Node.Decl.Structured.Form.COMPANION_OBJECT
-                else Node.Decl.Structured.Form.OBJECT
-            else -> error("Unknown type of $v")
-        },
+        declarationKeyword = v.getDeclarationKeyword()?.let(::convertDeclarationKeyword) ?: error("declarationKeyword not found"),
         name = v.nameIdentifier?.let(::convertName) ?: error("Missing name"),
         typeParams = v.typeParameters.map(::convertTypeParam),
         primaryConstructor = v.primaryConstructor?.let(::convertPrimaryConstructor),
@@ -707,7 +694,10 @@ open class Converter {
         doWhile = v is KtDoWhileExpression
     ).map(v)
 
-    open fun convertKeyword(v: PsiElement) = Node.Keyword.of(v.text)
+    open fun convertValOrVarKeyword(v: PsiElement) = Node.Keyword.ValOrVar.of(v.text)
+        .map(v)
+
+    open fun convertDeclarationKeyword(v: PsiElement) = Node.Keyword.Declaration.of(v.text)
         .map(v)
 
     protected open fun <T: Node> T.map(v: PsiElement) = also { onNode(it, v) }

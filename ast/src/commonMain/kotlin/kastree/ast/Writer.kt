@@ -35,14 +35,8 @@ open class Writer(
                     if (wildcard) append(".*") else if (alias != null) append(" as ").appendName(alias)
                 }
                 is Node.Decl.Structured -> childMods().also {
-                    append(when (form) {
-                        Node.Decl.Structured.Form.CLASS -> "class "
-                        Node.Decl.Structured.Form.ENUM_CLASS -> "enum class "
-                        Node.Decl.Structured.Form.INTERFACE -> "interface "
-                        Node.Decl.Structured.Form.OBJECT -> "object "
-                        Node.Decl.Structured.Form.COMPANION_OBJECT -> "companion object "
-                    })
-                    if (form != Node.Decl.Structured.Form.COMPANION_OBJECT || name.name != "Companion") children(name)
+                    children(declarationKeyword)
+                    if (!isCompanion || name.name != "Companion") children(name)
                     bracketedChildren(typeParams)
                     children(primaryConstructor)
                     if (parents.isNotEmpty()) {
@@ -69,8 +63,7 @@ open class Writer(
                     // As a special case, if an object is nameless and bodyless, we should give it an empty body
                     // to avoid ambiguities with the next item
                     // See: https://youtrack.jetbrains.com/issue/KT-25581
-                    if ((form == Node.Decl.Structured.Form.COMPANION_OBJECT ||
-                        form == Node.Decl.Structured.Form.OBJECT) && name.name == "Companion" && members.isEmpty())
+                    if ((isCompanion || isObject) && name.name == "Companion" && members.isEmpty())
                         append("{}")
                 }
                 is Node.Decl.Structured.Parent.CallConstructor -> {
@@ -554,7 +547,7 @@ open class Writer(
         // See: https://youtrack.jetbrains.com/issue/KT-25578
         // TODO: is there a better place to do this?
         if (v !is Node.Stmt.Decl || v.decl !is Node.Decl.Structured || v.decl.members.isNotEmpty() ||
-            v.decl.form != Node.Decl.Structured.Form.CLASS) return false
+            !v.decl.isClass) return false
         if (next !is Node.Stmt.Expr || (next.expr !is Node.Expr.Paren &&
             (next.expr !is Node.Expr.Annotated || next.expr.expr !is Node.Expr.Paren))) return false
         return true

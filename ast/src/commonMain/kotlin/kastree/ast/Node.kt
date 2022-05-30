@@ -45,7 +45,7 @@ sealed class Node {
     sealed class Decl : Node() {
         data class Structured(
             override val mods: List<Modifier>,
-            val form: Form,
+            val declarationKeyword: Keyword.Declaration,
             val name: Expr.Name,
             val typeParams: List<TypeParam>,
             val primaryConstructor: PrimaryConstructor?,
@@ -58,6 +58,13 @@ sealed class Node {
             enum class Form {
                 CLASS, ENUM_CLASS, INTERFACE, OBJECT, COMPANION_OBJECT
             }
+
+            val isClass = declarationKeyword.token == Keyword.DeclarationToken.CLASS
+            val isObject = declarationKeyword.token == Keyword.DeclarationToken.OBJECT
+            val isInterface = declarationKeyword.token == Keyword.DeclarationToken.INTERFACE
+            val isCompanion = mods.contains(Node.Modifier.Lit(Modifier.Keyword.COMPANION))
+            val isEnum = mods.contains(Node.Modifier.Lit(Modifier.Keyword.ENUM))
+
             sealed class Parent : Node() {
                 data class CallConstructor(
                     val type: TypeRef.Simple,
@@ -439,7 +446,7 @@ sealed class Node {
         }
         data class Lit(val keyword: Keyword) : Modifier()
         enum class Keyword {
-            ABSTRACT, FINAL, OPEN, ANNOTATION, SEALED, DATA, OVERRIDE, LATEINIT, INNER,
+            ABSTRACT, FINAL, OPEN, ANNOTATION, SEALED, DATA, OVERRIDE, LATEINIT, INNER, ENUM, COMPANION,
             PRIVATE, PROTECTED, PUBLIC, INTERNAL,
             IN, OUT, NOINLINE, CROSSINLINE, VARARG, REIFIED,
             TAILREC, OPERATOR, INFIX, INLINE, EXTERNAL, SUSPEND, CONST,
@@ -448,18 +455,30 @@ sealed class Node {
     }
 
     sealed class Keyword(val value: String) : Node() {
-        data class ValOrVar(val token: ValOrVarToken) : Keyword(token.name.lowercase())
+        data class ValOrVar(val token: ValOrVarToken) : Keyword(token.name.lowercase()) {
+            companion object {
+                private val valOrVarValues = ValOrVarToken.values().associateBy { it.name.lowercase() }
+
+                fun of(value: String) = valOrVarValues[value]?.let { ValOrVar(it) }
+                    ?: error("Unknown value: $value")
+            }
+        }
 
         enum class ValOrVarToken {
             VAL, VAR,
         }
 
-        companion object {
-            private val valOrVarValues = ValOrVarToken.values().associateBy { it.name.lowercase() }
+        data class Declaration(val token: DeclarationToken) : Keyword(token.name.lowercase()) {
+            companion object {
+                private val declarationValues = DeclarationToken.values().associateBy { it.name.lowercase() }
 
-            fun of(value: String) =
-                valOrVarValues[value]?.let { ValOrVar(it) }
-                    ?: error("Unsupported value: $value")
+                fun of(value: String) = declarationValues[value]?.let { Declaration(it) }
+                    ?: error("Unknown value: $value")
+            }
+        }
+
+        enum class DeclarationToken {
+            INTERFACE, CLASS, OBJECT,
         }
     }
 

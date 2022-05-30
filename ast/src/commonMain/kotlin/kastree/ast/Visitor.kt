@@ -23,6 +23,7 @@ open class Visitor {
             is Node.Import -> {}
             is Node.Decl.Structured -> {
                 visitChildren(mods)
+                visitChildren(declarationKeyword)
                 visitChildren(name)
                 visitChildren(typeParams)
                 visitChildren(primaryConstructor)

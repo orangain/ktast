@@ -214,6 +214,31 @@ class ParserTest {
         """.trimIndent())
     }
 
+
+    @Test
+    fun testObject() {
+        assertParsedAs("""
+            private object Foo {
+                init { }
+            }
+        """.trimIndent(), """
+            Node.File
+              Node.Decl.Structured
+                Node.Modifier.Lit
+                BEFORE: Node.Extra.Whitespace
+                Node.Keyword.Declaration
+                AFTER: Node.Extra.Whitespace
+                Node.Expr.Name
+                AFTER: Node.Extra.Whitespace
+                BEFORE: Node.Extra.Whitespace
+                Node.Decl.Init
+                  BEFORE: Node.Extra.Whitespace
+                  Node.Expr.Block
+                    WITHIN: Node.Extra.Whitespace
+                AFTER: Node.Extra.Whitespace
+        """.trimIndent())
+    }
+
     private fun assertParsedAs(code: String, expectedDump: String) {
         val converter = ConverterWithExtras()
         val node = Parser(converter).parseFile(code)
