@@ -29,10 +29,10 @@ open class Writer(
                     childrenLines(decls, extraMidLines = 1)
                 }
                 is Node.Package ->
-                    childMods().append("package ").appendNames(names, ".")
+                    childMods().append("package").appendNames(names, ".")
                 is Node.Import -> {
-                    append("import ").appendNames(names, ".")
-                    if (wildcard) append(".*") else if (alias != null) append(" as ").appendName(alias)
+                    append("import").appendNames(names, ".")
+                    if (wildcard) append(".*") else if (alias != null) append("as").appendName(alias)
                 }
                 is Node.Decl.Structured -> childMods().also {
                     children(declarationKeyword)
@@ -40,9 +40,9 @@ open class Writer(
                     bracketedChildren(typeParams)
                     children(primaryConstructor)
                     if (parents.isNotEmpty()) {
-                        append(" : ")
+                        append(":")
                         children(parentAnns)
-                        children(parents, ", ")
+                        children(parents, ",")
                     }
                     childTypeConstraints(typeConstraints)
                     if (members.isNotEmpty()) append("{").run {
@@ -72,32 +72,31 @@ open class Writer(
                 }
                 is Node.Decl.Structured.Parent.Type -> {
                     children(type)
-                    if (by != null) append(" by ").also { children(by) }
+                    if (by != null) append("by").also { children(by) }
                 }
                 is Node.Decl.Structured.PrimaryConstructor -> {
-                    if (mods.isNotEmpty()) append(" ").also { childMods(newlines = false).append("constructor") }
+                    if (mods.isNotEmpty()) { childMods(newlines = false).append("constructor") }
                     parenChildren(params)
                 }
                 is Node.Decl.Init ->
-                    append("init ").also { children(block) }
+                    append("init").also { children(block) }
                 is Node.Decl.Func -> {
                     childMods().append("fun")
-                    if (name != null || typeParams.isNotEmpty() || receiverType != null) append(' ')
-                    bracketedChildren(typeParams, " ")
+                    bracketedChildren(typeParams, "")
                     if (receiverType != null) children(receiverType).append(".")
                     name?.also { children(it) }
                     bracketedChildren(paramTypeParams)
                     parenChildren(params)
-                    if (type != null) append(": ").also { children(type) }
+                    if (type != null) append(":").also { children(type) }
                     childTypeConstraints(typeConstraints)
-                    if (body != null) append(' ').also { children(body) }
+                    if (body != null)  { children(body) }
                 }
                 is Node.Decl.Func.Param -> {
-                    if (mods.isNotEmpty()) childMods(newlines = false).append(' ')
-                    if (readOnly == true) append("val ") else if (readOnly == false) append("var ")
+                    if (mods.isNotEmpty()) childMods(newlines = false)
+                    if (readOnly == true) append("val") else if (readOnly == false) append("var")
                     children(name)
-                    if (type != null) append(": ").also { children(type) }
-                    if (default != null) append(" = ").also { children(default) }
+                    if (type != null) append(":").also { children(type) }
+                    if (default != null) append("=").also { children(default) }
                 }
                 is Node.Decl.Func.Body.Block ->
                     children(block)
@@ -118,7 +117,7 @@ open class Writer(
                 }
                 is Node.Decl.Property.Var -> {
                     children(name)
-                    if (type != null) append(": ").also { children(type) }
+                    if (type != null) append(":").also { children(type) }
                 }
                 is Node.Decl.Property.Accessors -> {
                     childrenLines(first)
@@ -128,7 +127,7 @@ open class Writer(
                     childMods().append("get")
                     if (body != null) {
                         append("()")
-                        if (type != null) append(": ").also { children(type) }
+                        if (type != null) append(":").also { children(type) }
                         append(' ').also { children(body) }
                     }
                 }
@@ -138,8 +137,8 @@ open class Writer(
                         append('(')
                         childMods(paramMods, newlines = false)
                         appendName(paramName ?: error("Missing setter param name when body present"))
-                        if (paramType != null) append(": ").also { children(paramType) }
-                        append(") ")
+                        if (paramType != null) append(":").also { children(paramType) }
+                        append(")")
                         children(body)
                     }
                 }
@@ -247,7 +246,7 @@ open class Writer(
                 is Node.Expr.UnaryOp.Oper ->
                     append(token.str)
                 is Node.Expr.TypeOp ->
-                    children(listOf(lhs, oper, rhs), " ")
+                    children(listOf(lhs, oper, rhs), "")
                 is Node.Expr.TypeOp.Oper ->
                     append(token.str)
                 is Node.Expr.DoubleColonRef.Callable -> {
