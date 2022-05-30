@@ -49,6 +49,7 @@ sealed class Node {
             val name: Expr.Name,
             val typeParams: List<TypeParam>,
             val primaryConstructor: PrimaryConstructor?,
+            val colonToken: Keyword.ColonToken?,
             val parentAnns: List<Modifier.AnnotationSet>,
             val parents: List<Parent>,
             val typeConstraints: List<TypeConstraint>,
@@ -479,6 +480,12 @@ sealed class Node {
 
         enum class DeclarationToken {
             INTERFACE, CLASS, OBJECT,
+        }
+
+        class ColonToken : Keyword(":") {
+            companion object {
+                fun of(value: String) = if (value == ":") ColonToken() else error("Unknown value: $value")
+            }
         }
     }
 

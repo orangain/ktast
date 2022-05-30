@@ -39,11 +39,9 @@ open class Writer(
                     if (!isCompanion || name.name != "Companion") children(name)
                     bracketedChildren(typeParams)
                     children(primaryConstructor)
-                    if (parents.isNotEmpty()) {
-                        append(":")
-                        children(parentAnns)
-                        children(parents, ",")
-                    }
+                    children(colonToken)
+                    children(parentAnns)
+                    children(parents, ",")
                     childTypeConstraints(typeConstraints)
                     if (members.isNotEmpty()) append("{").run {
                         // First, do all the enum entries if there are any

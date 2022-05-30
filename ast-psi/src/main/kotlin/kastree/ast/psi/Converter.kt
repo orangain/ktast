@@ -513,6 +513,7 @@ open class Converter {
         name = v.nameIdentifier?.let(::convertName) ?: error("Missing name"),
         typeParams = v.typeParameters.map(::convertTypeParam),
         primaryConstructor = v.primaryConstructor?.let(::convertPrimaryConstructor),
+        colonToken = v.getColon()?.let(::convertColonToken),
         // TODO: this
         parentAnns = emptyList(),
         parents = v.superTypeListEntries.map(::convertParent),
@@ -698,6 +699,9 @@ open class Converter {
         .map(v)
 
     open fun convertDeclarationKeyword(v: PsiElement) = Node.Keyword.Declaration.of(v.text)
+        .map(v)
+
+    open fun convertColonToken(v: PsiElement) = Node.Keyword.ColonToken.of(v.text)
         .map(v)
 
     protected open fun <T: Node> T.map(v: PsiElement) = also { onNode(it, v) }

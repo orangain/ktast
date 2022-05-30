@@ -269,6 +269,37 @@ class ParserTest {
         """.trimIndent())
     }
 
+    @Test
+    fun testSuperclassPrimaryConstructor() {
+        assertParsedAs("""
+            private object SubnetSorter : DefaultSorter<Subnet>()
+        """.trimIndent(), """
+            Node.File
+              Node.Decl.Structured
+                Node.Modifier.Lit
+                BEFORE: Node.Extra.Whitespace
+                Node.Keyword.Declaration
+                AFTER: Node.Extra.Whitespace
+                Node.Expr.Name
+                AFTER: Node.Extra.Whitespace
+                Node.Keyword.ColonToken
+                AFTER: Node.Extra.Whitespace
+                Node.Decl.Structured.Parent.CallConstructor
+                  Node.TypeRef.Simple
+                    Node.TypeRef.Simple.Piece
+                      Node.Expr.Name
+                      Node.Type
+                        Node.TypeRef.Simple
+                          Node.TypeRef.Simple.Piece
+                            Node.Expr.Name
+                  Node.Type
+                    Node.TypeRef.Simple
+                      Node.TypeRef.Simple.Piece
+                        Node.Expr.Name
+        """.trimIndent()
+        )
+    }
+
     private fun assertParsedAs(code: String, expectedDump: String) {
         val converter = ConverterWithExtras()
         val node = Parser(converter).parseFile(code)
