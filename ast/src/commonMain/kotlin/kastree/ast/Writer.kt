@@ -167,7 +167,7 @@ open class Writer(
                 is Node.TypeParam -> {
                     childMods(newlines = false)
                     children(name)
-                    if (type != null) append(": ").also { children(type) }
+                    if (type != null) append(":").also { children(type) }
                 }
                 is Node.TypeConstraint -> {
                     childAnns(sameLine = true)
@@ -507,7 +507,6 @@ open class Writer(
                     ref.receiverType == null || ref.receiverType.ref is Node.TypeRef.Paren)))
             (this as Node).children(mods, "")
             if (shouldAddParens) append("()")
-            append(' ')
         }
     }
 

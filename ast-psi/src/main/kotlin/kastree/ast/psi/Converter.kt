@@ -613,8 +613,8 @@ open class Converter {
             if (!v.hasParentheses()) it else Node.TypeRef.Paren(
                 mods = convertModifiers(v),
                 type = it
-            ).map(v)
-        }
+            )
+        }.map(v)
 
     open fun convertTypeRef(v: KtTypeElement): Node.TypeRef = when (v) {
         is KtFunctionType -> Node.TypeRef.Func(

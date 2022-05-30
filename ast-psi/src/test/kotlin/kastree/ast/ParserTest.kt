@@ -239,6 +239,36 @@ class ParserTest {
         """.trimIndent())
     }
 
+
+    @Test
+    fun testTypeParameterModifiers() {
+        assertParsedAs("""
+            fun delete(p: Array<out String>?) {}
+        """.trimIndent(), """
+            Node.File
+              Node.Decl.Func
+                BEFORE: Node.Extra.Whitespace
+                Node.Expr.Name
+                Node.Decl.Func.Param
+                  Node.Expr.Name
+                  Node.Type
+                    BEFORE: Node.Extra.Whitespace
+                    Node.TypeRef.Nullable
+                      Node.TypeRef.Simple
+                        Node.TypeRef.Simple.Piece
+                          Node.Expr.Name
+                          Node.Type
+                            Node.Modifier.Lit
+                            BEFORE: Node.Extra.Whitespace
+                            Node.TypeRef.Simple
+                              Node.TypeRef.Simple.Piece
+                                Node.Expr.Name
+                Node.Decl.Func.Body.Block
+                  BEFORE: Node.Extra.Whitespace
+                  Node.Expr.Block
+        """.trimIndent())
+    }
+
     private fun assertParsedAs(code: String, expectedDump: String) {
         val converter = ConverterWithExtras()
         val node = Parser(converter).parseFile(code)

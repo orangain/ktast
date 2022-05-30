@@ -17,8 +17,7 @@ class WriterTest {
     @Test
     fun testTypeParameterModifiers() {
         assertParseAndWriteExact("""
-            fun delete(p: Array<out String>?) {
-            }
+            fun delete(p: Array<out String>?) {}
         """.trimIndent())
     }
 
