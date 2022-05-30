@@ -298,6 +298,7 @@ open class Writer(
                 }
                 is Node.Expr.Lambda.Body -> {
                     if (stmts.isNotEmpty()) { childrenLines(stmts) }
+                    writeExtrasWithin()
                 }
                 is Node.Expr.This -> {
                     append("this")
@@ -386,9 +387,7 @@ open class Writer(
                         if (stmts.isNotEmpty()) {
                             childrenLines(stmts)
                         }
-                        if (parent is Node.Decl.Func.Body.Block) {
-                            parent.writeExtrasWithin()
-                        }
+                        writeExtrasWithin()
                     }
                     append("}")
                 }
