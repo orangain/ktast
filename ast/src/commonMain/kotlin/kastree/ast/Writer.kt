@@ -41,7 +41,7 @@ open class Writer(
                     if (!isCompanion || name.name != "Companion") children(name)
                     bracketedChildren(typeParams)
                     children(primaryConstructor)
-                    children(colonToken)
+                    children(colon)
                     children(parentAnns)
                     children(parents, ",")
                     childTypeConstraints(typeConstraints)

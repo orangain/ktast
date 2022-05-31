@@ -28,7 +28,7 @@ open class Visitor {
                 visitChildren(name)
                 visitChildren(typeParams)
                 visitChildren(primaryConstructor)
-                visitChildren(colonToken)
+                visitChildren(colon)
                 visitChildren(parentAnns)
                 visitChildren(parents)
                 visitChildren(typeConstraints)
