@@ -50,6 +50,7 @@ open class MutableVisitor {
                     )
                     is Node.Decl.Structured.PrimaryConstructor -> copy(
                         mods = visitChildren(mods, newCh),
+                        constructorKeyword = visitChildren(constructorKeyword, newCh),
                         params = visitChildren(params, newCh)
                     )
                     is Node.Decl.Init -> copy(

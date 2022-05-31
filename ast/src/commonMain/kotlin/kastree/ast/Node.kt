@@ -80,6 +80,7 @@ sealed class Node {
             }
             data class PrimaryConstructor(
                 override val mods: List<Modifier>,
+                val constructorKeyword: Keyword.Constructor?,
                 val params: List<Func.Param>
             ) : Node(), WithModifiers
         }
@@ -503,6 +504,7 @@ sealed class Node {
         }
 
         class Fun : Keyword("fun")
+        class Constructor : Keyword("constructor")
         class Colon : Keyword(":")
     }
 

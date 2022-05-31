@@ -400,6 +400,7 @@ open class Converter {
 
     open fun convertPrimaryConstructor(v: KtPrimaryConstructor) = Node.Decl.Structured.PrimaryConstructor(
         mods = convertModifiers(v),
+        constructorKeyword = v.getConstructorKeyword()?.let { convertKeyword(it, Node.Keyword::Constructor) },
         params = v.valueParameters.map(::convertFuncParam)
     ).map(v)
 

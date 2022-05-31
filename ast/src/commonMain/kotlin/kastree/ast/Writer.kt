@@ -75,7 +75,8 @@ open class Writer(
                     if (by != null) append("by").also { children(by) }
                 }
                 is Node.Decl.Structured.PrimaryConstructor -> {
-                    if (mods.isNotEmpty()) { childMods(newlines = false).append("constructor") }
+                    childMods(newlines = false)
+                    children(constructorKeyword)
                     parenChildren(params)
                 }
                 is Node.Decl.Init ->

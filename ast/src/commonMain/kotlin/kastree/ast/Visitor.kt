@@ -46,6 +46,7 @@ open class Visitor {
             }
             is Node.Decl.Structured.PrimaryConstructor -> {
                 visitChildren(mods)
+                visitChildren(constructorKeyword)
                 visitChildren(params)
             }
             is Node.Decl.Init -> {
