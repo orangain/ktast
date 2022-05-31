@@ -28,8 +28,10 @@ open class Writer(
                     childrenLines(imports, extraEndLines = 1)
                     childrenLines(decls, extraMidLines = 1)
                 }
-                is Node.Package ->
-                    childMods().append("package").appendNames(names, ".")
+                is Node.Package -> {
+                    childMods().append("package")
+                    children(packageNameExpr)
+                }
                 is Node.Import -> {
                     append("import").appendNames(names, ".")
                     if (wildcard) append(".*") else if (alias != null) append("as").appendName(alias)

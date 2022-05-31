@@ -19,6 +19,7 @@ open class Visitor {
             }
             is Node.Package -> {
                 visitChildren(mods)
+                visitChildren(packageNameExpr)
             }
             is Node.Import -> {}
             is Node.Decl.Structured -> {

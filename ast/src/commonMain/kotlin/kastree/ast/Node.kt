@@ -33,7 +33,7 @@ sealed class Node {
 
     data class Package(
         override val mods: List<Modifier>,
-        val names: List<String>
+        val packageNameExpr: Expr,
     ) : Node(), WithModifiers
 
     data class Import(

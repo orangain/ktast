@@ -376,7 +376,7 @@ open class Converter {
 
     open fun convertPackage(v: KtPackageDirective) = Node.Package(
         mods = convertModifiers(v),
-        names = v.packageNames.map { it.getReferencedName() }
+        packageNameExpr = v.packageNameExpression?.let(::convertExpr) ?: error("No package name expression for $v"),
     ).map(v)
 
     open fun convertParen(v: KtParenthesizedExpression) = Node.Expr.Paren(

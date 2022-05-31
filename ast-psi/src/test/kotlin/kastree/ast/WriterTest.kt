@@ -95,6 +95,11 @@ class WriterTest {
         """.trimIndent())
     }
 
+    @Test
+    fun testLongPackageName() {
+        assertParseAndWriteExact("package foo.bar.baz.buzz")
+    }
+
     private fun assertParseAndWriteExact(code: String) {
 
         val converter = ConverterWithExtras()
