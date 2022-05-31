@@ -22,8 +22,8 @@ class CorpusTest(private val unit: Corpus.Unit) {
         try {
             val origExtrasConv = ConverterWithExtras()
             val origCode = StringUtilRt.convertLineSeparators(unit.read())
-            val origFile = Parser(origExtrasConv).parseFile(origCode)
             println("----ORIG CODE----\n$origCode\n------------")
+            val origFile = Parser(origExtrasConv).parseFile(origCode)
             println("----ORIG AST----\n${Dumper.dump(origFile, origExtrasConv)}\n------------")
 
             val newExtrasConv = ConverterWithExtras()
