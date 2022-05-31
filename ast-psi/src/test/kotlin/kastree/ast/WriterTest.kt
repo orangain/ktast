@@ -85,12 +85,11 @@ class WriterTest {
 
     @Test
     fun testLambdaExpressionHavingOnlyComment() {
-        // TODO: Improve formatting of the line comment before Node.Expr.Lambda.Body.
         assertParseAndWriteExact("""
             fun setup() {
                 run {
-            // do something
-                        }
+                    // do something
+                }
             }
         """.trimIndent())
     }
