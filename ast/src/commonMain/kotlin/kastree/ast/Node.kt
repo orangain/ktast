@@ -457,6 +457,25 @@ sealed class Node {
     }
 
     sealed class Keyword(val value: String) : Node() {
+        override fun toString(): String {
+            return javaClass.simpleName
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as Keyword
+
+            if (value != other.value) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            return value.hashCode()
+        }
+
         data class ValOrVar(val token: ValOrVarToken) : Keyword(token.name.lowercase()) {
             companion object {
                 private val valOrVarValues = ValOrVarToken.values().associateBy { it.name.lowercase() }
@@ -489,8 +508,8 @@ sealed class Node {
             }
         }
 
-        object Fun : Keyword("fun")
-        object Colon : Keyword(":")
+        class Fun : Keyword("fun")
+
     }
 
     sealed class Extra : Node() {

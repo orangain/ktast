@@ -295,7 +295,7 @@ open class Converter {
 
     open fun convertFunc(v: KtNamedFunction) = Node.Decl.Func(
         mods = convertModifiers(v),
-        funKeyword = v.funKeyword?.let{convertKeyword(it, Node.Keyword.Fun)} ?: error("No fun keyword for $v"),
+        funKeyword = v.funKeyword?.let{convertKeyword(it, Node.Keyword::Fun)} ?: error("No fun keyword for $v"),
         typeParams =
             if (v.hasTypeParameterListBeforeFunctionName()) v.typeParameters.map(::convertTypeParam) else emptyList(),
         receiverType = v.receiverTypeReference?.let(::convertType),
@@ -705,11 +705,9 @@ open class Converter {
     open fun convertColonToken(v: PsiElement) = Node.Keyword.ColonToken.of(v.text)
         .map(v)
 
-    open fun <T: Node.Keyword> convertKeyword(v: PsiElement, expectedKeyword: T): T =
-        if (v.text == expectedKeyword.value) {
-            expectedKeyword
-        } else {
-            error("Unexpected keyword: ${v.text}")
+    open fun <T: Node.Keyword> convertKeyword(v: PsiElement, factory: () -> T): T =
+        factory().also {
+            check(v.text == it.value) { "Unexpected keyword: ${v.text}" }
         }.map(v)
 
     protected open fun <T: Node> T.map(v: PsiElement) = also { onNode(it, v) }
