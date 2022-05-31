@@ -1,5 +1,6 @@
 package kastree.ast.psi
 
+import kastree.ast.Dumper
 import kastree.ast.Node
 import kastree.ast.Writer
 import org.jetbrains.kotlin.com.intellij.openapi.util.text.StringUtilRt
@@ -19,29 +20,17 @@ class CorpusTest(private val unit: Corpus.Unit) {
         // In order to test, we parse the test code (failing and validating errors if present),
         // convert to our AST, write out our AST, re-parse what we wrote, re-convert, and compare
         try {
-            val elemMap = IdentityHashMap<Node, PsiElement?>()
-            val origExtrasConv = object : ConverterWithExtras() {
-                override fun onNode(node: Node, elem: PsiElement?) {
-                    elemMap[node] = elem
-                    super.onNode(node, elem)
-                }
-            }
+            val origExtrasConv = ConverterWithExtras()
             val origCode = StringUtilRt.convertLineSeparators(unit.read())
             val origFile = Parser(origExtrasConv).parseFile(origCode)
-            if (debug) println("----ORIG----\n$origCode\n------------")
-            if (debug) println("ORIG AST: $origFile")
-            if (debug) elemMap.forEach { (key, value) ->
-                println("ELEM MAP OF $value - ${value?.text?.replace("\n", "\\n")} - $key")
-                origExtrasConv.extrasBefore(key).forEach { println("  BEFORE: $it") }
-                origExtrasConv.extrasWithin(key).forEach { println("  WITHIN: $it") }
-                origExtrasConv.extrasAfter(key).forEach { println("  AFTER: $it") }
-            }
+            println("----ORIG CODE----\n$origCode\n------------")
+            println("----ORIG AST----\n${Dumper.dump(origFile, origExtrasConv)}\n------------")
 
             val newExtrasConv = ConverterWithExtras()
             val newCode = Writer.write(origFile, origExtrasConv)
-            if (debug) println("----NEW----\n$newCode\n-----------")
+            println("----NEW CODE----\n$newCode\n-----------")
             val newFile = Parser(newExtrasConv).parseFile(newCode)
-            if (debug) println("NEW AST: $newFile")
+            println("----NEW AST----\n${Dumper.dump(newFile, newExtrasConv)}\n------------")
 
             assertEquals(origFile, newFile)
         } catch (e: Converter.Unsupported) {
