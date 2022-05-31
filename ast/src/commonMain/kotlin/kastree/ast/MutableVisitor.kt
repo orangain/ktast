@@ -57,6 +57,7 @@ open class MutableVisitor {
                     )
                     is Node.Decl.Func -> copy(
                         mods = visitChildren(mods, newCh),
+                        funKeyword = visitChildren(funKeyword, newCh),
                         typeParams = visitChildren(typeParams, newCh),
                         receiverType = visitChildren(receiverType, newCh),
                         name = visitChildren(name, newCh),

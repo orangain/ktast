@@ -86,6 +86,7 @@ sealed class Node {
         data class Init(val block: Expr.Block) : Decl()
         data class Func(
             override val mods: List<Modifier>,
+            val funKeyword: Keyword.Fun,
             val typeParams: List<TypeParam>,
             val receiverType: Type?,
             // Name not present on anonymous functions
@@ -487,6 +488,9 @@ sealed class Node {
                 fun of(value: String) = if (value == ":") ColonToken() else error("Unknown value: $value")
             }
         }
+
+        object Fun : Keyword("fun")
+        object Colon : Keyword(":")
     }
 
     sealed class Extra : Node() {

@@ -81,7 +81,8 @@ open class Writer(
                 is Node.Decl.Init ->
                     append("init").also { children(block) }
                 is Node.Decl.Func -> {
-                    childMods().append("fun")
+                    childMods()
+                    children(funKeyword)
                     bracketedChildren(typeParams, "")
                     if (receiverType != null) children(receiverType).append(".")
                     name?.also { children(it) }

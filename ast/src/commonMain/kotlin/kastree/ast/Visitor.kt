@@ -53,6 +53,7 @@ open class Visitor {
             }
             is Node.Decl.Func -> {
                 visitChildren(mods)
+                visitChildren(funKeyword)
                 visitChildren(typeParams)
                 visitChildren(receiverType)
                 visitChildren(name)
