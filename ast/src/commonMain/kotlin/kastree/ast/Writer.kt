@@ -38,7 +38,7 @@ open class Writer(
                 }
                 is Node.Decl.Structured -> childMods().also {
                     children(declarationKeyword)
-                    if (!isCompanion || name.name != "Companion") children(name)
+                    children(name)
                     bracketedChildren(typeParams)
                     children(primaryConstructor)
                     children(colon)
@@ -63,7 +63,7 @@ open class Writer(
                     // As a special case, if an object is nameless and bodyless, we should give it an empty body
                     // to avoid ambiguities with the next item
                     // See: https://youtrack.jetbrains.com/issue/KT-25581
-                    if ((isCompanion || isObject) && name.name == "Companion" && members.isEmpty())
+                    if ((isCompanion || isObject) && name == null && members.isEmpty())
                         append("{}")
                 }
                 is Node.Decl.Structured.Parent.CallConstructor -> {

@@ -512,7 +512,7 @@ open class Converter {
     open fun convertStructured(v: KtClassOrObject) = Node.Decl.Structured(
         mods = convertModifiers(v),
         declarationKeyword = v.getDeclarationKeyword()?.let(::convertDeclarationKeyword) ?: error("declarationKeyword not found"),
-        name = v.nameIdentifier?.let(::convertName) ?: error("Missing name"),
+        name = v.nameIdentifier?.let(::convertName),
         typeParams = v.typeParameters.map(::convertTypeParam),
         primaryConstructor = v.primaryConstructor?.let(::convertPrimaryConstructor),
         colon = v.getColon()?.let{ convertKeyword(it, Node.Keyword::Colon) },

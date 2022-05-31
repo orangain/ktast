@@ -46,7 +46,7 @@ sealed class Node {
         data class Structured(
             override val mods: List<Modifier>,
             val declarationKeyword: Keyword.Declaration,
-            val name: Expr.Name,
+            val name: Expr.Name?,
             val typeParams: List<TypeParam>,
             val primaryConstructor: PrimaryConstructor?,
             val colon: Keyword.Colon?,
