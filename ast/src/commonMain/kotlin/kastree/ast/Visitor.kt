@@ -170,7 +170,9 @@ open class Visitor {
                 visitChildren(expr)
             }
             is Node.Expr.If -> {
+                visitChildren(lpar)
                 visitChildren(expr)
+                visitChildren(rpar)
                 visitChildren(body)
                 visitChildren(elseBody)
             }

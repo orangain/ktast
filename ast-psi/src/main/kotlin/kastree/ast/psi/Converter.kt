@@ -321,7 +321,9 @@ open class Converter {
     ).map(v)
 
     open fun convertIf(v: KtIfExpression) = Node.Expr.If(
+        lpar = convertKeyword(v.leftParenthesis ?: error("No leftParenthesis on if for $v"), Node.Keyword::Lpar),
         expr = convertExpr(v.condition ?: error("No cond on if for $v")),
+        rpar = convertKeyword(v.rightParenthesis ?: error("No rightParenthesis on if for $v"), Node.Keyword::Rpar),
         body = convertExpr(v.then ?: error("No then on if for $v")),
         elseBody = v.`else`?.let(::convertExpr)
     ).map(v)

@@ -226,7 +226,9 @@ sealed class Node {
 
     sealed class Expr : Node() {
         data class If(
+            val lpar: Keyword.Lpar,
             val expr: Expr,
+            val rpar: Keyword.Rpar,
             val body: Expr,
             val elseBody: Expr?
         ) : Expr()
@@ -506,6 +508,8 @@ sealed class Node {
         class Fun : Keyword("fun")
         class Constructor : Keyword("constructor")
         class Colon : Keyword(":")
+        class Lpar : Keyword("(")
+        class Rpar : Keyword(")")
     }
 
     sealed class Extra : Node() {
