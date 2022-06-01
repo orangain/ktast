@@ -232,12 +232,7 @@ open class Writer(
                     else append("do ").also { children(body) }.append(" while (").also { children(expr) }.append(')')
                 }
                 is Node.Expr.BinaryOp -> {
-                    // Some operations don't have separators
-                    val noSep = oper is Node.Expr.BinaryOp.Oper.Token && oper.token.let {
-                        it == Node.Expr.BinaryOp.Token.RANGE || it == Node.Expr.BinaryOp.Token.DOT ||
-                            it == Node.Expr.BinaryOp.Token.DOT_SAFE
-                    }
-                    children(listOf(lhs, oper, rhs), if (noSep) "" else " ")
+                    children(listOf(lhs, oper, rhs))
                 }
                 is Node.Expr.BinaryOp.Oper.Infix ->
                     append(str)
