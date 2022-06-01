@@ -47,16 +47,16 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
     open fun nodeExtraElems(elem: PsiElement): Triple<List<PsiElement>, List<PsiElement>, List<PsiElement>> {
         // Before starts with all directly above ws/comments (reversed to be top-down)
         val before = elem.siblings(forward = false, withItself = false).takeWhile {
-            it is PsiWhiteSpace || it is PsiComment
+            it is PsiWhiteSpace || it is PsiComment || it.text == ";"
         }.toList().reversed()
 
         // Go over every child...
-        val within = elem.allChildren.filter { child ->
-            child is PsiWhiteSpace || child is PsiComment
+        val within = elem.allChildren.filter {
+            it is PsiWhiteSpace || it is PsiComment || it.text == ";"
         }.toList()
 
         val after = elem.siblings(forward = true, withItself = false).takeWhile {
-            it is PsiWhiteSpace || it is PsiComment
+            it is PsiWhiteSpace || it is PsiComment || it.text == ";"
         }.toList()
 
         return Triple(before, within, after)
@@ -65,10 +65,11 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
     open fun convertExtras(elems: List<PsiElement>): List<Node.Extra> = elems.mapNotNull { elem ->
         // Ignore elems we've done before
         val elemId = System.identityHashCode(elem)
-        if (!seenExtraPsiIdentities.add(elemId)) null else when (elem) {
-            is PsiWhiteSpace -> Node.Extra.Whitespace(elem.text)
-            is PsiComment -> Node.Extra.Comment(elem.text)
-            else -> error("elems must contain only PsiWhiteSpace or PsiComment elements.")
+        if (!seenExtraPsiIdentities.add(elemId)) null else when {
+            elem is PsiWhiteSpace -> Node.Extra.Whitespace(elem.text)
+            elem is PsiComment -> Node.Extra.Comment(elem.text)
+            elem.text == ";" -> Node.Extra.Semicolon(elem.text)
+            else -> error("elems must contain only PsiWhiteSpace or PsiComment or SEMICOLON elements.")
         }
     }
 }

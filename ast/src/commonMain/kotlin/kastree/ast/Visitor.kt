@@ -332,8 +332,7 @@ open class Visitor {
             }
             is Node.Modifier.Lit -> {}
             is Node.Keyword -> {}
-            is Node.Extra.Whitespace -> {}
-            is Node.Extra.Comment -> {}
+            is Node.Extra -> {}
         }
     }
 

@@ -336,8 +336,7 @@ open class MutableVisitor {
                     )
                     is Node.Modifier.Lit -> this
                     is Node.Keyword -> this
-                    is Node.Extra.Whitespace -> this
-                    is Node.Extra.Comment -> this
+                    is Node.Extra -> this
                     else -> error("Unrecognized node: $this")
                 }
                 new.origOrChanged(this, newCh)

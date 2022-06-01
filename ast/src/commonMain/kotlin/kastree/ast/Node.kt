@@ -515,5 +515,8 @@ sealed class Node {
         data class Comment(
             val text: String,
         ) : Extra()
+        data class Semicolon(
+            val text: String
+        ) : Extra()
     }
 }

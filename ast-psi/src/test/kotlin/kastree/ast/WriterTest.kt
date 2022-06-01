@@ -106,6 +106,13 @@ class WriterTest {
         """.trimIndent())
     }
 
+    @Test
+    fun testSemicolonAfterIf() {
+        assertParseAndWriteExact("""
+            fun foo(a: Int): Int { var x = a; var y = x++; if (y+1 != x) return -1; return x; }
+        """.trimIndent())
+    }
+
     private fun assertParseAndWriteExact(code: String) {
 
         val converter = ConverterWithExtras()

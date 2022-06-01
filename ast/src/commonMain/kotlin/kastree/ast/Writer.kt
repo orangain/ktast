@@ -445,6 +445,9 @@ open class Writer(
                 is Node.Extra.Comment -> {
                     append(it.text)
                 }
+                is Node.Extra.Semicolon -> {
+                    append(it.text)
+                }
             }
         }
     }
