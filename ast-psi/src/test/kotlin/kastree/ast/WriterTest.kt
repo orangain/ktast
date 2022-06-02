@@ -113,23 +113,19 @@ class WriterTest {
         """.trimIndent())
     }
 
-    private fun assertParseAndWriteExact(code: String) {
+    private fun assertParseAndWriteExact(origCode: String) {
 
-        val converter = ConverterWithExtras()
-        val node = Parser(converter).parseFile(code)
-        val identityNode = MutableVisitor.preVisit(node) { v, _ -> v }
+        val origExtrasConv = ConverterWithExtras()
+        val origFile = Parser(origExtrasConv).parseFile(origCode)
+        println("----ORIG AST----\n${Dumper.dump(origFile, origExtrasConv)}\n------------")
 
-        assertEquals(
-            code.trim(),
-            Writer.write(node, converter).trim(),
-            "Parse -> Write for $code, not equal")
+        val newCode = Writer.write(origFile, origExtrasConv)
+        assertEquals(origCode.trim(), newCode.trim(), "Parse -> Write for original code, not equal")
 
-        assertEquals(
-            code.trim(),
-            Writer.write(identityNode, converter).trim(),
-            "Parse -> Identity Transform -> Write for $code, failed")
+        val identityNode = MutableVisitor.preVisit(origFile) { v, _ -> v }
+        val identityCode = Writer.write(identityNode, origExtrasConv)
 
-
+        assertEquals(origCode.trim(), identityCode.trim(), "Parse -> Identity Transform -> Write for original code, not equal")
     }
 
 }
