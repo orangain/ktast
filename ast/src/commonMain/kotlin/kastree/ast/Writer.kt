@@ -150,7 +150,8 @@ open class Writer(
                     children(type)
                 }
                 is Node.Decl.Constructor -> {
-                    childMods().append("constructor")
+                    childMods()
+                    children(constructorKeyword)
                     parenChildren(params)
                     if (delegationCall != null) append(": ").also { children(delegationCall) }
                     if (block != null) append(' ').also { children(block) }

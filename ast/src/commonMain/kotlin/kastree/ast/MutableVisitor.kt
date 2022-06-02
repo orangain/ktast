@@ -118,6 +118,7 @@ open class MutableVisitor {
                     )
                     is Node.Decl.Constructor -> copy(
                         mods = visitChildren(mods, newCh),
+                        constructorKeyword = visitChildren(constructorKeyword, newCh),
                         params = visitChildren(params, newCh),
                         delegationCall = visitChildren(delegationCall, newCh),
                         block = visitChildren(block, newCh)

@@ -155,6 +155,7 @@ sealed class Node {
         ) : Decl(), WithModifiers
         data class Constructor(
             override val mods: List<Modifier>,
+            val constructorKeyword: Keyword.Constructor,
             val params: List<Func.Param>,
             val delegationCall: DelegationCall?,
             val block: Expr.Block?

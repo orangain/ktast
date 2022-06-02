@@ -114,6 +114,7 @@ open class Visitor {
             }
             is Node.Decl.Constructor -> {
                 visitChildren(mods)
+                visitChildren(constructorKeyword)
                 visitChildren(params)
                 visitChildren(delegationCall)
                 visitChildren(block)
