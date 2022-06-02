@@ -336,9 +336,9 @@ open class Writer(
                 is Node.Expr.Throw ->
                     append("throw").also { children(expr) }
                 is Node.Expr.Return -> {
-                    append("return")
+                    children(returnKeyword)
                     if (label != null) append('@').appendName(label)
-                    if (expr != null) children(expr)
+                    children(expr)
                 }
                 is Node.Expr.Continue -> {
                     append("continue")

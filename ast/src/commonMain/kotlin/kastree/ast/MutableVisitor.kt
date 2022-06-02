@@ -279,6 +279,7 @@ open class MutableVisitor {
                         expr = visitChildren(expr, newCh)
                     )
                     is Node.Expr.Return -> copy(
+                        returnKeyword = visitChildren(returnKeyword, newCh),
                         expr = visitChildren(expr, newCh)
                     )
                     is Node.Expr.Continue -> this

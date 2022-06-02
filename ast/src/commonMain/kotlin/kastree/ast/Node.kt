@@ -380,6 +380,7 @@ sealed class Node {
             val expr: Expr
         ) : Expr()
         data class Return(
+            val returnKeyword: Keyword.Return,
             val label: String?,
             val expr: Expr?
         ) : Expr()
@@ -507,6 +508,7 @@ sealed class Node {
 
         class Fun : Keyword("fun")
         class Constructor : Keyword("constructor")
+        class Return : Keyword("return")
         class Colon : Keyword(":")
         class Lpar : Keyword("(")
         class Rpar : Keyword(")")

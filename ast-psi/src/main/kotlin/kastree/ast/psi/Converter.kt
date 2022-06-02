@@ -482,6 +482,7 @@ open class Converter {
         )
 
     open fun convertReturn(v: KtReturnExpression) = Node.Expr.Return(
+        returnKeyword = convertKeyword(v.returnKeyword, Node.Keyword::Return),
         label = v.getLabelName(),
         expr = v.returnedExpression?.let(::convertExpr)
     ).map(v)
