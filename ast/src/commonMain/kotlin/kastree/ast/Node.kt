@@ -81,7 +81,7 @@ sealed class Node {
             data class PrimaryConstructor(
                 override val mods: List<Modifier>,
                 val constructorKeyword: Keyword.Constructor?,
-                val params: List<Func.Param>
+                val params: Func.Params?
             ) : Node(), WithModifiers
         }
         data class Init(val block: Expr.Block) : Decl()
@@ -93,19 +93,23 @@ sealed class Node {
             // Name not present on anonymous functions
             val name: Expr.Name?,
             val paramTypeParams: List<TypeParam>,
-            val params: List<Func.Param>,
+            val params: Params?,
             val type: Type?,
             val typeConstraints: List<TypeConstraint>,
             val body: Body?
         ) : Decl(), WithModifiers {
-            data class Param(
-                override val mods: List<Modifier>,
-                val readOnly: Boolean?,
-                val name: Expr.Name,
-                // Type can be null for anon functions
-                val type: Type?,
-                val default: Expr?
-            ) : Node(), WithModifiers
+            data class Params(
+                val params: List<Param>
+            ) : Node() {
+                data class Param(
+                    override val mods: List<Modifier>,
+                    val readOnly: Boolean?,
+                    val name: Expr.Name,
+                    // Type can be null for anon functions
+                    val type: Type?,
+                    val default: Expr?
+                ) : Node(), WithModifiers
+            }
             sealed class Body : Node() {
                 data class Block(val block: Node.Expr.Block) : Body()
                 data class Expr(val expr: Node.Expr) : Body()
@@ -156,7 +160,7 @@ sealed class Node {
         data class Constructor(
             override val mods: List<Modifier>,
             val constructorKeyword: Keyword.Constructor,
-            val params: List<Func.Param>,
+            val params: Func.Params?,
             val delegationCall: DelegationCall?,
             val block: Expr.Block?
         ) : Decl(), WithModifiers {

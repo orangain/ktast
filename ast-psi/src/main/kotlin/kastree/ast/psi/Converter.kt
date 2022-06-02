@@ -172,7 +172,7 @@ open class Converter {
     open fun convertConstructor(v: KtSecondaryConstructor) = Node.Decl.Constructor(
         mods = convertModifiers(v),
         constructorKeyword = convertKeyword(v.getConstructorKeyword(), Node.Keyword::Constructor),
-        params = v.valueParameters.map(::convertFuncParam),
+        params = v.valueParameterList?.let(::convertFuncParams),
         delegationCall = if (v.hasImplicitDelegationCall()) null else v.getDelegationCall().let {
             Node.Decl.Constructor.DelegationCall(
                 target =
@@ -311,7 +311,7 @@ open class Converter {
         name = v.nameIdentifier?.let(::convertName),
         paramTypeParams =
             if (!v.hasTypeParameterListBeforeFunctionName()) v.typeParameters.map(::convertTypeParam) else emptyList(),
-        params = v.valueParameters.map(::convertFuncParam),
+        params = v.valueParameterList?.let(::convertFuncParams),
         type = v.typeReference?.let(::convertType),
         typeConstraints = v.typeConstraints.map(::convertTypeConstraint),
         body = v.bodyExpression?.let(::convertFuncBody)
@@ -321,7 +321,11 @@ open class Converter {
         if (v is KtBlockExpression) Node.Decl.Func.Body.Block(convertBlock(v)).map(v)
         else Node.Decl.Func.Body.Expr(convertExpr(v)).map(v)
 
-    open fun convertFuncParam(v: KtParameter) = Node.Decl.Func.Param(
+    open fun convertFuncParams(v: KtParameterList) = Node.Decl.Func.Params(
+        params = v.parameters.map(::convertFuncParam),
+    ).map(v)
+
+    open fun convertFuncParam(v: KtParameter) = Node.Decl.Func.Params.Param(
         mods = convertModifiers(v),
         readOnly = if (v.hasValOrVar()) !v.isMutable else null,
         name = v.nameIdentifier?.let(::convertName) ?: error("No param name"),
@@ -409,7 +413,7 @@ open class Converter {
     open fun convertPrimaryConstructor(v: KtPrimaryConstructor) = Node.Decl.Structured.PrimaryConstructor(
         mods = convertModifiers(v),
         constructorKeyword = v.getConstructorKeyword()?.let { convertKeyword(it, Node.Keyword::Constructor) },
-        params = v.valueParameters.map(::convertFuncParam)
+        params = v.valueParameterList?.let(::convertFuncParams)
     ).map(v)
 
     open fun convertProperty(v: KtDestructuringDeclaration) = Node.Decl.Property(

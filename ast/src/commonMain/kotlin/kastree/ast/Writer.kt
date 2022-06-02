@@ -76,7 +76,7 @@ open class Writer(
                 is Node.Decl.Structured.PrimaryConstructor -> {
                     childMods(newlines = false)
                     children(constructorKeyword)
-                    parenChildren(params)
+                    children(params)
                 }
                 is Node.Decl.Init ->
                     append("init").also { children(block) }
@@ -87,12 +87,15 @@ open class Writer(
                     if (receiverType != null) children(receiverType).append(".")
                     name?.also { children(it) }
                     bracketedChildren(paramTypeParams)
-                    parenChildren(params)
+                    children(params)
                     if (type != null) append(":").also { children(type) }
                     childTypeConstraints(typeConstraints)
                     if (body != null)  { children(body) }
                 }
-                is Node.Decl.Func.Param -> {
+                is Node.Decl.Func.Params -> {
+                    parenChildren(params)
+                }
+                is Node.Decl.Func.Params.Param -> {
                     if (mods.isNotEmpty()) childMods(newlines = false)
                     if (readOnly == true) append("val") else if (readOnly == false) append("var")
                     children(name)
@@ -152,7 +155,7 @@ open class Writer(
                 is Node.Decl.Constructor -> {
                     childMods()
                     children(constructorKeyword)
-                    parenChildren(params)
+                    children(params)
                     if (delegationCall != null) append(": ").also { children(delegationCall) }
                     if (block != null) append(' ').also { children(block) }
                 }

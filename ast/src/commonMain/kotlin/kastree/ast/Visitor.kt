@@ -64,7 +64,10 @@ open class Visitor {
                 visitChildren(typeConstraints)
                 visitChildren(body)
             }
-            is Node.Decl.Func.Param -> {
+            is Node.Decl.Func.Params -> {
+                visitChildren(params)
+            }
+            is Node.Decl.Func.Params.Param -> {
                 visitChildren(mods)
                 visitChildren(name)
                 visitChildren(type)
