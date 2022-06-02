@@ -169,7 +169,10 @@ open class MutableVisitor {
                         mods = visitChildren(mods, newCh),
                         ref = visitChildren(ref, newCh)
                     )
-                    is Node.ValueArg -> copy(
+                    is Node.ValueArgs -> copy(
+                        args = visitChildren(args, newCh),
+                    )
+                    is Node.ValueArgs.ValueArg -> copy(
                         name = visitChildren(name, newCh),
                         expr = visitChildren(expr, newCh)
                     )

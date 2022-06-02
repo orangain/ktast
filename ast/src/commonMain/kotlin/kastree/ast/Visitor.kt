@@ -165,7 +165,10 @@ open class Visitor {
                 visitChildren(mods)
                 visitChildren(ref)
             }
-            is Node.ValueArg -> {
+            is Node.ValueArgs -> {
+                visitChildren(args)
+            }
+            is Node.ValueArgs.ValueArg -> {
                 visitChildren(name)
                 visitChildren(expr)
             }

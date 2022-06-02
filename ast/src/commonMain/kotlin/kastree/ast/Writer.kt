@@ -160,7 +160,7 @@ open class Writer(
                 is Node.Decl.EnumEntry -> {
                     childMods()
                     children(name)
-                    if (args.isNotEmpty()) parenChildren(args)
+                    if (args != null) parenChildren(args)
                     if (members.isNotEmpty()) append("{").run {
                         childrenLines(members, extraMidLines = 1)
                     }.append("}")
@@ -198,7 +198,10 @@ open class Writer(
                     append("dynamic")
                 is Node.Type ->
                     childModsBeforeType(ref).also { children(ref) }
-                is Node.ValueArg -> {
+                is Node.ValueArgs -> {
+                    children(args)
+                }
+                is Node.ValueArgs.ValueArg -> {
                     if (name != null) children(name).append("=")
                     if (asterisk) append('*')
                     children(expr)
@@ -359,7 +362,7 @@ open class Writer(
                 is Node.Expr.Call -> {
                     children(expr)
                     bracketedChildren(typeArgs)
-                    if (args.isNotEmpty() || lambda == null) parenChildren(args)
+                    if (args != null || lambda == null) parenChildren(args)
                     if (lambda != null) {
                         children(lambda)
                     }
@@ -401,7 +404,7 @@ open class Writer(
                 is Node.Modifier.AnnotationSet.Annotation -> {
                     children(nameTypeReference)
                     bracketedChildren(typeArgs)
-                    if (args.isNotEmpty()) parenChildren(args)
+                    if (args != null) parenChildren(args)
                 }
                 is Node.Modifier.Lit ->
                     append(keyword.name.toLowerCase())
@@ -475,7 +478,7 @@ open class Writer(
         if (anns.isNotEmpty()) {
             // As a special case, if there is a trailing annotation with no args and expr is paren,
             // then we need to add an empty set of parens ourselves
-            val lastAnn = anns.lastOrNull()?.anns?.singleOrNull()?.takeIf { it.args.isEmpty() }
+            val lastAnn = anns.lastOrNull()?.anns?.singleOrNull()?.takeIf { it.args == null }
             val shouldAddParens = lastAnn != null && expr is Node.Expr.Paren
             (this as Node).children(anns, " ")
             if (shouldAddParens) append("()")
@@ -501,7 +504,7 @@ open class Writer(
             // As a special case, if there is a trailing annotation with no args and the ref has a paren which is a paren
             // type or a non-receiver fn type, then we need to add an empty set of parens ourselves
             val lastAnn = (mods.lastOrNull() as? Node.Modifier.AnnotationSet)?.anns?.
-                singleOrNull()?.takeIf { it.args.isEmpty() }
+                singleOrNull()?.takeIf { it.args == null }
             val shouldAddParens = lastAnn != null &&
                 (ref is Node.TypeRef.Paren || (ref is Node.TypeRef.Func && (
                     ref.receiverType == null || ref.receiverType.ref is Node.TypeRef.Paren)))
@@ -525,6 +528,7 @@ open class Writer(
     }
 
     protected fun Node.parenChildren(v: List<Node?>) = children(v, ",", "(", ")")
+    protected fun Node.parenChildren(v: Node.ValueArgs?) = v?.args?.let { children(it, ",", "(", ")") }
 
     protected fun Node.childrenLines(v: Node?, extraMidLines: Int = 0, extraEndLines: Int = 0) =
         this@Writer.also { if (v != null) childrenLines(listOf(v), extraMidLines, extraEndLines) }

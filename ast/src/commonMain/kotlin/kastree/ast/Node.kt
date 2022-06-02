@@ -70,7 +70,7 @@ sealed class Node {
                 data class CallConstructor(
                     val type: TypeRef.Simple,
                     val typeArgs: List<Node.Type?>,
-                    val args: List<ValueArg>,
+                    val args: ValueArgs?,
                     val lambda: Expr.Call.TrailLambda?
                 ) : Parent()
                 data class Type(
@@ -161,14 +161,14 @@ sealed class Node {
         ) : Decl(), WithModifiers {
             data class DelegationCall(
                 val target: DelegationTarget,
-                val args: List<ValueArg>
+                val args: ValueArgs?
             ) : Node()
             enum class DelegationTarget { THIS, SUPER }
         }
         data class EnumEntry(
             override val mods: List<Modifier>,
             val name: Expr.Name,
-            val args: List<ValueArg>,
+            val args: ValueArgs?,
             val members: List<Decl>
         ) : Decl(), WithModifiers
     }
@@ -218,11 +218,15 @@ sealed class Node {
         val ref: TypeRef
     ) : Node(), WithModifiers
 
-    data class ValueArg(
-        val name: Expr.Name?,
-        val asterisk: Boolean,
-        val expr: Expr
-    ) : Node()
+    data class ValueArgs(
+        val args: List<ValueArg>
+    ) : Node() {
+        data class ValueArg(
+            val name: Expr.Name?,
+            val asterisk: Boolean,
+            val expr: Expr
+        ) : Node()
+    }
 
     sealed class Expr : Node() {
         data class If(
@@ -407,7 +411,7 @@ sealed class Node {
         data class Call(
             val expr: Expr,
             val typeArgs: List<Type?>,
-            val args: List<ValueArg>,
+            val args: ValueArgs?,
             val lambda: TrailLambda?
         ) : Expr() {
             data class TrailLambda(
@@ -450,7 +454,7 @@ sealed class Node {
             data class Annotation(
                 val nameTypeReference: TypeRef,
                 val typeArgs: List<Type>,
-                val args: List<ValueArg>
+                val args: ValueArgs?
             ) : Node()
         }
         data class Lit(val keyword: Keyword) : Modifier()

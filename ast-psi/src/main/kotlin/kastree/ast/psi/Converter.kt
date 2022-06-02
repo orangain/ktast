@@ -33,7 +33,7 @@ open class Converter {
     open fun convertAnnotation(v: KtAnnotationEntry) = Node.Modifier.AnnotationSet.Annotation(
         nameTypeReference = convertTypeRef(v.typeReference ?: error("Missing annotation name")),
         typeArgs = v.typeArguments.map { convertType(it) ?: error("No ann typ arg for $v") },
-        args = convertValueArgs(v.valueArgumentList)
+        args = v.valueArgumentList?.let(::convertValueArgs)
     ).map(v)
 
     open fun convertAnnotationSet(v: KtAnnotation) = Node.Modifier.AnnotationSet(
@@ -127,7 +127,7 @@ open class Converter {
     open fun convertCall(v: KtCallExpression) = Node.Expr.Call(
         expr = convertExpr(v.calleeExpression ?: error("No call expr for $v")),
         typeArgs = v.typeArguments.map(::convertType),
-        args = convertValueArgs(v.valueArgumentList),
+        args = v.valueArgumentList?.let(::convertValueArgs),
         lambda = v.lambdaArguments.singleOrNull()?.let(::convertCallTrailLambda)
     ).map(v)
 
@@ -177,7 +177,7 @@ open class Converter {
                 target =
                     if (it.isCallToThis) Node.Decl.Constructor.DelegationTarget.THIS
                     else Node.Decl.Constructor.DelegationTarget.SUPER,
-                args = convertValueArgs(it.valueArgumentList)
+                args = it.valueArgumentList?.let(::convertValueArgs)
             ).map(it)
         },
         block = v.bodyExpression?.let(::convertBlock)
@@ -243,7 +243,7 @@ open class Converter {
     open fun convertEnumEntry(v: KtEnumEntry) = Node.Decl.EnumEntry(
         mods = convertModifiers(v),
         name = v.nameIdentifier?.let(::convertName) ?: error("Unnamed enum"),
-        args = convertValueArgs((v.superTypeListEntries.firstOrNull() as? KtSuperTypeCallEntry)?.valueArgumentList),
+        args = ((v.superTypeListEntries.firstOrNull() as? KtSuperTypeCallEntry)?.valueArgumentList)?.let(::convertValueArgs),
         members = v.declarations.map(::convertDecl)
     ).map(v)
 
@@ -395,7 +395,7 @@ open class Converter {
         is KtSuperTypeCallEntry -> Node.Decl.Structured.Parent.CallConstructor(
             type = v.typeReference?.let(::convertTypeRef) as? Node.TypeRef.Simple ?: error("Bad type on super call $v"),
             typeArgs = v.typeArguments.map(::convertType),
-            args = convertValueArgs(v.valueArgumentList),
+            args = v.valueArgumentList?.let(::convertValueArgs),
             // TODO
             lambda = null
         ).map(v)
@@ -665,13 +665,15 @@ open class Converter {
         prefix = v is KtPrefixExpression
     ).map(v)
 
-    open fun convertValueArg(v: KtValueArgument) = Node.ValueArg(
+    open fun convertValueArg(v: KtValueArgument) = Node.ValueArgs.ValueArg(
         name = v.getArgumentName()?.referenceExpression?.let(::convertName),
         asterisk = v.getSpreadElement() != null,
         expr = convertExpr(v.getArgumentExpression() ?: error("No expr for value arg"))
     ).map(v)
 
-    open fun convertValueArgs(v: KtValueArgumentList?) = v?.arguments?.map(::convertValueArg) ?: emptyList()
+    open fun convertValueArgs(v: KtValueArgumentList) = Node.ValueArgs(
+        args = v.arguments.map(::convertValueArg)
+    ).map(v)
 
     open fun convertWhen(v: KtWhenExpression) = Node.Expr.When(
         expr = v.subjectExpression?.let(::convertExpr),
