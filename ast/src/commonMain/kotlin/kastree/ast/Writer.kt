@@ -156,8 +156,8 @@ open class Writer(
                     childMods()
                     children(constructorKeyword)
                     children(params)
-                    if (delegationCall != null) append(": ").also { children(delegationCall) }
-                    if (block != null) append(' ').also { children(block) }
+                    if (delegationCall != null) append(":").also { children(delegationCall) }
+                    children(block)
                 }
                 is Node.Decl.Constructor.DelegationCall ->
                     append(target.name.toLowerCase()).also { parenChildren(args) }
