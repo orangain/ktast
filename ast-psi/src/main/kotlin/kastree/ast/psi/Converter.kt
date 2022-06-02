@@ -41,14 +41,16 @@ open class Converter {
         anns = v.entries.map(::convertAnnotation)
     ).map(v)
 
+    open fun convertAnnotationSet(v: KtAnnotationEntry) = Node.Modifier.AnnotationSet(
+        target = v.useSiteTarget?.let(::convertAnnotationSetTarget),
+        anns = listOf(convertAnnotation(v)),
+    ).map(v)
+
     open fun convertAnnotationSets(v: KtElement): List<Node.Modifier.AnnotationSet> = v.children.flatMap { elem ->
         // We go over the node children because we want to preserve order
         when (elem) {
             is KtAnnotationEntry ->
-                listOf(Node.Modifier.AnnotationSet(
-                    target = elem.useSiteTarget?.let(::convertAnnotationSetTarget),
-                    anns = listOf(convertAnnotation(elem))
-                ).map(elem))
+                listOf(convertAnnotationSet(elem))
             is KtAnnotation ->
                 listOf(convertAnnotationSet(elem))
             is KtFileAnnotationList ->
@@ -349,10 +351,7 @@ open class Converter {
         // We go over the node children because we want to preserve order
         node.psi.let { psi ->
             when (psi) {
-                is KtAnnotationEntry -> Node.Modifier.AnnotationSet(
-                    target = psi.useSiteTarget?.let(::convertAnnotationSetTarget),
-                    anns = listOf(convertAnnotation(psi))
-                ).map(psi)
+                is KtAnnotationEntry -> convertAnnotationSet(psi)
                 is KtAnnotation -> convertAnnotationSet(psi)
                 is PsiWhiteSpace -> null
                 else -> (
@@ -577,8 +576,7 @@ open class Converter {
     open fun convertTypeConstraint(v: KtTypeConstraint) = Node.TypeConstraint(
         anns = v.children.mapNotNull {
             when (it) {
-                is KtAnnotationEntry ->
-                    Node.Modifier.AnnotationSet(target = null, anns = listOf(convertAnnotation(it))).map(it)
+                is KtAnnotationEntry -> convertAnnotationSet(it)
                 is KtAnnotation -> convertAnnotationSet(it)
                 else -> null
             }
