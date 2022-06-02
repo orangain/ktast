@@ -345,7 +345,7 @@ open class Converter {
 
     open fun convertModifiers(v: KtModifierListOwner) = convertModifiers(v.modifierList)
 
-    open fun convertModifiers(v: KtModifierList?) = v?.node?.children().orEmpty().mapNotNull { node ->
+    open fun convertModifiers(v: KtModifierList?): List<Node.Modifier> = v?.node?.children().orEmpty().mapNotNull { node ->
         // We go over the node children because we want to preserve order
         node.psi.let { psi ->
             when (psi) {
@@ -553,12 +553,12 @@ open class Converter {
     ).map(v)
 
     open fun convertType(v: KtTypeProjection) =
-        v.typeReference?.let { convertType(it, v.modifierList) }
-
-    open fun convertType(v: KtTypeReference, modifierList: KtModifierList?): Node.Type = Node.Type(
-        mods = convertModifiers(modifierList),
-        ref = convertTypeRef(v)
-    ).map(v)
+        v.typeReference?.let {
+            Node.Type(
+                mods = convertModifiers(v.modifierList),
+                ref = convertTypeRef(it)
+            ).mapNotCorrespondsPsiElement(it)
+        }?.map(v)
 
     open fun convertType(v: KtTypeReference): Node.Type = Node.Type(
         // Paren modifiers are inside the ref...
