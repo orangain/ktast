@@ -615,15 +615,11 @@ open class Converter {
 
     open fun convertTypeRef(v: KtTypeReference): Node.TypeRef =
         convertTypeRef(v.typeElement ?: error("Missing typ elem")).let {
-            if (!v.hasParentheses()) {
-                it
-            } else {
-                Node.TypeRef.Paren(
-                    mods = convertModifiers(v),
-                    type = it
-                ).map(v)
-            }
-        }
+            if (!v.hasParentheses()) it else Node.TypeRef.Paren(
+                mods = convertModifiers(v),
+                type = it
+            )
+        }.map(v)
 
     open fun convertTypeRef(v: KtTypeElement): Node.TypeRef = when (v) {
         is KtFunctionType -> Node.TypeRef.Func(
