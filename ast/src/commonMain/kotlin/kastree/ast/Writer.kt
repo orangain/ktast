@@ -7,8 +7,7 @@ open class Writer(
 ) : Visitor() {
     protected fun append(ch: Char) = also { app.append(ch) }
     protected fun append(str: String) = also { app.append(str) }
-    protected fun appendName(name: String) =
-        if (name.shouldEscapeIdent) append("`$name`") else append(name)
+    protected fun appendName(name: String) = append(name)
     protected fun appendNames(names: List<String>, sep: String) = also {
         names.forEachIndexed { index, name ->
             if (index > 0) append(sep)
@@ -399,7 +398,7 @@ open class Writer(
                     else children(anns, "", "[", "]")
                 }
                 is Node.Modifier.AnnotationSet.Annotation -> {
-                    appendNames(names, ".")
+                    children(nameTypeReference)
                     bracketedChildren(typeArgs)
                     if (args.isNotEmpty()) parenChildren(args)
                 }

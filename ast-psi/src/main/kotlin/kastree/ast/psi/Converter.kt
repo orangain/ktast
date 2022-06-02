@@ -31,7 +31,7 @@ open class Converter {
     }
 
     open fun convertAnnotation(v: KtAnnotationEntry) = Node.Modifier.AnnotationSet.Annotation(
-        names = v.typeReference?.names ?: error("Missing annotation name"),
+        nameTypeReference = convertTypeRef(v.typeReference ?: error("Missing annotation name")),
         typeArgs = v.typeArguments.map { convertType(it) ?: error("No ann typ arg for $v") },
         args = convertValueArgs(v.valueArgumentList)
     ).map(v)
@@ -364,9 +364,8 @@ open class Converter {
         }
     }.toList()
 
-    open fun convertName(v: KtSimpleNameExpression) = Node.Expr.Name(
-        name = v.getReferencedName()
-    ).map(v)
+    open fun convertName(v: KtSimpleNameExpression) =
+        convertName(v.getIdentifier() ?: error("Name identifier not found for $v"))
 
     open fun convertName(v: PsiElement) = Node.Expr.Name(
         name = v.text
@@ -613,13 +612,17 @@ open class Converter {
         else convertType(it)
     } ?: emptyList()
 
-    open fun convertTypeRef(v: KtTypeReference) =
+    open fun convertTypeRef(v: KtTypeReference): Node.TypeRef =
         convertTypeRef(v.typeElement ?: error("Missing typ elem")).let {
-            if (!v.hasParentheses()) it else Node.TypeRef.Paren(
-                mods = convertModifiers(v),
-                type = it
-            )
-        }.map(v)
+            if (!v.hasParentheses()) {
+                it
+            } else {
+                Node.TypeRef.Paren(
+                    mods = convertModifiers(v),
+                    type = it
+                ).map(v)
+            }
+        }
 
     open fun convertTypeRef(v: KtTypeElement): Node.TypeRef = when (v) {
         is KtFunctionType -> Node.TypeRef.Func(

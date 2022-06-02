@@ -113,6 +113,15 @@ class WriterTest {
         """.trimIndent())
     }
 
+    @Test
+    fun testQuotedIdentifiers() {
+        assertParseAndWriteExact("""
+            @`return` fun `package`() {
+              `class`()
+            }
+        """.trimIndent())
+    }
+
     private fun assertParseAndWriteExact(origCode: String) {
 
         val origExtrasConv = ConverterWithExtras()

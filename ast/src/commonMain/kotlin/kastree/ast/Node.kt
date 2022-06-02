@@ -444,7 +444,7 @@ sealed class Node {
                 FIELD, FILE, PROPERTY, GET, SET, RECEIVER, PARAM, SETPARAM, DELEGATE
             }
             data class Annotation(
-                val names: List<String>,
+                val nameTypeReference: TypeRef,
                 val typeArgs: List<Type>,
                 val args: List<ValueArg>
             ) : Node()
