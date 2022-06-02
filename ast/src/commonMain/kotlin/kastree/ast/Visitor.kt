@@ -327,7 +327,10 @@ open class Visitor {
                 visitChildren(expr)
             }
             is Node.Modifier.AnnotationSet -> {
+                visitChildren(atSymbol)
+                visitChildren(lBracket)
                 visitChildren(anns)
+                visitChildren(rBracket)
             }
             is Node.Modifier.AnnotationSet.Annotation -> {
                 visitChildren(nameTypeReference)

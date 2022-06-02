@@ -37,13 +37,19 @@ open class Converter {
     ).map(v)
 
     open fun convertAnnotationSet(v: KtAnnotation) = Node.Modifier.AnnotationSet(
+        atSymbol = v.node.findChildByType(KtTokens.AT)?.let { convertKeyword(it.psi, Node.Keyword::At) },
         target = v.useSiteTarget?.let(::convertAnnotationSetTarget),
-        anns = v.entries.map(::convertAnnotation)
+        lBracket = v.node.findChildByType(KtTokens.LBRACKET)?.let { convertKeyword(it.psi, Node.Keyword::LBracket) },
+        anns = v.entries.map(::convertAnnotation),
+        rBracket = v.node.findChildByType(KtTokens.RBRACKET)?.let { convertKeyword(it.psi, Node.Keyword::RBracket) },
     ).map(v)
 
     open fun convertAnnotationSet(v: KtAnnotationEntry) = Node.Modifier.AnnotationSet(
+        atSymbol = v.atSymbol?.let { convertKeyword(it, Node.Keyword::At) },
         target = v.useSiteTarget?.let(::convertAnnotationSetTarget),
+        lBracket = null,
         anns = listOf(convertAnnotation(v)),
+        rBracket = null,
     ).map(v)
 
     open fun convertAnnotationSets(v: KtElement): List<Node.Modifier.AnnotationSet> = v.children.flatMap { elem ->

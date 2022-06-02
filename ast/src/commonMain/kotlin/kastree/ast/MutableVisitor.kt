@@ -331,7 +331,10 @@ open class MutableVisitor {
                         expr = visitChildren(expr, newCh)
                     )
                     is Node.Modifier.AnnotationSet -> copy(
-                        anns = visitChildren(anns, newCh)
+                        atSymbol = visitChildren(atSymbol, newCh),
+                        lBracket = visitChildren(lBracket, newCh),
+                        anns = visitChildren(anns, newCh),
+                        rBracket = visitChildren(rBracket, newCh),
                     )
                     is Node.Modifier.AnnotationSet.Annotation -> copy(
                         nameTypeReference = visitChildren(nameTypeReference, newCh),

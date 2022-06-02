@@ -392,10 +392,11 @@ open class Writer(
                 is Node.Stmt.Expr ->
                     children(expr)
                 is Node.Modifier.AnnotationSet -> {
-                    append('@')
+                    children(atSymbol)
                     if (target != null) append(target.name.toLowerCase()).append(':')
-                    if (anns.size == 1) children(anns)
-                    else children(anns, "", "[", "]")
+                    children(lBracket)
+                    children(anns)
+                    children(rBracket)
                 }
                 is Node.Modifier.AnnotationSet.Annotation -> {
                     children(nameTypeReference)

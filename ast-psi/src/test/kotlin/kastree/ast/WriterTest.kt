@@ -122,6 +122,13 @@ class WriterTest {
         """.trimIndent())
     }
 
+    @Test
+    fun testConstructorModifiers() {
+        assertParseAndWriteExact("""
+            object Foo @[foo] private @[bar()] ()
+        """.trimIndent())
+    }
+
     private fun assertParseAndWriteExact(origCode: String) {
 
         val origExtrasConv = ConverterWithExtras()

@@ -438,8 +438,11 @@ sealed class Node {
 
     sealed class Modifier : Node() {
         data class AnnotationSet(
+            val atSymbol: Node.Keyword.At?,
             val target: Target?,
-            val anns: List<Annotation>
+            val lBracket: Node.Keyword.LBracket?,
+            val anns: List<Annotation>,
+            val rBracket: Node.Keyword.RBracket?,
         ) : Modifier() {
             enum class Target {
                 FIELD, FILE, PROPERTY, GET, SET, RECEIVER, PARAM, SETPARAM, DELEGATE
@@ -512,6 +515,9 @@ sealed class Node {
         class Colon : Keyword(":")
         class Lpar : Keyword("(")
         class Rpar : Keyword(")")
+        class LBracket : Keyword("[")
+        class RBracket : Keyword("]")
+        class At : Keyword("@")
     }
 
     sealed class Extra : Node() {
