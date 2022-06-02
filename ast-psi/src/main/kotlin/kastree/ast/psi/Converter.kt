@@ -366,6 +366,7 @@ open class Converter {
 
     open fun convertName(v: KtSimpleNameExpression) =
         convertName(v.getIdentifier() ?: error("Name identifier not found for $v"))
+            .map(v)
 
     open fun convertName(v: PsiElement) = Node.Expr.Name(
         name = v.text
