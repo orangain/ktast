@@ -137,7 +137,10 @@ open class MutableVisitor {
                         args = visitChildren(args, newCh),
                         members = visitChildren(members, newCh)
                     )
-                    is Node.TypeParam -> copy(
+                    is Node.TypeParams -> copy(
+                        params = visitChildren(params, newCh),
+                    )
+                    is Node.TypeParams.TypeParam -> copy(
                         mods = visitChildren(mods, newCh),
                         name = visitChildren(name, newCh),
                         type = visitChildren(type, newCh)

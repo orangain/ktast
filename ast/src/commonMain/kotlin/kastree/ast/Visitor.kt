@@ -133,7 +133,10 @@ open class Visitor {
                 visitChildren(args)
                 visitChildren(members)
             }
-            is Node.TypeParam -> {
+            is Node.TypeParams -> {
+                visitChildren(params)
+            }
+            is Node.TypeParams.TypeParam -> {
                 visitChildren(mods)
                 visitChildren(name)
                 visitChildren(type)

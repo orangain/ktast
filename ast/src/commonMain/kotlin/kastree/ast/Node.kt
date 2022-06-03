@@ -48,7 +48,7 @@ sealed class Node {
             override val mods: List<Modifier>,
             val declarationKeyword: Keyword.Declaration,
             val name: Expr.Name?,
-            val typeParams: List<TypeParam>,
+            val typeParams: TypeParams?,
             val primaryConstructor: PrimaryConstructor?,
             val colon: Keyword.Colon?,
             val parentAnns: List<Modifier.AnnotationSet>,
@@ -89,11 +89,11 @@ sealed class Node {
         data class Func(
             override val mods: List<Modifier>,
             val funKeyword: Keyword.Fun,
-            val typeParams: List<TypeParam>,
+            val typeParams: TypeParams?,
             val receiverType: Type?,
             // Name not present on anonymous functions
             val name: Expr.Name?,
-            val paramTypeParams: List<TypeParam>,
+            val paramTypeParams: TypeParams?,
             val params: Params?,
             val type: Type?,
             val typeConstraints: List<TypeConstraint>,
@@ -119,7 +119,7 @@ sealed class Node {
         data class Property(
             override val mods: List<Modifier>,
             val valOrVar: Keyword.ValOrVar,
-            val typeParams: List<TypeParam>,
+            val typeParams: TypeParams?,
             val receiverType: Type?,
             // Always at least one, more than one is destructuring, null is underscore in destructure
             val vars: List<Var?>,
@@ -155,7 +155,7 @@ sealed class Node {
         data class TypeAlias(
             override val mods: List<Modifier>,
             val name: Expr.Name,
-            val typeParams: List<TypeParam>,
+            val typeParams: TypeParams?,
             val type: Type
         ) : Decl(), WithModifiers
         data class Constructor(
@@ -179,11 +179,15 @@ sealed class Node {
         ) : Decl(), WithModifiers
     }
 
-    data class TypeParam(
-        override val mods: List<Modifier>,
-        val name: Expr.Name,
-        val type: TypeRef?
-    ) : Node(), WithModifiers
+    data class TypeParams(
+        val params: List<TypeParam>,
+    ) : Node() {
+        data class TypeParam(
+            override val mods: List<Modifier>,
+            val name: Expr.Name,
+            val type: TypeRef?
+        ) : Node(), WithModifiers
+    }
 
     data class TypeConstraint(
         override val anns: List<Modifier.AnnotationSet>,

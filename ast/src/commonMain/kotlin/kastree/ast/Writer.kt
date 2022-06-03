@@ -39,7 +39,7 @@ open class Writer(
                 is Node.Decl.Structured -> childMods().also {
                     children(declarationKeyword)
                     children(name)
-                    bracketedChildren(typeParams)
+                    children(typeParams)
                     children(primaryConstructor)
                     children(colon)
                     children(parentAnns)
@@ -84,10 +84,10 @@ open class Writer(
                 is Node.Decl.Func -> {
                     childMods()
                     children(funKeyword)
-                    bracketedChildren(typeParams, "")
+                    children(typeParams)
                     if (receiverType != null) children(receiverType).append(".")
                     name?.also { children(it) }
-                    bracketedChildren(paramTypeParams)
+                    children(paramTypeParams)
                     children(params)
                     if (type != null) append(":").also { children(type) }
                     childTypeConstraints(typeConstraints)
@@ -110,7 +110,7 @@ open class Writer(
                 is Node.Decl.Property -> {
                     childMods()
                     children(valOrVar)
-                    bracketedChildren(typeParams, "")
+                    children(typeParams)
                     if (receiverType != null) children(receiverType).append('.')
                     childVars(vars)
                     childTypeConstraints(typeConstraints)
@@ -150,7 +150,7 @@ open class Writer(
                 is Node.Decl.TypeAlias -> {
                     childMods().append("typealias")
                     children(name)
-                    bracketedChildren(typeParams).append(" = ")
+                    children(typeParams).append(" = ")
                     children(type)
                 }
                 is Node.Decl.Constructor -> {
@@ -170,7 +170,10 @@ open class Writer(
                         childrenLines(members, extraMidLines = 1)
                     }.append("}")
                 }
-                is Node.TypeParam -> {
+                is Node.TypeParams -> {
+                    bracketedChildren(params)
+                }
+                is Node.TypeParams.TypeParam -> {
                     childMods(newlines = false)
                     children(name)
                     if (type != null) append(":").also { children(type) }

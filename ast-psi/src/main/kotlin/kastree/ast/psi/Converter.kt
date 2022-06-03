@@ -307,11 +307,11 @@ open class Converter {
         mods = convertModifiers(v),
         funKeyword = v.funKeyword?.let{convertKeyword(it, Node.Keyword::Fun)} ?: error("No fun keyword for $v"),
         typeParams =
-            if (v.hasTypeParameterListBeforeFunctionName()) v.typeParameters.map(::convertTypeParam) else emptyList(),
+            if (v.hasTypeParameterListBeforeFunctionName()) v.typeParameterList?.let(::convertTypeParams) else null,
         receiverType = v.receiverTypeReference?.let(::convertType),
         name = v.nameIdentifier?.let(::convertName),
         paramTypeParams =
-            if (!v.hasTypeParameterListBeforeFunctionName()) v.typeParameters.map(::convertTypeParam) else emptyList(),
+            if (!v.hasTypeParameterListBeforeFunctionName()) v.typeParameterList?.let(::convertTypeParams) else null,
         params = v.valueParameterList?.let(::convertFuncParams),
         type = v.typeReference?.let(::convertType),
         typeConstraints = v.typeConstraints.map(::convertTypeConstraint),
@@ -421,7 +421,7 @@ open class Converter {
     open fun convertProperty(v: KtDestructuringDeclaration) = Node.Decl.Property(
         mods = convertModifiers(v),
         valOrVar = v.valOrVarKeyword?.let(::convertValOrVarKeyword) ?: error("Missing valOrVarKeyword"),
-        typeParams = emptyList(),
+        typeParams = null,
         receiverType = null,
         vars = v.entries.map(::convertPropertyVar),
         typeConstraints = emptyList(),
@@ -435,7 +435,7 @@ open class Converter {
     open fun convertProperty(v: KtProperty) = Node.Decl.Property(
         mods = convertModifiers(v),
         valOrVar = convertValOrVarKeyword(v.valOrVarKeyword),
-        typeParams = v.typeParameters.map(::convertTypeParam),
+        typeParams = v.typeParameterList?.let(::convertTypeParams),
         receiverType = v.receiverTypeReference?.let(::convertType),
         vars = listOf(Node.Decl.Property.Var(
             name = v.nameIdentifier?.let(::convertName) ?: error("No property name on $v"),
@@ -528,7 +528,7 @@ open class Converter {
         mods = convertModifiers(v),
         declarationKeyword = v.getDeclarationKeyword()?.let(::convertDeclarationKeyword) ?: error("declarationKeyword not found"),
         name = v.nameIdentifier?.let(::convertName),
-        typeParams = v.typeParameters.map(::convertTypeParam),
+        typeParams = v.typeParameterList?.let(::convertTypeParams),
         primaryConstructor = v.primaryConstructor?.let(::convertPrimaryConstructor),
         colon = v.getColon()?.let{ convertKeyword(it, Node.Keyword::Colon) },
         // TODO: this
@@ -582,7 +582,7 @@ open class Converter {
     open fun convertTypeAlias(v: KtTypeAlias) = Node.Decl.TypeAlias(
         mods = convertModifiers(v),
         name = v.nameIdentifier?.let(::convertName) ?: error("No type alias name for $v"),
-        typeParams = v.typeParameters.map(::convertTypeParam),
+        typeParams = v.typeParameterList?.let(::convertTypeParams),
         type = convertType(v.getTypeReference() ?: error("No type alias ref for $v"))
     ).map(v)
 
@@ -614,7 +614,11 @@ open class Converter {
         rhs = convertType(v.typeReference ?: error("No type op rhs for $v"))
     )
 
-    open fun convertTypeParam(v: KtTypeParameter) = Node.TypeParam(
+    open fun convertTypeParams(v: KtTypeParameterList) = Node.TypeParams(
+        params = v.parameters.map(::convertTypeParam),
+    ).map(v)
+
+    open fun convertTypeParam(v: KtTypeParameter) = Node.TypeParams.TypeParam(
         mods = convertModifiers(v),
         name = v.nameIdentifier?.let(::convertName) ?: error("No type param name for $v"),
         type = v.extendsBound?.let(::convertTypeRef)
