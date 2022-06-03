@@ -88,9 +88,17 @@ open class Visitor {
                 visitChildren(receiverType)
                 visitChildren(vars)
                 visitChildren(typeConstraints)
-                visitChildren(equalsToken)
-                visitChildren(expr)
+                visitChildren(initializer)
+                visitChildren(delegate)
                 visitChildren(accessors)
+            }
+            is Node.Decl.Property.Initializer -> {
+                visitChildren(equals)
+                visitChildren(expr)
+            }
+            is Node.Decl.Property.Delegate -> {
+                visitChildren(byKeyword)
+                visitChildren(expr)
             }
             is Node.Decl.Property.Var -> {
                 visitChildren(name)

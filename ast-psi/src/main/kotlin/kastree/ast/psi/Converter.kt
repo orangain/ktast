@@ -425,10 +425,13 @@ open class Converter {
         receiverType = null,
         vars = v.entries.map(::convertPropertyVar),
         typeConstraints = emptyList(),
-        delegated = false,
-        // Unfortunately KtDestructuringDeclaration does not expose equalsToken property.
-        equalsToken = v.node.findChildByType(KtTokens.EQ)?.psi?.let(::convertEqualsToken),
-        expr = v.initializer?.let(::convertExpr),
+        initializer = v.initializer?.let { expr ->
+            Node.Decl.Property.Initializer(
+                equals = convertKeyword((findChildByType(v, KtTokens.EQ) ?: error("No equals token for initializer of $v")), Node.Keyword::Equal),
+                expr = convertExpr(expr),
+            ).mapNotCorrespondsPsiElement(v)
+        },
+        delegate = null,
         accessors = null
     ).map(v)
 
@@ -442,9 +445,13 @@ open class Converter {
             type = v.typeReference?.let(::convertType)
         ).mapNotCorrespondsPsiElement(v)),
         typeConstraints = v.typeConstraints.map(::convertTypeConstraint),
-        delegated = v.hasDelegateExpression(),
-        equalsToken = v.equalsToken?.let(::convertEqualsToken),
-        expr = v.delegateExpressionOrInitializer?.let(::convertExpr),
+        initializer = v.initializer?.let { expr ->
+            Node.Decl.Property.Initializer(
+                equals = convertKeyword((v.equalsToken ?: error("No equals token for initializer of $v")), Node.Keyword::Equal),
+                expr = convertExpr(expr),
+            ).mapNotCorrespondsPsiElement(v)
+        },
+        delegate = v.delegate?.let(::convertDelegate),
         accessors = v.accessors.map(::convertPropertyAccessor).let {
             if (it.isEmpty()) null else Node.Decl.Property.Accessors(
                 first = it.first(),
@@ -453,11 +460,10 @@ open class Converter {
         }
     ).map(v)
 
-    open fun convertEqualsToken(v: PsiElement) = if (v.text == "=")
-        Node.Expr.BinaryOp.Oper.Token(Node.Expr.BinaryOp.Token.ASSN)
-            .map(v)
-    else
-        error("Equals token is expected but got ${v.text}")
+    open fun convertDelegate(v: KtPropertyDelegate) = Node.Decl.Property.Delegate(
+        byKeyword = convertKeyword(v.byKeywordNode.psi, Node.Keyword::By),
+        expr = convertExpr(v.expression ?: error("Missing expression for $v")),
+    ).map(v)
 
     open fun convertPropertyAccessor(v: KtPropertyAccessor) =
         if (v.isGetter) Node.Decl.Property.Accessor.Get(

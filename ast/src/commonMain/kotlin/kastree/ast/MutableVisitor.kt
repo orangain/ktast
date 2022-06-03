@@ -92,9 +92,17 @@ open class MutableVisitor {
                         receiverType = visitChildren(receiverType, newCh),
                         vars = visitChildren(vars, newCh),
                         typeConstraints = visitChildren(typeConstraints, newCh),
-                        equalsToken = visitChildren(equalsToken, newCh),
-                        expr = visitChildren(expr, newCh),
+                        initializer = visitChildren(initializer, newCh),
+                        delegate = visitChildren(delegate, newCh),
                         accessors = visitChildren(accessors, newCh)
+                    )
+                    is Node.Decl.Property.Initializer -> copy(
+                        equals = visitChildren(equals, newCh),
+                        expr = visitChildren(expr, newCh),
+                    )
+                    is Node.Decl.Property.Delegate -> copy(
+                        byKeyword = visitChildren(byKeyword, newCh),
+                        expr = visitChildren(expr, newCh),
                     )
                     is Node.Decl.Property.Var -> copy(
                         name = visitChildren(name, newCh),

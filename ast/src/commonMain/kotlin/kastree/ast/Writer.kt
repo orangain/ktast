@@ -114,11 +114,17 @@ open class Writer(
                     if (receiverType != null) children(receiverType).append('.')
                     childVars(vars)
                     childTypeConstraints(typeConstraints)
-                    if (expr != null) {
-                        if (delegated) append("by") else children(equalsToken)
-                        children(expr)
-                    }
+                    children(initializer)
+                    children(delegate)
                     if (accessors != null) children(accessors)
+                }
+                is Node.Decl.Property.Initializer -> {
+                    children(equals)
+                    children(expr)
+                }
+                is Node.Decl.Property.Delegate -> {
+                    children(byKeyword)
+                    children(expr)
                 }
                 is Node.Decl.Property.Var -> {
                     children(name)

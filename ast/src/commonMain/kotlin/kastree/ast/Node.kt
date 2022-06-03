@@ -124,14 +124,21 @@ sealed class Node {
             // Always at least one, more than one is destructuring, null is underscore in destructure
             val vars: List<Var?>,
             val typeConstraints: List<TypeConstraint>,
-            val delegated: Boolean,
-            val equalsToken: Expr.BinaryOp.Oper.Token?,
-            val expr: Expr?,
+            val initializer: Initializer?,
+            val delegate: Delegate?,
             val accessors: Accessors?
         ) : Decl(), WithModifiers {
             data class Var(
                 val name: Expr.Name,
                 val type: Type?
+            ) : Node()
+            data class Initializer(
+                val equals: Keyword.Equal,
+                val expr: Expr,
+            ) : Node()
+            data class Delegate(
+                val byKeyword: Keyword.By,
+                val expr: Expr,
             ) : Node()
             data class Accessors(
                 val first: Accessor,
@@ -527,6 +534,8 @@ sealed class Node {
         class Fun : Keyword("fun")
         class Constructor : Keyword("constructor")
         class Return : Keyword("return")
+        class By : Keyword("by")
+        class Equal : Keyword("=")
         class Colon : Keyword(":")
         class Lpar : Keyword("(")
         class Rpar : Keyword(")")
