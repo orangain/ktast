@@ -35,8 +35,8 @@ class Dumper(
 
         v.writeExtrasBefore()
         v.printNode()
-        v.writeExtrasWithin()
         super.visit(v, parent)
+        v.writeExtrasWithin()
         v.writeExtrasAfter()
     }
 
