@@ -37,6 +37,7 @@ sealed class Node {
     ) : Node(), WithModifiers
 
     data class Import(
+        val importKeyword: Keyword.Import,
         val names: List<String>,
         val wildcard: Boolean,
         val alias: String?
@@ -518,6 +519,7 @@ sealed class Node {
             INTERFACE, CLASS, OBJECT,
         }
 
+        class Import : Keyword("import")
         class Fun : Keyword("fun")
         class Constructor : Keyword("constructor")
         class Return : Keyword("return")

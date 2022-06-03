@@ -21,7 +21,9 @@ open class Visitor {
                 visitChildren(mods)
                 visitChildren(packageNameExpr)
             }
-            is Node.Import -> {}
+            is Node.Import -> {
+                visitChildren(importKeyword)
+            }
             is Node.Decl.Structured -> {
                 visitChildren(mods)
                 visitChildren(declarationKeyword)

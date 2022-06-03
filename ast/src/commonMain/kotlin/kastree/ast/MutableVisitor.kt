@@ -25,7 +25,9 @@ open class MutableVisitor {
                         mods = visitChildren(mods, newCh),
                         packageNameExpr = visitChildren(packageNameExpr, newCh),
                     )
-                    is Node.Import -> this
+                    is Node.Import -> copy(
+                        importKeyword = visitChildren(importKeyword, newCh),
+                    )
                     is Node.Decl.Structured -> copy(
                         mods = visitChildren(mods, newCh),
                         declarationKeyword = visitChildren(declarationKeyword, newCh),

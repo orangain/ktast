@@ -32,8 +32,9 @@ open class Writer(
                     children(packageNameExpr)
                 }
                 is Node.Import -> {
-                    append("import").appendNames(names, ".")
-                    if (wildcard) append(".*") else if (alias != null) append("as").appendName(alias)
+                    children(importKeyword)
+                    appendNames(names, ".")
+                    if (wildcard) append(".*") else if (alias != null) append(" as ").appendName(alias)
                 }
                 is Node.Decl.Structured -> childMods().also {
                     children(declarationKeyword)

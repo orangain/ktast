@@ -5,6 +5,7 @@ import org.jetbrains.kotlin.KtNodeTypes
 import org.jetbrains.kotlin.com.intellij.lang.ASTNode
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
+import org.jetbrains.kotlin.com.intellij.psi.tree.IElementType
 import org.jetbrains.kotlin.descriptors.annotations.AnnotationUseSiteTarget
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
@@ -342,6 +343,7 @@ open class Converter {
     ).map(v)
 
     open fun convertImport(v: KtImportDirective) = Node.Import(
+        importKeyword = convertKeyword(findChildByType(v, KtTokens.IMPORT_KEYWORD) ?: error("Missing import keyword"), Node.Keyword::Import),
         names = v.importedFqName?.pathSegments()?.map { it.asString() } ?: error("Missing import path"),
         wildcard = v.isAllUnder,
         alias = v.aliasName
@@ -741,5 +743,7 @@ open class Converter {
             generateSequence(node.firstChildNode, ASTNode::getTreeNext).
                 takeWhile { it.elementType != KtTokens.COLONCOLON }.
                 count { it.elementType == KtTokens.QUEST }
+
+        internal fun findChildByType(element: KtElement, type: IElementType): PsiElement? = element.node.findChildByType(type)?.psi
     }
 }
