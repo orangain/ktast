@@ -119,6 +119,7 @@ open class Visitor {
             is Node.Decl.Property.Accessor.Set -> {
                 visitChildren(mods)
                 visitChildren(paramMods)
+                visitChildren(paramName)
                 visitChildren(paramType)
                 visitChildren(body)
             }

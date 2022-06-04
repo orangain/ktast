@@ -479,7 +479,7 @@ open class Converter {
         ).map(v) else Node.Decl.Property.Accessor.Set(
             mods = convertModifiers(v),
             paramMods = v.parameter?.let(::convertModifiers) ?: emptyList(),
-            paramName = v.parameter?.name,
+            paramName = v.parameter?.nameIdentifier?.let(::convertName),
             paramType = v.parameter?.typeReference?.let(::convertTypeRef),
             body = v.bodyExpression?.let(::convertFuncBody)
         ).map(v)

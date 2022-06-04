@@ -144,7 +144,7 @@ open class Writer(
                     if (body != null) {
                         append('(')
                         childMods(paramMods, newlines = false)
-                        appendName(paramName ?: error("Missing setter param name when body present"))
+                        children(paramName ?: error("Missing setter param name when body present"))
                         if (paramType != null) append(":").also { children(paramType) }
                         append(")")
                         children(body)
@@ -565,8 +565,6 @@ open class Writer(
         this@Writer.also {
             v.forEachIndexed { index, node ->
                 children(node)
-                if (stmtRequiresEmptyBraceSetBeforeLineEnd(node, v.getOrNull(index + 1))) append("{}")
-                if (stmtRequiresSemicolonSetBeforeLineEnd(node, v.getOrNull(index + 1))) append(';')
             }
         }
 

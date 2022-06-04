@@ -123,6 +123,7 @@ open class MutableVisitor {
                     is Node.Decl.Property.Accessor.Set -> copy(
                         mods = visitChildren(mods, newCh),
                         paramMods = visitChildren(paramMods, newCh),
+                        paramName = visitChildren(paramName, newCh),
                         paramType = visitChildren(paramType, newCh),
                         body = visitChildren(body, newCh)
                     )

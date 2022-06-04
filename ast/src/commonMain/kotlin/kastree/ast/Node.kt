@@ -165,7 +165,7 @@ sealed class Node {
                 data class Set(
                     override val mods: List<Modifier>,
                     val paramMods: List<Modifier>,
-                    val paramName: String?,
+                    val paramName: Expr.Name?,
                     val paramType: TypeRef?,
                     val body: Func.Body?
                 ) : Accessor()
