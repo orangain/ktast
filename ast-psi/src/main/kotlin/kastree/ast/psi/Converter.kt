@@ -664,7 +664,10 @@ open class Converter {
             type = convertModifiers(v.modifierList).let { mods ->
                 val innerType = convertTypeRef(v.innerType ?: error("No inner type for nullable"))
                 if (v.innerType !is KtFunctionType && mods.isEmpty()) innerType
-                else Node.TypeRef.Paren(mods, innerType)
+                else Node.TypeRef.Paren(
+                    mods = mods,
+                    type = innerType,
+                ).mapNotCorrespondsPsiElement(v)
             }
         ).map(v)
         is KtDynamicType -> Node.TypeRef.Dynamic().map(v)
