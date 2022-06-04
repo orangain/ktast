@@ -49,9 +49,13 @@ open class MutableVisitor {
                         args = visitChildren(args, newCh),
                         lambda = visitChildren(lambda, newCh)
                     )
+                    is Node.Decl.Structured.Parent.DelegatedType -> copy(
+                        type = visitChildren(type, newCh),
+                        byKeyword = visitChildren(byKeyword, newCh),
+                        expr = visitChildren(expr, newCh),
+                    )
                     is Node.Decl.Structured.Parent.Type -> copy(
                         type = visitChildren(type, newCh),
-                        by = visitChildren(by, newCh)
                     )
                     is Node.Decl.Structured.PrimaryConstructor -> copy(
                         mods = visitChildren(mods, newCh),

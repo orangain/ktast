@@ -45,9 +45,13 @@ open class Visitor {
                 visitChildren(args)
                 visitChildren(lambda)
             }
+            is Node.Decl.Structured.Parent.DelegatedType -> {
+                visitChildren(type)
+                visitChildren(byKeyword)
+                visitChildren(expr)
+            }
             is Node.Decl.Structured.Parent.Type -> {
                 visitChildren(type)
-                visitChildren(by)
             }
             is Node.Decl.Structured.PrimaryConstructor -> {
                 visitChildren(mods)

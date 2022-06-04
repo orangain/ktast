@@ -406,10 +406,15 @@ open class Converter {
             // TODO
             lambda = null
         ).map(v)
-        else -> Node.Decl.Structured.Parent.Type(
+        is KtDelegatedSuperTypeEntry -> Node.Decl.Structured.Parent.DelegatedType(
             type = v.typeReference?.typeElement?.let(::convertType) as? Node.Type.Simple ?: error("Bad type on super call $v"),
-            by = (v as? KtDelegatedSuperTypeEntry)?.delegateExpression?.let(::convertExpr)
+            byKeyword = convertKeyword(v.byKeywordNode.psi, Node.Keyword::By),
+            expr = convertExpr(v.delegateExpression ?: error("Missing delegateExpression for $v")),
         ).map(v)
+        is KtSuperTypeEntry -> Node.Decl.Structured.Parent.Type(
+            type = v.typeReference?.typeElement?.let(::convertType) as? Node.Type.Simple ?: error("Bad type on super call $v"),
+        ).map(v)
+        else -> error("Unknown super type entry $v")
     }
 
     open fun convertPrimaryConstructor(v: KtPrimaryConstructor) = Node.Decl.Structured.PrimaryConstructor(

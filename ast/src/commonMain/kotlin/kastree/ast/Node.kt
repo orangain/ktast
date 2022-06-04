@@ -86,9 +86,13 @@ sealed class Node {
                     val args: ValueArgs?,
                     val lambda: Expr.Call.TrailLambda?
                 ) : Parent()
+                data class DelegatedType(
+                    val type: Node.Type.Simple,
+                    val byKeyword: Keyword.By,
+                    val expr: Expr
+                ) : Parent()
                 data class Type(
                     val type: Node.Type.Simple,
-                    val by: Expr?
                 ) : Parent()
             }
             data class PrimaryConstructor(

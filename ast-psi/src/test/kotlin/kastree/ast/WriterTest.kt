@@ -165,6 +165,14 @@ class WriterTest {
         """.trimIndent())
     }
 
+    @Test
+    fun testBy() {
+        assertParseAndWriteExact("""
+            class Runnable<a,a>(a : doo = 0) : foo(d=0), bar by x, bar {
+            }
+        """.trimIndent())
+    }
+
     private fun assertParseAndWriteExact(origCode: String) {
 
         val origExtrasConv = ConverterWithExtras()

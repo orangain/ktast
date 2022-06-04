@@ -73,9 +73,13 @@ open class Writer(
                     children(type)
                     parenChildren(args)
                 }
+                is Node.Decl.Structured.Parent.DelegatedType -> {
+                    children(type)
+                    children(byKeyword)
+                    children(expr)
+                }
                 is Node.Decl.Structured.Parent.Type -> {
                     children(type)
-                    if (by != null) append("by").also { children(by) }
                 }
                 is Node.Decl.Structured.PrimaryConstructor -> {
                     childMods(newlines = false)
