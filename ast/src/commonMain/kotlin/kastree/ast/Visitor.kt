@@ -5,6 +5,9 @@ open class Visitor {
 
     protected open fun visit(v: Node?, parent: Node) = v.run {
         when (this) {
+            is Node.NodeList<*> -> {
+                visitChildren(children)
+            }
             is Node.File -> {
                 visitChildren(anns)
                 visitChildren(pkg)

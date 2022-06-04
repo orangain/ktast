@@ -9,6 +9,9 @@ open class MutableVisitor {
         ch.sub { newCh ->
             preVisit(this, parent)?.run {
                 val new: Node = when (this) {
+                    is Node.NodeList<*> -> copy(
+                        children = visitChildren(children, newCh),
+                    )
                     is Node.File -> copy(
                         anns = visitChildren(anns, newCh),
                         pkg = visitChildren(pkg, newCh),

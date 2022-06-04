@@ -3,6 +3,13 @@ package kastree.ast
 sealed class Node {
     var tag: Any? = null
 
+    data class NodeList<out T: Node>(
+        val children: List<T>,
+        val separator: String,
+        val prefix: String,
+        val suffix: String,
+    ) : Node()
+
     interface WithAnnotations {
         val anns: List<Modifier.AnnotationSet>
     }
@@ -209,7 +216,7 @@ sealed class Node {
         ) : TypeRef(), WithModifiers
         data class Func(
             val receiverType: Type?,
-            val params: List<Param>,
+            val params: NodeList<Param>?,
             val type: Type
         ) : TypeRef() {
             data class Param(

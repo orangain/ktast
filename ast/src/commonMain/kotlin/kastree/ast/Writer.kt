@@ -21,6 +21,9 @@ open class Writer(
         v?.writeExtrasBefore()
         v?.apply {
             when (this) {
+                is Node.NodeList<*> -> {
+                    children(this.children, separator, prefix, suffix)
+                }
                 is Node.File -> {
                     if (anns.isNotEmpty()) childAnns()
                     childrenLines(pkg, extraEndLines = 1)
@@ -196,7 +199,8 @@ open class Writer(
                     }.append(')')
                 is Node.TypeRef.Func -> {
                     if (receiverType != null) children(receiverType).append('.')
-                    parenChildren(params).append("->").also { children(type) }
+                    if (params != null) { children(params).append("->") }
+                    children(type)
                 }
                 is Node.TypeRef.Func.Param -> {
                     if (name != null) children(name).append(":")
@@ -543,6 +547,7 @@ open class Writer(
 
     protected fun Node.parenChildren(v: List<Node?>) = children(v, ",", "(", ")")
     protected fun Node.parenChildren(v: Node.ValueArgs?) = v?.args?.let { children(it, ",", "(", ")") }
+    protected fun Node.parenChildren(v: Node.NodeList<Node.TypeRef.Func.Param>) = parenChildren(v.children)
 
     protected fun Node.childrenLines(v: Node?, extraMidLines: Int = 0, extraEndLines: Int = 0) =
         this@Writer.also { if (v != null) childrenLines(listOf(v), extraMidLines, extraEndLines) }

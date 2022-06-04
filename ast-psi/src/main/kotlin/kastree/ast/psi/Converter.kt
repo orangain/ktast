@@ -648,12 +648,7 @@ open class Converter {
     open fun convertTypeRef(v: KtTypeElement): Node.TypeRef = when (v) {
         is KtFunctionType -> Node.TypeRef.Func(
             receiverType = v.receiverTypeReference?.let(::convertType),
-            params = v.parameters.map {
-                Node.TypeRef.Func.Param(
-                    name = it.nameIdentifier?.let(::convertName),
-                    type = convertType(it.typeReference ?: error("No param type"))
-                ).mapNotCorrespondsPsiElement(it)
-            },
+            params = v.parameterList?.let { convertTypeRefFuncParams(it) },
             type = convertType(v.returnTypeReference ?: error("No return type"))
         ).map(v)
         is KtUserType -> Node.TypeRef.Simple(
@@ -675,6 +670,18 @@ open class Converter {
         is KtDynamicType -> Node.TypeRef.Dynamic().map(v)
         else -> error("Unrecognized type of $v")
     }
+
+    open fun convertTypeRefFuncParams(v: KtParameterList): Node.NodeList<Node.TypeRef.Func.Param> = Node.NodeList(
+        children = v.parameters.map(::convertTypeRefFuncParam),
+        separator = ",",
+        prefix = "(",
+        suffix = ")",
+    ).map(v)
+
+    open fun convertTypeRefFuncParam(v: KtParameter) = Node.TypeRef.Func.Param(
+        name = v.nameIdentifier?.let(::convertName),
+        type = convertType(v.typeReference ?: error("No param type"))
+    ).map(v)
 
     open fun convertUnaryOp(v: KtUnaryExpression) = Node.Expr.UnaryOp(
         expr = convertExpr(v.baseExpression ?: error("No unary expr for $v")),
