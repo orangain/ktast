@@ -145,6 +145,17 @@ class WriterTest {
         """.trimIndent())
     }
 
+    @Test fun testTypeModifiers() {
+        assertParseAndWriteExact("""
+            val p1:suspend a
+            val p2: suspend (a) -> a
+            val p5: (suspend a).() -> a
+            val p6: a<in suspend a>
+            val p15: suspend (suspend (() -> Unit)) -> Unit
+            @a fun @a a.f1() {}
+        """.trimIndent())
+    }
+
     private fun assertParseAndWriteExact(origCode: String) {
 
         val origExtrasConv = ConverterWithExtras()
