@@ -30,13 +30,19 @@ class CorpusTest(private val unit: Corpus.Unit) {
             val newCode = Writer.write(origFile, origExtrasConv)
             println("----NEW CODE----\n$newCode\n-----------")
 
-            val newFile = Parser(newExtrasConv).parseFile(newCode)
-            println("----NEW AST----\n${Dumper.dump(newFile, newExtrasConv)}\n------------")
+            try {
+                val newFile = Parser(newExtrasConv).parseFile(newCode)
+                println("----NEW AST----\n${Dumper.dump(newFile, newExtrasConv)}\n------------")
 
-            // Compare files, but show difference by codes.
-            // We use if condition to ignore whitespace differences.
-            if (origFile != newFile) {
+                // Compare files, but show difference by codes.
+                // We use if condition to ignore whitespace differences.
+                if (origFile != newFile) {
+                    assertEquals(origCode, newCode)
+                }
+            } catch (ex: Parser.ParseError) {
+                // When the parser failed to parse new code, compare files to understand wrong code easily.
                 assertEquals(origCode, newCode)
+                throw ex
             }
         } catch (e: Converter.Unsupported) {
             Assume.assumeNoException(e.message, e)
