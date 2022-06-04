@@ -1,6 +1,6 @@
-# Kastree
+# Ktast
 
-Kastree is a simple library to manipulate Kotlin source code as a set of AST objects. Features:
+Ktast is a simple library to manipulate Kotlin source code as a set of AST objects. Features:
 
 * Simple, immutable, hierarchical [set of data classes](ast/ast-common/src/main/kotlin/kastree/ast/Node.kt) representing
   Kotlin AST
@@ -15,22 +15,23 @@ Kastree is a simple library to manipulate Kotlin source code as a set of AST obj
 The project is a simple one and probably will not support a lot of features. It was created to facilitate advanced
 Kotlin code generation beyond the string-based versions that exist.
 
-## Note
+## Related work
 
-Kastree is currently not being actively developed.
+Ktast is a fork of [Kastree](https://github.com/cretz/kastree). Kastree is currently not being actively developed.
 
-Another kotlin AST parsing library is [kotlinx.ast](https://github.com/kotlinx/ast)
+Another kotlin AST parsing library is [kotlinx.ast](https://github.com/kotlinx/ast). It does not use the Kotlin Compiler,
+but uses ANTLR and official Kotlin Grammar. Currently it seems that the library's summary AST classes are limited.
 
 ## Usage
 
-### Getting
+### Getting started
 
-This project has three libraries that are deployed to Maven Central. To simply build the AST from a Kotlin JVM or Java
-project, add the following dependency in Gradle:
+This project has two libraries that are available from [JitPack](https://jitpack.io/). To simply build the AST from a
+Kotlin JVM or Java project, add the following dependency in Gradle:
 
     implementation("com.github.orangain.kastree:ast:0.5.0")
 
-That does not include the parser. To include the parser (which transitively includes the entire Kotlin compiler),
+This does not include the parser. To include the parser (which transitively includes the entire Kotlin compiler),
 instead use:
 
     implementation("com.github.orangain.kastree:ast-psi:0.5.0")
