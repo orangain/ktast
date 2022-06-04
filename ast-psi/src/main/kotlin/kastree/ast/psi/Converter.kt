@@ -430,14 +430,8 @@ open class Converter {
         receiverType = null,
         vars = v.entries.map(::convertPropertyVar),
         typeConstraints = emptyList(),
-        initializer = v.initializer?.let { expr ->
-            Node.Initializer(
-                equals = convertKeyword(
-                    (findChildByType(v, KtTokens.EQ) ?: error("No equals token for initializer of $v")),
-                    Node.Keyword::Equal
-                ),
-                expr = convertExpr(expr),
-            ).mapNotCorrespondsPsiElement(v)
+        initializer = v.initializer?.let {
+            convertInitializer(findChildByType(v, KtTokens.EQ) ?: error("No equals token for initializer of $v"), it, v)
         },
         delegate = null,
         accessors = null
@@ -453,14 +447,8 @@ open class Converter {
             type = v.typeReference?.let(::convertTypeRef)
         ).mapNotCorrespondsPsiElement(v)),
         typeConstraints = v.typeConstraints.map(::convertTypeConstraint),
-        initializer = v.initializer?.let { expr ->
-            Node.Initializer(
-                equals = convertKeyword(
-                    (v.equalsToken ?: error("No equals token for initializer of $v")),
-                    Node.Keyword::Equal
-                ),
-                expr = convertExpr(expr),
-            ).mapNotCorrespondsPsiElement(v)
+        initializer = v.initializer?.let {
+            convertInitializer(v.equalsToken ?: error("No equals token for initializer of $v"), it, v)
         },
         delegate = v.delegate?.let(::convertDelegate),
         accessors = v.accessors.map(::convertPropertyAccessor).let {
@@ -470,6 +458,11 @@ open class Converter {
             )
         }
     ).map(v)
+
+    open fun convertInitializer(equalsToken: PsiElement, expr: KtExpression, parent: PsiElement) = Node.Initializer(
+        equals = convertKeyword(equalsToken, Node.Keyword::Equal),
+        expr = convertExpr(expr),
+    ).mapNotCorrespondsPsiElement(parent)
 
     open fun convertDelegate(v: KtPropertyDelegate) = Node.Decl.Property.Delegate(
         byKeyword = convertKeyword(v.byKeywordNode.psi, Node.Keyword::By),
