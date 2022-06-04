@@ -148,10 +148,6 @@ sealed class Node {
                 val name: Expr.Name,
                 val type: TypeRef?
             ) : Node()
-            data class Initializer(
-                val equals: Keyword.Equal,
-                val expr: Expr,
-            ) : Node()
             data class Delegate(
                 val byKeyword: Keyword.By,
                 val expr: Expr,
@@ -201,6 +197,11 @@ sealed class Node {
             val members: List<Decl>
         ) : Decl(), WithModifiers
     }
+
+    data class Initializer(
+        val equals: Keyword.Equal,
+        val expr: Expr,
+    ) : Node()
 
     data class TypeParams(
         val params: List<TypeParam>,

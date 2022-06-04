@@ -125,10 +125,6 @@ open class Writer(
                     children(delegate)
                     if (accessors != null) children(accessors)
                 }
-                is Node.Decl.Property.Initializer -> {
-                    children(equals)
-                    children(expr)
-                }
                 is Node.Decl.Property.Delegate -> {
                     children(byKeyword)
                     children(expr)
@@ -182,6 +178,10 @@ open class Writer(
                     if (members.isNotEmpty()) append("{").run {
                         childrenLines(members, extraMidLines = 1)
                     }.append("}")
+                }
+                is Node.Initializer -> {
+                    children(equals)
+                    children(expr)
                 }
                 is Node.TypeParams -> {
                     bracketedChildren(params)

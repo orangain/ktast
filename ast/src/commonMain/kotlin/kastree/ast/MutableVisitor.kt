@@ -103,10 +103,6 @@ open class MutableVisitor {
                         delegate = visitChildren(delegate, newCh),
                         accessors = visitChildren(accessors, newCh)
                     )
-                    is Node.Decl.Property.Initializer -> copy(
-                        equals = visitChildren(equals, newCh),
-                        expr = visitChildren(expr, newCh),
-                    )
                     is Node.Decl.Property.Delegate -> copy(
                         byKeyword = visitChildren(byKeyword, newCh),
                         expr = visitChildren(expr, newCh),
@@ -151,6 +147,10 @@ open class MutableVisitor {
                         name = visitChildren(name, newCh),
                         args = visitChildren(args, newCh),
                         members = visitChildren(members, newCh)
+                    )
+                    is Node.Initializer -> copy(
+                        equals = visitChildren(equals, newCh),
+                        expr = visitChildren(expr, newCh),
                     )
                     is Node.TypeParams -> copy(
                         params = visitChildren(params, newCh),

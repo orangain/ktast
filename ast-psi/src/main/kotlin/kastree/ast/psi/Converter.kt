@@ -431,8 +431,11 @@ open class Converter {
         vars = v.entries.map(::convertPropertyVar),
         typeConstraints = emptyList(),
         initializer = v.initializer?.let { expr ->
-            Node.Decl.Property.Initializer(
-                equals = convertKeyword((findChildByType(v, KtTokens.EQ) ?: error("No equals token for initializer of $v")), Node.Keyword::Equal),
+            Node.Initializer(
+                equals = convertKeyword(
+                    (findChildByType(v, KtTokens.EQ) ?: error("No equals token for initializer of $v")),
+                    Node.Keyword::Equal
+                ),
                 expr = convertExpr(expr),
             ).mapNotCorrespondsPsiElement(v)
         },
@@ -451,8 +454,11 @@ open class Converter {
         ).mapNotCorrespondsPsiElement(v)),
         typeConstraints = v.typeConstraints.map(::convertTypeConstraint),
         initializer = v.initializer?.let { expr ->
-            Node.Decl.Property.Initializer(
-                equals = convertKeyword((v.equalsToken ?: error("No equals token for initializer of $v")), Node.Keyword::Equal),
+            Node.Initializer(
+                equals = convertKeyword(
+                    (v.equalsToken ?: error("No equals token for initializer of $v")),
+                    Node.Keyword::Equal
+                ),
                 expr = convertExpr(expr),
             ).mapNotCorrespondsPsiElement(v)
         },

@@ -99,10 +99,6 @@ open class Visitor {
                 visitChildren(delegate)
                 visitChildren(accessors)
             }
-            is Node.Decl.Property.Initializer -> {
-                visitChildren(equals)
-                visitChildren(expr)
-            }
             is Node.Decl.Property.Delegate -> {
                 visitChildren(byKeyword)
                 visitChildren(expr)
@@ -147,6 +143,10 @@ open class Visitor {
                 visitChildren(name)
                 visitChildren(args)
                 visitChildren(members)
+            }
+            is Node.Initializer -> {
+                visitChildren(equals)
+                visitChildren(expr)
             }
             is Node.TypeParams -> {
                 visitChildren(params)
