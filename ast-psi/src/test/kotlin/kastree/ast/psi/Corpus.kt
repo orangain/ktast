@@ -7,13 +7,13 @@ import java.nio.file.Paths
 import kotlin.streams.toList
 
 object Corpus {
-    val overrideErrors = mapOf(
+    private val overrideErrors = mapOf(
         Paths.get("kdoc", "Simple.kt") to listOf("Unclosed comment")
     )
 
     val default by lazy { localTestData + kotlinRepoTestData }
 
-    val kotlinRepoTestData by lazy {
+    private val kotlinRepoTestData by lazy {
         // Recursive from $KOTLIN_REPO/compiler/testData/psi/**/*.kt
         loadTestDataFromDir(Paths.get(
             System.getenv("KOTLIN_REPO") ?: error("No KOTLIN_REPO env var"),
@@ -21,23 +21,31 @@ object Corpus {
         ).also { require(Files.isDirectory(it)) { "Dir not found at $it" } })
     }
 
-    val localTestData by lazy {
+    private val localTestData by lazy {
         loadTestDataFromDir(File(javaClass.getResource("/localTestData").toURI()).toPath())
     }
 
-    fun loadTestDataFromDir(root: Path) = Files.walk(root).filter { it.toString().endsWith(".kt") }.toList().map {
-        val relativePath = root.relativize(it)
-        Unit.FromFile(
-            relativePath = relativePath,
-            fullPath = it,
-            // Text files (same name w/ ext changed from kt to txt) have <whitespace>PsiElement:<error>
-            errorMessages = overrideErrors[relativePath] ?: Paths.get(it.toString().replace(".kt", ".txt")).let {
-                if (!Files.isRegularFile(it)) emptyList() else it.toFile().readLines().mapNotNull { line ->
-                    line.substringAfterLast("PsiErrorElement:", "").takeIf { it.isNotEmpty() }
-                }
-            }
-        )
-    }
+    private fun loadTestDataFromDir(root: Path) = Files.walk(root)
+        .filter { it.toString().endsWith(".kt") }
+        .toList()
+        .map { ktPath ->
+            val relativePath = root.relativize(ktPath)
+            Unit.FromFile(
+                relativePath = relativePath,
+                fullPath = ktPath,
+                // Text files (same name w/ ext changed from kt to txt) have <whitespace>PsiElement:<error>
+                errorMessages = overrideErrors[relativePath]
+                    ?: Paths.get(ktPath.toString().replace(".kt", ".txt")).let { txtPath ->
+                        if (!Files.isRegularFile(txtPath)) {
+                            emptyList()
+                        } else {
+                            txtPath.toFile().readLines().mapNotNull { line ->
+                                line.substringAfterLast("PsiErrorElement:", "").takeIf { it.isNotEmpty() }
+                            }
+                        }
+                    }
+            )
+        }
 
     sealed class Unit {
         abstract val name: String

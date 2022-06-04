@@ -1,5 +1,6 @@
 package kastree.ast.psi
 
+import kastree.ast.Dumper
 import kastree.ast.Node
 import kastree.ast.Writer
 import org.jetbrains.kotlin.com.intellij.openapi.util.text.StringUtilRt
@@ -12,38 +13,37 @@ import java.util.*
 import kotlin.test.assertEquals
 
 @RunWith(Parameterized::class)
-class CorpusTest(val unit: Corpus.Unit) {
+class CorpusTest(private val unit: Corpus.Unit) {
 
     @Test
     fun testParseAndConvert() {
         // In order to test, we parse the test code (failing and validating errors if present),
         // convert to our AST, write out our AST, re-parse what we wrote, re-convert, and compare
         try {
-            val elemMap = IdentityHashMap<Node, PsiElement>()
-            val origExtrasConv = object : Converter.WithExtras() {
-                override fun onNode(node: Node, elem: PsiElement) {
-                    elemMap[node] = elem
-                    super.onNode(node, elem)
-                }
-            }
+            val origExtrasConv = ConverterWithExtras()
             val origCode = StringUtilRt.convertLineSeparators(unit.read())
+            println("----ORIG CODE----\n$origCode\n------------")
             val origFile = Parser(origExtrasConv).parseFile(origCode)
-            if (debug) println("----ORIG----\n$origCode\n------------")
-            if (debug) println("ORIG AST: $origFile")
-            if (debug) elemMap.forEach {
-                println("ELEM MAP OF ${it.value} - ${it.value.text.replace("\n", "\\n")} - ${it.key}")
-                origExtrasConv.extrasBefore(it.key).forEach { println("  BEFORE: $it") }
-                origExtrasConv.extrasWithin(it.key).forEach { println("  WITHIN: $it") }
-                origExtrasConv.extrasAfter(it.key).forEach { println("  AFTER: $it") }
-            }
+            println("----ORIG AST----\n${Dumper.dump(origFile, origExtrasConv)}\n------------")
 
-            val newExtrasConv = Converter.WithExtras()
+            val newExtrasConv = ConverterWithExtras()
             val newCode = Writer.write(origFile, origExtrasConv)
-            if (debug) println("----NEW----\n$newCode\n-----------")
-            val newFile = Parser(newExtrasConv).parseFile(newCode)
-            if (debug) println("NEW AST: $newFile")
+            println("----NEW CODE----\n$newCode\n-----------")
 
-            assertEquals(origFile, newFile)
+            try {
+                val newFile = Parser(newExtrasConv).parseFile(newCode)
+                println("----NEW AST----\n${Dumper.dump(newFile, newExtrasConv)}\n------------")
+
+                // Compare files, but show difference by codes.
+                // We use if condition to ignore whitespace differences.
+                if (origFile != newFile) {
+                    assertEquals(origCode, newCode)
+                }
+            } catch (ex: Parser.ParseError) {
+                // When the parser failed to parse new code, compare files to understand wrong code easily.
+                assertEquals(origCode, newCode)
+                throw ex
+            }
         } catch (e: Converter.Unsupported) {
             Assume.assumeNoException(e.message, e)
         } catch (e: Parser.ParseError) {
