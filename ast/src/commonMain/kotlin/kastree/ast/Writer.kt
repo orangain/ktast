@@ -132,7 +132,7 @@ open class Writer(
                     if (second != null) childrenLines(second)
                 }
                 is Node.Decl.Property.Accessor.Get -> {
-                    childMods().append("get")
+                    childMods().append(" get")
                     if (body != null) {
                         append("()")
                         if (type != null) append(":").also { children(type) }
@@ -140,7 +140,7 @@ open class Writer(
                     }
                 }
                 is Node.Decl.Property.Accessor.Set -> {
-                    childMods().append("set")
+                    childMods().append(" set")
                     if (body != null) {
                         append('(')
                         childMods(paramMods, newlines = false)
@@ -252,7 +252,7 @@ open class Writer(
                 is Node.Expr.For -> {
                     append("for (")
                     childAnns(sameLine = true)
-                    childVars(vars).append("in").also { children(inExpr) }.append(") ")
+                    childVars(vars).append("in ").also { children(inExpr) }.append(") ")
                     children(body)
                 }
                 is Node.Expr.While -> {
@@ -366,16 +366,16 @@ open class Writer(
                     append("throw").also { children(expr) }
                 is Node.Expr.Return -> {
                     children(returnKeyword)
-                    if (label != null) append('@').appendName(label)
+                    if (label != null) append('@').appendName(label).append(' ')
                     children(expr)
                 }
                 is Node.Expr.Continue -> {
                     append("continue")
-                    if (label != null) append('@').appendName(label)
+                    if (label != null) append('@').appendName(label).append(' ')
                 }
                 is Node.Expr.Break -> {
                     append("break")
-                    if (label != null) append('@').appendName(label)
+                    if (label != null) append('@').appendName(label).append(' ')
                 }
                 is Node.Expr.CollLit ->
                     children(exprs, ",", "[", "]")
