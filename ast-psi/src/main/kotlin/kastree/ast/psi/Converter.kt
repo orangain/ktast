@@ -579,12 +579,20 @@ open class Converter {
             ).map(v)
         }
 
-    open fun convertTypeRef(v: KtTypeReference): Node.TypeRef = Node.TypeRef(
-        lpar = findChildAndConvertLpar(v),
-        mods = convertModifiers(v),
-        ref = convertType(v.typeElement ?: error("Missing type element for $v")),
-        rpar = findChildAndConvertRpar(v),
-    ).map(v)
+    open fun convertTypeRef(v: KtTypeReference): Node.TypeRef {
+        val (firstLPar, lastRPar) = if (v.firstChild.node.elementType == KtTokens.LPAR && v.lastChild.node.elementType == KtTokens.RPAR) {
+            Pair(convertKeyword(v.firstChild, Node.Keyword::Lpar), convertKeyword(v.lastChild, Node.Keyword::Rpar))
+        } else {
+            Pair(null, null)
+        }
+
+        return Node.TypeRef(
+            lpar = firstLPar,
+            mods = convertModifiers(v),
+            ref = convertType(v.typeElement ?: error("Missing type element for $v")),
+            rpar = lastRPar,
+        ).map(v)
+    }
 
     open fun convertTypeAlias(v: KtTypeAlias) = Node.Decl.TypeAlias(
         mods = convertModifiers(v),
