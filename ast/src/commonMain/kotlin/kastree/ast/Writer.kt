@@ -207,8 +207,9 @@ open class Writer(
                 is Node.Type.Nullable -> {
                     children(lpar)
                     children(mods)
-                    children(type).append('?')
+                    children(type)
                     children(rpar)
+                    append('?')
                 }
                 is Node.Type.Dynamic ->
                     append("dynamic")
