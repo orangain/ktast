@@ -576,8 +576,8 @@ open class Converter {
             Node.Type(
                 mods = convertModifiers(v.modifierList),
                 ref = convertTypeRef(it)
-            ).mapNotCorrespondsPsiElement(it)
-        }?.map(v)
+            ).map(v)
+        }
 
     open fun convertType(v: KtTypeReference): Node.Type = Node.Type(
         // Paren modifiers are inside the ref...
