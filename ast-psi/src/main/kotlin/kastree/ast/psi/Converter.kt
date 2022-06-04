@@ -212,16 +212,16 @@ open class Converter {
 
     open fun convertDoubleColonRefRecv(v: KtExpression, questionMarks: Int): Node.Expr.DoubleColonRef.Recv = when(v) {
         is KtSimpleNameExpression -> Node.Expr.DoubleColonRef.Recv.Type(
-            type = Node.TypeRef.Simple(
-                listOf(Node.TypeRef.Simple.Piece(convertName(v.getReferencedNameElement()), emptyList()).map(v))
+            type = Node.Type.Simple(
+                listOf(Node.Type.Simple.Piece(convertName(v.getReferencedNameElement()), emptyList()).map(v))
             ).mapNotCorrespondsPsiElement(v),
             questionMarks = questionMarks
         ).map(v)
         is KtCallExpression ->
             if (v.valueArgumentList == null && v.lambdaArguments.isEmpty())
                 Node.Expr.DoubleColonRef.Recv.Type(
-                    type = Node.TypeRef.Simple(listOf(
-                        Node.TypeRef.Simple.Piece(
+                    type = Node.Type.Simple(listOf(
+                        Node.Type.Simple.Piece(
                             name = v.calleeExpression?.let { (it as? KtSimpleNameExpression)?.let(::convertName) } ?: error("Missing text for call ref type of $v"),
                             typeParams = convertTypeParams(v.typeArgumentList)
                         ).mapNotCorrespondsPsiElement(v)
@@ -234,7 +234,7 @@ open class Converter {
             val rhs = v.selectorExpression?.let { convertDoubleColonRefRecv(it, questionMarks) }
             if (lhs is Node.Expr.DoubleColonRef.Recv.Type && rhs is Node.Expr.DoubleColonRef.Recv.Type)
                 Node.Expr.DoubleColonRef.Recv.Type(
-                    type = Node.TypeRef.Simple(lhs.type.pieces + rhs.type.pieces).map(v),
+                    type = Node.Type.Simple(lhs.type.pieces + rhs.type.pieces).map(v),
                     questionMarks = 0
                 ).map(v)
             else Node.Expr.DoubleColonRef.Recv.Expr(convertExpr(v)).map(v)
@@ -400,14 +400,14 @@ open class Converter {
 
     open fun convertParent(v: KtSuperTypeListEntry) = when (v) {
         is KtSuperTypeCallEntry -> Node.Decl.Structured.Parent.CallConstructor(
-            type = v.typeReference?.let(::convertTypeRef) as? Node.TypeRef.Simple ?: error("Bad type on super call $v"),
+            type = v.typeReference?.let(::convertTypeRef) as? Node.Type.Simple ?: error("Bad type on super call $v"),
             typeArgs = v.typeArguments.map(::convertType),
             args = v.valueArgumentList?.let(::convertValueArgs),
             // TODO
             lambda = null
         ).map(v)
         else -> Node.Decl.Structured.Parent.Type(
-            type = v.typeReference?.let(::convertTypeRef) as? Node.TypeRef.Simple ?: error("Bad type on super call $v"),
+            type = v.typeReference?.let(::convertTypeRef) as? Node.Type.Simple ?: error("Bad type on super call $v"),
             by = (v as? KtDelegatedSuperTypeEntry)?.delegateExpression?.let(::convertExpr)
         ).map(v)
     }
@@ -567,19 +567,19 @@ open class Converter {
         anns = v.catchParameter?.annotations?.map(::convertAnnotationSet) ?: emptyList(),
         varName = v.catchParameter?.name ?: error("No catch param name for $v"),
         varType = v.catchParameter?.typeReference?.
-            let(::convertTypeRef) as? Node.TypeRef.Simple ?: error("Invalid catch param type for $v"),
+            let(::convertTypeRef) as? Node.Type.Simple ?: error("Invalid catch param type for $v"),
         block = convertBlock(v.catchBody as? KtBlockExpression ?: error("No catch block for $v"))
     ).map(v)
 
     open fun convertType(v: KtTypeProjection) =
         v.typeReference?.let {
-            Node.Type(
+            Node.TypeRef(
                 mods = convertModifiers(v.modifierList),
                 ref = convertTypeRef(it)
             ).map(v)
         }
 
-    open fun convertType(v: KtTypeReference): Node.Type = Node.Type(
+    open fun convertType(v: KtTypeReference): Node.TypeRef = Node.TypeRef(
         // Paren modifiers are inside the ref...
         mods = if (v.hasParentheses()) emptyList() else convertModifiers(v),
         ref = convertTypeRef(v)
@@ -635,9 +635,9 @@ open class Converter {
         else convertType(it)
     } ?: emptyList()
 
-    open fun convertTypeRef(v: KtTypeReference): Node.TypeRef =
+    open fun convertTypeRef(v: KtTypeReference): Node.Type =
         if (v.hasParentheses()) {
-            Node.TypeRef.Paren(
+            Node.Type.Paren(
                 mods = convertModifiers(v),
                 type = convertTypeRef(v.typeElement ?: error("Missing type element for $v"))
             )
@@ -645,43 +645,43 @@ open class Converter {
             convertTypeRef(v.typeElement ?: error("Missing type element for $v"))
         }.map(v)
 
-    open fun convertTypeRef(v: KtTypeElement): Node.TypeRef = when (v) {
-        is KtFunctionType -> Node.TypeRef.Func(
+    open fun convertTypeRef(v: KtTypeElement): Node.Type = when (v) {
+        is KtFunctionType -> Node.Type.Func(
             receiverType = v.receiverTypeReference?.let(::convertType),
             params = v.parameterList?.let { convertTypeRefFuncParams(it) },
             type = convertType(v.returnTypeReference ?: error("No return type"))
         ).map(v)
-        is KtUserType -> Node.TypeRef.Simple(
+        is KtUserType -> Node.Type.Simple(
             pieces = generateSequence(v) { it.qualifier }.toList().reversed().map {
-                Node.TypeRef.Simple.Piece(
+                Node.Type.Simple.Piece(
                     name = it.referenceExpression?.let(::convertName) ?: error("No type name for $it"),
                     typeParams = convertTypeParams(it.typeArgumentList)
                 ).mapNotCorrespondsPsiElement(it)
             }
         ).map(v)
-        is KtNullableType -> Node.TypeRef.Nullable(
+        is KtNullableType -> Node.Type.Nullable(
             // If there are modifiers or the inner type is a function, the type is a paren
             type = convertModifiers(v.modifierList).let { mods ->
                 val innerType = convertTypeRef(v.innerType ?: error("No inner type for nullable"))
                 if (v.innerType !is KtFunctionType && mods.isEmpty()) innerType
-                else Node.TypeRef.Paren(
+                else Node.Type.Paren(
                     mods = mods,
                     type = innerType,
                 ).mapNotCorrespondsPsiElement(v)
             }
         ).map(v)
-        is KtDynamicType -> Node.TypeRef.Dynamic().map(v)
+        is KtDynamicType -> Node.Type.Dynamic().map(v)
         else -> error("Unrecognized type of $v")
     }
 
-    open fun convertTypeRefFuncParams(v: KtParameterList): Node.NodeList<Node.TypeRef.Func.Param> = Node.NodeList(
+    open fun convertTypeRefFuncParams(v: KtParameterList): Node.NodeList<Node.Type.Func.Param> = Node.NodeList(
         children = v.parameters.map(::convertTypeRefFuncParam),
         separator = ",",
         prefix = "(",
         suffix = ")",
     ).map(v)
 
-    open fun convertTypeRefFuncParam(v: KtParameter) = Node.TypeRef.Func.Param(
+    open fun convertTypeRefFuncParam(v: KtParameter) = Node.Type.Func.Param(
         name = v.nameIdentifier?.let(::convertName),
         type = convertType(v.typeReference ?: error("No param type"))
     ).map(v)

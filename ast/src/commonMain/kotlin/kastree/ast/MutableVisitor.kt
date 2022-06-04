@@ -161,31 +161,31 @@ open class MutableVisitor {
                         name = visitChildren(name, newCh),
                         type = visitChildren(type, newCh)
                     )
-                    is Node.TypeRef.Paren -> copy(
+                    is Node.Type.Paren -> copy(
                         mods = visitChildren(mods, newCh),
                         type = visitChildren(type, newCh)
                     )
-                    is Node.TypeRef.Func -> copy(
+                    is Node.Type.Func -> copy(
                         receiverType = visitChildren(receiverType, newCh),
                         params = visitChildren(params, newCh),
                         type = visitChildren(type, newCh)
                     )
-                    is Node.TypeRef.Func.Param -> copy(
+                    is Node.Type.Func.Param -> copy(
                         name = visitChildren(name, newCh),
                         type = visitChildren(type, newCh)
                     )
-                    is Node.TypeRef.Simple -> copy(
+                    is Node.Type.Simple -> copy(
                         pieces = visitChildren(pieces, newCh)
                     )
-                    is Node.TypeRef.Simple.Piece -> copy(
+                    is Node.Type.Simple.Piece -> copy(
                         name = visitChildren(name, newCh),
                         typeParams = visitChildren(typeParams, newCh)
                     )
-                    is Node.TypeRef.Nullable -> copy(
+                    is Node.Type.Nullable -> copy(
                         type = visitChildren(type, newCh)
                     )
-                    is Node.TypeRef.Dynamic -> this
-                    is Node.Type -> copy(
+                    is Node.Type.Dynamic -> this
+                    is Node.TypeRef -> copy(
                         mods = visitChildren(mods, newCh),
                         ref = visitChildren(ref, newCh)
                     )

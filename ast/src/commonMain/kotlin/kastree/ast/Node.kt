@@ -76,13 +76,13 @@ sealed class Node {
 
             sealed class Parent : Node() {
                 data class CallConstructor(
-                    val type: TypeRef.Simple,
-                    val typeArgs: List<Node.Type?>,
+                    val type: Node.Type.Simple,
+                    val typeArgs: List<Node.TypeRef?>,
                     val args: ValueArgs?,
                     val lambda: Expr.Call.TrailLambda?
                 ) : Parent()
                 data class Type(
-                    val type: TypeRef.Simple,
+                    val type: Node.Type.Simple,
                     val by: Expr?
                 ) : Parent()
             }
@@ -97,12 +97,12 @@ sealed class Node {
             override val mods: List<Modifier>,
             val funKeyword: Keyword.Fun,
             val typeParams: TypeParams?,
-            val receiverType: Type?,
+            val receiverType: TypeRef?,
             // Name not present on anonymous functions
             val name: Expr.Name?,
             val paramTypeParams: TypeParams?,
             val params: Params?,
-            val type: Type?,
+            val type: TypeRef?,
             val typeConstraints: List<TypeConstraint>,
             val body: Body?
         ) : Decl(), WithModifiers {
@@ -114,7 +114,7 @@ sealed class Node {
                     val readOnly: Boolean?,
                     val name: Expr.Name,
                     // Type can be null for anon functions
-                    val type: Type?,
+                    val type: TypeRef?,
                     val default: Expr?
                 ) : Node(), WithModifiers
             }
@@ -127,7 +127,7 @@ sealed class Node {
             override val mods: List<Modifier>,
             val valOrVar: Keyword.ValOrVar,
             val typeParams: TypeParams?,
-            val receiverType: Type?,
+            val receiverType: TypeRef?,
             // Always at least one, more than one is destructuring, null is underscore in destructure
             val vars: List<Var?>,
             val typeConstraints: List<TypeConstraint>,
@@ -137,7 +137,7 @@ sealed class Node {
         ) : Decl(), WithModifiers {
             data class Var(
                 val name: Expr.Name,
-                val type: Type?
+                val type: TypeRef?
             ) : Node()
             data class Initializer(
                 val equals: Keyword.Equal,
@@ -154,14 +154,14 @@ sealed class Node {
             sealed class Accessor : Node(), WithModifiers {
                 data class Get(
                     override val mods: List<Modifier>,
-                    val type: Type?,
+                    val type: TypeRef?,
                     val body: Func.Body?
                 ) : Accessor()
                 data class Set(
                     override val mods: List<Modifier>,
                     val paramMods: List<Modifier>,
                     val paramName: String?,
-                    val paramType: Type?,
+                    val paramType: TypeRef?,
                     val body: Func.Body?
                 ) : Accessor()
             }
@@ -170,7 +170,7 @@ sealed class Node {
             override val mods: List<Modifier>,
             val name: Expr.Name,
             val typeParams: TypeParams?,
-            val type: Type
+            val type: TypeRef
         ) : Decl(), WithModifiers
         data class Constructor(
             override val mods: List<Modifier>,
@@ -199,47 +199,47 @@ sealed class Node {
         data class TypeParam(
             override val mods: List<Modifier>,
             val name: Expr.Name,
-            val type: TypeRef?
+            val type: Type?
         ) : Node(), WithModifiers
     }
 
     data class TypeConstraint(
         override val anns: List<Modifier.AnnotationSet>,
         val name: Expr.Name,
-        val type: Type
+        val type: TypeRef
     ) : Node(), WithAnnotations
 
-    sealed class TypeRef : Node() {
+    sealed class Type : Node() {
         data class Paren(
             override val mods: List<Modifier>,
-            val type: TypeRef
-        ) : TypeRef(), WithModifiers
-        data class Func(
-            val receiverType: Type?,
-            val params: NodeList<Param>?,
             val type: Type
-        ) : TypeRef() {
+        ) : Type(), WithModifiers
+        data class Func(
+            val receiverType: TypeRef?,
+            val params: NodeList<Param>?,
+            val type: TypeRef
+        ) : Type() {
             data class Param(
                 val name: Expr.Name?,
-                val type: Type
+                val type: TypeRef
             ) : Node()
         }
         data class Simple(
             val pieces: List<Piece>
-        ) : TypeRef() {
+        ) : Type() {
             data class Piece(
                 val name: Expr.Name,
                 // Null means any
-                val typeParams: List<Type?>
+                val typeParams: List<TypeRef?>
             ) : Node()
         }
-        data class Nullable(val type: TypeRef) : TypeRef()
-        data class Dynamic(val _unused_: Boolean = false) : TypeRef()
+        data class Nullable(val type: Type) : Type()
+        data class Dynamic(val _unused_: Boolean = false) : Type()
     }
 
-    data class Type(
+    data class TypeRef(
         override val mods: List<Modifier>,
-        val ref: TypeRef
+        val ref: Type
     ) : Node(), WithModifiers
 
     data class ValueArgs(
@@ -268,7 +268,7 @@ sealed class Node {
             data class Catch(
                 override val anns: List<Modifier.AnnotationSet>,
                 val varName: String,
-                val varType: TypeRef.Simple,
+                val varType: Type.Simple,
                 val block: Block
             ) : Node(), WithAnnotations
         }
@@ -316,7 +316,7 @@ sealed class Node {
         data class TypeOp(
             val lhs: Expr,
             val oper: Oper,
-            val rhs: Type
+            val rhs: TypeRef
         ) : Expr() {
             data class Oper(val token: Token) : Node()
             enum class Token(val str: String) {
@@ -335,7 +335,7 @@ sealed class Node {
             sealed class Recv : Node() {
                 data class Expr(val expr: Node.Expr) : Recv()
                 data class Type(
-                    val type: TypeRef.Simple,
+                    val type: Node.Type.Simple,
                     val questionMarks: Int
                 ) : Recv()
             }
@@ -368,7 +368,7 @@ sealed class Node {
             data class Param(
                 // Multiple means destructure, null means underscore
                 val vars: List<Decl.Property.Var?>,
-                val destructType: Type?
+                val destructType: TypeRef?
             ) : Expr()
 
             data class Body(val stmts: List<Stmt>) : Expr()
@@ -377,7 +377,7 @@ sealed class Node {
             val label: String?
         ) : Expr()
         data class Super(
-            val typeArg: Type?,
+            val typeArg: TypeRef?,
             val label: String?
         ) : Expr()
         data class When(
@@ -395,7 +395,7 @@ sealed class Node {
                     val not: Boolean
                 ) : Cond()
                 data class Is(
-                    val type: Type,
+                    val type: TypeRef,
                     val not: Boolean
                 ) : Cond()
             }
@@ -434,7 +434,7 @@ sealed class Node {
         ) : Expr(), WithAnnotations
         data class Call(
             val expr: Expr,
-            val typeArgs: List<Type?>,
+            val typeArgs: List<TypeRef?>,
             val args: ValueArgs?,
             val lambda: TrailLambda?
         ) : Expr() {
@@ -476,8 +476,8 @@ sealed class Node {
                 FIELD, FILE, PROPERTY, GET, SET, RECEIVER, PARAM, SETPARAM, DELEGATE
             }
             data class Annotation(
-                val nameTypeReference: TypeRef,
-                val typeArgs: List<Type>,
+                val nameTypeReference: Type,
+                val typeArgs: List<TypeRef>,
                 val args: ValueArgs?
             ) : Node()
         }

@@ -157,31 +157,31 @@ open class Visitor {
                 visitChildren(name)
                 visitChildren(type)
             }
-            is Node.TypeRef.Paren -> {
+            is Node.Type.Paren -> {
                 visitChildren(mods)
                 visitChildren(type)
             }
-            is Node.TypeRef.Func -> {
+            is Node.Type.Func -> {
                 visitChildren(receiverType)
                 visitChildren(params)
                 visitChildren(type)
             }
-            is Node.TypeRef.Func.Param -> {
+            is Node.Type.Func.Param -> {
                 visitChildren(name)
                 visitChildren(type)
             }
-            is Node.TypeRef.Simple -> {
+            is Node.Type.Simple -> {
                 visitChildren(pieces)
             }
-            is Node.TypeRef.Simple.Piece -> {
+            is Node.Type.Simple.Piece -> {
                 visitChildren(name)
                 visitChildren(typeParams)
             }
-            is Node.TypeRef.Nullable -> {
+            is Node.Type.Nullable -> {
                 visitChildren(type)
             }
-            is Node.TypeRef.Dynamic -> {}
-            is Node.Type -> {
+            is Node.Type.Dynamic -> {}
+            is Node.TypeRef -> {
                 visitChildren(mods)
                 visitChildren(ref)
             }
