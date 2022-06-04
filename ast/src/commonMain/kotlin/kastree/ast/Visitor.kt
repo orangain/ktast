@@ -189,8 +189,9 @@ open class Visitor {
                 visitChildren(typeRef)
             }
             is Node.TypeRef -> {
-                visitChildren(lpar)
                 visitChildren(mods)
+                visitChildren(lpar)
+                visitChildren(innerMods)
                 visitChildren(ref)
                 visitChildren(rpar)
             }

@@ -193,8 +193,9 @@ open class MutableVisitor {
                         typeRef = visitChildren(typeRef, newCh),
                     )
                     is Node.TypeRef -> copy(
-                        lpar = visitChildren(lpar, newCh),
                         mods = visitChildren(mods, newCh),
+                        lpar = visitChildren(lpar, newCh),
+                        innerMods = visitChildren(innerMods, newCh),
                         ref = visitChildren(ref, newCh),
                         rpar = visitChildren(rpar, newCh),
                     )

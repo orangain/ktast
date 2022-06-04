@@ -143,6 +143,7 @@ class WriterTest {
     fun testFunctionWithFunctionReceiver() {
         assertParseAndWriteExact("""
             fun (@[a] T<T>.(A<B>) -> Unit).foo()
+            fun @[a] (@[a] T<T>.(A<B>) -> R).foo() {}
         """.trimIndent())
     }
 
@@ -153,15 +154,8 @@ class WriterTest {
             val p2: suspend (a) -> a
             val p5: (suspend a).() -> a
             val p6: a<in suspend a>
-            @a fun @a a.f1() {}
-        """.trimIndent())
-    }
-
-    @Ignore("It is difficult to handle redundant parentheses for now.")
-    @Test
-    fun testTypeModifiersWithRedundantParentheses() {
-        assertParseAndWriteExact("""
             val p15: suspend (suspend (() -> Unit)) -> Unit
+            @a fun @a a.f1() {}
         """.trimIndent())
     }
 

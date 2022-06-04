@@ -218,8 +218,10 @@ open class Writer(
                     children(typeRef)
                 }
                 is Node.TypeRef -> {
+                    children(mods)
                     children(lpar)
-                    childModsBeforeType(ref).also { children(ref) }
+                    children(innerMods)
+                    children(ref)
                     children(rpar)
                 }
                 is Node.ValueArgs -> {

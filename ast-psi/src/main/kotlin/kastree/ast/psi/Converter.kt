@@ -593,17 +593,35 @@ open class Converter {
         }
 
     open fun convertTypeRef(v: KtTypeReference): Node.TypeRef {
-        val (firstLPar, lastRPar) = if (v.firstChild.node.elementType == KtTokens.LPAR && v.lastChild.node.elementType == KtTokens.RPAR) {
-            Pair(convertKeyword(v.firstChild, Node.Keyword::Lpar), convertKeyword(v.lastChild, Node.Keyword::Rpar))
-        } else {
-            Pair(null, null)
+        var lpar: PsiElement? = null
+        var rpar: PsiElement? = null
+        var mods: KtModifierList? = null
+        var innerMods: KtModifierList? = null
+        v.allChildren.forEach {
+            when (it) {
+                is KtModifierList -> {
+                    if (lpar == null) {
+                        mods = it
+                    } else {
+                        innerMods = it
+                    }
+                }
+                else -> {
+                    when (it.node.elementType) {
+                        KtTokens.LPAR -> lpar = it
+                        KtTokens.RPAR -> rpar = it
+                        else -> {}
+                    }
+                }
+            }
         }
 
         return Node.TypeRef(
-            lpar = firstLPar,
-            mods = convertModifiers(v),
+            mods = convertModifiers(mods),
+            lpar = lpar?.let{ convertKeyword(it, Node.Keyword::Lpar) },
+            innerMods = convertModifiers(innerMods),
             ref = convertType(v.typeElement ?: error("Missing type element for $v")),
-            rpar = lastRPar,
+            rpar = rpar?.let{ convertKeyword(it, Node.Keyword::Rpar) },
         ).map(v)
     }
 

@@ -254,8 +254,9 @@ sealed class Node {
     ) : Node(), WithModifiers
 
     data class TypeRef(
-        override val lpar: Keyword.Lpar?,
         override val mods: List<Modifier>,
+        override val lpar: Keyword.Lpar?,
+        val innerMods: List<Modifier>,
         val ref: Type,
         override val rpar: Keyword.Rpar?,
     ) : Node(), WithModifiers, WithOptionalParentheses
