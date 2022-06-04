@@ -157,10 +157,6 @@ open class Visitor {
                 visitChildren(name)
                 visitChildren(type)
             }
-            is Node.Type.Paren -> {
-                visitChildren(mods)
-                visitChildren(type)
-            }
             is Node.Type.Func -> {
                 visitChildren(receiverType)
                 visitChildren(params)
@@ -178,12 +174,21 @@ open class Visitor {
                 visitChildren(typeParams)
             }
             is Node.Type.Nullable -> {
+                visitChildren(lpar)
+                visitChildren(mods)
                 visitChildren(type)
+                visitChildren(rpar)
             }
             is Node.Type.Dynamic -> {}
+            is Node.TypeProjection -> {
+                visitChildren(mods)
+                visitChildren(typeRef)
+            }
             is Node.TypeRef -> {
+                visitChildren(lpar)
                 visitChildren(mods)
                 visitChildren(ref)
+                visitChildren(rpar)
             }
             is Node.ValueArgs -> {
                 visitChildren(args)

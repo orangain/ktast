@@ -161,10 +161,6 @@ open class MutableVisitor {
                         name = visitChildren(name, newCh),
                         type = visitChildren(type, newCh)
                     )
-                    is Node.Type.Paren -> copy(
-                        mods = visitChildren(mods, newCh),
-                        type = visitChildren(type, newCh)
-                    )
                     is Node.Type.Func -> copy(
                         receiverType = visitChildren(receiverType, newCh),
                         params = visitChildren(params, newCh),
@@ -182,12 +178,21 @@ open class MutableVisitor {
                         typeParams = visitChildren(typeParams, newCh)
                     )
                     is Node.Type.Nullable -> copy(
-                        type = visitChildren(type, newCh)
+                        lpar = visitChildren(lpar, newCh),
+                        mods = visitChildren(mods, newCh),
+                        type = visitChildren(type, newCh),
+                        rpar = visitChildren(rpar, newCh),
                     )
                     is Node.Type.Dynamic -> this
-                    is Node.TypeRef -> copy(
+                    is Node.TypeProjection -> copy(
                         mods = visitChildren(mods, newCh),
-                        ref = visitChildren(ref, newCh)
+                        typeRef = visitChildren(typeRef, newCh),
+                    )
+                    is Node.TypeRef -> copy(
+                        lpar = visitChildren(lpar, newCh),
+                        mods = visitChildren(mods, newCh),
+                        ref = visitChildren(ref, newCh),
+                        rpar = visitChildren(rpar, newCh),
                     )
                     is Node.ValueArgs -> copy(
                         args = visitChildren(args, newCh),

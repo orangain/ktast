@@ -193,10 +193,6 @@ open class Writer(
                     append(":")
                     children(type)
                 }
-                is Node.Type.Paren ->
-                    append('(').also {
-                        childModsBeforeType(type).also { children(type) }
-                    }.append(')')
                 is Node.Type.Func -> {
                     if (receiverType != null) children(receiverType).append('.')
                     if (params != null) { children(params).append("->") }
@@ -210,12 +206,23 @@ open class Writer(
                     children(pieces, ".")
                 is Node.Type.Simple.Piece ->
                     children(name).also { bracketedChildren(typeParams) }
-                is Node.Type.Nullable ->
+                is Node.Type.Nullable -> {
+                    children(lpar)
+                    children(mods)
                     children(type).append('?')
+                    children(rpar)
+                }
                 is Node.Type.Dynamic ->
                     append("dynamic")
-                is Node.TypeRef ->
+                is Node.TypeProjection -> {
+                    children(mods)
+                    children(typeRef)
+                }
+                is Node.TypeRef -> {
+                    children(lpar)
                     childModsBeforeType(ref).also { children(ref) }
+                    children(rpar)
+                }
                 is Node.ValueArgs -> {
                     children(args)
                 }
@@ -523,9 +530,10 @@ open class Writer(
             // type or a non-receiver fn type, then we need to add an empty set of parens ourselves
             val lastAnn = (mods.lastOrNull() as? Node.Modifier.AnnotationSet)?.anns?.
                 singleOrNull()?.takeIf { it.args == null }
-            val shouldAddParens = lastAnn != null &&
-                (ref is Node.Type.Paren || (ref is Node.Type.Func && (
-                    ref.receiverType == null || ref.receiverType.ref is Node.Type.Paren)))
+            val shouldAddParens = lastAnn != null && ref is Node.Type.Func && ref.receiverType == null
+//            val shouldAddParens = lastAnn != null &&
+//                (ref is Node.Type.Paren || (ref is Node.Type.Func && (
+//                    ref.receiverType == null || ref.receiverType.ref is Node.Type.Paren)))
             (this as Node).children(mods, "")
             if (shouldAddParens) append("()")
         }

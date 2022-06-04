@@ -24,6 +24,11 @@ sealed class Node {
         val imports: List<Import>
     }
 
+    interface WithOptionalParentheses {
+        val lpar: Keyword.Lpar?
+        val rpar: Keyword.Rpar?
+    }
+
     data class File(
         override val anns: List<Modifier.AnnotationSet>,
         override val pkg: Package?,
@@ -77,7 +82,7 @@ sealed class Node {
             sealed class Parent : Node() {
                 data class CallConstructor(
                     val type: Node.Type.Simple,
-                    val typeArgs: List<Node.TypeRef?>,
+                    val typeArgs: List<TypeProjection?>,
                     val args: ValueArgs?,
                     val lambda: Expr.Call.TrailLambda?
                 ) : Parent()
@@ -210,10 +215,6 @@ sealed class Node {
     ) : Node(), WithAnnotations
 
     sealed class Type : Node() {
-        data class Paren(
-            override val mods: List<Modifier>,
-            val type: Type
-        ) : Type(), WithModifiers
         data class Func(
             val receiverType: TypeRef?,
             val params: NodeList<Param>?,
@@ -230,17 +231,29 @@ sealed class Node {
             data class Piece(
                 val name: Expr.Name,
                 // Null means any
-                val typeParams: List<TypeRef?>
+                val typeParams: List<TypeProjection?>
             ) : Node()
         }
-        data class Nullable(val type: Type) : Type()
+        data class Nullable(
+            override val lpar: Keyword.Lpar?,
+            override val mods: List<Modifier>,
+            val type: Type,
+            override val rpar: Keyword.Rpar?,
+        ) : Type(), WithModifiers, WithOptionalParentheses
         data class Dynamic(val _unused_: Boolean = false) : Type()
     }
 
-    data class TypeRef(
+    data class TypeProjection(
         override val mods: List<Modifier>,
-        val ref: Type
+        val typeRef: TypeRef,
     ) : Node(), WithModifiers
+
+    data class TypeRef(
+        override val lpar: Keyword.Lpar?,
+        override val mods: List<Modifier>,
+        val ref: Type,
+        override val rpar: Keyword.Rpar?,
+    ) : Node(), WithModifiers, WithOptionalParentheses
 
     data class ValueArgs(
         val args: List<ValueArg>
@@ -434,7 +447,7 @@ sealed class Node {
         ) : Expr(), WithAnnotations
         data class Call(
             val expr: Expr,
-            val typeArgs: List<TypeRef?>,
+            val typeArgs: List<TypeProjection?>,
             val args: ValueArgs?,
             val lambda: TrailLambda?
         ) : Expr() {
@@ -477,7 +490,7 @@ sealed class Node {
             }
             data class Annotation(
                 val nameTypeReference: Type,
-                val typeArgs: List<TypeRef>,
+                val typeArgs: List<TypeProjection>,
                 val args: ValueArgs?
             ) : Node()
         }
