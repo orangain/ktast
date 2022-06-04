@@ -19,9 +19,10 @@ class ParserTest {
                 Node.Decl.Property.Var
                   Node.Expr.Name
                   AFTER: Node.Extra.Whitespace
-                Node.Expr.BinaryOp.Oper.Token
-                AFTER: Node.Extra.Whitespace
-                Node.Expr.StringTmpl
+                Node.Initializer
+                  Node.Keyword.Equal
+                  AFTER: Node.Extra.Whitespace
+                  Node.Expr.StringTmpl
         """.trimIndent())
     }
 
@@ -37,11 +38,12 @@ class ParserTest {
                 Node.Decl.Property.Var
                   Node.Expr.Name
                   AFTER: Node.Extra.Whitespace
-                Node.Expr.BinaryOp.Oper.Token
-                AFTER: Node.Extra.Whitespace
-                Node.Expr.StringTmpl
-                AFTER: Node.Extra.Whitespace
-                AFTER: Node.Extra.Comment
+                Node.Initializer
+                  Node.Keyword.Equal
+                  AFTER: Node.Extra.Whitespace
+                  Node.Expr.StringTmpl
+                  AFTER: Node.Extra.Whitespace
+                  AFTER: Node.Extra.Comment
         """.trimIndent())
     }
 
