@@ -636,11 +636,13 @@ open class Converter {
     } ?: emptyList()
 
     open fun convertTypeRef(v: KtTypeReference): Node.TypeRef =
-        convertTypeRef(v.typeElement ?: error("Missing typ elem")).let {
-            if (!v.hasParentheses()) it else Node.TypeRef.Paren(
+        if (v.hasParentheses()) {
+            Node.TypeRef.Paren(
                 mods = convertModifiers(v),
-                type = it
+                type = convertTypeRef(v.typeElement ?: error("Missing type element for $v"))
             )
+        } else {
+            convertTypeRef(v.typeElement ?: error("Missing type element for $v"))
         }.map(v)
 
     open fun convertTypeRef(v: KtTypeElement): Node.TypeRef = when (v) {
@@ -667,7 +669,7 @@ open class Converter {
             type = convertModifiers(v.modifierList).let { mods ->
                 val innerType = convertTypeRef(v.innerType ?: error("No inner type for nullable"))
                 if (v.innerType !is KtFunctionType && mods.isEmpty()) innerType
-                else Node.TypeRef.Paren(mods, convertTypeRef(v.innerType!!))
+                else Node.TypeRef.Paren(mods, innerType)
             }
         ).map(v)
         is KtDynamicType -> Node.TypeRef.Dynamic().map(v)
