@@ -331,7 +331,9 @@ open class Converter {
         readOnly = if (v.hasValOrVar()) !v.isMutable else null,
         name = v.nameIdentifier?.let(::convertName) ?: error("No param name"),
         type = v.typeReference?.let(::convertTypeRef),
-        default = v.defaultValue?.let(::convertExpr)
+        initializer = v.defaultValue?.let{
+            convertInitializer(v.equalsToken ?: error("No equals token for initializer of $v"), it, v)
+        },
     ).map(v)
 
     open fun convertIf(v: KtIfExpression) = Node.Expr.If(

@@ -80,7 +80,7 @@ open class Visitor {
                 visitChildren(mods)
                 visitChildren(name)
                 visitChildren(type)
-                visitChildren(default)
+                visitChildren(initializer)
             }
             is Node.Decl.Func.Body.Block -> {
                 visitChildren(block)

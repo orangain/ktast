@@ -108,7 +108,7 @@ open class Writer(
                     if (readOnly == true) append("val") else if (readOnly == false) append("var")
                     children(name)
                     if (type != null) append(":").also { children(type) }
-                    if (default != null) append("=").also { children(default) }
+                    children(initializer)
                 }
                 is Node.Decl.Func.Body.Block ->
                     children(block)

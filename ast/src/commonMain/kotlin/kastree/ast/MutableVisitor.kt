@@ -84,7 +84,7 @@ open class MutableVisitor {
                         mods = visitChildren(mods, newCh),
                         name = visitChildren(name, newCh),
                         type = visitChildren(type, newCh),
-                        default = visitChildren(default, newCh)
+                        initializer = visitChildren(initializer, newCh)
                     )
                     is Node.Decl.Func.Body.Block -> copy(
                         block = visitChildren(block, newCh)

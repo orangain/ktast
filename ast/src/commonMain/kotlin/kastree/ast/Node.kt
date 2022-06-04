@@ -124,7 +124,7 @@ sealed class Node {
                     val name: Expr.Name,
                     // Type can be null for anon functions
                     val type: TypeRef?,
-                    val default: Expr?
+                    val initializer: Initializer?
                 ) : Node(), WithModifiers
             }
             sealed class Body : Node() {
