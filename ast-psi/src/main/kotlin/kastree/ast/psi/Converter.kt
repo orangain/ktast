@@ -129,7 +129,7 @@ open class Converter {
         expr = convertExpr(v.calleeExpression ?: error("No call expr for $v")),
         typeArgs = v.typeArguments.map(::convertTypeProjection),
         args = v.valueArgumentList?.let(::convertValueArgs),
-        lambda = v.lambdaArguments.singleOrNull()?.let(::convertCallTrailLambda)
+        lambda = v.lambdaArguments.firstOrNull()?.let(::convertCallTrailLambda)
     ).map(v)
 
     open fun convertCallTrailLambda(v: KtLambdaArgument): Node.Expr.Call.TrailLambda {
