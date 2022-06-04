@@ -547,7 +547,14 @@ open class Converter {
         parentAnns = emptyList(),
         parents = v.superTypeListEntries.map(::convertParent),
         typeConstraints = v.typeConstraints.map(::convertTypeConstraint),
-        members = v.declarations.map(::convertDecl)
+        body = v.body?.let { convertDecls(it) },
+    ).map(v)
+
+    open fun convertDecls(v: KtClassBody): Node.NodeList<Node.Decl> = Node.NodeList(
+        children = v.declarations.map(::convertDecl),
+        separator = "",
+        prefix = "{",
+        suffix = "}",
     ).map(v)
 
     open fun convertSuper(v: KtSuperExpression) = Node.Expr.Super(

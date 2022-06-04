@@ -22,7 +22,20 @@ open class Writer(
         v?.apply {
             when (this) {
                 is Node.NodeList<*> -> {
-                    children(this.children, separator, prefix, suffix)
+                    append(prefix)
+
+                    // First, do all the enum entries if there are any
+                    val enumEntries = children.takeWhile { it is Node.Decl.EnumEntry }
+                    if (enumEntries.isNotEmpty()) {
+                        children(enumEntries, ",", postfix = ";")
+                    }
+
+                    // Now the rest of the members
+                    val restChildren = children.drop(enumEntries.size)
+                    children(restChildren, separator)
+
+                    writeExtrasWithin()
+                    append(suffix)
                 }
                 is Node.File -> {
                     if (anns.isNotEmpty()) childAnns()
@@ -48,26 +61,7 @@ open class Writer(
                     children(parentAnns)
                     children(parents, ",")
                     childTypeConstraints(typeConstraints)
-                    if (members.isNotEmpty()) append("{").run {
-                        // First, do all the enum entries if there are any
-                        val enumEntries = members.map { it as? Node.Decl.EnumEntry }.takeWhile { it != null }
-                        enumEntries.forEachIndexed { index, enumEntry ->
-                            children(enumEntry)
-                            when (index) {
-                                members.size - 1 -> this
-                                enumEntries.size - 1 -> append(";")
-                                else -> append(",")
-                            }
-                        }
-                        // Now the rest of the members
-                        childrenLines(members.drop(enumEntries.size), extraMidLines = 1)
-                    }.append("}")
-
-                    // As a special case, if an object is nameless and bodyless, we should give it an empty body
-                    // to avoid ambiguities with the next item
-                    // See: https://youtrack.jetbrains.com/issue/KT-25581
-                    if ((isCompanion || isObject) && name == null && members.isEmpty())
-                        append("{}")
+                    children(body)
                 }
                 is Node.Decl.Structured.Parent.CallConstructor -> {
                     children(type)
@@ -578,7 +572,7 @@ open class Writer(
         // or ann+paren, we have to explicitly provide an empty brace set
         // See: https://youtrack.jetbrains.com/issue/KT-25578
         // TODO: is there a better place to do this?
-        if (v !is Node.Stmt.Decl || v.decl !is Node.Decl.Structured || v.decl.members.isNotEmpty() ||
+        if (v !is Node.Stmt.Decl || v.decl !is Node.Decl.Structured || (v.decl.body?.children?.isNotEmpty() == true) ||
             !v.decl.isClass) return false
         if (next !is Node.Stmt.Expr || (next.expr !is Node.Expr.Paren &&
             (next.expr !is Node.Expr.Annotated || next.expr.expr !is Node.Expr.Paren))) return false

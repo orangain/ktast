@@ -41,7 +41,7 @@ open class MutableVisitor {
                         parentAnns = visitChildren(parentAnns, newCh),
                         parents = visitChildren(parents, newCh),
                         typeConstraints = visitChildren(typeConstraints, newCh),
-                        members = visitChildren(members, newCh)
+                        body = visitChildren(body, newCh)
                     )
                     is Node.Decl.Structured.Parent.CallConstructor -> copy(
                         type = visitChildren(type, newCh),

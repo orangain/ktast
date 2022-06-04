@@ -37,7 +37,7 @@ open class Visitor {
                 visitChildren(parentAnns)
                 visitChildren(parents)
                 visitChildren(typeConstraints)
-                visitChildren(members)
+                visitChildren(body)
             }
             is Node.Decl.Structured.Parent.CallConstructor -> {
                 visitChildren(type)
