@@ -159,7 +159,7 @@ open class Writer(
                 is Node.Decl.TypeAlias -> {
                     childMods().append("typealias")
                     children(name)
-                    children(typeParams).append(" = ")
+                    children(typeParams).append("=")
                     children(type)
                 }
                 is Node.Decl.Constructor -> {
