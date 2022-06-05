@@ -1,13 +1,13 @@
-# Ktast
+# Ktast [![Java CI](https://github.com/orangain/ktast/actions/workflows/java_ci.yaml/badge.svg)](https://github.com/orangain/ktast/actions/workflows/java_ci.yaml)
 
 Ktast is a simple library to manipulate Kotlin source code as a set of AST objects. Features:
 
-* Simple, immutable, hierarchical [set of data classes](ast/ast-common/src/main/kotlin/ktast/ast/Node.kt) representing
+* Simple, immutable, hierarchical [set of data classes](ast/src/commonMain/kotlin/ktast/ast/Node.kt) representing
   Kotlin AST
-* Simple [writer implementation](ast/ast-common/src/main/kotlin/ktast/ast/Writer.kt) (some advanced features not yet
+* Simple [writer implementation](ast/src/commonMain/kotlin/ktast/ast/Writer.kt) (some advanced features not yet
   supported)
-* Support for [regular](ast/ast-common/src/main/kotlin/ktast/ast/Visitor.kt) and
-  [mutable](ast/ast-common/src/main/kotlin/ktast/ast/MutableVisitor.kt) visitors
+* Support for [regular](ast/src/commonMain/kotlin/ktast/ast/Visitor.kt) and
+  [mutable](ast/src/commonMain/kotlin/ktast/ast/MutableVisitor.kt) visitors
 * Basic support for blank-line and comment map (some advanced use cases not yet supported)
 * Support for [parsing](ast-psi/src/main/kotlin/ktast/ast/psi/Parser.kt) (via Kotlin compiler's parser) and
   [converting](ast-psi/src/main/kotlin/ktast/ast/psi/Converter.kt) to the AST
