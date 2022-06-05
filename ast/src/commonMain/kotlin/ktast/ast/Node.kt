@@ -299,9 +299,15 @@ sealed class Node {
         val typeRef: TypeRef,
     ) : Node()
 
+    /**
+     * AST node corresponds to KtValueArgumentList or KtInitializerList.
+     */
     data class ValueArgs(
         val args: List<ValueArg>
     ) : Node() {
+        /**
+         * AST node corresponds to KtValueArgument.
+         */
         data class ValueArg(
             val name: Expr.Name?,
             val asterisk: Boolean,

@@ -232,7 +232,7 @@ open class Converter {
     open fun convertEnumEntry(v: KtEnumEntry) = Node.Decl.EnumEntry(
         mods = convertModifiers(v),
         name = v.nameIdentifier?.let(::convertName) ?: error("Unnamed enum"),
-        args = ((v.superTypeListEntries.firstOrNull() as? KtSuperTypeCallEntry)?.valueArgumentList)?.let(::convertValueArgs),
+        args = v.initializerList?.let(::convertValueArgs),
         members = v.declarations.map(::convertDecl)
     ).map(v)
 
@@ -359,6 +359,11 @@ open class Converter {
 
     open fun convertValueArgs(v: KtValueArgumentList) = Node.ValueArgs(
         args = v.arguments.map(::convertValueArg)
+    ).map(v)
+
+    open fun convertValueArgs(v: KtInitializerList) = Node.ValueArgs(
+        args = ((v.initializers.firstOrNull() as? KtSuperTypeCallEntry)?.valueArgumentList?.arguments
+            ?: error("No value arguments for $v")).map(::convertValueArg)
     ).map(v)
 
     open fun convertValueArg(v: KtValueArgument) = Node.ValueArgs.ValueArg(
