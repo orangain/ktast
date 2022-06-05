@@ -504,8 +504,6 @@ open class Writer(
 
     protected fun Node.WithModifiers.childMods() = (this@childMods as Node).children(mods)
 
-    protected inline fun Node.children(vararg v: Node?) = this@Writer.also { v.forEach { visitChildren(it) } }
-
     // Null list values are asterisks
     protected fun Node.bracketedChildren(v: List<Node?>, appendIfNotEmpty: String = "") = this@Writer.also {
         if (v.isNotEmpty()) {
@@ -521,6 +519,7 @@ open class Writer(
     protected fun Node.parenChildren(v: List<Node?>) = children(v, ",", "(", ")")
     protected fun Node.parenChildren(v: Node.ValueArgs?) = v?.args?.let { children(it, ",", "(", ")") }
 
+    protected fun Node.children(vararg v: Node?) = this@Writer.also { v.forEach { visitChildren(it) } }
 
     protected fun Node.children(v: List<Node?>, sep: String = "", prefix: String = "", postfix: String = "") =
         this@Writer.also {
