@@ -563,8 +563,15 @@ open class Converter {
     )
 
     open fun convertLambda(v: KtLambdaExpression) = Node.Expr.Lambda(
-        params = v.valueParameters.map(::convertLambdaParam),
+        params = v.functionLiteral.valueParameterList?.let(::convertLambdaParams),
         body = v.bodyExpression?.let(::convertLambdaBody)
+    ).map(v)
+
+    open fun convertLambdaParams(v: KtParameterList): Node.NodeList<Node.Expr.Lambda.Param> = Node.NodeList(
+        children = v.parameters.map(::convertLambdaParam),
+        separator = ",",
+        prefix = "",
+        suffix = "",
     ).map(v)
 
     open fun convertLambdaParam(v: KtParameter) = Node.Expr.Lambda.Param(

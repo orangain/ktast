@@ -333,7 +333,10 @@ open class Writer(
                     append(value)
                 is Node.Expr.Lambda -> {
                     append("{")
-                    if (params.isNotEmpty()) append(' ').also { children(params, ",", "", " ->") }
+                    if (params != null) {
+                        children(params)
+                        append("->")
+                    }
                     children(body)
                     append("}")
                 }

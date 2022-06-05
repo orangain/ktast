@@ -430,7 +430,7 @@ sealed class Node {
          * AST node corresponds to KtLambdaExpression.
          */
         data class Lambda(
-            val params: List<Param>,
+            val params: NodeList<Param>?,
             val body: Body?
         ) : Expr() {
             /**
@@ -442,6 +442,13 @@ sealed class Node {
                 val destructTypeRef: TypeRef?
             ) : Expr()
 
+            /**
+             * AST node corresponds to KtBlockExpression in lambda body.
+             * In lambda expression, left and right braces are not included in Lambda.Body, but are included in Lambda.
+             * This means:
+             *
+             * <Lambda> = { <Param>, <Param> -> <Body> }
+             */
             data class Body(val stmts: List<Stmt>) : Expr()
         }
 
