@@ -85,11 +85,11 @@ open class Writer(
                     childMods()
                     children(funKeyword)
                     children(typeParams)
-                    if (receiverType != null) children(receiverType).append(".")
+                    if (receiverTypeRef != null) children(receiverTypeRef).append(".")
                     name?.also { children(it) }
                     children(paramTypeParams)
                     children(params)
-                    if (type != null) append(":").also { children(type) }
+                    if (typeRef != null) append(":").also { children(typeRef) }
                     childTypeConstraints(typeConstraints)
                     if (body != null)  { children(body) }
                 }
@@ -100,7 +100,7 @@ open class Writer(
                     if (mods.isNotEmpty()) childMods()
                     if (readOnly == true) append("val") else if (readOnly == false) append("var")
                     children(name)
-                    if (type != null) append(":").also { children(type) }
+                    if (typeRef != null) append(":").also { children(typeRef) }
                     children(initializer)
                 }
                 is Node.Decl.Func.Body.Block ->
@@ -111,7 +111,7 @@ open class Writer(
                     childMods()
                     children(valOrVar)
                     children(typeParams)
-                    if (receiverType != null) children(receiverType).append('.')
+                    if (receiverTypeRef != null) children(receiverTypeRef).append('.')
                     childVars(vars)
                     childTypeConstraints(typeConstraints)
                     children(initializer)
@@ -124,7 +124,7 @@ open class Writer(
                 }
                 is Node.Decl.Property.Var -> {
                     children(name)
-                    if (type != null) append(":").also { children(type) }
+                    if (typeRef != null) append(":").also { children(typeRef) }
                 }
                 is Node.Decl.Property.Accessors -> {
                     children(first)
@@ -134,7 +134,7 @@ open class Writer(
                     childMods().append(" get")
                     if (body != null) {
                         append("()")
-                        if (type != null) append(":").also { children(type) }
+                        if (typeRef != null) append(":").also { children(typeRef) }
                         append(' ').also { children(body) }
                     }
                 }
@@ -144,7 +144,7 @@ open class Writer(
                         append('(')
                         children(paramMods)
                         children(paramName ?: error("Missing setter param name when body present"))
-                        if (paramType != null) append(":").also { children(paramType) }
+                        if (paramTypeRef != null) append(":").also { children(paramTypeRef) }
                         append(")")
                         children(body)
                     }
@@ -153,7 +153,7 @@ open class Writer(
                     childMods().append("typealias")
                     children(name)
                     children(typeParams).append("=")
-                    children(type)
+                    children(typeRef)
                 }
                 is Node.Decl.Constructor -> {
                     childMods()
@@ -188,21 +188,21 @@ open class Writer(
                     childAnns(sameLine = true)
                     children(name)
                     append(":")
-                    children(type)
+                    children(typeRef)
                 }
                 is Node.Type.Func -> {
-                    if (receiverType != null) {
-                        children(receiverType)
-                        if (receiverType.ref != null) {
+                    if (receiverTypeRef != null) {
+                        children(receiverTypeRef)
+                        if (receiverTypeRef.type != null) {
                             append('.')
                         }
                     }
                     if (params != null) { children(params).append("->") }
-                    children(type)
+                    children(typeRef)
                 }
                 is Node.Type.Func.Param -> {
                     if (name != null) children(name).append(":")
-                    children(type)
+                    children(typeRef)
                 }
                 is Node.Type.Simple ->
                     children(pieces, ".")
@@ -229,7 +229,7 @@ open class Writer(
                     children(mods)
                     children(lpar)
                     children(innerMods)
-                    children(ref)
+                    children(type)
                     children(rpar)
                 }
                 is Node.ContextReceiver -> {
@@ -329,7 +329,7 @@ open class Writer(
                 }
                 is Node.Expr.Lambda.Param -> {
                     childVars(vars)
-                    if (destructType != null) append(": ").also { children(destructType) }
+                    if (destructTypeRef != null) append(": ").also { children(destructTypeRef) }
                 }
                 is Node.Expr.Lambda.Body -> {
                     if (stmts.isNotEmpty()) { children(stmts) }
@@ -364,7 +364,7 @@ open class Writer(
                 }
                 is Node.Expr.When.Cond.Is -> {
                     if (not) append('!')
-                    append("is").also { children(type) }
+                    append("is").also { children(typeRef) }
                 }
                 is Node.Expr.Object -> {
                     append("object")
@@ -439,7 +439,7 @@ open class Writer(
                     children(rBracket)
                 }
                 is Node.Modifier.AnnotationSet.Annotation -> {
-                    children(nameTypeReference)
+                    children(nameType)
                     bracketedChildren(typeArgs)
                     if (args != null) parenChildren(args)
                 }

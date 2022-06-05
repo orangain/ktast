@@ -65,11 +65,11 @@ open class Visitor {
                 visitChildren(mods)
                 visitChildren(funKeyword)
                 visitChildren(typeParams)
-                visitChildren(receiverType)
+                visitChildren(receiverTypeRef)
                 visitChildren(name)
                 visitChildren(paramTypeParams)
                 visitChildren(params)
-                visitChildren(type)
+                visitChildren(typeRef)
                 visitChildren(typeConstraints)
                 visitChildren(body)
             }
@@ -79,7 +79,7 @@ open class Visitor {
             is Node.Decl.Func.Params.Param -> {
                 visitChildren(mods)
                 visitChildren(name)
-                visitChildren(type)
+                visitChildren(typeRef)
                 visitChildren(initializer)
             }
             is Node.Decl.Func.Body.Block -> {
@@ -92,7 +92,7 @@ open class Visitor {
                 visitChildren(mods)
                 visitChildren(valOrVar)
                 visitChildren(typeParams)
-                visitChildren(receiverType)
+                visitChildren(receiverTypeRef)
                 visitChildren(vars)
                 visitChildren(typeConstraints)
                 visitChildren(initializer)
@@ -105,7 +105,7 @@ open class Visitor {
             }
             is Node.Decl.Property.Var -> {
                 visitChildren(name)
-                visitChildren(type)
+                visitChildren(typeRef)
             }
             is Node.Decl.Property.Accessors -> {
                 visitChildren(first)
@@ -113,21 +113,21 @@ open class Visitor {
             }
             is Node.Decl.Property.Accessor.Get -> {
                 visitChildren(mods)
-                visitChildren(type)
+                visitChildren(typeRef)
                 visitChildren(body)
             }
             is Node.Decl.Property.Accessor.Set -> {
                 visitChildren(mods)
                 visitChildren(paramMods)
                 visitChildren(paramName)
-                visitChildren(paramType)
+                visitChildren(paramTypeRef)
                 visitChildren(body)
             }
             is Node.Decl.TypeAlias -> {
                 visitChildren(mods)
                 visitChildren(name)
                 visitChildren(typeParams)
-                visitChildren(type)
+                visitChildren(typeRef)
             }
             is Node.Decl.Constructor -> {
                 visitChildren(mods)
@@ -160,16 +160,16 @@ open class Visitor {
             is Node.TypeConstraint -> {
                 visitChildren(anns)
                 visitChildren(name)
-                visitChildren(type)
+                visitChildren(typeRef)
             }
             is Node.Type.Func -> {
-                visitChildren(receiverType)
+                visitChildren(receiverTypeRef)
                 visitChildren(params)
-                visitChildren(type)
+                visitChildren(typeRef)
             }
             is Node.Type.Func.Param -> {
                 visitChildren(name)
-                visitChildren(type)
+                visitChildren(typeRef)
             }
             is Node.Type.Simple -> {
                 visitChildren(pieces)
@@ -194,7 +194,7 @@ open class Visitor {
                 visitChildren(mods)
                 visitChildren(lpar)
                 visitChildren(innerMods)
-                visitChildren(ref)
+                visitChildren(type)
                 visitChildren(rpar)
             }
             is Node.ContextReceiver -> {
@@ -285,7 +285,7 @@ open class Visitor {
             }
             is Node.Expr.Lambda.Param -> {
                 visitChildren(vars)
-                visitChildren(destructType)
+                visitChildren(destructTypeRef)
             }
             is Node.Expr.Lambda.Body -> {
                 visitChildren(stmts)
@@ -309,7 +309,7 @@ open class Visitor {
                 visitChildren(expr)
             }
             is Node.Expr.When.Cond.Is -> {
-                visitChildren(type)
+                visitChildren(typeRef)
             }
             is Node.Expr.Object -> {
                 visitChildren(parents)
@@ -371,7 +371,7 @@ open class Visitor {
                 visitChildren(rBracket)
             }
             is Node.Modifier.AnnotationSet.Annotation -> {
-                visitChildren(nameTypeReference)
+                visitChildren(nameType)
                 visitChildren(typeArgs)
                 visitChildren(args)
             }

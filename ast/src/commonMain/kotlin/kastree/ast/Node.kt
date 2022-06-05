@@ -103,12 +103,12 @@ sealed class Node {
             override val mods: List<Modifier>,
             val funKeyword: Keyword.Fun,
             val typeParams: TypeParams?,
-            val receiverType: TypeRef?,
+            val receiverTypeRef: TypeRef?,
             // Name not present on anonymous functions
             val name: Expr.Name?,
             val paramTypeParams: TypeParams?,
             val params: Params?,
-            val type: TypeRef?,
+            val typeRef: TypeRef?,
             val typeConstraints: List<TypeConstraint>,
             val body: Body?
         ) : Decl(), WithModifiers {
@@ -120,7 +120,7 @@ sealed class Node {
                     val readOnly: Boolean?,
                     val name: Expr.Name,
                     // Type can be null for anon functions
-                    val type: TypeRef?,
+                    val typeRef: TypeRef?,
                     val initializer: Initializer?
                 ) : Node(), WithModifiers
             }
@@ -133,7 +133,7 @@ sealed class Node {
             override val mods: List<Modifier>,
             val valOrVar: Keyword.ValOrVar,
             val typeParams: TypeParams?,
-            val receiverType: TypeRef?,
+            val receiverTypeRef: TypeRef?,
             // Always at least one, more than one is destructuring, null is underscore in destructure
             val vars: List<Var?>,
             val typeConstraints: List<TypeConstraint>,
@@ -143,7 +143,7 @@ sealed class Node {
         ) : Decl(), WithModifiers {
             data class Var(
                 val name: Expr.Name,
-                val type: TypeRef?
+                val typeRef: TypeRef?
             ) : Node()
             data class Delegate(
                 val byKeyword: Keyword.By,
@@ -156,14 +156,14 @@ sealed class Node {
             sealed class Accessor : Node(), WithModifiers {
                 data class Get(
                     override val mods: List<Modifier>,
-                    val type: TypeRef?,
+                    val typeRef: TypeRef?,
                     val body: Func.Body?
                 ) : Accessor()
                 data class Set(
                     override val mods: List<Modifier>,
                     val paramMods: List<Modifier>,
                     val paramName: Expr.Name?,
-                    val paramType: TypeRef?,
+                    val paramTypeRef: TypeRef?,
                     val body: Func.Body?
                 ) : Accessor()
             }
@@ -172,7 +172,7 @@ sealed class Node {
             override val mods: List<Modifier>,
             val name: Expr.Name,
             val typeParams: TypeParams?,
-            val type: TypeRef
+            val typeRef: TypeRef
         ) : Decl(), WithModifiers
         data class Constructor(
             override val mods: List<Modifier>,
@@ -213,18 +213,18 @@ sealed class Node {
     data class TypeConstraint(
         override val anns: List<Modifier.AnnotationSet>,
         val name: Expr.Name,
-        val type: TypeRef
+        val typeRef: TypeRef
     ) : Node(), WithAnnotations
 
     sealed class Type : Node() {
         data class Func(
-            val receiverType: TypeRef?,
+            val receiverTypeRef: TypeRef?,
             val params: NodeList<Param>?,
-            val type: TypeRef
+            val typeRef: TypeRef
         ) : Type() {
             data class Param(
                 val name: Expr.Name?,
-                val type: TypeRef
+                val typeRef: TypeRef
             ) : Node()
         }
         data class Simple(
@@ -255,7 +255,7 @@ sealed class Node {
         override val mods: List<Modifier>,
         override val lpar: Keyword.Lpar?,
         val innerMods: List<Modifier>,
-        val ref: Type?,
+        val type: Type?,
         override val rpar: Keyword.Rpar?,
     ) : Node(), WithModifiers, WithOptionalParentheses
 
@@ -389,7 +389,7 @@ sealed class Node {
             data class Param(
                 // Multiple means destructure, null means underscore
                 val vars: List<Decl.Property.Var?>,
-                val destructType: TypeRef?
+                val destructTypeRef: TypeRef?
             ) : Expr()
 
             data class Body(val stmts: List<Stmt>) : Expr()
@@ -416,7 +416,7 @@ sealed class Node {
                     val not: Boolean
                 ) : Cond()
                 data class Is(
-                    val type: TypeRef,
+                    val typeRef: TypeRef,
                     val not: Boolean
                 ) : Cond()
             }
@@ -497,7 +497,7 @@ sealed class Node {
                 FIELD, FILE, PROPERTY, GET, SET, RECEIVER, PARAM, SETPARAM, DELEGATE
             }
             data class Annotation(
-                val nameTypeReference: Type,
+                val nameType: Type,
                 val typeArgs: List<TypeProjection>,
                 val args: ValueArgs?
             ) : Node()
