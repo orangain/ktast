@@ -537,21 +537,6 @@ open class Writer(
             }
         }
 
-    protected fun Node.WithModifiers.childModsBeforeType(ref: Node.Type) = this@Writer.also {
-        if (mods.isNotEmpty()) {
-            // As a special case, if there is a trailing annotation with no args and the ref has a paren which is a paren
-            // type or a non-receiver fn type, then we need to add an empty set of parens ourselves
-            val lastAnn = (mods.lastOrNull() as? Node.Modifier.AnnotationSet)?.anns?.
-                singleOrNull()?.takeIf { it.args == null }
-            val shouldAddParens = lastAnn != null && ref is Node.Type.Func && ref.receiverType == null
-//            val shouldAddParens = lastAnn != null &&
-//                (ref is Node.Type.Paren || (ref is Node.Type.Func && (
-//                    ref.receiverType == null || ref.receiverType.ref is Node.Type.Paren)))
-            (this as Node).children(mods, "")
-            if (shouldAddParens) append("()")
-        }
-    }
-
     protected inline fun Node.children(vararg v: Node?) = this@Writer.also { v.forEach { visitChildren(it) } }
 
     // Null list values are asterisks
@@ -568,7 +553,6 @@ open class Writer(
 
     protected fun Node.parenChildren(v: List<Node?>) = children(v, ",", "(", ")")
     protected fun Node.parenChildren(v: Node.ValueArgs?) = v?.args?.let { children(it, ",", "(", ")") }
-    protected fun Node.parenChildren(v: Node.NodeList<Node.Type.Func.Param>) = parenChildren(v.children)
 
     protected fun Node.childrenLines(v: Node?, extraMidLines: Int = 0, extraEndLines: Int = 0) =
         this@Writer.also { if (v != null) childrenLines(listOf(v), extraMidLines, extraEndLines) }
@@ -580,38 +564,6 @@ open class Writer(
             }
         }
 
-    protected fun stmtRequiresEmptyBraceSetBeforeLineEnd(v: Node?, next: Node?): Boolean {
-        // As a special case, if this is a local memberless class decl stmt and the next line is a paren
-        // or ann+paren, we have to explicitly provide an empty brace set
-        // See: https://youtrack.jetbrains.com/issue/KT-25578
-        // TODO: is there a better place to do this?
-        if (v !is Node.Stmt.Decl || v.decl !is Node.Decl.Structured || (v.decl.body?.children?.isNotEmpty() == true) ||
-            !v.decl.isClass) return false
-        if (next !is Node.Stmt.Expr || (next.expr !is Node.Expr.Paren &&
-            (next.expr !is Node.Expr.Annotated || next.expr.expr !is Node.Expr.Paren))) return false
-        return true
-    }
-
-    protected fun stmtRequiresSemicolonSetBeforeLineEnd(v: Node?, next: Node?) =
-        stmtHasModifierLocalVarDeclAmbiguity(v, next) || stmtHasTrailingLambdaAmbiguity(v, next)
-
-    protected fun stmtHasModifierLocalVarDeclAmbiguity(v: Node?, next: Node?): Boolean {
-        // As a special case, if there is just a name stmt, and it is a modifier, and the next stmt is
-        // a decl, we need a semicolon
-        // See: https://youtrack.jetbrains.com/issue/KT-25579
-        // TODO: is there a better place to do this
-        if (v !is Node.Stmt.Expr || v.expr !is Node.Expr.Name || next !is Node.Stmt.Decl) return false
-        val name = v.expr.name.toUpperCase()
-        return Node.Modifier.Keyword.values().any { it.name == name }
-    }
-
-    protected fun stmtHasTrailingLambdaAmbiguity(v: Node?, next: Node?): Boolean {
-        // As a special case, if there is a function call stmt w/ no trailing lambda followed by a brace
-        // stmt, the call needs a semicolon
-        if (v !is Node.Stmt.Expr || v.expr !is Node.Expr.Call || v.expr.lambda != null) return false
-        return next is Node.Stmt.Expr && next.expr is Node.Expr.Lambda
-    }
-
     protected fun Node.children(v: List<Node?>, sep: String = "", prefix: String = "", postfix: String = "") =
         this@Writer.also {
             append(prefix)
@@ -622,20 +574,7 @@ open class Writer(
             append(postfix)
         }
 
-    // We accept lots of false positives to be simple and not have to bring in JVM dep to do accurate check
-    protected val String.shouldEscapeIdent get() =
-        KEYWORDS.contains(this) ||
-        all { it == '_' } ||
-        first() in '0'..'9' ||
-        any { it !in 'a'..'z' && it !in 'A'..'Z' && it !in '0'..'9' && it != '_' }
-
     companion object {
-        protected val KEYWORDS = setOf(
-            "as", "break", "class", "continue", "do", "else", "false", "for", "fun", "if", "in", "interface",
-            "is", "null", "object", "package", "return", "super", "this", "throw", "true", "try", "typealias",
-            "typeof", "val", "var", "when", "while"
-        )
-
         fun write(v: Node, extrasMap: ExtrasMap? = null) =
             write(v, StringBuilder(), extrasMap).toString()
         fun <T: Appendable> write(v: Node, app: T, extrasMap: ExtrasMap? = null) =
