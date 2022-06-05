@@ -1,4 +1,4 @@
-# Ktast [![Java CI](https://github.com/orangain/ktast/actions/workflows/java_ci.yaml/badge.svg)](https://github.com/orangain/ktast/actions/workflows/java_ci.yaml)
+# Ktast [![](https://jitpack.io/v/orangain/ktast.svg)](https://jitpack.io/#orangain/ktast) [![Java CI](https://github.com/orangain/ktast/actions/workflows/java_ci.yaml/badge.svg)](https://github.com/orangain/ktast/actions/workflows/java_ci.yaml)
 
 Ktast is a simple library to manipulate Kotlin source code as a set of AST objects. Features:
 
@@ -17,7 +17,8 @@ Kotlin code generation beyond the string-based versions that exist.
 
 ## Related work
 
-Ktast is a fork of [Kastree](https://github.com/cretz/kastree). Kastree is currently not being actively developed.
+Ktast is a fork of [Kastree](https://github.com/cretz/kastree). Unfortunately Kastree is currently not being actively developed.
+We are greatful to Chad Retz and contirbuters for the great work. Without their effort, we cannot build this library.
 
 Another kotlin AST parsing library is [kotlinx.ast](https://github.com/kotlinx/ast). It does not use the Kotlin
 Compiler, but uses ANTLR and official Kotlin Grammar. Currently it seems that the library's summary AST classes are
