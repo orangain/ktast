@@ -119,10 +119,6 @@ open class Converter {
         body = v.bodyExpression?.let(::convertFuncBody)
     ).map(v)
 
-    open fun convertFuncBody(v: KtExpression) =
-        if (v is KtBlockExpression) Node.Decl.Func.Body.Block(convertBlock(v)).map(v)
-        else Node.Decl.Func.Body.Expr(convertExpr(v)).map(v)
-
     open fun convertFuncParams(v: KtParameterList) = Node.Decl.Func.Params(
         params = v.parameters.map(::convertFuncParam),
     ).map(v)
@@ -136,6 +132,10 @@ open class Converter {
             convertInitializer(v.equalsToken ?: error("No equals token for initializer of $v"), it, v)
         },
     ).map(v)
+
+    open fun convertFuncBody(v: KtExpression) =
+        if (v is KtBlockExpression) Node.Decl.Func.Body.Block(convertBlock(v)).map(v)
+        else Node.Decl.Func.Body.Expr(convertExpr(v)).map(v)
 
     open fun convertProperty(v: KtProperty) = Node.Decl.Property(
         mods = convertModifiers(v),

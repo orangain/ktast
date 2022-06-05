@@ -103,6 +103,10 @@ sealed class Node {
         }
 
         data class Init(val block: Expr.Block) : Decl()
+
+        /**
+         * AST node corresponds to KtNamedFunction.
+         */
         data class Func(
             override val mods: List<Modifier>,
             val funKeyword: Keyword.Fun,
