@@ -390,16 +390,16 @@ open class Writer(
                     append("throw").also { children(expr) }
                 is Node.Expr.Return -> {
                     children(returnKeyword)
-                    if (label != null) append('@').appendName(label).append(' ')
+                    if (label != null) append('@').appendName(label)
                     children(expr)
                 }
                 is Node.Expr.Continue -> {
                     append("continue")
-                    if (label != null) append('@').appendName(label).append(' ')
+                    if (label != null) append('@').appendName(label)
                 }
                 is Node.Expr.Break -> {
                     append("break")
-                    if (label != null) append('@').appendName(label).append(' ')
+                    if (label != null) append('@').appendName(label)
                 }
                 is Node.Expr.CollLit ->
                     children(exprs, ",", "[", "]")
