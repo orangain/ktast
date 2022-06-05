@@ -786,10 +786,6 @@ open class Converter {
         internal val typeTokensByText = Node.Expr.TypeOp.Token.values().map { it.str to it }.toMap()
 
         internal val KtTypeReference.contextReceiverList get() = getStubOrPsiChild(KtStubElementTypes.CONTEXT_RECEIVER_LIST)
-        internal val KtTypeReference.names get() = (typeElement as? KtUserType)?.names ?: emptyList()
-        internal val KtUserType.names get(): List<String> =
-            referencedName?.let { (qualifier?.names ?: emptyList()) + it } ?: emptyList()
-        internal val KtExpression?.block get() = (this as? KtBlockExpression)?.statements ?: emptyList()
         internal val KtDoubleColonExpression.questionMarks get() =
             generateSequence(node.firstChildNode, ASTNode::getTreeNext).
                 takeWhile { it.elementType != KtTokens.COLONCOLON }.
