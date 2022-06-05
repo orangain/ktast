@@ -576,14 +576,16 @@ sealed class Node {
     }
 
     sealed class Extra : Node() {
+        abstract val text: String
+
         data class Whitespace(
-            val text: String,
+            override val text: String,
         ) : Extra()
         data class Comment(
-            val text: String,
+            override val text: String,
         ) : Extra()
         data class Semicolon(
-            val text: String
+            override val text: String
         ) : Extra()
     }
 }

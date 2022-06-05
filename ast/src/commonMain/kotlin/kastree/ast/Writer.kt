@@ -474,17 +474,7 @@ open class Writer(
 
     protected open fun Node.writeExtras(extras: List<Node.Extra>, continueIndent: Boolean) {
         extras.forEach {
-            when (it) {
-                is Node.Extra.Whitespace -> {
-                    append(it.text)
-                }
-                is Node.Extra.Comment -> {
-                    append(it.text)
-                }
-                is Node.Extra.Semicolon -> {
-                    append(it.text)
-                }
-            }
+            append(it.text)
         }
     }
 
