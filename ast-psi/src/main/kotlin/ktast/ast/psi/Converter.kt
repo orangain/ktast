@@ -329,9 +329,9 @@ open class Converter {
     ).map(v)
 
     open fun convertIf(v: KtIfExpression) = Node.Expr.If(
-        lpar = convertKeyword(v.leftParenthesis ?: error("No leftParenthesis on if for $v"), Node.Keyword::Lpar),
+        lPar = convertKeyword(v.leftParenthesis ?: error("No leftParenthesis on if for $v"), Node.Keyword::LPar),
         expr = convertExpr(v.condition ?: error("No cond on if for $v")),
-        rpar = convertKeyword(v.rightParenthesis ?: error("No rightParenthesis on if for $v"), Node.Keyword::Rpar),
+        rPar = convertKeyword(v.rightParenthesis ?: error("No rightParenthesis on if for $v"), Node.Keyword::RPar),
         body = convertExpr(v.then ?: error("No then on if for $v")),
         elseBody = v.`else`?.let(::convertExpr)
     ).map(v)
@@ -595,14 +595,14 @@ open class Converter {
         }
 
     open fun convertTypeRef(v: KtTypeReference): Node.TypeRef {
-        var lpar: PsiElement? = null
-        var rpar: PsiElement? = null
+        var lPar: PsiElement? = null
+        var rPar: PsiElement? = null
         var mods: KtModifierList? = null
         var innerMods: KtModifierList? = null
         v.allChildren.forEach {
             when (it) {
                 is KtModifierList -> {
-                    if (lpar == null) {
+                    if (lPar == null) {
                         mods = it
                     } else {
                         innerMods = it
@@ -610,8 +610,8 @@ open class Converter {
                 }
                 else -> {
                     when (it.node.elementType) {
-                        KtTokens.LPAR -> lpar = it
-                        KtTokens.RPAR -> rpar = it
+                        KtTokens.LPAR -> lPar = it
+                        KtTokens.RPAR -> rPar = it
                         else -> {}
                     }
                 }
@@ -621,10 +621,10 @@ open class Converter {
         return Node.TypeRef(
             contextReceivers = v.contextReceiverList?.let { convertContextReceivers(it) },
             mods = convertModifiers(mods),
-            lpar = lpar?.let { convertKeyword(it, Node.Keyword::Lpar) },
+            lPar = lPar?.let { convertKeyword(it, Node.Keyword::LPar) },
             innerMods = convertModifiers(innerMods),
             type = v.typeElement?.let { convertType(it) }, // v.typeElement is null when the type reference has only context receivers.
-            rpar = rpar?.let { convertKeyword(it, Node.Keyword::Rpar) },
+            rPar = rPar?.let { convertKeyword(it, Node.Keyword::RPar) },
         ).map(v)
     }
 
@@ -704,10 +704,10 @@ open class Converter {
             }
         ).map(v)
         is KtNullableType -> Node.Type.Nullable(
-            lpar = findChildAndConvertLpar(v),
+            lPar = findChildAndConvertLpar(v),
             mods = convertModifiers(v.modifierList),
             type = convertType(v.innerType ?: error("No inner type for nullable")),
-            rpar = findChildAndConvertRpar(v),
+            rPar = findChildAndConvertRpar(v),
         ).map(v)
         is KtDynamicType -> Node.Type.Dynamic().map(v)
         else -> error("Unrecognized type of $v")
@@ -786,10 +786,10 @@ open class Converter {
         }.map(v)
 
     open fun findChildAndConvertLpar(v: KtElement) =
-        findChildByType(v, KtTokens.LPAR)?.let { convertKeyword(it, Node.Keyword::Lpar) }
+        findChildByType(v, KtTokens.LPAR)?.let { convertKeyword(it, Node.Keyword::LPar) }
 
     open fun findChildAndConvertRpar(v: KtElement) =
-        findChildByType(v, KtTokens.RPAR)?.let { convertKeyword(it, Node.Keyword::Rpar) }
+        findChildByType(v, KtTokens.RPAR)?.let { convertKeyword(it, Node.Keyword::RPar) }
 
     protected open fun <T : Node> T.map(v: PsiElement) = also { onNode(it, v) }
     protected open fun <T : Node> T.mapNotCorrespondsPsiElement(v: PsiElement) = also { onNode(it, null) }
