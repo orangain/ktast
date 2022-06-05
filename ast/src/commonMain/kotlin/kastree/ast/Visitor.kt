@@ -239,12 +239,6 @@ open class Visitor {
                 visitChildren(oper)
                 visitChildren(rhs)
             }
-            is Node.Expr.TypeOp.Oper -> {}
-            is Node.Expr.TypeOp -> {
-                visitChildren(lhs)
-                visitChildren(oper)
-                visitChildren(rhs)
-            }
             is Node.Expr.BinaryOp.Oper.Infix -> {}
             is Node.Expr.BinaryOp.Oper.Token -> {}
             is Node.Expr.UnaryOp -> {
@@ -252,6 +246,12 @@ open class Visitor {
                 visitChildren(oper)
             }
             is Node.Expr.UnaryOp.Oper -> {}
+            is Node.Expr.TypeOp -> {
+                visitChildren(lhs)
+                visitChildren(oper)
+                visitChildren(rhs)
+            }
+            is Node.Expr.TypeOp.Oper -> {}
             is Node.Expr.DoubleColonRef.Callable -> {
                 visitChildren(recv)
                 visitChildren(name)
@@ -378,6 +378,7 @@ open class Visitor {
             is Node.Modifier.Lit -> {}
             is Node.Keyword -> {}
             is Node.Extra -> {}
+            null -> {}
         }
     }
 
