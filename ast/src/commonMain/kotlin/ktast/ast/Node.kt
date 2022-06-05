@@ -25,8 +25,8 @@ sealed class Node {
     }
 
     interface WithOptionalParentheses {
-        val lpar: Keyword.Lpar?
-        val rpar: Keyword.Rpar?
+        val lPar: Keyword.LPar?
+        val rPar: Keyword.RPar?
     }
 
     data class File(
@@ -253,10 +253,10 @@ sealed class Node {
         }
 
         data class Nullable(
-            override val lpar: Keyword.Lpar?,
+            override val lPar: Keyword.LPar?,
             override val mods: List<Modifier>,
             val type: Type,
-            override val rpar: Keyword.Rpar?,
+            override val rPar: Keyword.RPar?,
         ) : Type(), WithModifiers, WithOptionalParentheses
 
         data class Dynamic(val _unused_: Boolean = false) : Type()
@@ -270,10 +270,10 @@ sealed class Node {
     data class TypeRef(
         val contextReceivers: NodeList<ContextReceiver>?,
         override val mods: List<Modifier>,
-        override val lpar: Keyword.Lpar?,
+        override val lPar: Keyword.LPar?,
         val innerMods: List<Modifier>,
         val type: Type?,
-        override val rpar: Keyword.Rpar?,
+        override val rPar: Keyword.RPar?,
     ) : Node(), WithModifiers, WithOptionalParentheses
 
     data class ContextReceiver(
@@ -292,9 +292,9 @@ sealed class Node {
 
     sealed class Expr : Node() {
         data class If(
-            val lpar: Keyword.Lpar,
+            val lPar: Keyword.LPar,
             val expr: Expr,
-            val rpar: Keyword.Rpar,
+            val rPar: Keyword.RPar,
             val body: Expr,
             val elseBody: Expr?
         ) : Expr()
@@ -617,8 +617,8 @@ sealed class Node {
         class By : Keyword("by")
         class Equal : Keyword("=")
         class Colon : Keyword(":")
-        class Lpar : Keyword("(")
-        class Rpar : Keyword(")")
+        class LPar : Keyword("(")
+        class RPar : Keyword(")")
         class LBracket : Keyword("[")
         class RBracket : Keyword("]")
         class At : Keyword("@")

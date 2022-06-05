@@ -161,6 +161,18 @@ open class MutableVisitor {
                         name = visitChildren(name, newCh),
                         type = visitChildren(type, newCh)
                     )
+                    is Node.TypeProjection -> copy(
+                        mods = visitChildren(mods, newCh),
+                        typeRef = visitChildren(typeRef, newCh),
+                    )
+                    is Node.TypeRef -> copy(
+                        contextReceivers = visitChildren(contextReceivers, newCh),
+                        mods = visitChildren(mods, newCh),
+                        lPar = visitChildren(lPar, newCh),
+                        innerMods = visitChildren(innerMods, newCh),
+                        type = visitChildren(type, newCh),
+                        rPar = visitChildren(rPar, newCh),
+                    )
                     is Node.TypeConstraint -> copy(
                         anns = visitChildren(anns, newCh),
                         name = visitChildren(name, newCh),
@@ -183,24 +195,12 @@ open class MutableVisitor {
                         typeParams = visitChildren(typeParams, newCh)
                     )
                     is Node.Type.Nullable -> copy(
-                        lpar = visitChildren(lpar, newCh),
+                        lPar = visitChildren(lPar, newCh),
                         mods = visitChildren(mods, newCh),
                         type = visitChildren(type, newCh),
-                        rpar = visitChildren(rpar, newCh),
+                        rPar = visitChildren(rPar, newCh),
                     )
                     is Node.Type.Dynamic -> this
-                    is Node.TypeProjection -> copy(
-                        mods = visitChildren(mods, newCh),
-                        typeRef = visitChildren(typeRef, newCh),
-                    )
-                    is Node.TypeRef -> copy(
-                        contextReceivers = visitChildren(contextReceivers, newCh),
-                        mods = visitChildren(mods, newCh),
-                        lpar = visitChildren(lpar, newCh),
-                        innerMods = visitChildren(innerMods, newCh),
-                        type = visitChildren(type, newCh),
-                        rpar = visitChildren(rpar, newCh),
-                    )
                     is Node.ContextReceiver -> copy(
                         typeRef = visitChildren(typeRef, newCh),
                     )
@@ -212,9 +212,9 @@ open class MutableVisitor {
                         expr = visitChildren(expr, newCh)
                     )
                     is Node.Expr.If -> copy(
-                        lpar = visitChildren(lpar, newCh),
+                        lPar = visitChildren(lPar, newCh),
                         expr = visitChildren(expr, newCh),
-                        rpar = visitChildren(rpar, newCh),
+                        rPar = visitChildren(rPar, newCh),
                         body = visitChildren(body, newCh),
                         elseBody = visitChildren(elseBody, newCh)
                     )

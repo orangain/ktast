@@ -188,6 +188,21 @@ open class Writer(
                     children(name)
                     if (type != null) append(":").also { children(type) }
                 }
+                is Node.TypeProjection -> {
+                    children(mods)
+                    children(typeRef)
+                }
+                is Node.TypeRef -> {
+                    if (contextReceivers != null) {
+                        append("context")
+                        children(contextReceivers)
+                    }
+                    children(mods)
+                    children(lPar)
+                    children(innerMods)
+                    children(type)
+                    children(rPar)
+                }
                 is Node.TypeConstraint -> {
                     childAnns(sameLine = true)
                     children(name)
@@ -215,29 +230,14 @@ open class Writer(
                 is Node.Type.Simple.Piece ->
                     children(name).also { bracketedChildren(typeParams) }
                 is Node.Type.Nullable -> {
-                    children(lpar)
+                    children(lPar)
                     children(mods)
                     children(type)
-                    children(rpar)
+                    children(rPar)
                     append('?')
                 }
                 is Node.Type.Dynamic ->
                     append("dynamic")
-                is Node.TypeProjection -> {
-                    children(mods)
-                    children(typeRef)
-                }
-                is Node.TypeRef -> {
-                    if (contextReceivers != null) {
-                        append("context")
-                        children(contextReceivers)
-                    }
-                    children(mods)
-                    children(lpar)
-                    children(innerMods)
-                    children(type)
-                    children(rpar)
-                }
                 is Node.ContextReceiver -> {
                     children(typeRef)
                 }
@@ -251,7 +251,7 @@ open class Writer(
                 }
                 is Node.Expr.If -> {
                     append("if")
-                    children(lpar, expr, rpar, body)
+                    children(lPar, expr, rPar, body)
                     if (elseBody != null) append(" else ").also { children(elseBody) }
                 }
                 is Node.Expr.Try -> {

@@ -157,6 +157,18 @@ open class Visitor {
                 visitChildren(name)
                 visitChildren(type)
             }
+            is Node.TypeProjection -> {
+                visitChildren(mods)
+                visitChildren(typeRef)
+            }
+            is Node.TypeRef -> {
+                visitChildren(contextReceivers)
+                visitChildren(mods)
+                visitChildren(lPar)
+                visitChildren(innerMods)
+                visitChildren(type)
+                visitChildren(rPar)
+            }
             is Node.TypeConstraint -> {
                 visitChildren(anns)
                 visitChildren(name)
@@ -179,24 +191,12 @@ open class Visitor {
                 visitChildren(typeParams)
             }
             is Node.Type.Nullable -> {
-                visitChildren(lpar)
+                visitChildren(lPar)
                 visitChildren(mods)
                 visitChildren(type)
-                visitChildren(rpar)
+                visitChildren(rPar)
             }
             is Node.Type.Dynamic -> {}
-            is Node.TypeProjection -> {
-                visitChildren(mods)
-                visitChildren(typeRef)
-            }
-            is Node.TypeRef -> {
-                visitChildren(contextReceivers)
-                visitChildren(mods)
-                visitChildren(lpar)
-                visitChildren(innerMods)
-                visitChildren(type)
-                visitChildren(rpar)
-            }
             is Node.ContextReceiver -> {
                 visitChildren(typeRef)
             }
@@ -208,9 +208,9 @@ open class Visitor {
                 visitChildren(expr)
             }
             is Node.Expr.If -> {
-                visitChildren(lpar)
+                visitChildren(lPar)
                 visitChildren(expr)
-                visitChildren(rpar)
+                visitChildren(rPar)
                 visitChildren(body)
                 visitChildren(elseBody)
             }
