@@ -151,7 +151,7 @@ The tests rely on a checked out version of the [Kotlin source repository](https:
 uses the test data there to build a corpus to test against. The path to the base of the repo needs to be set as the
 `KOTLIN_REPO` environment variable. Once set, run:
 
-    path/to/gradle :ast-psi:test
+    ./gradlew :ast-psi:test
 
 This will ignore all Kotlin files with expected parse errors and only test against the ones that are valid (178 as of
 this writing). The test parses the Kotlin code into this AST, then re-writes this AST, then re-parses what was just
