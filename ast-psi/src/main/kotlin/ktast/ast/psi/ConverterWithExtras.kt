@@ -1,7 +1,7 @@
-package kastree.ast.psi
+package ktast.ast.psi
 
-import kastree.ast.ExtrasMap
-import kastree.ast.Node
+import ktast.ast.ExtrasMap
+import ktast.ast.Node
 import org.jetbrains.kotlin.com.intellij.psi.PsiComment
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace

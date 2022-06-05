@@ -1,7 +1,7 @@
-package kastree.ast.psi
+package ktast.ast.psi
 
-import kastree.ast.Dumper
-import kastree.ast.Writer
+import ktast.ast.Dumper
+import ktast.ast.Writer
 import org.jetbrains.kotlin.com.intellij.openapi.util.text.StringUtilRt
 import org.junit.Assume
 import org.junit.Test

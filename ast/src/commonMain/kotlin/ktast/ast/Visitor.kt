@@ -1,4 +1,4 @@
-package kastree.ast
+package ktast.ast
 
 open class Visitor {
     fun visit(v: Node) = visit(v, v)

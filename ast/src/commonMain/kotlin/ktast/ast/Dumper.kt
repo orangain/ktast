@@ -1,4 +1,4 @@
-package kastree.ast
+package ktast.ast
 
 class Dumper(
     private val app: Appendable = StringBuilder(),
