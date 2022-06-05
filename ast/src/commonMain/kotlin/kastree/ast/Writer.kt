@@ -39,9 +39,9 @@ open class Writer(
                 }
                 is Node.File -> {
                     if (anns.isNotEmpty()) childAnns()
-                    childrenLines(pkg, extraEndLines = 1)
-                    childrenLines(imports, extraEndLines = 1)
-                    childrenLines(decls, extraMidLines = 1)
+                    children(pkg)
+                    children(imports)
+                    children(decls)
                 }
                 is Node.Package -> {
                     childMods().append("package")
@@ -76,7 +76,7 @@ open class Writer(
                     children(type)
                 }
                 is Node.Decl.Structured.PrimaryConstructor -> {
-                    childMods(newlines = false)
+                    childMods()
                     children(constructorKeyword)
                     children(params)
                 }
@@ -98,7 +98,7 @@ open class Writer(
                     parenChildren(params)
                 }
                 is Node.Decl.Func.Params.Param -> {
-                    if (mods.isNotEmpty()) childMods(newlines = false)
+                    if (mods.isNotEmpty()) childMods()
                     if (readOnly == true) append("val") else if (readOnly == false) append("var")
                     children(name)
                     if (type != null) append(":").also { children(type) }
@@ -128,8 +128,8 @@ open class Writer(
                     if (type != null) append(":").also { children(type) }
                 }
                 is Node.Decl.Property.Accessors -> {
-                    childrenLines(first)
-                    if (second != null) childrenLines(second)
+                    children(first)
+                    if (second != null) children(second)
                 }
                 is Node.Decl.Property.Accessor.Get -> {
                     childMods().append(" get")
@@ -143,7 +143,7 @@ open class Writer(
                     childMods().append(" set")
                     if (body != null) {
                         append('(')
-                        childMods(paramMods, newlines = false)
+                        children(paramMods)
                         children(paramName ?: error("Missing setter param name when body present"))
                         if (paramType != null) append(":").also { children(paramType) }
                         append(")")
@@ -170,7 +170,7 @@ open class Writer(
                     children(name)
                     if (args != null) parenChildren(args)
                     if (members.isNotEmpty()) append("{").run {
-                        childrenLines(members, extraMidLines = 1)
+                        children(members)
                     }.append("}")
                 }
                 is Node.Initializer -> {
@@ -181,7 +181,7 @@ open class Writer(
                     bracketedChildren(params)
                 }
                 is Node.TypeParams.TypeParam -> {
-                    childMods(newlines = false)
+                    childMods()
                     children(name)
                     if (type != null) append(":").also { children(type) }
                 }
@@ -333,7 +333,7 @@ open class Writer(
                     if (destructType != null) append(": ").also { children(destructType) }
                 }
                 is Node.Expr.Lambda.Body -> {
-                    if (stmts.isNotEmpty()) { childrenLines(stmts) }
+                    if (stmts.isNotEmpty()) { children(stmts) }
                     writeExtrasWithin()
                 }
                 is Node.Expr.This -> {
@@ -349,7 +349,7 @@ open class Writer(
                     append("when")
                     if (expr != null) append('(').also { children(expr) }.append(')')
                     append("{")
-                    childrenLines(entries)
+                    children(entries)
                     append("}")
                 }
                 is Node.Expr.When.Entry -> {
@@ -371,7 +371,7 @@ open class Writer(
                     append("object")
                     if (parents.isNotEmpty()) append(" : ").also { children(parents, ", ") }
                     if (members.isEmpty()) append("{}") else append("{").run {
-                        childrenLines(members, extraMidLines = 1)
+                        children(members)
                     }.append("}")
                 }
                 is Node.Expr.Throw ->
@@ -421,7 +421,7 @@ open class Writer(
                 is Node.Expr.Block -> {
                     append("{").run {
                         if (stmts.isNotEmpty()) {
-                            childrenLines(stmts)
+                            children(stmts)
                         }
                         writeExtrasWithin()
                     }
@@ -525,17 +525,8 @@ open class Writer(
     }
 
     // Ends with newline if last is ann or space is last is mod or nothing if empty
-    protected fun Node.WithModifiers.childMods(newlines: Boolean = true) =
-        (this@childMods as Node).childMods(mods, newlines)
-
-    protected fun Node.childMods(mods: List<Node.Modifier>, newlines: Boolean = true) =
-        this@Writer.also {
-            if (mods.isNotEmpty()) this@childMods.apply {
-                mods.forEachIndexed { index, mod ->
-                    children(mod)
-                }
-            }
-        }
+    protected fun Node.WithModifiers.childMods() =
+        (this@childMods as Node).children(mods)
 
     protected inline fun Node.children(vararg v: Node?) = this@Writer.also { v.forEach { visitChildren(it) } }
 
@@ -554,15 +545,6 @@ open class Writer(
     protected fun Node.parenChildren(v: List<Node?>) = children(v, ",", "(", ")")
     protected fun Node.parenChildren(v: Node.ValueArgs?) = v?.args?.let { children(it, ",", "(", ")") }
 
-    protected fun Node.childrenLines(v: Node?, extraMidLines: Int = 0, extraEndLines: Int = 0) =
-        this@Writer.also { if (v != null) childrenLines(listOf(v), extraMidLines, extraEndLines) }
-
-    protected fun Node.childrenLines(v: List<Node?>, extraMidLines: Int = 0, extraEndLines: Int = 0) =
-        this@Writer.also {
-            v.forEachIndexed { index, node ->
-                children(node)
-            }
-        }
 
     protected fun Node.children(v: List<Node?>, sep: String = "", prefix: String = "", postfix: String = "") =
         this@Writer.also {
