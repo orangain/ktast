@@ -423,10 +423,16 @@ sealed class Node {
             enum class Form { BOOLEAN, CHAR, INT, FLOAT, NULL }
         }
 
+        /**
+         * AST node corresponds to KtLambdaExpression.
+         */
         data class Lambda(
             val params: List<Param>,
             val body: Body?
         ) : Expr() {
+            /**
+             * AST node corresponds to KtParameter in lambda arguments.
+             */
             data class Param(
                 // Multiple means destructure, null means underscore
                 val vars: List<Decl.Property.Var?>,
