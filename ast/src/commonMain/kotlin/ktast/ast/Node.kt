@@ -527,8 +527,7 @@ sealed class Node {
          * AST node corresponds to KtObjectLiteralExpression.
          */
         data class Object(
-            val parents: List<Decl.Structured.Parent>,
-            val body: NodeList<Decl>?,
+            val decl: Decl.Structured,
         ) : Expr()
 
         data class Throw(

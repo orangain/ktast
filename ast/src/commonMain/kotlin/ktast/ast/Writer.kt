@@ -384,9 +384,7 @@ open class Writer(
                     append("is").also { children(typeRef) }
                 }
                 is Node.Expr.Object -> {
-                    append("object")
-                    if (parents.isNotEmpty()) append(" : ").also { children(parents, ", ") }
-                    children(body)
+                    children(decl)
                 }
                 is Node.Expr.Throw ->
                     append("throw").also { children(expr) }

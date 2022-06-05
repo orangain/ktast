@@ -203,6 +203,17 @@ class WriterTest {
         )
     }
 
+    @Test
+    fun testObjectLiteralExpression() {
+        assertParseAndWriteExact(
+            """
+                val foo = object<T, R> private (x: Int, y: Int) : Bar, Baz {
+                    fun foo() {}
+                }
+            """.trimIndent()
+        )
+    }
+
     private fun assertParseAndWriteExact(origCode: String) {
 
         val origExtrasConv = ConverterWithExtras()

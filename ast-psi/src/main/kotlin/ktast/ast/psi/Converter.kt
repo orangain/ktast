@@ -626,8 +626,7 @@ open class Converter {
     }
 
     open fun convertObject(v: KtObjectLiteralExpression) = Node.Expr.Object(
-        parents = v.objectDeclaration.superTypeListEntries.map(::convertParent),
-        body = convertDecls(v.objectDeclaration.body ?: error("No body for $v")),
+        decl = convertStructured(v.objectDeclaration),
     ).map(v)
 
     open fun convertThrow(v: KtThrowExpression) = Node.Expr.Throw(

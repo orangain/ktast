@@ -314,8 +314,7 @@ open class Visitor {
                 visitChildren(typeRef)
             }
             is Node.Expr.Object -> {
-                visitChildren(parents)
-                visitChildren(body)
+                visitChildren(decl)
             }
             is Node.Expr.Throw -> {
                 visitChildren(expr)
