@@ -313,7 +313,7 @@ open class Visitor {
             }
             is Node.Expr.Object -> {
                 visitChildren(parents)
-                visitChildren(members)
+                visitChildren(body)
             }
             is Node.Expr.Throw -> {
                 visitChildren(expr)

@@ -384,9 +384,7 @@ open class Writer(
                 is Node.Expr.Object -> {
                     append("object")
                     if (parents.isNotEmpty()) append(" : ").also { children(parents, ", ") }
-                    if (members.isEmpty()) append("{}") else append("{").run {
-                        children(members)
-                    }.append("}")
+                    children(body)
                 }
                 is Node.Expr.Throw ->
                     append("throw").also { children(expr) }

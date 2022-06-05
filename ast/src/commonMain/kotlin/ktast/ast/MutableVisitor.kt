@@ -317,7 +317,7 @@ open class MutableVisitor {
                     )
                     is Node.Expr.Object -> copy(
                         parents = visitChildren(parents, newCh),
-                        members = visitChildren(members, newCh)
+                        body = visitChildren(body, newCh)
                     )
                     is Node.Expr.Throw -> copy(
                         expr = visitChildren(expr, newCh)
