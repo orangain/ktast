@@ -2,8 +2,7 @@ package kastree.ast
 
 open class Writer(
     val app: Appendable = StringBuilder(),
-    val extrasMap: ExtrasMap? = null,
-    val includeExtraBlankLines: Boolean = extrasMap == null
+    val extrasMap: ExtrasMap? = null
 ) : Visitor() {
     protected fun append(ch: Char) = also { app.append(ch) }
     protected fun append(str: String) = also { app.append(str) }
@@ -27,7 +26,7 @@ open class Writer(
                     // First, do all the enum entries if there are any
                     val enumEntries = children.takeWhile { it is Node.Decl.EnumEntry }
                     if (enumEntries.isNotEmpty()) {
-                        children(enumEntries, ",", postfix = ";")
+                        children(enumEntries, ",", suffix = ";")
                     }
 
                     // Now the rest of the members
@@ -39,9 +38,9 @@ open class Writer(
                 }
                 is Node.File -> {
                     if (anns.isNotEmpty()) childAnns()
-                    childrenLines(pkg, extraEndLines = 1)
-                    childrenLines(imports, extraEndLines = 1)
-                    childrenLines(decls, extraMidLines = 1)
+                    children(pkg)
+                    children(imports)
+                    children(decls)
                 }
                 is Node.Package -> {
                     childMods().append("package")
@@ -76,7 +75,7 @@ open class Writer(
                     children(type)
                 }
                 is Node.Decl.Structured.PrimaryConstructor -> {
-                    childMods(newlines = false)
+                    childMods()
                     children(constructorKeyword)
                     children(params)
                 }
@@ -98,7 +97,7 @@ open class Writer(
                     parenChildren(params)
                 }
                 is Node.Decl.Func.Params.Param -> {
-                    if (mods.isNotEmpty()) childMods(newlines = false)
+                    if (mods.isNotEmpty()) childMods()
                     if (readOnly == true) append("val") else if (readOnly == false) append("var")
                     children(name)
                     if (type != null) append(":").also { children(type) }
@@ -128,8 +127,8 @@ open class Writer(
                     if (type != null) append(":").also { children(type) }
                 }
                 is Node.Decl.Property.Accessors -> {
-                    childrenLines(first)
-                    if (second != null) childrenLines(second)
+                    children(first)
+                    if (second != null) children(second)
                 }
                 is Node.Decl.Property.Accessor.Get -> {
                     childMods().append(" get")
@@ -143,7 +142,7 @@ open class Writer(
                     childMods().append(" set")
                     if (body != null) {
                         append('(')
-                        childMods(paramMods, newlines = false)
+                        children(paramMods)
                         children(paramName ?: error("Missing setter param name when body present"))
                         if (paramType != null) append(":").also { children(paramType) }
                         append(")")
@@ -164,13 +163,13 @@ open class Writer(
                     children(block)
                 }
                 is Node.Decl.Constructor.DelegationCall ->
-                    append(target.name.toLowerCase()).also { parenChildren(args) }
+                    append(target.name.lowercase()).also { parenChildren(args) }
                 is Node.Decl.EnumEntry -> {
                     childMods()
                     children(name)
                     if (args != null) parenChildren(args)
                     if (members.isNotEmpty()) append("{").run {
-                        childrenLines(members, extraMidLines = 1)
+                        children(members)
                     }.append("}")
                 }
                 is Node.Initializer -> {
@@ -181,7 +180,7 @@ open class Writer(
                     bracketedChildren(params)
                 }
                 is Node.TypeParams.TypeParam -> {
-                    childMods(newlines = false)
+                    childMods()
                     children(name)
                     if (type != null) append(":").also { children(type) }
                 }
@@ -333,7 +332,7 @@ open class Writer(
                     if (destructType != null) append(": ").also { children(destructType) }
                 }
                 is Node.Expr.Lambda.Body -> {
-                    if (stmts.isNotEmpty()) { childrenLines(stmts) }
+                    if (stmts.isNotEmpty()) { children(stmts) }
                     writeExtrasWithin()
                 }
                 is Node.Expr.This -> {
@@ -349,7 +348,7 @@ open class Writer(
                     append("when")
                     if (expr != null) append('(').also { children(expr) }.append(')')
                     append("{")
-                    childrenLines(entries)
+                    children(entries)
                     append("}")
                 }
                 is Node.Expr.When.Entry -> {
@@ -371,7 +370,7 @@ open class Writer(
                     append("object")
                     if (parents.isNotEmpty()) append(" : ").also { children(parents, ", ") }
                     if (members.isEmpty()) append("{}") else append("{").run {
-                        childrenLines(members, extraMidLines = 1)
+                        children(members)
                     }.append("}")
                 }
                 is Node.Expr.Throw ->
@@ -396,7 +395,7 @@ open class Writer(
                 is Node.Expr.Labeled ->
                     appendName(label).append("@").also { children(expr) }
                 is Node.Expr.Annotated ->
-                    childAnnsBeforeExpr(expr).also { children(expr) }
+                    childAnns().also { children(expr) }
                 is Node.Expr.Call -> {
                     children(expr)
                     bracketedChildren(typeArgs)
@@ -421,7 +420,7 @@ open class Writer(
                 is Node.Expr.Block -> {
                     append("{").run {
                         if (stmts.isNotEmpty()) {
-                            childrenLines(stmts)
+                            children(stmts)
                         }
                         writeExtrasWithin()
                     }
@@ -434,7 +433,7 @@ open class Writer(
                     children(expr)
                 is Node.Modifier.AnnotationSet -> {
                     children(atSymbol)
-                    if (target != null) append(target.name.toLowerCase()).append(':')
+                    if (target != null) append(target.name.lowercase()).append(':')
                     children(lBracket)
                     children(anns)
                     children(rBracket)
@@ -445,7 +444,7 @@ open class Writer(
                     if (args != null) parenChildren(args)
                 }
                 is Node.Modifier.Lit ->
-                    append(keyword.name.toLowerCase())
+                    append(keyword.name.lowercase())
                 is Node.Keyword -> append(value)
                 else ->
                     error("Unrecognized node type: $this")
@@ -457,34 +456,24 @@ open class Writer(
     protected open fun Node.writeExtrasBefore() {
         if (extrasMap == null) return
         // Write everything before
-        writeExtras(extrasMap.extrasBefore(this), continueIndent = true)
+        writeExtras(extrasMap.extrasBefore(this))
     }
 
     protected open fun Node.writeExtrasWithin() {
         if (extrasMap == null) return
         // Write everything within
-        writeExtras(extrasMap.extrasWithin(this), continueIndent = false)
+        writeExtras(extrasMap.extrasWithin(this))
     }
 
     protected open fun Node.writeExtrasAfter() {
         if (extrasMap == null) return
         // Write everything after that doesn't start a line or end a line
-        writeExtras(extrasMap.extrasAfter(this), continueIndent = false)
+        writeExtras(extrasMap.extrasAfter(this))
     }
 
-    protected open fun Node.writeExtras(extras: List<Node.Extra>, continueIndent: Boolean) {
+    protected open fun Node.writeExtras(extras: List<Node.Extra>) {
         extras.forEach {
-            when (it) {
-                is Node.Extra.Whitespace -> {
-                    append(it.text)
-                }
-                is Node.Extra.Comment -> {
-                    append(it.text)
-                }
-                is Node.Extra.Semicolon -> {
-                    append(it.text)
-                }
-            }
+            append(it.text)
         }
     }
 
@@ -512,47 +501,7 @@ open class Writer(
         }
     }
 
-    protected fun Node.WithAnnotations.childAnnsBeforeExpr(expr: Node.Expr) = this@Writer.also {
-        if (anns.isNotEmpty()) {
-            // As a special case, if there is a trailing annotation with no args and expr is paren,
-            // then we need to add an empty set of parens ourselves
-            val lastAnn = anns.lastOrNull()?.anns?.singleOrNull()?.takeIf { it.args == null }
-            val shouldAddParens = lastAnn != null && expr is Node.Expr.Paren
-            (this as Node).children(anns, " ")
-            if (shouldAddParens) append("()")
-            append(' ')
-        }
-    }
-
-    // Ends with newline if last is ann or space is last is mod or nothing if empty
-    protected fun Node.WithModifiers.childMods(newlines: Boolean = true) =
-        (this@childMods as Node).childMods(mods, newlines)
-
-    protected fun Node.childMods(mods: List<Node.Modifier>, newlines: Boolean = true) =
-        this@Writer.also {
-            if (mods.isNotEmpty()) this@childMods.apply {
-                mods.forEachIndexed { index, mod ->
-                    children(mod)
-                }
-            }
-        }
-
-    protected fun Node.WithModifiers.childModsBeforeType(ref: Node.Type) = this@Writer.also {
-        if (mods.isNotEmpty()) {
-            // As a special case, if there is a trailing annotation with no args and the ref has a paren which is a paren
-            // type or a non-receiver fn type, then we need to add an empty set of parens ourselves
-            val lastAnn = (mods.lastOrNull() as? Node.Modifier.AnnotationSet)?.anns?.
-                singleOrNull()?.takeIf { it.args == null }
-            val shouldAddParens = lastAnn != null && ref is Node.Type.Func && ref.receiverType == null
-//            val shouldAddParens = lastAnn != null &&
-//                (ref is Node.Type.Paren || (ref is Node.Type.Func && (
-//                    ref.receiverType == null || ref.receiverType.ref is Node.Type.Paren)))
-            (this as Node).children(mods, "")
-            if (shouldAddParens) append("()")
-        }
-    }
-
-    protected inline fun Node.children(vararg v: Node?) = this@Writer.also { v.forEach { visitChildren(it) } }
+    protected fun Node.WithModifiers.childMods() = (this@childMods as Node).children(mods)
 
     // Null list values are asterisks
     protected fun Node.bracketedChildren(v: List<Node?>, appendIfNotEmpty: String = "") = this@Writer.also {
@@ -568,74 +517,20 @@ open class Writer(
 
     protected fun Node.parenChildren(v: List<Node?>) = children(v, ",", "(", ")")
     protected fun Node.parenChildren(v: Node.ValueArgs?) = v?.args?.let { children(it, ",", "(", ")") }
-    protected fun Node.parenChildren(v: Node.NodeList<Node.Type.Func.Param>) = parenChildren(v.children)
 
-    protected fun Node.childrenLines(v: Node?, extraMidLines: Int = 0, extraEndLines: Int = 0) =
-        this@Writer.also { if (v != null) childrenLines(listOf(v), extraMidLines, extraEndLines) }
+    protected fun Node.children(vararg v: Node?) = this@Writer.also { v.forEach { visitChildren(it) } }
 
-    protected fun Node.childrenLines(v: List<Node?>, extraMidLines: Int = 0, extraEndLines: Int = 0) =
-        this@Writer.also {
-            v.forEachIndexed { index, node ->
-                children(node)
-            }
-        }
-
-    protected fun stmtRequiresEmptyBraceSetBeforeLineEnd(v: Node?, next: Node?): Boolean {
-        // As a special case, if this is a local memberless class decl stmt and the next line is a paren
-        // or ann+paren, we have to explicitly provide an empty brace set
-        // See: https://youtrack.jetbrains.com/issue/KT-25578
-        // TODO: is there a better place to do this?
-        if (v !is Node.Stmt.Decl || v.decl !is Node.Decl.Structured || (v.decl.body?.children?.isNotEmpty() == true) ||
-            !v.decl.isClass) return false
-        if (next !is Node.Stmt.Expr || (next.expr !is Node.Expr.Paren &&
-            (next.expr !is Node.Expr.Annotated || next.expr.expr !is Node.Expr.Paren))) return false
-        return true
-    }
-
-    protected fun stmtRequiresSemicolonSetBeforeLineEnd(v: Node?, next: Node?) =
-        stmtHasModifierLocalVarDeclAmbiguity(v, next) || stmtHasTrailingLambdaAmbiguity(v, next)
-
-    protected fun stmtHasModifierLocalVarDeclAmbiguity(v: Node?, next: Node?): Boolean {
-        // As a special case, if there is just a name stmt, and it is a modifier, and the next stmt is
-        // a decl, we need a semicolon
-        // See: https://youtrack.jetbrains.com/issue/KT-25579
-        // TODO: is there a better place to do this
-        if (v !is Node.Stmt.Expr || v.expr !is Node.Expr.Name || next !is Node.Stmt.Decl) return false
-        val name = v.expr.name.toUpperCase()
-        return Node.Modifier.Keyword.values().any { it.name == name }
-    }
-
-    protected fun stmtHasTrailingLambdaAmbiguity(v: Node?, next: Node?): Boolean {
-        // As a special case, if there is a function call stmt w/ no trailing lambda followed by a brace
-        // stmt, the call needs a semicolon
-        if (v !is Node.Stmt.Expr || v.expr !is Node.Expr.Call || v.expr.lambda != null) return false
-        return next is Node.Stmt.Expr && next.expr is Node.Expr.Lambda
-    }
-
-    protected fun Node.children(v: List<Node?>, sep: String = "", prefix: String = "", postfix: String = "") =
+    protected fun Node.children(v: List<Node?>, sep: String = "", prefix: String = "", suffix: String = "") =
         this@Writer.also {
             append(prefix)
             v.forEachIndexed { index, t ->
                 visit(t, this)
                 if (index < v.size - 1) append(sep)
             }
-            append(postfix)
+            append(suffix)
         }
 
-    // We accept lots of false positives to be simple and not have to bring in JVM dep to do accurate check
-    protected val String.shouldEscapeIdent get() =
-        KEYWORDS.contains(this) ||
-        all { it == '_' } ||
-        first() in '0'..'9' ||
-        any { it !in 'a'..'z' && it !in 'A'..'Z' && it !in '0'..'9' && it != '_' }
-
     companion object {
-        protected val KEYWORDS = setOf(
-            "as", "break", "class", "continue", "do", "else", "false", "for", "fun", "if", "in", "interface",
-            "is", "null", "object", "package", "return", "super", "this", "throw", "true", "try", "typealias",
-            "typeof", "val", "var", "when", "while"
-        )
-
         fun write(v: Node, extrasMap: ExtrasMap? = null) =
             write(v, StringBuilder(), extrasMap).toString()
         fun <T: Appendable> write(v: Node, app: T, extrasMap: ExtrasMap? = null) =

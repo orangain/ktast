@@ -250,6 +250,12 @@ open class MutableVisitor {
                         oper = visitChildren(oper, newCh)
                     )
                     is Node.Expr.UnaryOp.Oper -> this
+                    is Node.Expr.TypeOp -> copy (
+                        lhs = visitChildren(lhs, newCh),
+                        oper = visitChildren(oper, newCh),
+                        rhs = visitChildren(rhs, newCh)
+                    )
+                    is Node.Expr.TypeOp.Oper -> this
                     is Node.Expr.DoubleColonRef.Callable -> copy(
                         recv = visitChildren(recv, newCh),
                         name = visitChildren(name, newCh),
@@ -333,12 +339,6 @@ open class MutableVisitor {
                         anns = visitChildren(anns, newCh),
                         expr = visitChildren(expr, newCh)
                     )
-                    is Node.Expr.TypeOp -> copy (
-                        lhs = visitChildren(lhs, newCh),
-                        oper = visitChildren(oper, newCh),
-                        rhs = visitChildren(rhs, newCh)
-                    )
-                    is Node.Expr.TypeOp.Oper -> this
                     is Node.Expr.Call -> copy(
                         expr = visitChildren(expr, newCh),
                         typeArgs = visitChildren(typeArgs, newCh),
@@ -382,6 +382,8 @@ open class MutableVisitor {
                     is Node.Modifier.Lit -> this
                     is Node.Keyword -> this
                     is Node.Extra -> this
+                    // Currently, else branch is required even when sealed classes are exhaustive.
+                    // See: https://youtrack.jetbrains.com/issue/KT-21908
                     else -> error("Unrecognized node: $this")
                 }
                 new.origOrChanged(this, newCh)
@@ -389,17 +391,17 @@ open class MutableVisitor {
         }
     }
 
-    protected inline fun <T: Node?> Node?.visitChildren(v: T, ch: ChangedRef): T = visit(v, this!!, ch)
+    protected fun <T: Node?> Node?.visitChildren(v: T, ch: ChangedRef): T = visit(v, this!!, ch)
 
-    protected inline fun <T: Node?> Node?.visitChildren(v: List<T>, ch: ChangedRef): List<T> = ch.sub { newCh ->
+    protected fun <T: Node?> Node?.visitChildren(v: List<T>, ch: ChangedRef): List<T> = ch.sub { newCh ->
         val newList = v.map { orig -> visit(orig, this!!, newCh).also { newCh.markIf(it, orig) } }
         newList.origOrChanged(v, newCh)
     }
 
-    protected inline fun <T> T.origOrChanged(orig: T, ref: ChangedRef) = if (ref.changed) this else orig
+    protected fun <T> T.origOrChanged(orig: T, ref: ChangedRef) = if (ref.changed) this else orig
 
     open class ChangedRef(var changed: Boolean) {
-        inline fun markIf(v1: Any?, v2: Any?) { if (v1 !== v2) changed = true }
+        fun markIf(v1: Any?, v2: Any?) { if (v1 !== v2) changed = true }
 
         open fun <T> sub(fn: (ChangedRef) -> T): T = ChangedRef(false).let { newCh ->
             fn(newCh).also { if (newCh.changed) changed = true }
