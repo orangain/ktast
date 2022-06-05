@@ -11,20 +11,21 @@ class ConverterTest {
     fun testDeclaration() {
         assertParsedAs(
             """
-            val x = ""
-        """.trimIndent(), """
-            Node.File
-              Node.Decl.Property
-                Node.Keyword.ValOrVar
-                AFTER: Node.Extra.Whitespace
-                Node.Decl.Property.Var
-                  Node.Expr.Name
-                  AFTER: Node.Extra.Whitespace
-                Node.Initializer
-                  Node.Keyword.Equal
-                  AFTER: Node.Extra.Whitespace
-                  Node.Expr.StringTmpl
-        """.trimIndent()
+                val x = ""
+            """.trimIndent(),
+            """
+                Node.File
+                  Node.Decl.Property
+                    Node.Keyword.ValOrVar
+                    AFTER: Node.Extra.Whitespace
+                    Node.Decl.Property.Var
+                      Node.Expr.Name
+                      AFTER: Node.Extra.Whitespace
+                    Node.Initializer
+                      Node.Keyword.Equal
+                      AFTER: Node.Extra.Whitespace
+                      Node.Expr.StringTmpl
+            """.trimIndent()
         )
     }
 
@@ -32,22 +33,23 @@ class ConverterTest {
     fun testInlineComment() {
         assertParsedAs(
             """
-            val x = "" // x is empty
-        """.trimIndent(), """
-            Node.File
-              Node.Decl.Property
-                Node.Keyword.ValOrVar
-                AFTER: Node.Extra.Whitespace
-                Node.Decl.Property.Var
-                  Node.Expr.Name
-                  AFTER: Node.Extra.Whitespace
-                Node.Initializer
-                  Node.Keyword.Equal
-                  AFTER: Node.Extra.Whitespace
-                  Node.Expr.StringTmpl
-                  AFTER: Node.Extra.Whitespace
-                  AFTER: Node.Extra.Comment
-        """.trimIndent()
+                val x = "" // x is empty
+            """.trimIndent(),
+            """
+                Node.File
+                  Node.Decl.Property
+                    Node.Keyword.ValOrVar
+                    AFTER: Node.Extra.Whitespace
+                    Node.Decl.Property.Var
+                      Node.Expr.Name
+                      AFTER: Node.Extra.Whitespace
+                    Node.Initializer
+                      Node.Keyword.Equal
+                      AFTER: Node.Extra.Whitespace
+                      Node.Expr.StringTmpl
+                      AFTER: Node.Extra.Whitespace
+                      AFTER: Node.Extra.Comment
+            """.trimIndent()
         )
     }
 

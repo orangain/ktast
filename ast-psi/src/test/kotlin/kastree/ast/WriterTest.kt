@@ -18,8 +18,8 @@ class WriterTest {
     fun testTypeParameterModifiers() {
         assertParseAndWriteExact(
             """
-            fun delete(p: Array<out String>?) {}
-        """.trimIndent()
+                fun delete(p: Array<out String>?) {}
+            """.trimIndent()
         )
     }
 
@@ -47,10 +47,10 @@ class WriterTest {
     fun testEmptyLines() {
         assertParseAndWriteExact(
             """
-            val x = ""
-            
-            val y = 0
-        """.trimIndent()
+                val x = ""
+                
+                val y = 0
+            """.trimIndent()
         )
     }
 
@@ -58,13 +58,13 @@ class WriterTest {
     fun testFunctionBlock() {
         assertParseAndWriteExact(
             """
-            fun setup() {
-                // do something
-                val x = ""
-                val y = 3
-                // last
-            }
-        """.trimIndent()
+                fun setup() {
+                    // do something
+                    val x = ""
+                    val y = 3
+                    // last
+                }
+            """.trimIndent()
         )
     }
 
@@ -72,10 +72,10 @@ class WriterTest {
     fun testFunctionBlockHavingOnlyComment() {
         assertParseAndWriteExact(
             """
-            fun setup() {
-                // do something
-            }
-        """.trimIndent()
+                fun setup() {
+                    // do something
+                }
+            """.trimIndent()
         )
     }
 
@@ -83,13 +83,13 @@ class WriterTest {
     fun testLambdaExpression() {
         assertParseAndWriteExact(
             """
-            fun setup() {
-                run {
-                    // do something
-                    val x = ""
+                fun setup() {
+                    run {
+                        // do something
+                        val x = ""
+                    }
                 }
-            }
-        """.trimIndent()
+            """.trimIndent()
         )
     }
 
@@ -97,12 +97,12 @@ class WriterTest {
     fun testLambdaExpressionHavingOnlyComment() {
         assertParseAndWriteExact(
             """
-            fun setup() {
-                run {
-                    // do something
+                fun setup() {
+                    run {
+                        // do something
+                    }
                 }
-            }
-        """.trimIndent()
+            """.trimIndent()
         )
     }
 
@@ -115,8 +115,8 @@ class WriterTest {
     fun testFunctionModifier() {
         assertParseAndWriteExact(
             """
-            private fun setup() {}
-        """.trimIndent()
+                private fun setup() {}
+            """.trimIndent()
         )
     }
 
@@ -124,8 +124,8 @@ class WriterTest {
     fun testSemicolonAfterIf() {
         assertParseAndWriteExact(
             """
-            fun foo(a: Int): Int { var x = a; var y = x++; if (y+1 != x) return -1; return x; }
-        """.trimIndent()
+                fun foo(a: Int): Int { var x = a; var y = x++; if (y+1 != x) return -1; return x; }
+            """.trimIndent()
         )
     }
 
@@ -133,10 +133,10 @@ class WriterTest {
     fun testQuotedIdentifiers() {
         assertParseAndWriteExact(
             """
-            @`return` fun `package`() {
-              `class`()
-            }
-        """.trimIndent()
+                @`return` fun `package`() {
+                  `class`()
+                }
+            """.trimIndent()
         )
     }
 
@@ -144,8 +144,8 @@ class WriterTest {
     fun testConstructorModifiers() {
         assertParseAndWriteExact(
             """
-            object Foo @[foo] private @[bar()] ()
-        """.trimIndent()
+                object Foo @[foo] private @[bar()] ()
+            """.trimIndent()
         )
     }
 
@@ -153,10 +153,10 @@ class WriterTest {
     fun testSecondaryConstructor() {
         assertParseAndWriteExact(
             """
-            class Foo {
-                @annot protected constructor(x: Int, y: Int) : this(1,2) {}
-            }
-        """.trimIndent()
+                class Foo {
+                    @annot protected constructor(x: Int, y: Int) : this(1,2) {}
+                }
+            """.trimIndent()
         )
     }
 
@@ -164,9 +164,9 @@ class WriterTest {
     fun testFunctionWithFunctionReceiver() {
         assertParseAndWriteExact(
             """
-            fun (@[a] T<T>.(A<B>) -> Unit).foo()
-            fun @[a] (@[a] T<T>.(A<B>) -> R).foo() {}
-        """.trimIndent()
+                fun (@[a] T<T>.(A<B>) -> Unit).foo()
+                fun @[a] (@[a] T<T>.(A<B>) -> R).foo() {}
+            """.trimIndent()
         )
     }
 
@@ -174,13 +174,13 @@ class WriterTest {
     fun testTypeModifiers() {
         assertParseAndWriteExact(
             """
-            val p1:suspend a
-            val p2: suspend (a) -> a
-            val p5: (suspend a).() -> a
-            val p6: a<in suspend a>
-            val p15: suspend (suspend (() -> Unit)) -> Unit
-            @a fun @a a.f1() {}
-        """.trimIndent()
+                val p1:suspend a
+                val p2: suspend (a) -> a
+                val p5: (suspend a).() -> a
+                val p6: a<in suspend a>
+                val p15: suspend (suspend (() -> Unit)) -> Unit
+                @a fun @a a.f1() {}
+            """.trimIndent()
         )
     }
 
@@ -188,9 +188,9 @@ class WriterTest {
     fun testBy() {
         assertParseAndWriteExact(
             """
-            class Runnable<a,a>(a : doo = 0) : foo(d=0), bar by x, bar {
-            }
-        """.trimIndent()
+                class Runnable<a,a>(a : doo = 0) : foo(d=0), bar by x, bar {
+                }
+            """.trimIndent()
         )
     }
 
@@ -198,8 +198,8 @@ class WriterTest {
     fun testContextReceivers() {
         assertParseAndWriteExact(
             """
-            typealias f = context(T, X) (a: @[a] a) -> b
-        """.trimIndent()
+                typealias f = context(T, X) (a: @[a] a) -> b
+            """.trimIndent()
         )
     }
 
