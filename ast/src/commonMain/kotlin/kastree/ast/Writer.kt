@@ -2,8 +2,7 @@ package kastree.ast
 
 open class Writer(
     val app: Appendable = StringBuilder(),
-    val extrasMap: ExtrasMap? = null,
-    val includeExtraBlankLines: Boolean = extrasMap == null
+    val extrasMap: ExtrasMap? = null
 ) : Visitor() {
     protected fun append(ch: Char) = also { app.append(ch) }
     protected fun append(str: String) = also { app.append(str) }
@@ -457,22 +456,22 @@ open class Writer(
     protected open fun Node.writeExtrasBefore() {
         if (extrasMap == null) return
         // Write everything before
-        writeExtras(extrasMap.extrasBefore(this), continueIndent = true)
+        writeExtras(extrasMap.extrasBefore(this))
     }
 
     protected open fun Node.writeExtrasWithin() {
         if (extrasMap == null) return
         // Write everything within
-        writeExtras(extrasMap.extrasWithin(this), continueIndent = false)
+        writeExtras(extrasMap.extrasWithin(this))
     }
 
     protected open fun Node.writeExtrasAfter() {
         if (extrasMap == null) return
         // Write everything after that doesn't start a line or end a line
-        writeExtras(extrasMap.extrasAfter(this), continueIndent = false)
+        writeExtras(extrasMap.extrasAfter(this))
     }
 
-    protected open fun Node.writeExtras(extras: List<Node.Extra>, continueIndent: Boolean) {
+    protected open fun Node.writeExtras(extras: List<Node.Extra>) {
         extras.forEach {
             append(it.text)
         }
