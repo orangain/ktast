@@ -27,7 +27,7 @@ object Corpus {
 
     private fun loadTestDataFromDir(root: Path) = Files.walk(root)
         .filter { it.toString().endsWith(".kt") }
-        .toList()
+        .toList<Path>()
         .map { ktPath ->
             val relativePath = root.relativize(ktPath)
             Unit.FromFile(

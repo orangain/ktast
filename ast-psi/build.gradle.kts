@@ -26,7 +26,7 @@ tasks {
         testLogging {
             outputs.upToDateWhen { false }
             showStandardStreams = true
-            exceptionFormat =  FULL
+            exceptionFormat = FULL
             events = setOf(PASSED, SKIPPED, FAILED)
         }
     }

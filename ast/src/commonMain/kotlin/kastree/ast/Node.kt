@@ -3,7 +3,7 @@ package kastree.ast
 sealed class Node {
     var tag: Any? = null
 
-    data class NodeList<out T: Node>(
+    data class NodeList<out T : Node>(
         val children: List<T>,
         val separator: String,
         val prefix: String,
@@ -83,21 +83,25 @@ sealed class Node {
                     val args: ValueArgs?,
                     val lambda: Expr.Call.TrailLambda?
                 ) : Parent()
+
                 data class DelegatedType(
                     val type: Node.Type.Simple,
                     val byKeyword: Keyword.By,
                     val expr: Expr
                 ) : Parent()
+
                 data class Type(
                     val type: Node.Type.Simple,
                 ) : Parent()
             }
+
             data class PrimaryConstructor(
                 override val mods: List<Modifier>,
                 val constructorKeyword: Keyword.Constructor?,
                 val params: Func.Params?
             ) : Node(), WithModifiers
         }
+
         data class Init(val block: Expr.Block) : Decl()
         data class Func(
             override val mods: List<Modifier>,
@@ -124,11 +128,13 @@ sealed class Node {
                     val initializer: Initializer?
                 ) : Node(), WithModifiers
             }
+
             sealed class Body : Node() {
                 data class Block(val block: Node.Expr.Block) : Body()
                 data class Expr(val expr: Node.Expr) : Body()
             }
         }
+
         data class Property(
             override val mods: List<Modifier>,
             val valOrVar: Keyword.ValOrVar,
@@ -145,20 +151,24 @@ sealed class Node {
                 val name: Expr.Name,
                 val typeRef: TypeRef?
             ) : Node()
+
             data class Delegate(
                 val byKeyword: Keyword.By,
                 val expr: Expr,
             ) : Node()
+
             data class Accessors(
                 val first: Accessor,
                 val second: Accessor?
             ) : Node()
+
             sealed class Accessor : Node(), WithModifiers {
                 data class Get(
                     override val mods: List<Modifier>,
                     val typeRef: TypeRef?,
                     val body: Func.Body?
                 ) : Accessor()
+
                 data class Set(
                     override val mods: List<Modifier>,
                     val paramMods: List<Modifier>,
@@ -168,12 +178,14 @@ sealed class Node {
                 ) : Accessor()
             }
         }
+
         data class TypeAlias(
             override val mods: List<Modifier>,
             val name: Expr.Name,
             val typeParams: TypeParams?,
             val typeRef: TypeRef
         ) : Decl(), WithModifiers
+
         data class Constructor(
             override val mods: List<Modifier>,
             val constructorKeyword: Keyword.Constructor,
@@ -185,8 +197,10 @@ sealed class Node {
                 val target: DelegationTarget,
                 val args: ValueArgs?
             ) : Node()
+
             enum class DelegationTarget { THIS, SUPER }
         }
+
         data class EnumEntry(
             override val mods: List<Modifier>,
             val name: Expr.Name,
@@ -227,6 +241,7 @@ sealed class Node {
                 val typeRef: TypeRef
             ) : Node()
         }
+
         data class Simple(
             val pieces: List<Piece>
         ) : Type() {
@@ -236,12 +251,14 @@ sealed class Node {
                 val typeParams: List<TypeProjection?>
             ) : Node()
         }
+
         data class Nullable(
             override val lpar: Keyword.Lpar?,
             override val mods: List<Modifier>,
             val type: Type,
             override val rpar: Keyword.Rpar?,
         ) : Type(), WithModifiers, WithOptionalParentheses
+
         data class Dynamic(val _unused_: Boolean = false) : Type()
     }
 
@@ -281,6 +298,7 @@ sealed class Node {
             val body: Expr,
             val elseBody: Expr?
         ) : Expr()
+
         data class Try(
             val block: Block,
             val catches: List<Catch>,
@@ -293,6 +311,7 @@ sealed class Node {
                 val block: Block
             ) : Node(), WithAnnotations
         }
+
         data class For(
             override val anns: List<Modifier.AnnotationSet>,
             // More than one means destructure, null means underscore
@@ -300,11 +319,13 @@ sealed class Node {
             val inExpr: Expr,
             val body: Expr
         ) : Expr(), WithAnnotations
+
         data class While(
             val expr: Expr,
             val body: Expr,
             val doWhile: Boolean
         ) : Expr()
+
         data class BinaryOp(
             val lhs: Expr,
             val oper: Oper,
@@ -314,6 +335,7 @@ sealed class Node {
                 data class Infix(val str: String) : Oper()
                 data class Token(val token: BinaryOp.Token) : Oper()
             }
+
             enum class Token(val str: String) {
                 MUL("*"), DIV("/"), MOD("%"), ADD("+"), SUB("-"),
                 IN("in"), NOT_IN("!in"),
@@ -324,6 +346,7 @@ sealed class Node {
                 DOT("."), DOT_SAFE("?."), SAFE("?")
             }
         }
+
         data class UnaryOp(
             val expr: Expr,
             val oper: Oper,
@@ -334,6 +357,7 @@ sealed class Node {
                 NEG("-"), POS("+"), INC("++"), DEC("--"), NOT("!"), NULL_DEREF("!!")
             }
         }
+
         data class TypeOp(
             val lhs: Expr,
             val oper: Oper,
@@ -344,15 +368,19 @@ sealed class Node {
                 AS("as"), AS_SAFE("as?"), COL(":"), IS("is"), NOT_IS("!is")
             }
         }
+
         sealed class DoubleColonRef : Expr() {
             abstract val recv: Recv?
+
             data class Callable(
                 override val recv: Recv?,
                 val name: Name
             ) : DoubleColonRef()
+
             data class Class(
                 override val recv: Recv?
             ) : DoubleColonRef()
+
             sealed class Recv : Node() {
                 data class Expr(val expr: Node.Expr) : Recv()
                 data class Type(
@@ -361,9 +389,11 @@ sealed class Node {
                 ) : Recv()
             }
         }
+
         data class Paren(
             val expr: Expr
         ) : Expr()
+
         data class StringTmpl(
             val elems: List<Elem>,
             val raw: Boolean
@@ -376,12 +406,14 @@ sealed class Node {
                 data class LongTmpl(val expr: Expr) : Elem()
             }
         }
+
         data class Const(
             val value: String,
             val form: Form
         ) : Expr() {
             enum class Form { BOOLEAN, CHAR, INT, FLOAT, NULL }
         }
+
         data class Lambda(
             val params: List<Param>,
             val body: Body?
@@ -394,13 +426,16 @@ sealed class Node {
 
             data class Body(val stmts: List<Stmt>) : Expr()
         }
+
         data class This(
             val label: String?
         ) : Expr()
+
         data class Super(
             val typeArg: TypeRef?,
             val label: String?
         ) : Expr()
+
         data class When(
             val expr: Expr?,
             val entries: List<Entry>
@@ -409,50 +444,62 @@ sealed class Node {
                 val conds: List<Cond>,
                 val body: Expr
             ) : Node()
+
             sealed class Cond : Node() {
                 data class Expr(val expr: Node.Expr) : Cond()
                 data class In(
                     val expr: Node.Expr,
                     val not: Boolean
                 ) : Cond()
+
                 data class Is(
                     val typeRef: TypeRef,
                     val not: Boolean
                 ) : Cond()
             }
         }
+
         data class Object(
             val parents: List<Decl.Structured.Parent>,
             val members: List<Decl>
         ) : Expr()
+
         data class Throw(
             val expr: Expr
         ) : Expr()
+
         data class Return(
             val returnKeyword: Keyword.Return,
             val label: String?,
             val expr: Expr?
         ) : Expr()
+
         data class Continue(
             val label: String?
         ) : Expr()
+
         data class Break(
             val label: String?
         ) : Expr()
+
         data class CollLit(
             val exprs: List<Expr>
         ) : Expr()
+
         data class Name(
             val name: String
         ) : Expr()
+
         data class Labeled(
             val label: String,
             val expr: Expr
         ) : Expr()
+
         data class Annotated(
             override val anns: List<Modifier.AnnotationSet>,
             val expr: Expr
         ) : Expr(), WithAnnotations
+
         data class Call(
             val expr: Expr,
             val typeArgs: List<TypeProjection?>,
@@ -465,13 +512,16 @@ sealed class Node {
                 val func: Lambda
             ) : Node(), WithAnnotations
         }
+
         data class ArrayAccess(
             val expr: Expr,
             val indices: List<Expr>
         ) : Expr()
+
         data class AnonFunc(
             val func: Decl.Func
         ) : Expr()
+
         // This is only present for when expressions and labeled expressions
         data class Property(
             val decl: Decl.Property
@@ -496,12 +546,14 @@ sealed class Node {
             enum class Target {
                 FIELD, FILE, PROPERTY, GET, SET, RECEIVER, PARAM, SETPARAM, DELEGATE
             }
+
             data class Annotation(
                 val nameType: Type,
                 val typeArgs: List<TypeProjection>,
                 val args: ValueArgs?
             ) : Node()
         }
+
         data class Lit(val keyword: Keyword) : Modifier()
         enum class Keyword {
             ABSTRACT, FINAL, OPEN, ANNOTATION, SEALED, DATA, OVERRIDE, LATEINIT, INNER, ENUM, COMPANION,
@@ -578,9 +630,11 @@ sealed class Node {
         data class Whitespace(
             override val text: String,
         ) : Extra()
+
         data class Comment(
             override val text: String,
         ) : Extra()
+
         data class Semicolon(
             override val text: String
         ) : Extra()

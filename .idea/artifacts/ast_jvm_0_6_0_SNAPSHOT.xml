@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ast-jvm-0.6.0-SNAPSHOT">
+    <output-path>$PROJECT_DIR$/ast/build/libs</output-path>
+    <root id="archive" name="ast-jvm-0.6.0-SNAPSHOT.jar">
+      <element id="module-output" name="kastree.ast.jvmMain" />
+    </root>
+  </artifact>
+</component>

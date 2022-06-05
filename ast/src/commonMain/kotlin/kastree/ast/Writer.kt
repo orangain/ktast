@@ -14,7 +14,9 @@ open class Writer(
         }
     }
 
-    fun write(v: Node) { visit(v, v) }
+    fun write(v: Node) {
+        visit(v, v)
+    }
 
     override fun visit(v: Node?, parent: Node) {
         v?.writeExtrasBefore()
@@ -91,7 +93,9 @@ open class Writer(
                     children(params)
                     if (typeRef != null) append(":").also { children(typeRef) }
                     childTypeConstraints(typeConstraints)
-                    if (body != null)  { children(body) }
+                    if (body != null) {
+                        children(body)
+                    }
                 }
                 is Node.Decl.Func.Params -> {
                     parenChildren(params)
@@ -197,7 +201,9 @@ open class Writer(
                             append('.')
                         }
                     }
-                    if (params != null) { children(params).append("->") }
+                    if (params != null) {
+                        children(params).append("->")
+                    }
                     children(typeRef)
                 }
                 is Node.Type.Func.Param -> {
@@ -310,13 +316,15 @@ open class Writer(
                 is Node.Expr.StringTmpl.Elem.UnicodeEsc ->
                     append("\\u").append(digits)
                 is Node.Expr.StringTmpl.Elem.RegularEsc ->
-                    append('\\').append(when (char) {
-                        '\b' -> 'b'
-                        '\n' -> 'n'
-                        '\t' -> 't'
-                        '\r' -> 'r'
-                        else -> char
-                    })
+                    append('\\').append(
+                        when (char) {
+                            '\b' -> 'b'
+                            '\n' -> 'n'
+                            '\t' -> 't'
+                            '\r' -> 'r'
+                            else -> char
+                        }
+                    )
                 is Node.Expr.StringTmpl.Elem.LongTmpl ->
                     append("\${").also { children(expr) }.append('}')
                 is Node.Expr.Const ->
@@ -332,7 +340,9 @@ open class Writer(
                     if (destructTypeRef != null) append(": ").also { children(destructTypeRef) }
                 }
                 is Node.Expr.Lambda.Body -> {
-                    if (stmts.isNotEmpty()) { children(stmts) }
+                    if (stmts.isNotEmpty()) {
+                        children(stmts)
+                    }
                     writeExtrasWithin()
                 }
                 is Node.Expr.This -> {
@@ -533,7 +543,8 @@ open class Writer(
     companion object {
         fun write(v: Node, extrasMap: ExtrasMap? = null) =
             write(v, StringBuilder(), extrasMap).toString()
-        fun <T: Appendable> write(v: Node, app: T, extrasMap: ExtrasMap? = null) =
+
+        fun <T : Appendable> write(v: Node, app: T, extrasMap: ExtrasMap? = null) =
             app.also { Writer(it, extrasMap).write(v) }
     }
 }

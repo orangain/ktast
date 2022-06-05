@@ -20,6 +20,7 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
     protected val extrasBefore = mutableMapOf<Int, List<Node.Extra>>()
     protected val extrasWithin = mutableMapOf<Int, List<Node.Extra>>()
     protected val extrasAfter = mutableMapOf<Int, List<Node.Extra>>()
+
     // This keeps track of ws nodes we've seen before so we don't duplicate them
     protected val seenExtraPsiIdentities = mutableSetOf<Int>()
 

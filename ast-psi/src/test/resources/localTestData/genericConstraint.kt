@@ -1,4 +1,3 @@
-
-interface GenericIface<T: String?> {
+interface GenericIface<T : String?> {
     val v: T
 }

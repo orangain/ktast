@@ -1,15 +1,12 @@
 package kastree.ast.psi
 
 import kastree.ast.Dumper
-import kastree.ast.Node
 import kastree.ast.Writer
 import org.jetbrains.kotlin.com.intellij.openapi.util.text.StringUtilRt
-import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.junit.Assume
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
-import java.util.*
 import kotlin.test.assertEquals
 
 @RunWith(Parameterized::class)
@@ -56,10 +53,11 @@ class CorpusTest(private val unit: Corpus.Unit) {
     companion object {
         const val debug = false
 
-        @JvmStatic @Parameterized.Parameters(name = "{0}")
+        @JvmStatic
+        @Parameterized.Parameters(name = "{0}")
         fun data() = Corpus.default
-            // Uncomment to test a specific file
-            //.filter { it.relativePath.toString().endsWith("list\\basic.kt") }
+        // Uncomment to test a specific file
+        //.filter { it.relativePath.toString().endsWith("list\\basic.kt") }
 
         // Good for quick testing
 //        @JvmStatic @Parameterized.Parameters(name = "{0}")
