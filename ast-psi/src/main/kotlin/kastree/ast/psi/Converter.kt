@@ -21,7 +21,7 @@ open class Converter {
     ).map(v)
 
     open fun convertAnnotation(v: KtAnnotationEntry) = Node.Modifier.AnnotationSet.Annotation(
-        nameTypeReference = convertType(v.typeReference?.typeElement ?: error("Missing annotation name")),
+        nameType = convertType(v.typeReference?.typeElement ?: error("Missing annotation name")),
         typeArgs = v.typeArguments.map { convertTypeProjection(it) ?: error("No ann typ arg for $v") },
         args = v.valueArgumentList?.let(::convertValueArgs)
     ).map(v)
@@ -107,7 +107,7 @@ open class Converter {
 
     open fun convertLambdaParam(v: KtParameter) = Node.Expr.Lambda.Param(
         vars = convertPropertyVars(v),
-        destructType = if (v.destructuringDeclaration != null) v.typeReference?.let(::convertTypeRef) else null
+        destructTypeRef = if (v.destructuringDeclaration != null) v.typeReference?.let(::convertTypeRef) else null
     ).map(v)
 
     open fun convertBreak(v: KtBreakExpression) = Node.Expr.Break(
@@ -297,12 +297,12 @@ open class Converter {
         funKeyword = v.funKeyword?.let{convertKeyword(it, Node.Keyword::Fun)} ?: error("No fun keyword for $v"),
         typeParams =
             if (v.hasTypeParameterListBeforeFunctionName()) v.typeParameterList?.let(::convertTypeParams) else null,
-        receiverType = v.receiverTypeReference?.let(::convertTypeRef),
+        receiverTypeRef = v.receiverTypeReference?.let(::convertTypeRef),
         name = v.nameIdentifier?.let(::convertName),
         paramTypeParams =
             if (!v.hasTypeParameterListBeforeFunctionName()) v.typeParameterList?.let(::convertTypeParams) else null,
         params = v.valueParameterList?.let(::convertFuncParams),
-        type = v.typeReference?.let(::convertTypeRef),
+        typeRef = v.typeReference?.let(::convertTypeRef),
         typeConstraints = v.typeConstraints.map(::convertTypeConstraint),
         body = v.bodyExpression?.let(::convertFuncBody)
     ).map(v)
@@ -319,7 +319,7 @@ open class Converter {
         mods = convertModifiers(v),
         readOnly = if (v.hasValOrVar()) !v.isMutable else null,
         name = v.nameIdentifier?.let(::convertName) ?: error("No param name"),
-        type = v.typeReference?.let(::convertTypeRef),
+        typeRef = v.typeReference?.let(::convertTypeRef),
         initializer = v.defaultValue?.let{
             convertInitializer(v.equalsToken ?: error("No equals token for initializer of $v"), it, v)
         },
@@ -418,7 +418,7 @@ open class Converter {
         mods = convertModifiers(v),
         valOrVar = v.valOrVarKeyword?.let(::convertValOrVarKeyword) ?: error("Missing valOrVarKeyword"),
         typeParams = null,
-        receiverType = null,
+        receiverTypeRef = null,
         vars = v.entries.map(::convertPropertyVar),
         typeConstraints = emptyList(),
         initializer = v.initializer?.let {
@@ -432,10 +432,10 @@ open class Converter {
         mods = convertModifiers(v),
         valOrVar = convertValOrVarKeyword(v.valOrVarKeyword),
         typeParams = v.typeParameterList?.let(::convertTypeParams),
-        receiverType = v.receiverTypeReference?.let(::convertTypeRef),
+        receiverTypeRef = v.receiverTypeReference?.let(::convertTypeRef),
         vars = listOf(Node.Decl.Property.Var(
             name = v.nameIdentifier?.let(::convertName) ?: error("No property name on $v"),
-            type = v.typeReference?.let(::convertTypeRef)
+            typeRef = v.typeReference?.let(::convertTypeRef)
         ).mapNotCorrespondsPsiElement(v)),
         typeConstraints = v.typeConstraints.map(::convertTypeConstraint),
         initializer = v.initializer?.let {
@@ -463,13 +463,13 @@ open class Converter {
     open fun convertPropertyAccessor(v: KtPropertyAccessor) =
         if (v.isGetter) Node.Decl.Property.Accessor.Get(
             mods = convertModifiers(v),
-            type = v.returnTypeReference?.let(::convertTypeRef),
+            typeRef = v.returnTypeReference?.let(::convertTypeRef),
             body = v.bodyExpression?.let(::convertFuncBody)
         ).map(v) else Node.Decl.Property.Accessor.Set(
             mods = convertModifiers(v),
             paramMods = v.parameter?.let(::convertModifiers) ?: emptyList(),
             paramName = v.parameter?.nameIdentifier?.let(::convertName),
-            paramType = v.parameter?.typeReference?.let(::convertTypeRef),
+            paramTypeRef = v.parameter?.typeReference?.let(::convertTypeRef),
             body = v.bodyExpression?.let(::convertFuncBody)
         ).map(v)
 
@@ -484,14 +484,14 @@ open class Converter {
     open fun convertPropertyVar(v: KtDestructuringDeclarationEntry) =
         if (v.name == "_") null else Node.Decl.Property.Var(
             name = v.nameIdentifier?.let(::convertName) ?: error("No property name on $v"),
-            type = v.typeReference?.let(::convertTypeRef)
+            typeRef = v.typeReference?.let(::convertTypeRef)
         ).map(v)
 
     open fun convertPropertyVars(v: KtParameter) =
         v.destructuringDeclaration?.entries?.map(::convertPropertyVar) ?: listOf(
             if (v.name == "_") null else Node.Decl.Property.Var(
                 name = v.nameIdentifier?.let(::convertName) ?: error("No property name on $v"),
-                type = v.typeReference?.let(::convertTypeRef)
+                typeRef = v.typeReference?.let(::convertTypeRef)
             ).map(v)
         )
 
@@ -610,7 +610,7 @@ open class Converter {
             mods = convertModifiers(mods),
             lpar = lpar?.let{ convertKeyword(it, Node.Keyword::Lpar) },
             innerMods = convertModifiers(innerMods),
-            ref = v.typeElement?.let { convertType(it) }, // v.typeElement is null when the type reference has only context receivers.
+            type = v.typeElement?.let { convertType(it) }, // v.typeElement is null when the type reference has only context receivers.
             rpar = rpar?.let{ convertKeyword(it, Node.Keyword::Rpar) },
         ).map(v)
     }
@@ -630,7 +630,7 @@ open class Converter {
         mods = convertModifiers(v),
         name = v.nameIdentifier?.let(::convertName) ?: error("No type alias name for $v"),
         typeParams = v.typeParameterList?.let(::convertTypeParams),
-        type = convertTypeRef(v.getTypeReference() ?: error("No type alias ref for $v"))
+        typeRef = convertTypeRef(v.getTypeReference() ?: error("No type alias ref for $v"))
     ).map(v)
 
     open fun convertTypeConstraint(v: KtTypeConstraint) = Node.TypeConstraint(
@@ -642,7 +642,7 @@ open class Converter {
             }
         },
         name = v.subjectTypeParameterName?.let { convertName(it) } ?: error("No type constraint name for $v"),
-        type = convertTypeRef(v.boundTypeReference ?: error("No type constraint type for $v"))
+        typeRef = convertTypeRef(v.boundTypeReference ?: error("No type constraint type for $v"))
     ).map(v)
 
     open fun convertTypeOp(v: KtBinaryExpressionWithTypeRHS) = Node.Expr.TypeOp(
@@ -678,9 +678,9 @@ open class Converter {
 
     open fun convertType(v: KtTypeElement): Node.Type = when (v) {
         is KtFunctionType -> Node.Type.Func(
-            receiverType = v.receiverTypeReference?.let(::convertTypeRef),
+            receiverTypeRef = v.receiverTypeReference?.let(::convertTypeRef),
             params = v.parameterList?.let { convertTypeRFuncParams(it) },
-            type = convertTypeRef(v.returnTypeReference ?: error("No return type"))
+            typeRef = convertTypeRef(v.returnTypeReference ?: error("No return type"))
         ).map(v)
         is KtUserType -> Node.Type.Simple(
             pieces = generateSequence(v) { it.qualifier }.toList().reversed().map {
@@ -709,7 +709,7 @@ open class Converter {
 
     open fun convertTypeFuncParam(v: KtParameter) = Node.Type.Func.Param(
         name = v.nameIdentifier?.let(::convertName),
-        type = convertTypeRef(v.typeReference ?: error("No param type"))
+        typeRef = convertTypeRef(v.typeReference ?: error("No param type"))
     ).map(v)
 
     open fun convertUnaryOp(v: KtUnaryExpression) = Node.Expr.UnaryOp(
@@ -744,7 +744,7 @@ open class Converter {
             not = v.isNegated
         ).map(v)
         is KtWhenConditionIsPattern -> Node.Expr.When.Cond.Is(
-            type = convertTypeRef(v.typeReference ?: error("No when is type for $v")),
+            typeRef = convertTypeRef(v.typeReference ?: error("No when is type for $v")),
             not = v.isNegated
         ).map(v)
         else -> error("Unrecognized when cond of $v")

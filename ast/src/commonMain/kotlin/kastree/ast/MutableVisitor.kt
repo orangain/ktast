@@ -69,11 +69,11 @@ open class MutableVisitor {
                         mods = visitChildren(mods, newCh),
                         funKeyword = visitChildren(funKeyword, newCh),
                         typeParams = visitChildren(typeParams, newCh),
-                        receiverType = visitChildren(receiverType, newCh),
+                        receiverTypeRef = visitChildren(receiverTypeRef, newCh),
                         name = visitChildren(name, newCh),
                         paramTypeParams = visitChildren(paramTypeParams, newCh),
                         params = visitChildren(params, newCh),
-                        type = visitChildren(type, newCh),
+                        typeRef = visitChildren(typeRef, newCh),
                         typeConstraints = visitChildren(typeConstraints, newCh),
                         body = visitChildren(body, newCh)
                     )
@@ -83,7 +83,7 @@ open class MutableVisitor {
                     is Node.Decl.Func.Params.Param -> copy(
                         mods = visitChildren(mods, newCh),
                         name = visitChildren(name, newCh),
-                        type = visitChildren(type, newCh),
+                        typeRef = visitChildren(typeRef, newCh),
                         initializer = visitChildren(initializer, newCh)
                     )
                     is Node.Decl.Func.Body.Block -> copy(
@@ -96,7 +96,7 @@ open class MutableVisitor {
                         mods = visitChildren(mods, newCh),
                         valOrVar = visitChildren(valOrVar, newCh),
                         typeParams = visitChildren(typeParams, newCh),
-                        receiverType = visitChildren(receiverType, newCh),
+                        receiverTypeRef = visitChildren(receiverTypeRef, newCh),
                         vars = visitChildren(vars, newCh),
                         typeConstraints = visitChildren(typeConstraints, newCh),
                         initializer = visitChildren(initializer, newCh),
@@ -109,7 +109,7 @@ open class MutableVisitor {
                     )
                     is Node.Decl.Property.Var -> copy(
                         name = visitChildren(name, newCh),
-                        type = visitChildren(type, newCh)
+                        typeRef = visitChildren(typeRef, newCh)
                     )
                     is Node.Decl.Property.Accessors -> copy(
                         first = visitChildren(first, newCh),
@@ -117,21 +117,21 @@ open class MutableVisitor {
                     )
                     is Node.Decl.Property.Accessor.Get -> copy(
                         mods = visitChildren(mods, newCh),
-                        type = visitChildren(type, newCh),
+                        typeRef = visitChildren(typeRef, newCh),
                         body = visitChildren(body, newCh)
                     )
                     is Node.Decl.Property.Accessor.Set -> copy(
                         mods = visitChildren(mods, newCh),
                         paramMods = visitChildren(paramMods, newCh),
                         paramName = visitChildren(paramName, newCh),
-                        paramType = visitChildren(paramType, newCh),
+                        paramTypeRef = visitChildren(paramTypeRef, newCh),
                         body = visitChildren(body, newCh)
                     )
                     is Node.Decl.TypeAlias -> copy(
                         mods = visitChildren(mods, newCh),
                         name = visitChildren(name, newCh),
                         typeParams = visitChildren(typeParams, newCh),
-                        type = visitChildren(type, newCh)
+                        typeRef = visitChildren(typeRef, newCh)
                     )
                     is Node.Decl.Constructor -> copy(
                         mods = visitChildren(mods, newCh),
@@ -164,16 +164,16 @@ open class MutableVisitor {
                     is Node.TypeConstraint -> copy(
                         anns = visitChildren(anns, newCh),
                         name = visitChildren(name, newCh),
-                        type = visitChildren(type, newCh)
+                        typeRef = visitChildren(typeRef, newCh)
                     )
                     is Node.Type.Func -> copy(
-                        receiverType = visitChildren(receiverType, newCh),
+                        receiverTypeRef = visitChildren(receiverTypeRef, newCh),
                         params = visitChildren(params, newCh),
-                        type = visitChildren(type, newCh)
+                        typeRef = visitChildren(typeRef, newCh)
                     )
                     is Node.Type.Func.Param -> copy(
                         name = visitChildren(name, newCh),
-                        type = visitChildren(type, newCh)
+                        typeRef = visitChildren(typeRef, newCh)
                     )
                     is Node.Type.Simple -> copy(
                         pieces = visitChildren(pieces, newCh)
@@ -198,7 +198,7 @@ open class MutableVisitor {
                         mods = visitChildren(mods, newCh),
                         lpar = visitChildren(lpar, newCh),
                         innerMods = visitChildren(innerMods, newCh),
-                        ref = visitChildren(ref, newCh),
+                        type = visitChildren(type, newCh),
                         rpar = visitChildren(rpar, newCh),
                     )
                     is Node.ContextReceiver -> copy(
@@ -289,7 +289,7 @@ open class MutableVisitor {
                     )
                     is Node.Expr.Lambda.Param -> copy(
                         vars = visitChildren(vars, newCh),
-                        destructType = visitChildren(destructType, newCh)
+                        destructTypeRef = visitChildren(destructTypeRef, newCh)
                     )
                     is Node.Expr.Lambda.Body -> copy(
                         stmts = visitChildren(stmts, newCh)
@@ -313,7 +313,7 @@ open class MutableVisitor {
                         expr = visitChildren(expr, newCh)
                     )
                     is Node.Expr.When.Cond.Is -> copy(
-                        type = visitChildren(type, newCh)
+                        typeRef = visitChildren(typeRef, newCh)
                     )
                     is Node.Expr.Object -> copy(
                         parents = visitChildren(parents, newCh),
@@ -375,7 +375,7 @@ open class MutableVisitor {
                         rBracket = visitChildren(rBracket, newCh),
                     )
                     is Node.Modifier.AnnotationSet.Annotation -> copy(
-                        nameTypeReference = visitChildren(nameTypeReference, newCh),
+                        nameType = visitChildren(nameType, newCh),
                         typeArgs = visitChildren(typeArgs, newCh),
                         args = visitChildren(args, newCh)
                     )
