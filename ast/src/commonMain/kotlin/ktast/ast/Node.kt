@@ -29,6 +29,11 @@ sealed class Node {
         val rPar: Keyword.RPar?
     }
 
+    interface WithContract {
+        val contractKeyword: Keyword.Contract?
+        val contractEffects: NodeList<ContractEffect>?
+    }
+
     data class File(
         override val anns: List<Modifier.AnnotationSet>,
         override val pkg: Package?,
@@ -173,10 +178,15 @@ sealed class Node {
                 val second: Accessor?
             ) : Node()
 
-            sealed class Accessor : Node(), WithModifiers {
+            /**
+             * AST node corresponds to KtPropertyAccessor.
+             */
+            sealed class Accessor : Node(), WithModifiers, WithContract {
                 data class Get(
                     override val mods: List<Modifier>,
                     val typeRef: TypeRef?,
+                    override val contractEffects: NodeList<ContractEffect>?,
+                    override val contractKeyword: Keyword.Contract?,
                     val body: Func.Body?
                 ) : Accessor()
 
@@ -185,6 +195,8 @@ sealed class Node {
                     val paramMods: List<Modifier>,
                     val paramName: Expr.Name?,
                     val paramTypeRef: TypeRef?,
+                    override val contractEffects: NodeList<ContractEffect>?,
+                    override val contractKeyword: Keyword.Contract?,
                     val body: Func.Body?
                 ) : Accessor()
             }
@@ -306,6 +318,13 @@ sealed class Node {
 
     data class ContextReceiver(
         val typeRef: TypeRef,
+    ) : Node()
+
+    /**
+     * AST node corresponds to KtContractEffect.
+     */
+    data class ContractEffect(
+        val expr: Expr,
     ) : Node()
 
     /**
@@ -688,6 +707,7 @@ sealed class Node {
         class Constructor : Keyword("constructor")
         class Return : Keyword("return")
         class By : Keyword("by")
+        class Contract : Keyword("contract")
         class Equal : Keyword("=")
         class Colon : Keyword(":")
         class LPar : Keyword("(")

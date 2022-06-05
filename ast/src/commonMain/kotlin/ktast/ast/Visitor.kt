@@ -114,6 +114,8 @@ open class Visitor {
             is Node.Decl.Property.Accessor.Get -> {
                 visitChildren(mods)
                 visitChildren(typeRef)
+                visitChildren(contractKeyword)
+                visitChildren(contractEffects)
                 visitChildren(body)
             }
             is Node.Decl.Property.Accessor.Set -> {
@@ -121,6 +123,8 @@ open class Visitor {
                 visitChildren(paramMods)
                 visitChildren(paramName)
                 visitChildren(paramTypeRef)
+                visitChildren(contractKeyword)
+                visitChildren(contractEffects)
                 visitChildren(body)
             }
             is Node.Decl.TypeAlias -> {
@@ -199,6 +203,9 @@ open class Visitor {
             is Node.Type.Dynamic -> {}
             is Node.ContextReceiver -> {
                 visitChildren(typeRef)
+            }
+            is Node.ContractEffect -> {
+                visitChildren(expr)
             }
             is Node.ValueArgs -> {
                 visitChildren(args)

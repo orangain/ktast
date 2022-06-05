@@ -198,12 +198,20 @@ open class Converter {
         if (v.isGetter) Node.Decl.Property.Accessor.Get(
             mods = convertModifiers(v),
             typeRef = v.returnTypeReference?.let(::convertTypeRef),
+            contractKeyword = findChildByType(v, KtTokens.CONTRACT_KEYWORD)?.let {
+                convertKeyword(it, Node.Keyword::Contract)
+            },
+            contractEffects = v.contractDescription?.let(::convertContractEffects),
             body = v.bodyExpression?.let(::convertFuncBody)
         ).map(v) else Node.Decl.Property.Accessor.Set(
             mods = convertModifiers(v),
             paramMods = v.parameter?.let(::convertModifiers) ?: emptyList(),
             paramName = v.parameter?.nameIdentifier?.let(::convertName),
             paramTypeRef = v.parameter?.typeReference?.let(::convertTypeRef),
+            contractKeyword = findChildByType(v, KtTokens.CONTRACT_KEYWORD)?.let {
+                convertKeyword(it, Node.Keyword::Contract)
+            },
+            contractEffects = v.contractDescription?.let(::convertContractEffects),
             body = v.bodyExpression?.let(::convertFuncBody)
         ).map(v)
 
@@ -356,6 +364,18 @@ open class Converter {
 
     open fun convertContextReceiver(v: KtContextReceiver) = Node.ContextReceiver(
         typeRef = convertTypeRef(v.typeReference() ?: error("Missing type reference for $v")),
+    ).map(v)
+
+    open fun convertContractEffects(v: KtContractEffectList): Node.NodeList<Node.ContractEffect> =
+        Node.NodeList(
+            children = v.children.filterIsInstance<KtContractEffect>().map(::convertContractEffect),
+            separator = ",",
+            prefix = "[",
+            suffix = "]",
+        ).map(v)
+
+    open fun convertContractEffect(v: KtContractEffect) = Node.ContractEffect(
+        expr = convertExpr(v.getExpression()),
     ).map(v)
 
     open fun convertValueArgs(v: KtValueArgumentList) = Node.ValueArgs(

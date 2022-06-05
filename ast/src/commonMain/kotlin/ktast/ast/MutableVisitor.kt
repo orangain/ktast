@@ -118,6 +118,8 @@ open class MutableVisitor {
                     is Node.Decl.Property.Accessor.Get -> copy(
                         mods = visitChildren(mods, newCh),
                         typeRef = visitChildren(typeRef, newCh),
+                        contractKeyword = visitChildren(contractKeyword, newCh),
+                        contractEffects = visitChildren(contractEffects, newCh),
                         body = visitChildren(body, newCh)
                     )
                     is Node.Decl.Property.Accessor.Set -> copy(
@@ -125,6 +127,8 @@ open class MutableVisitor {
                         paramMods = visitChildren(paramMods, newCh),
                         paramName = visitChildren(paramName, newCh),
                         paramTypeRef = visitChildren(paramTypeRef, newCh),
+                        contractKeyword = visitChildren(contractKeyword, newCh),
+                        contractEffects = visitChildren(contractEffects, newCh),
                         body = visitChildren(body, newCh)
                     )
                     is Node.Decl.TypeAlias -> copy(
@@ -203,6 +207,9 @@ open class MutableVisitor {
                     is Node.Type.Dynamic -> this
                     is Node.ContextReceiver -> copy(
                         typeRef = visitChildren(typeRef, newCh),
+                    )
+                    is Node.ContractEffect -> copy(
+                        expr = visitChildren(expr, newCh),
                     )
                     is Node.ValueArgs -> copy(
                         args = visitChildren(args, newCh),

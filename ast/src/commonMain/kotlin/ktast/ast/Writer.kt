@@ -139,6 +139,8 @@ open class Writer(
                     if (body != null) {
                         append("()")
                         if (typeRef != null) append(":").also { children(typeRef) }
+                        children(contractKeyword)
+                        children(contractEffects)
                         children(body)
                     }
                 }
@@ -150,6 +152,8 @@ open class Writer(
                         children(paramName ?: error("Missing setter param name when body present"))
                         if (paramTypeRef != null) append(":").also { children(paramTypeRef) }
                         append(")")
+                        children(contractKeyword)
+                        children(contractEffects)
                         children(body)
                     }
                 }
@@ -244,6 +248,9 @@ open class Writer(
                     append("dynamic")
                 is Node.ContextReceiver -> {
                     children(typeRef)
+                }
+                is Node.ContractEffect -> {
+                    children(expr)
                 }
                 is Node.ValueArgs -> {
                     children(args)
