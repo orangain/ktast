@@ -1,6 +1,6 @@
-package kastree.ast.psi
+package ktast.ast.psi
 
-import kastree.ast.Node
+import ktast.ast.Node
 import org.jetbrains.kotlin.KtNodeTypes
 import org.jetbrains.kotlin.com.intellij.lang.ASTNode
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement

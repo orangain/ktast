@@ -1,4 +1,4 @@
-package kastree.ast
+package ktast.ast
 
 sealed class Node {
     var tag: Any? = null
@@ -73,8 +73,8 @@ sealed class Node {
             val isClass = declarationKeyword.token == Keyword.DeclarationToken.CLASS
             val isObject = declarationKeyword.token == Keyword.DeclarationToken.OBJECT
             val isInterface = declarationKeyword.token == Keyword.DeclarationToken.INTERFACE
-            val isCompanion = mods.contains(Node.Modifier.Lit(Modifier.Keyword.COMPANION))
-            val isEnum = mods.contains(Node.Modifier.Lit(Modifier.Keyword.ENUM))
+            val isCompanion = mods.contains(Modifier.Lit(Modifier.Keyword.COMPANION))
+            val isEnum = mods.contains(Modifier.Lit(Modifier.Keyword.ENUM))
 
             sealed class Parent : Node() {
                 data class CallConstructor(

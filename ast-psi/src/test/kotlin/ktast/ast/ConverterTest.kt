@@ -1,7 +1,7 @@
-package kastree.ast
+package ktast.ast
 
-import kastree.ast.psi.ConverterWithExtras
-import kastree.ast.psi.Parser
+import ktast.ast.psi.ConverterWithExtras
+import ktast.ast.psi.Parser
 import org.junit.Test
 import kotlin.test.assertEquals
 

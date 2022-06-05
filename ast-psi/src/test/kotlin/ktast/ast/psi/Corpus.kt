@@ -1,4 +1,4 @@
-package kastree.ast.psi
+package ktast.ast.psi
 
 import java.io.File
 import java.nio.file.Files

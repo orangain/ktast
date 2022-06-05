@@ -1,4 +1,4 @@
-package kastree.ast.psi
+package ktast.ast.psi
 
 import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
