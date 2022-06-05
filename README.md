@@ -30,12 +30,12 @@ limited.
 This project has two libraries that are available from [JitPack](https://jitpack.io/). To simply build the AST from a
 Kotlin JVM or Java project, add the following dependency in Gradle:
 
-    implementation("com.github.orangain.ktast:ast:0.5.0")
+    implementation("com.github.orangain.ktast:ast:0.6.0")
 
 This does not include the parser. To include the parser (which transitively includes the entire Kotlin compiler),
 instead use:
 
-    implementation("com.github.orangain.ktast:ast-psi:0.5.0")
+    implementation("com.github.orangain.ktast:ast-psi:0.6.0")
 
 While the parser only works from JVM projects, the AST itself (and writers/visitors) can be used from other
 multiplatform projects.
