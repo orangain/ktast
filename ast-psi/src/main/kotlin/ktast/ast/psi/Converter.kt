@@ -325,10 +325,10 @@ open class Converter {
             }
         ).map(v)
         is KtNullableType -> Node.Type.Nullable(
-            lPar = findChildAndConvertLpar(v),
+            lPar = findChildAndConvertLPar(v),
             mods = convertModifiers(v.modifierList),
             type = convertType(v.innerType ?: error("No inner type for nullable")),
-            rPar = findChildAndConvertRpar(v),
+            rPar = findChildAndConvertRPar(v),
         ).map(v)
         is KtDynamicType -> Node.Type.Dynamic().map(v)
         else -> error("Unrecognized type of $v")
@@ -794,10 +794,10 @@ open class Converter {
             check(v.text == it.value) { "Unexpected keyword: ${v.text}" }
         }.map(v)
 
-    open fun findChildAndConvertLpar(v: KtElement) =
+    open fun findChildAndConvertLPar(v: KtElement) =
         findChildByType(v, KtTokens.LPAR)?.let { convertKeyword(it, Node.Keyword::LPar) }
 
-    open fun findChildAndConvertRpar(v: KtElement) =
+    open fun findChildAndConvertRPar(v: KtElement) =
         findChildByType(v, KtTokens.RPAR)?.let { convertKeyword(it, Node.Keyword::RPar) }
 
     protected open fun <T : Node> T.map(v: PsiElement) = also { onNode(it, v) }
