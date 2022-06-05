@@ -5,7 +5,7 @@ import kastree.ast.psi.Parser
 import org.junit.Test
 import kotlin.test.assertEquals
 
-class ParserTest {
+class ConverterTest {
 
     @Test
     fun testDeclaration() {
