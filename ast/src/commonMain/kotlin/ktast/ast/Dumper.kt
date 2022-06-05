@@ -70,7 +70,7 @@ class Dumper(
     private fun Node.printNode(level: Int = levelOf(this), prefix: String = "") {
         app.append("  ".repeat(level))
         app.append(prefix)
-        app.append(this::class.qualifiedName?.substring(12))
+        app.append(this::class.qualifiedName?.substring(10)) // 10 means length of "ktast.ast."
         if (verbose) {
             when (this) {
                 is Node.Modifier.Lit -> mapOf("keyword" to keyword)
