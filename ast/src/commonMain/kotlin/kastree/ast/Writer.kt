@@ -27,7 +27,7 @@ open class Writer(
                     // First, do all the enum entries if there are any
                     val enumEntries = children.takeWhile { it is Node.Decl.EnumEntry }
                     if (enumEntries.isNotEmpty()) {
-                        children(enumEntries, ",", postfix = ";")
+                        children(enumEntries, ",", suffix = ";")
                     }
 
                     // Now the rest of the members
@@ -521,14 +521,14 @@ open class Writer(
 
     protected fun Node.children(vararg v: Node?) = this@Writer.also { v.forEach { visitChildren(it) } }
 
-    protected fun Node.children(v: List<Node?>, sep: String = "", prefix: String = "", postfix: String = "") =
+    protected fun Node.children(v: List<Node?>, sep: String = "", prefix: String = "", suffix: String = "") =
         this@Writer.also {
             append(prefix)
             v.forEachIndexed { index, t ->
                 visit(t, this)
                 if (index < v.size - 1) append(sep)
             }
-            append(postfix)
+            append(suffix)
         }
 
     companion object {
