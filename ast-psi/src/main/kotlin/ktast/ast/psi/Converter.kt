@@ -701,11 +701,11 @@ open class Converter {
 
     open fun convertAnonFunc(v: KtNamedFunction) = Node.Expr.AnonFunc(convertFunc(v))
 
-    open fun convertPropertyExpr(v: KtDestructuringDeclaration) = Node.Expr.Property(
+    open fun convertPropertyExpr(v: KtProperty) = Node.Expr.Property(
         decl = convertProperty(v)
     ).map(v)
 
-    open fun convertPropertyExpr(v: KtProperty) = Node.Expr.Property(
+    open fun convertPropertyExpr(v: KtDestructuringDeclaration) = Node.Expr.Property(
         decl = convertProperty(v)
     ).map(v)
 
