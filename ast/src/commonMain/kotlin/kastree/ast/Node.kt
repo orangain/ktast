@@ -69,9 +69,6 @@ sealed class Node {
             // TODO: Can include primary constructor
             val body: NodeList<Decl>?,
         ) : Decl(), WithModifiers {
-            enum class Form {
-                CLASS, ENUM_CLASS, INTERFACE, OBJECT, COMPANION_OBJECT
-            }
 
             val isClass = declarationKeyword.token == Keyword.DeclarationToken.CLASS
             val isObject = declarationKeyword.token == Keyword.DeclarationToken.OBJECT
