@@ -396,7 +396,7 @@ open class Writer(
                 is Node.Expr.Labeled ->
                     appendName(label).append("@").also { children(expr) }
                 is Node.Expr.Annotated ->
-                    childAnnsBeforeExpr(expr).also { children(expr) }
+                    childAnns().also { children(expr) }
                 is Node.Expr.Call -> {
                     children(expr)
                     bracketedChildren(typeArgs)
@@ -502,21 +502,7 @@ open class Writer(
         }
     }
 
-    protected fun Node.WithAnnotations.childAnnsBeforeExpr(expr: Node.Expr) = this@Writer.also {
-        if (anns.isNotEmpty()) {
-            // As a special case, if there is a trailing annotation with no args and expr is paren,
-            // then we need to add an empty set of parens ourselves
-            val lastAnn = anns.lastOrNull()?.anns?.singleOrNull()?.takeIf { it.args == null }
-            val shouldAddParens = lastAnn != null && expr is Node.Expr.Paren
-            (this as Node).children(anns, " ")
-            if (shouldAddParens) append("()")
-            append(' ')
-        }
-    }
-
-    // Ends with newline if last is ann or space is last is mod or nothing if empty
-    protected fun Node.WithModifiers.childMods() =
-        (this@childMods as Node).children(mods)
+    protected fun Node.WithModifiers.childMods() = (this@childMods as Node).children(mods)
 
     protected inline fun Node.children(vararg v: Node?) = this@Writer.also { v.forEach { visitChildren(it) } }
 
