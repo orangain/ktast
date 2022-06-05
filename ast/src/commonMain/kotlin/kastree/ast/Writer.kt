@@ -164,7 +164,7 @@ open class Writer(
                     children(block)
                 }
                 is Node.Decl.Constructor.DelegationCall ->
-                    append(target.name.toLowerCase()).also { parenChildren(args) }
+                    append(target.name.lowercase()).also { parenChildren(args) }
                 is Node.Decl.EnumEntry -> {
                     childMods()
                     children(name)
@@ -434,7 +434,7 @@ open class Writer(
                     children(expr)
                 is Node.Modifier.AnnotationSet -> {
                     children(atSymbol)
-                    if (target != null) append(target.name.toLowerCase()).append(':')
+                    if (target != null) append(target.name.lowercase()).append(':')
                     children(lBracket)
                     children(anns)
                     children(rBracket)
@@ -445,7 +445,7 @@ open class Writer(
                     if (args != null) parenChildren(args)
                 }
                 is Node.Modifier.Lit ->
-                    append(keyword.name.toLowerCase())
+                    append(keyword.name.lowercase())
                 is Node.Keyword -> append(value)
                 else ->
                     error("Unrecognized node type: $this")

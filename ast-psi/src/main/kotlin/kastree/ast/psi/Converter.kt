@@ -780,7 +780,7 @@ open class Converter {
     class Unsupported(message: String) : UnsupportedOperationException(message)
 
     companion object : Converter() {
-        internal val modifiersByText = Node.Modifier.Keyword.values().map { it.name.toLowerCase() to it }.toMap()
+        internal val modifiersByText = Node.Modifier.Keyword.values().map { it.name.lowercase() to it }.toMap()
         internal val binaryTokensByText = Node.Expr.BinaryOp.Token.values().map { it.str to it }.toMap()
         internal val unaryTokensByText = Node.Expr.UnaryOp.Token.values().map { it.str to it }.toMap()
         internal val typeTokensByText = Node.Expr.TypeOp.Token.values().map { it.str to it }.toMap()
