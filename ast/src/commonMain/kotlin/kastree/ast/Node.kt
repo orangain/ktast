@@ -254,12 +254,17 @@ sealed class Node {
     ) : Node(), WithModifiers
 
     data class TypeRef(
+        val contextReceivers: NodeList<ContextReceiver>?,
         override val mods: List<Modifier>,
         override val lpar: Keyword.Lpar?,
         val innerMods: List<Modifier>,
-        val ref: Type,
+        val ref: Type?,
         override val rpar: Keyword.Rpar?,
     ) : Node(), WithModifiers, WithOptionalParentheses
+
+    data class ContextReceiver(
+        val typeRef: TypeRef,
+    ) : Node()
 
     data class ValueArgs(
         val args: List<ValueArg>
@@ -505,7 +510,7 @@ sealed class Node {
             ABSTRACT, FINAL, OPEN, ANNOTATION, SEALED, DATA, OVERRIDE, LATEINIT, INNER, ENUM, COMPANION,
             PRIVATE, PROTECTED, PUBLIC, INTERNAL,
             IN, OUT, NOINLINE, CROSSINLINE, VARARG, REIFIED,
-            TAILREC, OPERATOR, INFIX, INLINE, EXTERNAL, SUSPEND, CONST,
+            TAILREC, OPERATOR, INFIX, INLINE, EXTERNAL, SUSPEND, CONST, FUN,
             ACTUAL, EXPECT
         }
     }

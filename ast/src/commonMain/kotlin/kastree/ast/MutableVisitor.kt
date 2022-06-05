@@ -194,11 +194,15 @@ open class MutableVisitor {
                         typeRef = visitChildren(typeRef, newCh),
                     )
                     is Node.TypeRef -> copy(
+                        contextReceivers = visitChildren(contextReceivers, newCh),
                         mods = visitChildren(mods, newCh),
                         lpar = visitChildren(lpar, newCh),
                         innerMods = visitChildren(innerMods, newCh),
                         ref = visitChildren(ref, newCh),
                         rpar = visitChildren(rpar, newCh),
+                    )
+                    is Node.ContextReceiver -> copy(
+                        typeRef = visitChildren(typeRef, newCh),
                     )
                     is Node.ValueArgs -> copy(
                         args = visitChildren(args, newCh),

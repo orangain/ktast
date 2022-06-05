@@ -10,6 +10,7 @@ import org.jetbrains.kotlin.descriptors.annotations.AnnotationUseSiteTarget
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.*
+import org.jetbrains.kotlin.psi.stubs.elements.KtStubElementTypes
 
 open class Converter {
     protected open fun onNode(node: Node, elem: PsiElement?) { }
@@ -605,13 +606,25 @@ open class Converter {
         }
 
         return Node.TypeRef(
+            contextReceivers = v.contextReceiverList?.let { convertContextReceivers(it) },
             mods = convertModifiers(mods),
             lpar = lpar?.let{ convertKeyword(it, Node.Keyword::Lpar) },
             innerMods = convertModifiers(innerMods),
-            ref = convertType(v.typeElement ?: error("Missing type element for $v")),
+            ref = v.typeElement?.let { convertType(it) }, // v.typeElement is null when the type reference has only context receivers.
             rpar = rpar?.let{ convertKeyword(it, Node.Keyword::Rpar) },
         ).map(v)
     }
+
+    open fun convertContextReceivers(v: KtContextReceiverList): Node.NodeList<Node.ContextReceiver> = Node.NodeList(
+        children = v.contextReceivers().map(::convertContextReceiver),
+        separator = ",",
+        prefix = "(",
+        suffix = ")",
+    ).map(v)
+
+    open fun convertContextReceiver(v: KtContextReceiver) = Node.ContextReceiver(
+        typeRef = convertTypeRef(v.typeReference() ?: error("Missing type reference for $v")),
+    ).map(v)
 
     open fun convertTypeAlias(v: KtTypeAlias) = Node.Decl.TypeAlias(
         mods = convertModifiers(v),
@@ -772,6 +785,7 @@ open class Converter {
         internal val unaryTokensByText = Node.Expr.UnaryOp.Token.values().map { it.str to it }.toMap()
         internal val typeTokensByText = Node.Expr.TypeOp.Token.values().map { it.str to it }.toMap()
 
+        internal val KtTypeReference.contextReceiverList get() = getStubOrPsiChild(KtStubElementTypes.CONTEXT_RECEIVER_LIST)
         internal val KtTypeReference.names get() = (typeElement as? KtUserType)?.names ?: emptyList()
         internal val KtUserType.names get(): List<String> =
             referencedName?.let { (qualifier?.names ?: emptyList()) + it } ?: emptyList()
