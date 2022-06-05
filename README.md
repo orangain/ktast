@@ -2,15 +2,15 @@
 
 Ktast is a simple library to manipulate Kotlin source code as a set of AST objects. Features:
 
-* Simple, immutable, hierarchical [set of data classes](ast/ast-common/src/main/kotlin/kastree/ast/Node.kt) representing
+* Simple, immutable, hierarchical [set of data classes](ast/ast-common/src/main/kotlin/ktast/ast/Node.kt) representing
   Kotlin AST
-* Simple [writer implementation](ast/ast-common/src/main/kotlin/kastree/ast/Writer.kt) (some advanced features not yet
+* Simple [writer implementation](ast/ast-common/src/main/kotlin/ktast/ast/Writer.kt) (some advanced features not yet
   supported)
-* Support for [regular](ast/ast-common/src/main/kotlin/kastree/ast/Visitor.kt) and
-  [mutable](ast/ast-common/src/main/kotlin/kastree/ast/MutableVisitor.kt) visitors
+* Support for [regular](ast/ast-common/src/main/kotlin/ktast/ast/Visitor.kt) and
+  [mutable](ast/ast-common/src/main/kotlin/ktast/ast/MutableVisitor.kt) visitors
 * Basic support for blank-line and comment map (some advanced use cases not yet supported)
-* Support for [parsing](ast-psi/src/main/kotlin/kastree/ast/psi/Parser.kt) (via Kotlin compiler's parser) and
-  [converting](ast-psi/src/main/kotlin/kastree/ast/psi/Converter.kt) to the AST
+* Support for [parsing](ast-psi/src/main/kotlin/ktast/ast/psi/Parser.kt) (via Kotlin compiler's parser) and
+  [converting](ast-psi/src/main/kotlin/ktast/ast/psi/Converter.kt) to the AST
 
 The project is a simple one and probably will not support a lot of features. It was created to facilitate advanced
 Kotlin code generation beyond the string-based versions that exist.
@@ -30,12 +30,12 @@ limited.
 This project has two libraries that are available from [JitPack](https://jitpack.io/). To simply build the AST from a
 Kotlin JVM or Java project, add the following dependency in Gradle:
 
-    implementation("com.github.orangain.kastree:ast:0.5.0")
+    implementation("com.github.orangain.ktast:ast:0.5.0")
 
 This does not include the parser. To include the parser (which transitively includes the entire Kotlin compiler),
 instead use:
 
-    implementation("com.github.orangain.kastree:ast-psi:0.5.0")
+    implementation("com.github.orangain.ktast:ast-psi:0.5.0")
 
 While the parser only works from JVM projects, the AST itself (and writers/visitors) can be used from other
 multiplatform projects.
@@ -49,7 +49,7 @@ Examples below are simple Kotlin scripts.
 In this example, we use the wrapper around the Kotlin compiler's parser:
 
 ```kotlin
-import kastree.ast.psi.Parser
+import ktast.ast.psi.Parser
 
 val code = """
     package foo
@@ -63,18 +63,20 @@ val code = """
 """.trimIndent()
 // Call the parser with the code
 val file = Parser.parseFile(code)
-// The file var is now a kastree.ast.Node.File that is used in future examples...
+// The file var is now a ktast.ast.Node.File that is used in future examples...
 ```
 
 The `file` variable has the full AST. Note, if you want to parse with blank line and comment information, you can create
 a converter that holds the extras:
 
 ```kotlin
+import ktast.ast.psi.ConverterWithExtras
+
 // ...
 
 val extrasMap = ConverterWithExtras()
 val file = Parser(extrasMap).parseFile(code)
-// extrasMap is an instance of kastree.ast.ExtrasMap
+// extrasMap is an instance of ktast.ast.ExtrasMap
 ```
 
 #### Write code
@@ -82,7 +84,7 @@ val file = Parser(extrasMap).parseFile(code)
 To write the code created above, simply use the writer
 
 ```kotlin
-import kastree.ast.Writer
+import ktast.ast.Writer
 
 // ...
 
@@ -105,8 +107,8 @@ This outputs the code with the comments.
 This will get all strings:
 
 ```kotlin
-import kastree.ast.Node
-import kastree.ast.Visitor
+import ktast.ast.Node
+import ktast.ast.Visitor
 
 // ...
 
@@ -126,7 +128,7 @@ each node that can be used to store per-node state if desired.
 This will change "Hello, World!" and "Hello, again!" to "Howdy, World!" and "Howdy, again":
 
 ```kotlin
-import kastree.ast.MutableVisitor
+import ktast.ast.MutableVisitor
 
 // ...
 
