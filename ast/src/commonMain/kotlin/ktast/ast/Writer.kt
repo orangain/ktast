@@ -93,9 +93,9 @@ open class Writer(
                     children(params)
                     if (typeRef != null) append(":").also { children(typeRef) }
                     childTypeConstraints(typeConstraints)
-                    if (body != null) {
-                        children(body)
-                    }
+                    children(contractKeyword)
+                    children(contractEffects)
+                    children(body)
                 }
                 is Node.Decl.Func.Params -> {
                     parenChildren(params)

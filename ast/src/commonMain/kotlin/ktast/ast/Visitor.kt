@@ -71,6 +71,8 @@ open class Visitor {
                 visitChildren(params)
                 visitChildren(typeRef)
                 visitChildren(typeConstraints)
+                visitChildren(contractKeyword)
+                visitChildren(contractEffects)
                 visitChildren(body)
             }
             is Node.Decl.Func.Params -> {

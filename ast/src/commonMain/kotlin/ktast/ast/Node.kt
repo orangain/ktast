@@ -123,8 +123,10 @@ sealed class Node {
             val params: Params?,
             val typeRef: TypeRef?,
             val typeConstraints: List<TypeConstraint>,
+            override val contractKeyword: Keyword.Contract?,
+            override val contractEffects: NodeList<ContractEffect>?,
             val body: Body?
-        ) : Decl(), WithModifiers {
+        ) : Decl(), WithModifiers, WithContract {
             data class Params(
                 val params: List<Param>
             ) : Node() {

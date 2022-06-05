@@ -75,7 +75,9 @@ open class MutableVisitor {
                         params = visitChildren(params, newCh),
                         typeRef = visitChildren(typeRef, newCh),
                         typeConstraints = visitChildren(typeConstraints, newCh),
-                        body = visitChildren(body, newCh)
+                        contractKeyword = visitChildren(contractKeyword, newCh),
+                        contractEffects = visitChildren(contractEffects, newCh),
+                        body = visitChildren(body, newCh),
                     )
                     is Node.Decl.Func.Params -> copy(
                         params = visitChildren(params, newCh),

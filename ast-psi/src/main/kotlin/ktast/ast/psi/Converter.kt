@@ -116,6 +116,10 @@ open class Converter {
         params = v.valueParameterList?.let(::convertFuncParams),
         typeRef = v.typeReference?.let(::convertTypeRef),
         typeConstraints = v.typeConstraints.map(::convertTypeConstraint),
+        contractKeyword = findChildByType(v, KtTokens.CONTRACT_KEYWORD)?.let {
+            convertKeyword(it, Node.Keyword::Contract)
+        },
+        contractEffects = v.contractDescription?.let(::convertContractEffects),
         body = v.bodyExpression?.let(::convertFuncBody)
     ).map(v)
 
