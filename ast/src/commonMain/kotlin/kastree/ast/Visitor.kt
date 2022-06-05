@@ -190,11 +190,15 @@ open class Visitor {
                 visitChildren(typeRef)
             }
             is Node.TypeRef -> {
+                visitChildren(contextReceivers)
                 visitChildren(mods)
                 visitChildren(lpar)
                 visitChildren(innerMods)
                 visitChildren(ref)
                 visitChildren(rpar)
+            }
+            is Node.ContextReceiver -> {
+                visitChildren(typeRef)
             }
             is Node.ValueArgs -> {
                 visitChildren(args)

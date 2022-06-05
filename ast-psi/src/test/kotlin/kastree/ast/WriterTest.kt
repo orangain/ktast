@@ -167,6 +167,13 @@ class WriterTest {
         """.trimIndent())
     }
 
+    @Test
+    fun testContextReceivers() {
+        assertParseAndWriteExact("""
+            typealias f = context(T, X) (a: @[a] a) -> b
+        """.trimIndent())
+    }
+
     private fun assertParseAndWriteExact(origCode: String) {
 
         val origExtrasConv = ConverterWithExtras()

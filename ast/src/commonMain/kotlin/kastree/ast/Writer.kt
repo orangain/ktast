@@ -192,7 +192,12 @@ open class Writer(
                     children(type)
                 }
                 is Node.Type.Func -> {
-                    if (receiverType != null) children(receiverType).append('.')
+                    if (receiverType != null) {
+                        children(receiverType)
+                        if (receiverType.ref != null) {
+                            append('.')
+                        }
+                    }
                     if (params != null) { children(params).append("->") }
                     children(type)
                 }
@@ -218,11 +223,18 @@ open class Writer(
                     children(typeRef)
                 }
                 is Node.TypeRef -> {
+                    if (contextReceivers != null) {
+                        append("context")
+                        children(contextReceivers)
+                    }
                     children(mods)
                     children(lpar)
                     children(innerMods)
                     children(ref)
                     children(rpar)
+                }
+                is Node.ContextReceiver -> {
+                    children(typeRef)
                 }
                 is Node.ValueArgs -> {
                     children(args)
