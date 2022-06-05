@@ -566,7 +566,7 @@ open class Converter {
             KtNodeTypes.NULL -> Node.Expr.Const.Form.NULL
             else -> error("Unrecognized const type for $v")
         }
-    )
+    ).map(v)
 
     open fun convertLambda(v: KtLambdaExpression) = Node.Expr.Lambda(
         params = v.functionLiteral.valueParameterList?.let(::convertLambdaParams),
