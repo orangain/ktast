@@ -135,6 +135,9 @@ sealed class Node {
             }
         }
 
+        /**
+         * AST node corresponds to KtProperty or KtDestructuringDeclaration.
+         */
         data class Property(
             override val mods: List<Modifier>,
             val valOrVar: Keyword.ValOrVar,
@@ -147,6 +150,10 @@ sealed class Node {
             val delegate: Delegate?,
             val accessors: Accessors?
         ) : Decl(), WithModifiers {
+            /**
+             * AST node corresponds to KtParameter or KtDestructuringDeclarationEntry,
+             * or virtual node corresponds a part of KtProperty.
+             */
             data class Var(
                 val name: Expr.Name,
                 val typeRef: TypeRef?
@@ -571,7 +578,10 @@ sealed class Node {
             val func: Decl.Func
         ) : Expr()
 
-        // This is only present for when expressions and labeled expressions
+        /**
+         * AST node corresponds to KtProperty or KtDestructuringDeclaration.
+         * This is only present for when expressions and labeled expressions.
+         */
         data class Property(
             val decl: Decl.Property
         ) : Expr()

@@ -501,7 +501,7 @@ open class Writer(
             append('(')
             vars.forEachIndexed { index, v ->
                 if (v == null) append('_') else children(v)
-                if (index < vars.size - 1) append(", ")
+                if (index < vars.size - 1) append(",")
             }
             append(')')
         }
