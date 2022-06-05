@@ -214,13 +214,19 @@ sealed class Node {
         val expr: Expr,
     ) : Node()
 
+    /**
+     * AST node corresponds to KtTypeParameterList.
+     */
     data class TypeParams(
         val params: List<TypeParam>,
     ) : Node() {
+        /**
+         * AST node corresponds to KtTypeParameter.
+         */
         data class TypeParam(
             override val mods: List<Modifier>,
             val name: Expr.Name,
-            val type: Type?
+            val typeRef: TypeRef?
         ) : Node(), WithModifiers
     }
 
@@ -267,6 +273,9 @@ sealed class Node {
         val typeRef: TypeRef,
     ) : Node(), WithModifiers
 
+    /**
+     * AST node corresponds to KtTypeReference.
+     */
     data class TypeRef(
         val contextReceivers: NodeList<ContextReceiver>?,
         override val mods: List<Modifier>,

@@ -155,7 +155,7 @@ open class Visitor {
             is Node.TypeParams.TypeParam -> {
                 visitChildren(mods)
                 visitChildren(name)
-                visitChildren(type)
+                visitChildren(typeRef)
             }
             is Node.TypeProjection -> {
                 visitChildren(mods)

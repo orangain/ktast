@@ -159,7 +159,7 @@ open class MutableVisitor {
                     is Node.TypeParams.TypeParam -> copy(
                         mods = visitChildren(mods, newCh),
                         name = visitChildren(name, newCh),
-                        type = visitChildren(type, newCh)
+                        typeRef = visitChildren(typeRef, newCh)
                     )
                     is Node.TypeProjection -> copy(
                         mods = visitChildren(mods, newCh),

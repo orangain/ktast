@@ -186,7 +186,7 @@ open class Writer(
                 is Node.TypeParams.TypeParam -> {
                     childMods()
                     children(name)
-                    if (type != null) append(":").also { children(type) }
+                    if (typeRef != null) append(":").also { children(typeRef) }
                 }
                 is Node.TypeProjection -> {
                     children(mods)

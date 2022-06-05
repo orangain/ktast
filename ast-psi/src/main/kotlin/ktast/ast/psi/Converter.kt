@@ -248,7 +248,7 @@ open class Converter {
     open fun convertTypeParam(v: KtTypeParameter) = Node.TypeParams.TypeParam(
         mods = convertModifiers(v),
         name = v.nameIdentifier?.let(::convertName) ?: error("No type param name for $v"),
-        type = v.extendsBound?.typeElement?.let(::convertType)
+        typeRef = v.extendsBound?.let(::convertTypeRef)
     ).map(v)
 
     open fun convertTypeProjections(v: KtTypeArgumentList?) = v?.arguments?.map {
