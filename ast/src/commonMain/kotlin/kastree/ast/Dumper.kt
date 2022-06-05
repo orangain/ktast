@@ -14,7 +14,9 @@ class Dumper(
         }
     }
 
-    fun dump(v: Node) { visit(v, v) }
+    fun dump(v: Node) {
+        visit(v, v)
+    }
 
     private val levelMap = mutableMapOf<Int, Int>()
 

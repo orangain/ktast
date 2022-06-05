@@ -9,7 +9,8 @@ class ParserTest {
 
     @Test
     fun testDeclaration() {
-        assertParsedAs("""
+        assertParsedAs(
+            """
             val x = ""
         """.trimIndent(), """
             Node.File
@@ -23,12 +24,14 @@ class ParserTest {
                   Node.Keyword.Equal
                   AFTER: Node.Extra.Whitespace
                   Node.Expr.StringTmpl
-        """.trimIndent())
+        """.trimIndent()
+        )
     }
 
     @Test
     fun testInlineComment() {
-        assertParsedAs("""
+        assertParsedAs(
+            """
             val x = "" // x is empty
         """.trimIndent(), """
             Node.File
@@ -44,7 +47,8 @@ class ParserTest {
                   Node.Expr.StringTmpl
                   AFTER: Node.Extra.Whitespace
                   AFTER: Node.Extra.Comment
-        """.trimIndent())
+        """.trimIndent()
+        )
     }
 
     private fun assertParsedAs(code: String, expectedDump: String) {

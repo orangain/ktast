@@ -2,7 +2,6 @@ package kastree.ast
 
 import kastree.ast.psi.ConverterWithExtras
 import kastree.ast.psi.Parser
-import org.junit.Ignore
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -17,9 +16,11 @@ class WriterTest {
 
     @Test
     fun testTypeParameterModifiers() {
-        assertParseAndWriteExact("""
+        assertParseAndWriteExact(
+            """
             fun delete(p: Array<out String>?) {}
-        """.trimIndent())
+        """.trimIndent()
+        )
     }
 
     @Test
@@ -44,55 +45,65 @@ class WriterTest {
 
     @Test
     fun testEmptyLines() {
-        assertParseAndWriteExact("""
+        assertParseAndWriteExact(
+            """
             val x = ""
             
             val y = 0
-        """.trimIndent())
+        """.trimIndent()
+        )
     }
 
     @Test
     fun testFunctionBlock() {
-        assertParseAndWriteExact("""
+        assertParseAndWriteExact(
+            """
             fun setup() {
                 // do something
                 val x = ""
                 val y = 3
                 // last
             }
-        """.trimIndent())
+        """.trimIndent()
+        )
     }
 
     @Test
     fun testFunctionBlockHavingOnlyComment() {
-        assertParseAndWriteExact("""
+        assertParseAndWriteExact(
+            """
             fun setup() {
                 // do something
             }
-        """.trimIndent())
+        """.trimIndent()
+        )
     }
 
     @Test
     fun testLambdaExpression() {
-        assertParseAndWriteExact("""
+        assertParseAndWriteExact(
+            """
             fun setup() {
                 run {
                     // do something
                     val x = ""
                 }
             }
-        """.trimIndent())
+        """.trimIndent()
+        )
     }
 
     @Test
     fun testLambdaExpressionHavingOnlyComment() {
-        assertParseAndWriteExact("""
+        assertParseAndWriteExact(
+            """
             fun setup() {
                 run {
                     // do something
                 }
             }
-        """.trimIndent())
+        """.trimIndent()
+        )
     }
 
     @Test
@@ -102,76 +113,94 @@ class WriterTest {
 
     @Test
     fun testFunctionModifier() {
-        assertParseAndWriteExact("""
+        assertParseAndWriteExact(
+            """
             private fun setup() {}
-        """.trimIndent())
+        """.trimIndent()
+        )
     }
 
     @Test
     fun testSemicolonAfterIf() {
-        assertParseAndWriteExact("""
+        assertParseAndWriteExact(
+            """
             fun foo(a: Int): Int { var x = a; var y = x++; if (y+1 != x) return -1; return x; }
-        """.trimIndent())
+        """.trimIndent()
+        )
     }
 
     @Test
     fun testQuotedIdentifiers() {
-        assertParseAndWriteExact("""
+        assertParseAndWriteExact(
+            """
             @`return` fun `package`() {
               `class`()
             }
-        """.trimIndent())
+        """.trimIndent()
+        )
     }
 
     @Test
     fun testConstructorModifiers() {
-        assertParseAndWriteExact("""
+        assertParseAndWriteExact(
+            """
             object Foo @[foo] private @[bar()] ()
-        """.trimIndent())
+        """.trimIndent()
+        )
     }
 
     @Test
     fun testSecondaryConstructor() {
-        assertParseAndWriteExact("""
+        assertParseAndWriteExact(
+            """
             class Foo {
                 @annot protected constructor(x: Int, y: Int) : this(1,2) {}
             }
-        """.trimIndent())
+        """.trimIndent()
+        )
     }
 
     @Test
     fun testFunctionWithFunctionReceiver() {
-        assertParseAndWriteExact("""
+        assertParseAndWriteExact(
+            """
             fun (@[a] T<T>.(A<B>) -> Unit).foo()
             fun @[a] (@[a] T<T>.(A<B>) -> R).foo() {}
-        """.trimIndent())
+        """.trimIndent()
+        )
     }
 
     @Test
     fun testTypeModifiers() {
-        assertParseAndWriteExact("""
+        assertParseAndWriteExact(
+            """
             val p1:suspend a
             val p2: suspend (a) -> a
             val p5: (suspend a).() -> a
             val p6: a<in suspend a>
             val p15: suspend (suspend (() -> Unit)) -> Unit
             @a fun @a a.f1() {}
-        """.trimIndent())
+        """.trimIndent()
+        )
     }
 
     @Test
     fun testBy() {
-        assertParseAndWriteExact("""
+        assertParseAndWriteExact(
+            """
             class Runnable<a,a>(a : doo = 0) : foo(d=0), bar by x, bar {
             }
-        """.trimIndent())
+        """.trimIndent()
+        )
     }
 
     @Test
     fun testContextReceivers() {
-        assertParseAndWriteExact("""
+        assertParseAndWriteExact(
+            """
             typealias f = context(T, X) (a: @[a] a) -> b
-        """.trimIndent())
+        """.trimIndent()
+        )
     }
 
     private fun assertParseAndWriteExact(origCode: String) {
@@ -186,7 +215,11 @@ class WriterTest {
         val identityNode = MutableVisitor.preVisit(origFile) { v, _ -> v }
         val identityCode = Writer.write(identityNode, origExtrasConv)
 
-        assertEquals(origCode.trim(), identityCode.trim(), "Parse -> Identity Transform -> Write for original code, not equal")
+        assertEquals(
+            origCode.trim(),
+            identityCode.trim(),
+            "Parse -> Identity Transform -> Write for original code, not equal"
+        )
     }
 
 }

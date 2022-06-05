@@ -352,7 +352,7 @@ open class Visitor {
             is Node.Expr.AnonFunc -> {
                 visitChildren(func)
             }
-            is Node.Expr.Property ->  {
+            is Node.Expr.Property -> {
                 visitChildren(decl)
             }
             is Node.Expr.Block -> {
@@ -382,9 +382,13 @@ open class Visitor {
         }
     }
 
-    protected fun <T: Node?> Node?.visitChildren(v: T) { visit(v, this!!) }
+    protected fun <T : Node?> Node?.visitChildren(v: T) {
+        visit(v, this!!)
+    }
 
-    protected fun <T: Node?> Node?.visitChildren(v: List<T>) { v.forEach { orig -> visit(orig, this!!) } }
+    protected fun <T : Node?> Node?.visitChildren(v: List<T>) {
+        v.forEach { orig -> visit(orig, this!!) }
+    }
 
     companion object {
         fun visit(v: Node, fn: (v: Node?, parent: Node) -> Unit) = object : Visitor() {

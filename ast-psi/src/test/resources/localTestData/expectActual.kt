@@ -1,4 +1,3 @@
-
 expect class Foo {
     fun bar(): String
 }

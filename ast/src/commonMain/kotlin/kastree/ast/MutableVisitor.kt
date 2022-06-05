@@ -2,10 +2,10 @@ package kastree.ast
 
 open class MutableVisitor {
 
-    open fun <T: Node?> preVisit(v: T, parent: Node): T = v
-    open fun <T: Node?> postVisit(v: T, parent: Node): T = v
+    open fun <T : Node?> preVisit(v: T, parent: Node): T = v
+    open fun <T : Node?> postVisit(v: T, parent: Node): T = v
 
-    open fun <T: Node?> visit(v: T, parent: Node, ch: ChangedRef = ChangedRef(false)): T = v.run {
+    open fun <T : Node?> visit(v: T, parent: Node, ch: ChangedRef = ChangedRef(false)): T = v.run {
         ch.sub { newCh ->
             preVisit(this, parent)?.run {
                 val new: Node = when (this) {
@@ -250,7 +250,7 @@ open class MutableVisitor {
                         oper = visitChildren(oper, newCh)
                     )
                     is Node.Expr.UnaryOp.Oper -> this
-                    is Node.Expr.TypeOp -> copy (
+                    is Node.Expr.TypeOp -> copy(
                         lhs = visitChildren(lhs, newCh),
                         oper = visitChildren(oper, newCh),
                         rhs = visitChildren(rhs, newCh)
@@ -391,9 +391,9 @@ open class MutableVisitor {
         }
     }
 
-    protected fun <T: Node?> Node?.visitChildren(v: T, ch: ChangedRef): T = visit(v, this!!, ch)
+    protected fun <T : Node?> Node?.visitChildren(v: T, ch: ChangedRef): T = visit(v, this!!, ch)
 
-    protected fun <T: Node?> Node?.visitChildren(v: List<T>, ch: ChangedRef): List<T> = ch.sub { newCh ->
+    protected fun <T : Node?> Node?.visitChildren(v: List<T>, ch: ChangedRef): List<T> = ch.sub { newCh ->
         val newList = v.map { orig -> visit(orig, this!!, newCh).also { newCh.markIf(it, orig) } }
         newList.origOrChanged(v, newCh)
     }
@@ -401,7 +401,9 @@ open class MutableVisitor {
     protected fun <T> T.origOrChanged(orig: T, ref: ChangedRef) = if (ref.changed) this else orig
 
     open class ChangedRef(var changed: Boolean) {
-        fun markIf(v1: Any?, v2: Any?) { if (v1 !== v2) changed = true }
+        fun markIf(v1: Any?, v2: Any?) {
+            if (v1 !== v2) changed = true
+        }
 
         open fun <T> sub(fn: (ChangedRef) -> T): T = ChangedRef(false).let { newCh ->
             fn(newCh).also { if (newCh.changed) changed = true }
@@ -409,11 +411,11 @@ open class MutableVisitor {
     }
 
     companion object {
-        fun <T: Node> preVisit(v: T, fn: (v: Node?, parent: Node) -> Node?) = object : MutableVisitor() {
+        fun <T : Node> preVisit(v: T, fn: (v: Node?, parent: Node) -> Node?) = object : MutableVisitor() {
             override fun <T : Node?> preVisit(v: T, parent: Node): T = fn(v, parent) as T
         }.visit(v, v)
 
-        fun <T: Node> postVisit(v: T, fn: (v: Node?, parent: Node) -> Node?) = object : MutableVisitor() {
+        fun <T : Node> postVisit(v: T, fn: (v: Node?, parent: Node) -> Node?) = object : MutableVisitor() {
             override fun <T : Node?> postVisit(v: T, parent: Node): T = fn(v, parent) as T
         }.visit(v, v)
     }

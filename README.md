@@ -19,8 +19,9 @@ Kotlin code generation beyond the string-based versions that exist.
 
 Ktast is a fork of [Kastree](https://github.com/cretz/kastree). Kastree is currently not being actively developed.
 
-Another kotlin AST parsing library is [kotlinx.ast](https://github.com/kotlinx/ast). It does not use the Kotlin Compiler,
-but uses ANTLR and official Kotlin Grammar. Currently it seems that the library's summary AST classes are limited.
+Another kotlin AST parsing library is [kotlinx.ast](https://github.com/kotlinx/ast). It does not use the Kotlin
+Compiler, but uses ANTLR and official Kotlin Grammar. Currently it seems that the library's summary AST classes are
+limited.
 
 ## Usage
 
@@ -82,6 +83,7 @@ To write the code created above, simply use the writer
 
 ```kotlin
 import kastree.ast.Writer
+
 // ...
 
 println(Writer.write(file))
@@ -105,6 +107,7 @@ This will get all strings:
 ```kotlin
 import kastree.ast.Node
 import kastree.ast.Visitor
+
 // ...
 
 var strings = emptyList<String>()
@@ -124,6 +127,7 @@ This will change "Hello, World!" and "Hello, again!" to "Howdy, World!" and "How
 
 ```kotlin
 import kastree.ast.MutableVisitor
+
 // ...
 
 val newFile = MutableVisitor.preVisit(file) { v, _ ->
