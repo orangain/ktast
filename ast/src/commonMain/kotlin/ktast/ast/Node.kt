@@ -215,7 +215,12 @@ sealed class Node {
             override val mods: List<Modifier>,
             val name: Expr.Name,
             val args: ValueArgs?,
-            val members: List<Decl>
+            val members: List<Decl>,
+            /**
+             * Whether this enum entry has comma or not. All entries excluding the last one should have value true.
+             * The last entry can have both true or false.
+             */
+            val hasComma: Boolean,
         ) : Decl(), WithModifiers
     }
 

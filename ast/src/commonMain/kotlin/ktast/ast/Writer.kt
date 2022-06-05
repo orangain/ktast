@@ -175,7 +175,9 @@ open class Writer(
                     if (members.isNotEmpty()) append("{").run {
                         children(members)
                     }.append("}")
-                    append(",")
+                    if (hasComma) {
+                        append(",")
+                    }
                     writeExtrasWithin()
                 }
                 is Node.Initializer -> {

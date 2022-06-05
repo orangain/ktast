@@ -233,7 +233,8 @@ open class Converter {
         mods = convertModifiers(v),
         name = v.nameIdentifier?.let(::convertName) ?: error("Unnamed enum"),
         args = v.initializerList?.let(::convertValueArgs),
-        members = v.declarations.map(::convertDecl)
+        members = v.declarations.map(::convertDecl),
+        hasComma = findChildByType(v, KtTokens.COMMA) != null,
     ).map(v)
 
     open fun convertInitializer(equalsToken: PsiElement, expr: KtExpression, parent: PsiElement) = Node.Initializer(
