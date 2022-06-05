@@ -361,7 +361,7 @@ open class Writer(
                 }
                 is Node.Expr.When -> {
                     append("when")
-                    if (expr != null) append('(').also { children(expr) }.append(')')
+                    children(lPar, expr, rPar)
                     append("{")
                     children(entries)
                     append("}")

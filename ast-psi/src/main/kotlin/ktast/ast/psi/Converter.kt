@@ -593,8 +593,10 @@ open class Converter {
     ).map(v)
 
     open fun convertWhen(v: KtWhenExpression) = Node.Expr.When(
+        lPar = convertKeyword(v.leftParenthesis ?: error("No left parenthesis for $v"), Node.Keyword::LPar),
         expr = v.subjectExpression?.let(::convertExpr),
-        entries = v.entries.map(::convertWhenEntry)
+        rPar = convertKeyword(v.rightParenthesis ?: error("No right parenthesis for $v"), Node.Keyword::RPar),
+        entries = v.entries.map(::convertWhenEntry),
     ).map(v)
 
     open fun convertWhenEntry(v: KtWhenEntry) = Node.Expr.When.Entry(

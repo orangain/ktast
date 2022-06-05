@@ -295,7 +295,9 @@ open class Visitor {
                 visitChildren(typeArg)
             }
             is Node.Expr.When -> {
+                visitChildren(lPar)
                 visitChildren(expr)
+                visitChildren(rPar)
                 visitChildren(entries)
             }
             is Node.Expr.When.Entry -> {

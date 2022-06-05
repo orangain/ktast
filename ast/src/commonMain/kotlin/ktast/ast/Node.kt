@@ -461,22 +461,43 @@ sealed class Node {
             val label: String?
         ) : Expr()
 
+        /**
+         * AST node corresponds to KtWhenExpression.
+         */
         data class When(
+            val lPar: Keyword.LPar,
             val expr: Expr?,
+            val rPar: Keyword.RPar,
             val entries: List<Entry>
         ) : Expr() {
+            /**
+             * AST node corresponds to KtWhenEntry.
+             */
             data class Entry(
                 val conds: List<Cond>,
                 val body: Expr
             ) : Node()
 
+            /**
+             * AST node corresponds to KtWhenCondition.
+             */
             sealed class Cond : Node() {
+                /**
+                 * AST node corresponds to KtWhenConditionWithExpression.
+                 */
                 data class Expr(val expr: Node.Expr) : Cond()
+
+                /**
+                 * AST node corresponds to KtWhenConditionInRange.
+                 */
                 data class In(
                     val expr: Node.Expr,
                     val not: Boolean
                 ) : Cond()
 
+                /**
+                 * AST node corresponds to KtWhenConditionIsPattern.
+                 */
                 data class Is(
                     val typeRef: TypeRef,
                     val not: Boolean

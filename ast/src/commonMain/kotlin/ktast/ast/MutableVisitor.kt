@@ -299,8 +299,10 @@ open class MutableVisitor {
                         typeArg = visitChildren(typeArg, newCh)
                     )
                     is Node.Expr.When -> copy(
+                        lPar = visitChildren(lPar, newCh),
                         expr = visitChildren(expr, newCh),
-                        entries = visitChildren(entries, newCh)
+                        rPar = visitChildren(rPar, newCh),
+                        entries = visitChildren(entries, newCh),
                     )
                     is Node.Expr.When.Entry -> copy(
                         conds = visitChildren(conds, newCh),
