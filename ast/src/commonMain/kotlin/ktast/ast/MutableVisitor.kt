@@ -161,6 +161,18 @@ open class MutableVisitor {
                         name = visitChildren(name, newCh),
                         type = visitChildren(type, newCh)
                     )
+                    is Node.TypeProjection -> copy(
+                        mods = visitChildren(mods, newCh),
+                        typeRef = visitChildren(typeRef, newCh),
+                    )
+                    is Node.TypeRef -> copy(
+                        contextReceivers = visitChildren(contextReceivers, newCh),
+                        mods = visitChildren(mods, newCh),
+                        lPar = visitChildren(lPar, newCh),
+                        innerMods = visitChildren(innerMods, newCh),
+                        type = visitChildren(type, newCh),
+                        rPar = visitChildren(rPar, newCh),
+                    )
                     is Node.TypeConstraint -> copy(
                         anns = visitChildren(anns, newCh),
                         name = visitChildren(name, newCh),
@@ -189,18 +201,6 @@ open class MutableVisitor {
                         rPar = visitChildren(rPar, newCh),
                     )
                     is Node.Type.Dynamic -> this
-                    is Node.TypeProjection -> copy(
-                        mods = visitChildren(mods, newCh),
-                        typeRef = visitChildren(typeRef, newCh),
-                    )
-                    is Node.TypeRef -> copy(
-                        contextReceivers = visitChildren(contextReceivers, newCh),
-                        mods = visitChildren(mods, newCh),
-                        lPar = visitChildren(lPar, newCh),
-                        innerMods = visitChildren(innerMods, newCh),
-                        type = visitChildren(type, newCh),
-                        rPar = visitChildren(rPar, newCh),
-                    )
                     is Node.ContextReceiver -> copy(
                         typeRef = visitChildren(typeRef, newCh),
                     )

@@ -157,6 +157,18 @@ open class Visitor {
                 visitChildren(name)
                 visitChildren(type)
             }
+            is Node.TypeProjection -> {
+                visitChildren(mods)
+                visitChildren(typeRef)
+            }
+            is Node.TypeRef -> {
+                visitChildren(contextReceivers)
+                visitChildren(mods)
+                visitChildren(lPar)
+                visitChildren(innerMods)
+                visitChildren(type)
+                visitChildren(rPar)
+            }
             is Node.TypeConstraint -> {
                 visitChildren(anns)
                 visitChildren(name)
@@ -185,18 +197,6 @@ open class Visitor {
                 visitChildren(rPar)
             }
             is Node.Type.Dynamic -> {}
-            is Node.TypeProjection -> {
-                visitChildren(mods)
-                visitChildren(typeRef)
-            }
-            is Node.TypeRef -> {
-                visitChildren(contextReceivers)
-                visitChildren(mods)
-                visitChildren(lPar)
-                visitChildren(innerMods)
-                visitChildren(type)
-                visitChildren(rPar)
-            }
             is Node.ContextReceiver -> {
                 visitChildren(typeRef)
             }

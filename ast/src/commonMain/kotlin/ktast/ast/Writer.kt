@@ -188,6 +188,21 @@ open class Writer(
                     children(name)
                     if (type != null) append(":").also { children(type) }
                 }
+                is Node.TypeProjection -> {
+                    children(mods)
+                    children(typeRef)
+                }
+                is Node.TypeRef -> {
+                    if (contextReceivers != null) {
+                        append("context")
+                        children(contextReceivers)
+                    }
+                    children(mods)
+                    children(lPar)
+                    children(innerMods)
+                    children(type)
+                    children(rPar)
+                }
                 is Node.TypeConstraint -> {
                     childAnns(sameLine = true)
                     children(name)
@@ -223,21 +238,6 @@ open class Writer(
                 }
                 is Node.Type.Dynamic ->
                     append("dynamic")
-                is Node.TypeProjection -> {
-                    children(mods)
-                    children(typeRef)
-                }
-                is Node.TypeRef -> {
-                    if (contextReceivers != null) {
-                        append("context")
-                        children(contextReceivers)
-                    }
-                    children(mods)
-                    children(lPar)
-                    children(innerMods)
-                    children(type)
-                    children(rPar)
-                }
                 is Node.ContextReceiver -> {
                     children(typeRef)
                 }
