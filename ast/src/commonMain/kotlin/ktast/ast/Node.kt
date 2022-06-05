@@ -201,6 +201,9 @@ sealed class Node {
             enum class DelegationTarget { THIS, SUPER }
         }
 
+        /**
+         * AST node corresponds to KtEnumEntry.
+         */
         data class EnumEntry(
             override val mods: List<Modifier>,
             val name: Expr.Name,
