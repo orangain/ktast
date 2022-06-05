@@ -27,18 +27,28 @@ limited.
 
 ### Getting started
 
-This project has two libraries that are available from [JitPack](https://jitpack.io/). To simply build the AST from a
-Kotlin JVM or Java project, add the following dependency in Gradle:
+Ktast is available on [JitPack](https://jitpack.io/). Add the following configurations to your Gradle build settings:
 
-    implementation("com.github.orangain.ktast:ast:0.6.0")
+```kts
+repositories {
+    maven { setUrl("https://jitpack.io") }
+}
 
-This does not include the parser. To include the parser (which transitively includes the entire Kotlin compiler),
-instead use:
-
+dependencies {
     implementation("com.github.orangain.ktast:ast-psi:0.6.0")
+}
+```
+
+The library `ast-psi` transitively depends on the Kotlin compiler.
 
 While the parser only works from JVM projects, the AST itself (and writers/visitors) can be used from other
-multiplatform projects.
+multiplatform projects. If you need the AST only, instead use:
+
+```kts
+dependencies {
+    implementation("com.github.orangain.ktast:ast:0.6.0")
+}
+```
 
 ### Examples
 
@@ -151,7 +161,9 @@ The tests rely on a checked out version of the [Kotlin source repository](https:
 uses the test data there to build a corpus to test against. The path to the base of the repo needs to be set as the
 `KOTLIN_REPO` environment variable. Once set, run:
 
-    ./gradlew :ast-psi:test
+```
+./gradlew :ast-psi:test
+```
 
 This will ignore all Kotlin files with expected parse errors and only test against the ones that are valid (178 as of
 this writing). The test parses the Kotlin code into this AST, then re-writes this AST, then re-parses what was just
