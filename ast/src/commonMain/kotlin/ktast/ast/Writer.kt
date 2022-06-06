@@ -46,7 +46,7 @@ open class Writer(
                     children(decls)
                 }
                 is Node.Package -> {
-                    childMods().append("package")
+                    children(mods).append("package")
                     children(packageNameExpr)
                 }
                 is Node.Import -> {
@@ -54,7 +54,8 @@ open class Writer(
                     appendNames(names, ".")
                     if (wildcard) append(".*") else if (alias != null) append(" as ").appendName(alias)
                 }
-                is Node.Decl.Structured -> childMods().also {
+                is Node.Decl.Structured -> {
+                    children(mods)
                     children(declarationKeyword)
                     children(name)
                     children(typeParams)
@@ -78,14 +79,14 @@ open class Writer(
                     children(type)
                 }
                 is Node.Decl.Structured.PrimaryConstructor -> {
-                    childMods()
+                    children(mods)
                     children(constructorKeyword)
                     children(params)
                 }
                 is Node.Decl.Init ->
                     append("init").also { children(block) }
                 is Node.Decl.Func -> {
-                    childMods()
+                    children(mods)
                     children(funKeyword)
                     children(typeParams)
                     if (receiverTypeRef != null) children(receiverTypeRef).append(".")
@@ -100,7 +101,7 @@ open class Writer(
                     parenChildren(params)
                 }
                 is Node.Decl.Func.Params.Param -> {
-                    if (mods.isNotEmpty()) childMods()
+                    children(mods)
                     if (readOnly == true) append("val") else if (readOnly == false) append("var")
                     children(name)
                     if (typeRef != null) append(":").also { children(typeRef) }
@@ -111,7 +112,7 @@ open class Writer(
                 is Node.Decl.Func.Body.Expr ->
                     children(equals, expr)
                 is Node.Decl.Property -> {
-                    childMods()
+                    children(mods)
                     children(valOrVar)
                     children(typeParams)
                     if (receiverTypeRef != null) children(receiverTypeRef).append('.')
@@ -134,7 +135,7 @@ open class Writer(
                     if (second != null) children(second)
                 }
                 is Node.Decl.Property.Accessor.Get -> {
-                    childMods().append("get")
+                    children(mods).append("get")
                     if (body != null) {
                         append("()")
                         if (typeRef != null) append(":").also { children(typeRef) }
@@ -143,7 +144,7 @@ open class Writer(
                     }
                 }
                 is Node.Decl.Property.Accessor.Set -> {
-                    childMods().append("set")
+                    children(mods).append("set")
                     if (body != null) {
                         append('(')
                         children(paramMods)
@@ -155,13 +156,13 @@ open class Writer(
                     }
                 }
                 is Node.Decl.TypeAlias -> {
-                    childMods().append("typealias")
+                    children(mods).append("typealias")
                     children(name)
                     children(typeParams).append("=")
                     children(typeRef)
                 }
                 is Node.Decl.Constructor -> {
-                    childMods()
+                    children(mods)
                     children(constructorKeyword)
                     children(params)
                     if (delegationCall != null) append(":").also { children(delegationCall) }
@@ -170,7 +171,7 @@ open class Writer(
                 is Node.Decl.Constructor.DelegationCall ->
                     append(target.name.lowercase()).also { parenChildren(args) }
                 is Node.Decl.EnumEntry -> {
-                    childMods()
+                    children(mods)
                     children(name)
                     if (args != null) parenChildren(args)
                     if (members.isNotEmpty()) append("{").run {
@@ -189,7 +190,7 @@ open class Writer(
                     bracketedChildren(params)
                 }
                 is Node.TypeParams.TypeParam -> {
-                    childMods()
+                    children(mods)
                     children(name)
                     if (typeRef != null) append(":").also { children(typeRef) }
                 }
@@ -525,8 +526,6 @@ open class Writer(
             else anns.forEach { ann -> children(ann) }
         }
     }
-
-    protected fun Node.WithModifiers.childMods() = (this@childMods as Node).children(mods)
 
     // Null list values are asterisks
     protected fun Node.bracketedChildren(v: List<Node?>, appendIfNotEmpty: String = "") = this@Writer.also {

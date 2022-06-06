@@ -16,8 +16,9 @@ sealed class Node {
     }
 
     interface WithModifiers : WithAnnotations {
-        val mods: List<Modifier>
-        override val anns: List<Modifier.AnnotationSet> get() = mods.mapNotNull { it as? Modifier.AnnotationSet }
+        val mods: NodeList<Modifier>?
+        override val anns: List<Modifier.AnnotationSet>
+            get() = mods?.children.orEmpty().mapNotNull { it as? Modifier.AnnotationSet }
     }
 
     interface Entry : WithAnnotations {
@@ -49,7 +50,7 @@ sealed class Node {
     ) : Node(), Entry
 
     data class Package(
-        override val mods: List<Modifier>,
+        override val mods: NodeList<Modifier>?,
         val packageNameExpr: Expr,
     ) : Node(), WithModifiers
 
@@ -62,7 +63,7 @@ sealed class Node {
 
     sealed class Decl : Node() {
         data class Structured(
-            override val mods: List<Modifier>,
+            override val mods: NodeList<Modifier>?,
             val declarationKeyword: Keyword.Declaration,
             val name: Expr.Name?,
             val typeParams: TypeParams?,
@@ -78,8 +79,8 @@ sealed class Node {
             val isClass = declarationKeyword.token == Keyword.DeclarationToken.CLASS
             val isObject = declarationKeyword.token == Keyword.DeclarationToken.OBJECT
             val isInterface = declarationKeyword.token == Keyword.DeclarationToken.INTERFACE
-            val isCompanion = mods.contains(Modifier.Lit(Modifier.Keyword.COMPANION))
-            val isEnum = mods.contains(Modifier.Lit(Modifier.Keyword.ENUM))
+            val isCompanion = mods?.children.orEmpty().contains(Modifier.Lit(Modifier.Keyword.COMPANION))
+            val isEnum = mods?.children.orEmpty().contains(Modifier.Lit(Modifier.Keyword.ENUM))
 
             sealed class Parent : Node() {
                 data class CallConstructor(
@@ -101,7 +102,7 @@ sealed class Node {
             }
 
             data class PrimaryConstructor(
-                override val mods: List<Modifier>,
+                override val mods: NodeList<Modifier>?,
                 val constructorKeyword: Keyword.Constructor?,
                 val params: Func.Params?
             ) : Node(), WithModifiers
@@ -113,7 +114,7 @@ sealed class Node {
          * AST node corresponds to KtNamedFunction.
          */
         data class Func(
-            override val mods: List<Modifier>,
+            override val mods: NodeList<Modifier>?,
             val funKeyword: Keyword.Fun,
             val typeParams: TypeParams?,
             val receiverTypeRef: TypeRef?,
@@ -129,7 +130,7 @@ sealed class Node {
                 val params: List<Param>
             ) : Node() {
                 data class Param(
-                    override val mods: List<Modifier>,
+                    override val mods: NodeList<Modifier>?,
                     val readOnly: Boolean?,
                     val name: Expr.Name,
                     // Type can be null for anon functions
@@ -154,7 +155,7 @@ sealed class Node {
          * AST node corresponds to KtProperty or KtDestructuringDeclaration.
          */
         data class Property(
-            override val mods: List<Modifier>,
+            override val mods: NodeList<Modifier>?,
             val valOrVar: Keyword.ValOrVar,
             val typeParams: TypeParams?,
             val receiverTypeRef: TypeRef?,
@@ -189,15 +190,15 @@ sealed class Node {
              */
             sealed class Accessor : Node(), WithModifiers, WithPostModifiers {
                 data class Get(
-                    override val mods: List<Modifier>,
+                    override val mods: NodeList<Modifier>?,
                     val typeRef: TypeRef?,
                     override val postMods: List<PostModifier>,
                     val body: Func.Body?
                 ) : Accessor()
 
                 data class Set(
-                    override val mods: List<Modifier>,
-                    val paramMods: List<Modifier>,
+                    override val mods: NodeList<Modifier>?,
+                    val paramMods: NodeList<Modifier>?,
                     val paramName: Expr.Name?,
                     val paramTypeRef: TypeRef?,
                     override val postMods: List<PostModifier>,
@@ -207,14 +208,14 @@ sealed class Node {
         }
 
         data class TypeAlias(
-            override val mods: List<Modifier>,
+            override val mods: NodeList<Modifier>?,
             val name: Expr.Name,
             val typeParams: TypeParams?,
             val typeRef: TypeRef
         ) : Decl(), WithModifiers
 
         data class Constructor(
-            override val mods: List<Modifier>,
+            override val mods: NodeList<Modifier>?,
             val constructorKeyword: Keyword.Constructor,
             val params: Func.Params?,
             val delegationCall: DelegationCall?,
@@ -232,7 +233,7 @@ sealed class Node {
          * AST node corresponds to KtEnumEntry.
          */
         data class EnumEntry(
-            override val mods: List<Modifier>,
+            override val mods: NodeList<Modifier>?,
             val name: Expr.Name,
             val args: ValueArgs?,
             val members: List<Decl>,
@@ -259,7 +260,7 @@ sealed class Node {
          * AST node corresponds to KtTypeParameter.
          */
         data class TypeParam(
-            override val mods: List<Modifier>,
+            override val mods: NodeList<Modifier>?,
             val name: Expr.Name,
             val typeRef: TypeRef?
         ) : Node(), WithModifiers
@@ -289,7 +290,7 @@ sealed class Node {
 
         data class Nullable(
             override val lPar: Keyword.LPar?,
-            override val mods: List<Modifier>,
+            override val mods: NodeList<Modifier>?,
             val type: Type,
             override val rPar: Keyword.RPar?,
         ) : Type(), WithModifiers, WithOptionalParentheses
@@ -298,7 +299,7 @@ sealed class Node {
     }
 
     data class TypeProjection(
-        override val mods: List<Modifier>,
+        override val mods: NodeList<Modifier>?,
         val typeRef: TypeRef,
     ) : Node(), WithModifiers
 
@@ -307,9 +308,9 @@ sealed class Node {
      */
     data class TypeRef(
         val contextReceivers: NodeList<ContextReceiver>?,
-        override val mods: List<Modifier>,
+        override val mods: NodeList<Modifier>?,
         override val lPar: Keyword.LPar?,
-        val innerMods: List<Modifier>,
+        val innerMods: NodeList<Modifier>?,
         val type: Type?,
         override val rPar: Keyword.RPar?,
     ) : Node(), WithModifiers, WithOptionalParentheses
