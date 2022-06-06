@@ -26,7 +26,7 @@ open class Converter {
     ).map(v)
 
     open fun convertPackage(v: KtPackageDirective) = Node.Package(
-        mods = convertModifiers(v),
+        mods = convertModifiers(v.modifierList),
         packageNameExpr = v.packageNameExpression?.let(::convertExpr) ?: error("No package name expression for $v"),
     ).map(v)
 
@@ -60,7 +60,7 @@ open class Converter {
     }
 
     open fun convertStructured(v: KtClassOrObject) = Node.Decl.Structured(
-        mods = convertModifiers(v),
+        mods = convertModifiers(v.modifierList),
         declarationKeyword = v.getDeclarationKeyword()?.let(::convertDeclarationKeyword)
             ?: error("declarationKeyword not found"),
         name = v.nameIdentifier?.let(::convertName),
@@ -97,7 +97,7 @@ open class Converter {
     }
 
     open fun convertPrimaryConstructor(v: KtPrimaryConstructor) = Node.Decl.Structured.PrimaryConstructor(
-        mods = convertModifiers(v),
+        mods = convertModifiers(v.modifierList),
         constructorKeyword = v.getConstructorKeyword()?.let { convertKeyword(it, Node.Keyword::Constructor) },
         params = v.valueParameterList?.let(::convertFuncParams)
     ).map(v)
@@ -107,7 +107,7 @@ open class Converter {
     ).map(v)
 
     open fun convertFunc(v: KtNamedFunction) = Node.Decl.Func(
-        mods = convertModifiers(v),
+        mods = convertModifiers(v.modifierList),
         funKeyword = v.funKeyword?.let { convertKeyword(it, Node.Keyword::Fun) } ?: error("No fun keyword for $v"),
         typeParams =
         if (v.hasTypeParameterListBeforeFunctionName()) v.typeParameterList?.let(::convertTypeParams) else null,
@@ -126,7 +126,7 @@ open class Converter {
     ).map(v)
 
     open fun convertFuncParam(v: KtParameter) = Node.Decl.Func.Params.Param(
-        mods = convertModifiers(v),
+        mods = convertModifiers(v.modifierList),
         readOnly = if (v.hasValOrVar()) !v.isMutable else null,
         name = v.nameIdentifier?.let(::convertName) ?: error("No param name"),
         typeRef = v.typeReference?.let(::convertTypeRef),
@@ -150,7 +150,7 @@ open class Converter {
         }
 
     open fun convertProperty(v: KtProperty) = Node.Decl.Property(
-        mods = convertModifiers(v),
+        mods = convertModifiers(v.modifierList),
         valOrVar = convertValOrVarKeyword(v.valOrVarKeyword),
         typeParams = v.typeParameterList?.let(::convertTypeParams),
         receiverTypeRef = v.receiverTypeReference?.let(::convertTypeRef),
@@ -174,7 +174,7 @@ open class Converter {
     ).map(v)
 
     open fun convertProperty(v: KtDestructuringDeclaration) = Node.Decl.Property(
-        mods = convertModifiers(v),
+        mods = convertModifiers(v.modifierList),
         valOrVar = v.valOrVarKeyword?.let(::convertValOrVarKeyword) ?: error("Missing valOrVarKeyword"),
         typeParams = null,
         receiverTypeRef = null,
@@ -208,13 +208,13 @@ open class Converter {
 
     open fun convertPropertyAccessor(v: KtPropertyAccessor) =
         if (v.isGetter) Node.Decl.Property.Accessor.Get(
-            mods = convertModifiers(v),
+            mods = convertModifiers(v.modifierList),
             typeRef = v.returnTypeReference?.let(::convertTypeRef),
             postMods = convertPostModifiers(v),
             body = convertFuncBody(v),
         ).map(v) else Node.Decl.Property.Accessor.Set(
-            mods = convertModifiers(v),
-            paramMods = v.parameter?.let(::convertModifiers) ?: emptyList(),
+            mods = convertModifiers(v.modifierList),
+            paramMods = v.parameter?.modifierList?.let(::convertModifiers) ?: emptyList(),
             paramName = v.parameter?.nameIdentifier?.let(::convertName),
             paramTypeRef = v.parameter?.typeReference?.let(::convertTypeRef),
             postMods = convertPostModifiers(v),
@@ -222,14 +222,14 @@ open class Converter {
         ).map(v)
 
     open fun convertTypeAlias(v: KtTypeAlias) = Node.Decl.TypeAlias(
-        mods = convertModifiers(v),
+        mods = convertModifiers(v.modifierList),
         name = v.nameIdentifier?.let(::convertName) ?: error("No type alias name for $v"),
         typeParams = v.typeParameterList?.let(::convertTypeParams),
         typeRef = convertTypeRef(v.getTypeReference() ?: error("No type alias ref for $v"))
     ).map(v)
 
     open fun convertConstructor(v: KtSecondaryConstructor) = Node.Decl.Constructor(
-        mods = convertModifiers(v),
+        mods = convertModifiers(v.modifierList),
         constructorKeyword = convertKeyword(v.getConstructorKeyword(), Node.Keyword::Constructor),
         params = v.valueParameterList?.let(::convertFuncParams),
         delegationCall = if (v.hasImplicitDelegationCall()) null else v.getDelegationCall().let {
@@ -244,7 +244,7 @@ open class Converter {
     ).map(v)
 
     open fun convertEnumEntry(v: KtEnumEntry) = Node.Decl.EnumEntry(
-        mods = convertModifiers(v),
+        mods = convertModifiers(v.modifierList),
         name = v.nameIdentifier?.let(::convertName) ?: error("Unnamed enum"),
         args = v.initializerList?.let(::convertValueArgs),
         members = v.declarations.map(::convertDecl),
@@ -261,7 +261,7 @@ open class Converter {
     ).map(v)
 
     open fun convertTypeParam(v: KtTypeParameter) = Node.TypeParams.TypeParam(
-        mods = convertModifiers(v),
+        mods = convertModifiers(v.modifierList),
         name = v.nameIdentifier?.let(::convertName) ?: error("No type param name for $v"),
         typeRef = v.extendsBound?.let(::convertTypeRef)
     ).map(v)
@@ -797,8 +797,6 @@ open class Converter {
         AnnotationUseSiteTarget.SETTER_PARAMETER -> Node.Modifier.AnnotationSet.Target.SETPARAM
         AnnotationUseSiteTarget.PROPERTY_DELEGATE_FIELD -> Node.Modifier.AnnotationSet.Target.DELEGATE
     }
-
-    open fun convertModifiers(v: KtModifierListOwner) = convertModifiers(v.modifierList)
 
     open fun convertModifiers(v: KtModifierList?): List<Node.Modifier> =
         v?.node?.children().orEmpty().mapNotNull { node ->
