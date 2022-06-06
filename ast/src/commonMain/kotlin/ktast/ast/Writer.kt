@@ -34,6 +34,7 @@ open class Writer(
                     // Now the rest of the members
                     val restChildren = children.drop(enumEntries.size)
                     children(restChildren, separator)
+                    children(trailingSeparator)
 
                     writeExtrasWithin()
                     append(suffix)

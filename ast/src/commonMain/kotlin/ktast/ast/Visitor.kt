@@ -7,6 +7,7 @@ open class Visitor {
         when (this) {
             is Node.NodeList<*> -> {
                 visitChildren(children)
+                visitChildren(trailingSeparator)
             }
             is Node.File -> {
                 visitChildren(anns)

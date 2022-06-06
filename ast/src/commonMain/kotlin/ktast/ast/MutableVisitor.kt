@@ -11,6 +11,7 @@ open class MutableVisitor {
                 val new: Node = when (this) {
                     is Node.NodeList<*> -> copy(
                         children = visitChildren(children, newCh),
+                        trailingSeparator = visitChildren(trailingSeparator, newCh),
                     )
                     is Node.File -> copy(
                         anns = visitChildren(anns, newCh),

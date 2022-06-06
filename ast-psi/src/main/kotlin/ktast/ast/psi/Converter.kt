@@ -12,6 +12,7 @@ import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
 import org.jetbrains.kotlin.psi.psiUtil.children
+import org.jetbrains.kotlin.psi.psiUtil.siblings
 import org.jetbrains.kotlin.psi.stubs.elements.KtStubElementTypes
 
 open class Converter {
@@ -373,6 +374,10 @@ open class Converter {
             separator = ",",
             prefix = "[",
             suffix = "]",
+            // Note that v.children.last() is not equal to v.lastChild
+            trailingSeparator = v.children.last().siblings(forward = true, withItself = false)
+                .find { it.node.elementType == KtTokens.COMMA }
+                ?.let { convertKeyword(it, Node.Keyword::Comma) },
         ).map(v)
 
     open fun convertContractEffect(v: KtContractEffect) = Node.PostModifier.Contract.ContractEffect(

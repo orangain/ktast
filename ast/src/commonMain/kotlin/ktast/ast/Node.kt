@@ -8,6 +8,7 @@ sealed class Node {
         val separator: String,
         val prefix: String,
         val suffix: String,
+        val trailingSeparator: Keyword? = null,
     ) : Node()
 
     interface WithAnnotations {
@@ -736,6 +737,7 @@ sealed class Node {
         class Where : Keyword("where")
         class Equal : Keyword("=")
         class Colon : Keyword(":")
+        class Comma : Keyword(",")
         class LPar : Keyword("(")
         class RPar : Keyword(")")
         class LBracket : Keyword("[")
