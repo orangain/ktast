@@ -92,9 +92,7 @@ open class Writer(
                     children(paramTypeParams)
                     children(params)
                     if (typeRef != null) append(":").also { children(typeRef) }
-                    childTypeConstraints(typeConstraints)
-                    children(contractKeyword)
-                    children(contractEffects)
+                    children(postMods)
                     children(body)
                 }
                 is Node.Decl.Func.Params -> {
@@ -211,12 +209,6 @@ open class Writer(
                     children(type)
                     children(rPar)
                 }
-                is Node.TypeConstraint -> {
-                    childAnns(sameLine = true)
-                    children(name)
-                    append(":")
-                    children(typeRef)
-                }
                 is Node.Type.Func -> {
                     if (receiverTypeRef != null) {
                         children(receiverTypeRef)
@@ -248,9 +240,6 @@ open class Writer(
                     append("dynamic")
                 is Node.ContextReceiver -> {
                     children(typeRef)
-                }
-                is Node.ContractEffect -> {
-                    children(expr)
                 }
                 is Node.ValueArgs -> {
                     children(args)
@@ -465,6 +454,23 @@ open class Writer(
                 }
                 is Node.Modifier.Lit ->
                     append(keyword.name.lowercase())
+                is Node.PostModifier.TypeConstraints -> {
+                    children(whereKeyword)
+                    children(constraints, ",")
+                }
+                is Node.PostModifier.TypeConstraints.TypeConstraint -> {
+                    childAnns(sameLine = true)
+                    children(name)
+                    append(":")
+                    children(typeRef)
+                }
+                is Node.PostModifier.Contract -> {
+                    children(contractKeyword)
+                    children(contractEffects)
+                }
+                is Node.PostModifier.Contract.ContractEffect -> {
+                    children(expr)
+                }
                 is Node.Keyword -> append(value)
                 else ->
                     error("Unrecognized node type: $this")
@@ -497,9 +503,10 @@ open class Writer(
         }
     }
 
-    protected fun Node.childTypeConstraints(v: List<Node.TypeConstraint>) = this@Writer.also {
-        if (v.isNotEmpty()) append(" where ").also { children(v, ", ") }
-    }
+    protected fun Node.childTypeConstraints(v: List<Node.PostModifier.TypeConstraints.TypeConstraint>) =
+        this@Writer.also {
+            if (v.isNotEmpty()) append(" where ").also { children(v, ", ") }
+        }
 
     protected fun Node.childVars(vars: List<Node.Decl.Property.Var?>) =
         if (vars.size == 1) {

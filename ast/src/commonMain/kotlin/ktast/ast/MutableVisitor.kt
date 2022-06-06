@@ -74,9 +74,7 @@ open class MutableVisitor {
                         paramTypeParams = visitChildren(paramTypeParams, newCh),
                         params = visitChildren(params, newCh),
                         typeRef = visitChildren(typeRef, newCh),
-                        typeConstraints = visitChildren(typeConstraints, newCh),
-                        contractKeyword = visitChildren(contractKeyword, newCh),
-                        contractEffects = visitChildren(contractEffects, newCh),
+                        postMods = visitChildren(postMods, newCh),
                         body = visitChildren(body, newCh),
                     )
                     is Node.Decl.Func.Params -> copy(
@@ -179,11 +177,6 @@ open class MutableVisitor {
                         type = visitChildren(type, newCh),
                         rPar = visitChildren(rPar, newCh),
                     )
-                    is Node.TypeConstraint -> copy(
-                        anns = visitChildren(anns, newCh),
-                        name = visitChildren(name, newCh),
-                        typeRef = visitChildren(typeRef, newCh)
-                    )
                     is Node.Type.Func -> copy(
                         receiverTypeRef = visitChildren(receiverTypeRef, newCh),
                         params = visitChildren(params, newCh),
@@ -209,9 +202,6 @@ open class MutableVisitor {
                     is Node.Type.Dynamic -> this
                     is Node.ContextReceiver -> copy(
                         typeRef = visitChildren(typeRef, newCh),
-                    )
-                    is Node.ContractEffect -> copy(
-                        expr = visitChildren(expr, newCh),
                     )
                     is Node.ValueArgs -> copy(
                         args = visitChildren(args, newCh),
@@ -390,6 +380,22 @@ open class MutableVisitor {
                         args = visitChildren(args, newCh)
                     )
                     is Node.Modifier.Lit -> this
+                    is Node.PostModifier.TypeConstraints -> copy(
+                        whereKeyword = visitChildren(whereKeyword, newCh),
+                        constraints = visitChildren(constraints, newCh),
+                    )
+                    is Node.PostModifier.TypeConstraints.TypeConstraint -> copy(
+                        anns = visitChildren(anns, newCh),
+                        name = visitChildren(name, newCh),
+                        typeRef = visitChildren(typeRef, newCh)
+                    )
+                    is Node.PostModifier.Contract -> copy(
+                        contractKeyword = visitChildren(contractKeyword, newCh),
+                        contractEffects = visitChildren(contractEffects, newCh),
+                    )
+                    is Node.PostModifier.Contract.ContractEffect -> copy(
+                        expr = visitChildren(expr, newCh),
+                    )
                     is Node.Keyword -> this
                     is Node.Extra -> this
                     // Currently, else branch is required even when sealed classes are exhaustive.

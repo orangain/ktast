@@ -3,6 +3,7 @@ package ktast.ast.psi
 import ktast.ast.Node
 import org.jetbrains.kotlin.KtNodeTypes
 import org.jetbrains.kotlin.com.intellij.lang.ASTNode
+import org.jetbrains.kotlin.com.intellij.psi.PsiComment
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
 import org.jetbrains.kotlin.com.intellij.psi.tree.IElementType
@@ -115,11 +116,7 @@ open class Converter {
         if (!v.hasTypeParameterListBeforeFunctionName()) v.typeParameterList?.let(::convertTypeParams) else null,
         params = v.valueParameterList?.let(::convertFuncParams),
         typeRef = v.typeReference?.let(::convertTypeRef),
-        typeConstraints = v.typeConstraints.map(::convertTypeConstraint),
-        contractKeyword = findChildByType(v, KtTokens.CONTRACT_KEYWORD)?.let {
-            convertKeyword(it, Node.Keyword::Contract)
-        },
-        contractEffects = v.contractDescription?.let(::convertContractEffects),
+        postMods = convertPostModifiers(v),
         body = v.bodyExpression?.let(::convertFuncBody)
     ).map(v)
 
@@ -311,7 +308,7 @@ open class Converter {
         ).map(v)
     }
 
-    open fun convertTypeConstraint(v: KtTypeConstraint) = Node.TypeConstraint(
+    open fun convertTypeConstraint(v: KtTypeConstraint) = Node.PostModifier.TypeConstraints.TypeConstraint(
         anns = v.children.mapNotNull {
             when (it) {
                 is KtAnnotationEntry -> convertAnnotationSet(it)
@@ -370,7 +367,7 @@ open class Converter {
         typeRef = convertTypeRef(v.typeReference() ?: error("Missing type reference for $v")),
     ).map(v)
 
-    open fun convertContractEffects(v: KtContractEffectList): Node.NodeList<Node.ContractEffect> =
+    open fun convertContractEffects(v: KtContractEffectList): Node.NodeList<Node.PostModifier.Contract.ContractEffect> =
         Node.NodeList(
             children = v.children.filterIsInstance<KtContractEffect>().map(::convertContractEffect),
             separator = ",",
@@ -378,7 +375,7 @@ open class Converter {
             suffix = "]",
         ).map(v)
 
-    open fun convertContractEffect(v: KtContractEffect) = Node.ContractEffect(
+    open fun convertContractEffect(v: KtContractEffect) = Node.PostModifier.Contract.ContractEffect(
         expr = convertExpr(v.getExpression()),
     ).map(v)
 
@@ -811,6 +808,29 @@ open class Converter {
                 }
             }
         }.toList()
+
+    open fun convertPostModifiers(v: KtElement): List<Node.PostModifier> {
+        val nonExtraChildren = v.allChildren.filterNot { it is PsiComment || it is PsiWhiteSpace }.toList()
+
+        if (nonExtraChildren.isEmpty()) {
+            return listOf()
+        }
+
+        var prevPsi = nonExtraChildren[0]
+        return nonExtraChildren.drop(1).mapNotNull { psi ->
+            when (psi) {
+                is KtTypeConstraintList -> Node.PostModifier.TypeConstraints(
+                    whereKeyword = convertKeyword(prevPsi, Node.Keyword::Where),
+                    constraints = psi.constraints.map(::convertTypeConstraint),
+                ).mapNotCorrespondsPsiElement(v)
+                is KtContractEffectList -> Node.PostModifier.Contract(
+                    contractKeyword = convertKeyword(prevPsi, Node.Keyword::Contract),
+                    contractEffects = convertContractEffects(psi),
+                ).mapNotCorrespondsPsiElement(v)
+                else -> null
+            }.also { prevPsi = psi }
+        }
+    }
 
     open fun convertValOrVarKeyword(v: PsiElement) = Node.Keyword.ValOrVar.of(v.text)
         .map(v)

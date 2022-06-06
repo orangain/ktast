@@ -29,9 +29,13 @@ sealed class Node {
         val rPar: Keyword.RPar?
     }
 
+    interface WithPostModifiers {
+        val postMods: List<PostModifier>
+    }
+
     interface WithContract {
         val contractKeyword: Keyword.Contract?
-        val contractEffects: NodeList<ContractEffect>?
+        val contractEffects: NodeList<PostModifier.Contract.ContractEffect>?
     }
 
     data class File(
@@ -70,7 +74,7 @@ sealed class Node {
             val colon: Keyword.Colon?,
             val parentAnns: List<Modifier.AnnotationSet>,
             val parents: List<Parent>,
-            val typeConstraints: List<TypeConstraint>,
+            val typeConstraints: List<PostModifier.TypeConstraints.TypeConstraint>,
             // TODO: Can include primary constructor
             val body: NodeList<Decl>?,
         ) : Decl(), WithModifiers {
@@ -122,11 +126,9 @@ sealed class Node {
             val paramTypeParams: TypeParams?,
             val params: Params?,
             val typeRef: TypeRef?,
-            val typeConstraints: List<TypeConstraint>,
-            override val contractKeyword: Keyword.Contract?,
-            override val contractEffects: NodeList<ContractEffect>?,
+            override val postMods: List<PostModifier>,
             val body: Body?
-        ) : Decl(), WithModifiers, WithContract {
+        ) : Decl(), WithModifiers, WithPostModifiers {
             data class Params(
                 val params: List<Param>
             ) : Node() {
@@ -156,7 +158,7 @@ sealed class Node {
             val receiverTypeRef: TypeRef?,
             // Always at least one, more than one is destructuring, null is underscore in destructure
             val vars: List<Var?>,
-            val typeConstraints: List<TypeConstraint>,
+            val typeConstraints: List<PostModifier.TypeConstraints.TypeConstraint>,
             val initializer: Initializer?,
             val delegate: Delegate?,
             val accessors: Accessors?
@@ -187,7 +189,7 @@ sealed class Node {
                 data class Get(
                     override val mods: List<Modifier>,
                     val typeRef: TypeRef?,
-                    override val contractEffects: NodeList<ContractEffect>?,
+                    override val contractEffects: NodeList<PostModifier.Contract.ContractEffect>?,
                     override val contractKeyword: Keyword.Contract?,
                     val body: Func.Body?
                 ) : Accessor()
@@ -197,7 +199,7 @@ sealed class Node {
                     val paramMods: List<Modifier>,
                     val paramName: Expr.Name?,
                     val paramTypeRef: TypeRef?,
-                    override val contractEffects: NodeList<ContractEffect>?,
+                    override val contractEffects: NodeList<PostModifier.Contract.ContractEffect>?,
                     override val contractKeyword: Keyword.Contract?,
                     val body: Func.Body?
                 ) : Accessor()
@@ -263,12 +265,6 @@ sealed class Node {
         ) : Node(), WithModifiers
     }
 
-    data class TypeConstraint(
-        override val anns: List<Modifier.AnnotationSet>,
-        val name: Expr.Name,
-        val typeRef: TypeRef
-    ) : Node(), WithAnnotations
-
     sealed class Type : Node() {
         data class Func(
             val receiverTypeRef: TypeRef?,
@@ -320,13 +316,6 @@ sealed class Node {
 
     data class ContextReceiver(
         val typeRef: TypeRef,
-    ) : Node()
-
-    /**
-     * AST node corresponds to KtContractEffect.
-     */
-    data class ContractEffect(
-        val expr: Expr,
     ) : Node()
 
     /**
@@ -658,6 +647,40 @@ sealed class Node {
         }
     }
 
+    sealed class PostModifier : Node() {
+        /**
+         * Virtual AST node corresponds to a pair of "where" keyword and KtTypeConstraintList.
+         */
+        data class TypeConstraints(
+            val whereKeyword: Keyword.Where,
+            val constraints: List<TypeConstraint>,
+        ) : PostModifier() {
+            /**
+             * AST node corresponds to KtTypeConstraint.
+             */
+            data class TypeConstraint(
+                override val anns: List<Modifier.AnnotationSet>,
+                val name: Expr.Name,
+                val typeRef: TypeRef
+            ) : Node(), WithAnnotations
+        }
+
+        /**
+         * Virtual AST node corresponds to a pair of "contract" keyword and KtContractEffectList.
+         */
+        data class Contract(
+            val contractKeyword: Keyword.Contract,
+            val contractEffects: NodeList<ContractEffect>,
+        ) : PostModifier() {
+            /**
+             * AST node corresponds to KtContractEffect.
+             */
+            data class ContractEffect(
+                val expr: Expr,
+            ) : Node()
+        }
+    }
+
     sealed class Keyword(val value: String) : Node() {
         override fun toString(): String {
             return javaClass.simpleName
@@ -710,6 +733,7 @@ sealed class Node {
         class Return : Keyword("return")
         class By : Keyword("by")
         class Contract : Keyword("contract")
+        class Where : Keyword("where")
         class Equal : Keyword("=")
         class Colon : Keyword(":")
         class LPar : Keyword("(")

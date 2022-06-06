@@ -70,9 +70,7 @@ open class Visitor {
                 visitChildren(paramTypeParams)
                 visitChildren(params)
                 visitChildren(typeRef)
-                visitChildren(typeConstraints)
-                visitChildren(contractKeyword)
-                visitChildren(contractEffects)
+                visitChildren(postMods)
                 visitChildren(body)
             }
             is Node.Decl.Func.Params -> {
@@ -175,11 +173,6 @@ open class Visitor {
                 visitChildren(type)
                 visitChildren(rPar)
             }
-            is Node.TypeConstraint -> {
-                visitChildren(anns)
-                visitChildren(name)
-                visitChildren(typeRef)
-            }
             is Node.Type.Func -> {
                 visitChildren(receiverTypeRef)
                 visitChildren(params)
@@ -205,9 +198,6 @@ open class Visitor {
             is Node.Type.Dynamic -> {}
             is Node.ContextReceiver -> {
                 visitChildren(typeRef)
-            }
-            is Node.ContractEffect -> {
-                visitChildren(expr)
             }
             is Node.ValueArgs -> {
                 visitChildren(args)
@@ -386,6 +376,22 @@ open class Visitor {
                 visitChildren(args)
             }
             is Node.Modifier.Lit -> {}
+            is Node.PostModifier.TypeConstraints -> {
+                visitChildren(whereKeyword)
+                visitChildren(constraints)
+            }
+            is Node.PostModifier.TypeConstraints.TypeConstraint -> {
+                visitChildren(anns)
+                visitChildren(name)
+                visitChildren(typeRef)
+            }
+            is Node.PostModifier.Contract -> {
+                visitChildren(contractKeyword)
+                visitChildren(contractEffects)
+            }
+            is Node.PostModifier.Contract.ContractEffect -> {
+                visitChildren(expr)
+            }
             is Node.Keyword -> {}
             is Node.Extra -> {}
             null -> {}
