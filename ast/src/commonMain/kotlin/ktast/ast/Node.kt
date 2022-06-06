@@ -329,11 +329,15 @@ sealed class Node {
     }
 
     sealed class Expr : Node() {
+        /**
+         * AST node corresponds to KtIfExpression.
+         */
         data class If(
             val lPar: Keyword.LPar,
             val expr: Expr,
             val rPar: Keyword.RPar,
             val body: Expr,
+            val elseKeyword: Keyword.Else?,
             val elseBody: Expr?
         ) : Expr()
 
@@ -725,6 +729,7 @@ sealed class Node {
         class Fun : Keyword("fun")
         class Constructor : Keyword("constructor")
         class Return : Keyword("return")
+        class Else : Keyword("else")
         class By : Keyword("by")
         class Contract : Keyword("contract")
         class Where : Keyword("where")

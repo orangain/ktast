@@ -210,6 +210,7 @@ open class Visitor {
                 visitChildren(expr)
                 visitChildren(rPar)
                 visitChildren(body)
+                visitChildren(elseKeyword)
                 visitChildren(elseBody)
             }
             is Node.Expr.Try -> {

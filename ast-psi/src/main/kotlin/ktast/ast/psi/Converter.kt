@@ -437,6 +437,7 @@ open class Converter {
         expr = convertExpr(v.condition ?: error("No cond on if for $v")),
         rPar = convertKeyword(v.rightParenthesis ?: error("No rightParenthesis on if for $v"), Node.Keyword::RPar),
         body = convertExpr(v.then ?: error("No then on if for $v")),
+        elseKeyword = v.elseKeyword?.let { convertKeyword(it, Node.Keyword::Else) },
         elseBody = v.`else`?.let(::convertExpr)
     ).map(v)
 

@@ -214,6 +214,7 @@ open class MutableVisitor {
                         expr = visitChildren(expr, newCh),
                         rPar = visitChildren(rPar, newCh),
                         body = visitChildren(body, newCh),
+                        elseKeyword = visitChildren(elseKeyword, newCh),
                         elseBody = visitChildren(elseBody, newCh)
                     )
                     is Node.Expr.Try -> copy(
