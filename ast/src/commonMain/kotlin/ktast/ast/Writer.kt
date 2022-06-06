@@ -241,7 +241,7 @@ open class Writer(
                     children(typeRef)
                 }
                 is Node.ValueArgs -> {
-                    children(args)
+                    parenChildren(args)
                 }
                 is Node.ValueArgs.ValueArg -> {
                     if (name != null) children(name).append("=")
@@ -449,7 +449,7 @@ open class Writer(
                 is Node.Modifier.AnnotationSet.Annotation -> {
                     children(nameType)
                     bracketedChildren(typeArgs)
-                    if (args != null) parenChildren(args)
+                    children(args)
                 }
                 is Node.Modifier.Lit ->
                     append(keyword.name.lowercase())
