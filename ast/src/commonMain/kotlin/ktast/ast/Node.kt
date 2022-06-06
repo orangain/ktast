@@ -634,9 +634,11 @@ sealed class Node {
                 FIELD, FILE, PROPERTY, GET, SET, RECEIVER, PARAM, SETPARAM, DELEGATE
             }
 
+            /**
+             * AST node corresponds to KtAnnotationEntry.
+             */
             data class Annotation(
                 val nameType: Type,
-                val typeArgs: List<TypeProjection>,
                 val args: ValueArgs?
             ) : Node()
         }

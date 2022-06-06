@@ -746,7 +746,6 @@ open class Converter {
 
     open fun convertAnnotation(v: KtAnnotationEntry) = Node.Modifier.AnnotationSet.Annotation(
         nameType = convertType(v.typeReference?.typeElement ?: error("Missing annotation name")),
-        typeArgs = v.typeArguments.map { convertTypeProjection(it) ?: error("No ann typ arg for $v") },
         args = v.valueArgumentList?.let(::convertValueArgs)
     ).map(v)
 

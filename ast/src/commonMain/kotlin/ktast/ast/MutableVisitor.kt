@@ -377,8 +377,7 @@ open class MutableVisitor {
                     )
                     is Node.Modifier.AnnotationSet.Annotation -> copy(
                         nameType = visitChildren(nameType, newCh),
-                        typeArgs = visitChildren(typeArgs, newCh),
-                        args = visitChildren(args, newCh)
+                        args = visitChildren(args, newCh),
                     )
                     is Node.Modifier.Lit -> this
                     is Node.PostModifier.TypeConstraints -> copy(

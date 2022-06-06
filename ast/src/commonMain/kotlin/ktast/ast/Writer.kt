@@ -448,7 +448,6 @@ open class Writer(
                 }
                 is Node.Modifier.AnnotationSet.Annotation -> {
                     children(nameType)
-                    bracketedChildren(typeArgs)
                     children(args)
                 }
                 is Node.Modifier.Lit ->

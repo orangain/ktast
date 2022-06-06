@@ -373,7 +373,6 @@ open class Visitor {
             }
             is Node.Modifier.AnnotationSet.Annotation -> {
                 visitChildren(nameType)
-                visitChildren(typeArgs)
                 visitChildren(args)
             }
             is Node.Modifier.Lit -> {}
