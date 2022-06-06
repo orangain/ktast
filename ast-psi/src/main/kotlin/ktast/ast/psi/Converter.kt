@@ -350,6 +350,7 @@ open class Converter {
         separator = ",",
         prefix = "(",
         suffix = ")",
+        trailingSeparator = findTrailingSeparator(v, KtTokens.COMMA)?.let { convertKeyword(it, Node.Keyword::Comma) }
     ).map(v)
 
     open fun convertTypeFuncParam(v: KtParameter) = Node.Type.Func.Param(
@@ -374,9 +375,7 @@ open class Converter {
             separator = ",",
             prefix = "[",
             suffix = "]",
-            // Note that v.children.last() is not equal to v.lastChild
-            trailingSeparator = v.children.last().siblings(forward = true, withItself = false)
-                .find { it.node.elementType == KtTokens.COMMA }
+            trailingSeparator = findTrailingSeparator(v, KtTokens.COMMA)
                 ?.let { convertKeyword(it, Node.Keyword::Comma) },
         ).map(v)
 
@@ -875,5 +874,11 @@ open class Converter {
 
         internal fun findChildByType(element: KtElement, type: IElementType): PsiElement? =
             element.node.findChildByType(type)?.psi
+
+        internal fun findTrailingSeparator(v: KtElement, elementType: IElementType): PsiElement? =
+            // Note that v.children.lastOrNull() is not equal to v.lastChild. children contain only KtElements, but lastChild is a last element of allChildren.
+            v.children.lastOrNull()
+                ?.siblings(forward = true, withItself = false)
+                ?.find { it.node.elementType == elementType }
     }
 }
