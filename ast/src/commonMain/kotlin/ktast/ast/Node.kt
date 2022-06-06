@@ -138,9 +138,15 @@ sealed class Node {
                 ) : Node(), WithModifiers
             }
 
+            /**
+             * Virtual AST node corresponds to function body.
+             */
             sealed class Body : Node() {
                 data class Block(val block: Node.Expr.Block) : Body()
-                data class Expr(val expr: Node.Expr) : Body()
+                data class Expr(
+                    val equals: Keyword.Equal,
+                    val expr: Node.Expr,
+                ) : Body()
             }
         }
 

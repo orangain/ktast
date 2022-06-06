@@ -109,7 +109,7 @@ open class Writer(
                 is Node.Decl.Func.Body.Block ->
                     children(block)
                 is Node.Decl.Func.Body.Expr ->
-                    append("=").also { children(expr) }
+                    children(equals, expr)
                 is Node.Decl.Property -> {
                     childMods()
                     children(valOrVar)

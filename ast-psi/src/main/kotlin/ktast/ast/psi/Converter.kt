@@ -118,7 +118,7 @@ open class Converter {
         params = v.valueParameterList?.let(::convertFuncParams),
         typeRef = v.typeReference?.let(::convertTypeRef),
         postMods = convertPostModifiers(v),
-        body = v.bodyExpression?.let(::convertFuncBody)
+        body = convertFuncBody(v),
     ).map(v)
 
     open fun convertFuncParams(v: KtParameterList) = Node.Decl.Func.Params(
@@ -135,9 +135,19 @@ open class Converter {
         },
     ).map(v)
 
-    open fun convertFuncBody(v: KtExpression) =
-        if (v is KtBlockExpression) Node.Decl.Func.Body.Block(convertBlock(v)).map(v)
-        else Node.Decl.Func.Body.Expr(convertExpr(v)).map(v)
+    open fun convertFuncBody(v: KtDeclarationWithBody): Node.Decl.Func.Body? =
+        when (val bodyExpression = v.bodyExpression) {
+            null -> null
+            is KtBlockExpression ->
+                Node.Decl.Func.Body.Block(
+                    block = convertBlock(bodyExpression),
+                ).mapNotCorrespondsPsiElement(v)
+            else ->
+                Node.Decl.Func.Body.Expr(
+                    equals = convertKeyword(v.equalsToken ?: error("No equals token before $v"), Node.Keyword::Equal),
+                    expr = convertExpr(bodyExpression),
+                ).mapNotCorrespondsPsiElement(v)
+        }
 
     open fun convertProperty(v: KtProperty) = Node.Decl.Property(
         mods = convertModifiers(v),
@@ -201,14 +211,14 @@ open class Converter {
             mods = convertModifiers(v),
             typeRef = v.returnTypeReference?.let(::convertTypeRef),
             postMods = convertPostModifiers(v),
-            body = v.bodyExpression?.let(::convertFuncBody)
+            body = convertFuncBody(v),
         ).map(v) else Node.Decl.Property.Accessor.Set(
             mods = convertModifiers(v),
             paramMods = v.parameter?.let(::convertModifiers) ?: emptyList(),
             paramName = v.parameter?.nameIdentifier?.let(::convertName),
             paramTypeRef = v.parameter?.typeReference?.let(::convertTypeRef),
             postMods = convertPostModifiers(v),
-            body = v.bodyExpression?.let(::convertFuncBody)
+            body = convertFuncBody(v),
         ).map(v)
 
     open fun convertTypeAlias(v: KtTypeAlias) = Node.Decl.TypeAlias(

@@ -91,7 +91,8 @@ open class MutableVisitor {
                         block = visitChildren(block, newCh)
                     )
                     is Node.Decl.Func.Body.Expr -> copy(
-                        expr = visitChildren(expr, newCh)
+                        equals = visitChildren(equals, newCh),
+                        expr = visitChildren(expr, newCh),
                     )
                     is Node.Decl.Property -> copy(
                         mods = visitChildren(mods, newCh),

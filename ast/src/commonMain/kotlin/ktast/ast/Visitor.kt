@@ -87,6 +87,7 @@ open class Visitor {
                 visitChildren(block)
             }
             is Node.Decl.Func.Body.Expr -> {
+                visitChildren(equals)
                 visitChildren(expr)
             }
             is Node.Decl.Property -> {
