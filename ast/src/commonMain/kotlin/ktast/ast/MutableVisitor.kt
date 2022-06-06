@@ -119,8 +119,7 @@ open class MutableVisitor {
                     is Node.Decl.Property.Accessor.Get -> copy(
                         mods = visitChildren(mods, newCh),
                         typeRef = visitChildren(typeRef, newCh),
-                        contractKeyword = visitChildren(contractKeyword, newCh),
-                        contractEffects = visitChildren(contractEffects, newCh),
+                        postMods = visitChildren(postMods, newCh),
                         body = visitChildren(body, newCh)
                     )
                     is Node.Decl.Property.Accessor.Set -> copy(
@@ -128,8 +127,7 @@ open class MutableVisitor {
                         paramMods = visitChildren(paramMods, newCh),
                         paramName = visitChildren(paramName, newCh),
                         paramTypeRef = visitChildren(paramTypeRef, newCh),
-                        contractKeyword = visitChildren(contractKeyword, newCh),
-                        contractEffects = visitChildren(contractEffects, newCh),
+                        postMods = visitChildren(postMods, newCh),
                         body = visitChildren(body, newCh)
                     )
                     is Node.Decl.TypeAlias -> copy(

@@ -34,11 +34,6 @@ sealed class Node {
         val postMods: List<PostModifier>
     }
 
-    interface WithContract {
-        val contractKeyword: Keyword.Contract?
-        val contractEffects: NodeList<PostModifier.Contract.ContractEffect>?
-    }
-
     data class File(
         override val anns: List<Modifier.AnnotationSet>,
         override val pkg: Package?,
@@ -186,12 +181,11 @@ sealed class Node {
             /**
              * AST node corresponds to KtPropertyAccessor.
              */
-            sealed class Accessor : Node(), WithModifiers, WithContract {
+            sealed class Accessor : Node(), WithModifiers, WithPostModifiers {
                 data class Get(
                     override val mods: List<Modifier>,
                     val typeRef: TypeRef?,
-                    override val contractEffects: NodeList<PostModifier.Contract.ContractEffect>?,
-                    override val contractKeyword: Keyword.Contract?,
+                    override val postMods: List<PostModifier>,
                     val body: Func.Body?
                 ) : Accessor()
 
@@ -200,8 +194,7 @@ sealed class Node {
                     val paramMods: List<Modifier>,
                     val paramName: Expr.Name?,
                     val paramTypeRef: TypeRef?,
-                    override val contractEffects: NodeList<PostModifier.Contract.ContractEffect>?,
-                    override val contractKeyword: Keyword.Contract?,
+                    override val postMods: List<PostModifier>,
                     val body: Func.Body?
                 ) : Accessor()
             }

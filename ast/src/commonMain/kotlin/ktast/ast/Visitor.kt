@@ -115,8 +115,7 @@ open class Visitor {
             is Node.Decl.Property.Accessor.Get -> {
                 visitChildren(mods)
                 visitChildren(typeRef)
-                visitChildren(contractKeyword)
-                visitChildren(contractEffects)
+                visitChildren(postMods)
                 visitChildren(body)
             }
             is Node.Decl.Property.Accessor.Set -> {
@@ -124,8 +123,7 @@ open class Visitor {
                 visitChildren(paramMods)
                 visitChildren(paramName)
                 visitChildren(paramTypeRef)
-                visitChildren(contractKeyword)
-                visitChildren(contractEffects)
+                visitChildren(postMods)
                 visitChildren(body)
             }
             is Node.Decl.TypeAlias -> {
