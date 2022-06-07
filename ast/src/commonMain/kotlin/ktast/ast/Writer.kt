@@ -279,8 +279,8 @@ open class Writer(
                     children(body)
                 }
                 is Node.Expr.While -> {
-                    if (!doWhile) append("while (").also { children(expr) }.append(") ").also { children(body) }
-                    else append("do ").also { children(body) }.append(" while (").also { children(expr) }.append(')')
+                    if (!doWhile) append("while (").also { children(expr) }.append(")").also { children(body) }
+                    else append("do").also { children(body) }.append("while (").also { children(expr) }.append(')')
                 }
                 is Node.Expr.BinaryOp -> {
                     children(listOf(lhs, oper, rhs))

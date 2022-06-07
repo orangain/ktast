@@ -383,12 +383,15 @@ sealed class Node {
             // More than one means destructure, null means underscore
             val vars: List<Decl.Property.Var?>,
             val inExpr: Expr,
-            val body: Body
+            val body: Body,
         ) : Expr(), WithAnnotations
 
+        /**
+         * AST node corresponds to KtWhileExpressionBase.
+         */
         data class While(
             val expr: Expr,
-            val body: Expr,
+            val body: Body,
             val doWhile: Boolean
         ) : Expr()
 

@@ -480,12 +480,12 @@ open class Converter {
         anns = v.loopParameter?.annotations?.map(::convertAnnotationSet) ?: emptyList(),
         vars = convertPropertyVars(v.loopParameter ?: error("No param on for $v")),
         inExpr = convertExpr(v.loopRange ?: error("No in range for $v")),
-        body = convertBody(findChildByType(v, KtNodeTypes.BODY) ?: error("No body for $v"))
+        body = convertBody(findChildByType(v, KtNodeTypes.BODY) ?: error("No body for $v")),
     ).map(v)
 
     open fun convertWhile(v: KtWhileExpressionBase) = Node.Expr.While(
         expr = convertExpr(v.condition ?: error("No while cond for $v")),
-        body = convertExpr(v.body ?: error("No while body for $v")),
+        body = convertBody(findChildByType(v, KtNodeTypes.BODY) ?: error("No body for $v")),
         doWhile = v is KtDoWhileExpression
     ).map(v)
 
