@@ -164,7 +164,10 @@ open class Visitor {
                 visitChildren(name)
                 visitChildren(typeRef)
             }
-            is Node.TypeProjection -> {
+            is Node.TypeProjection.Asterisk -> {
+                visitChildren(asterisk)
+            }
+            is Node.TypeProjection.Type -> {
                 visitChildren(mods)
                 visitChildren(typeRef)
             }

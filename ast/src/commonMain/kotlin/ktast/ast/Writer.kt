@@ -195,7 +195,10 @@ open class Writer(
                     children(name)
                     if (typeRef != null) append(":").also { children(typeRef) }
                 }
-                is Node.TypeProjection -> {
+                is Node.TypeProjection.Asterisk -> {
+                    children(asterisk)
+                }
+                is Node.TypeProjection.Type -> {
                     children(mods)
                     children(typeRef)
                 }
@@ -535,12 +538,12 @@ open class Writer(
     }
 
     // Null list values are asterisks
-    protected fun Node.bracketedChildren(v: List<Node?>, appendIfNotEmpty: String = "") = this@Writer.also {
+    protected fun Node.bracketedChildren(v: List<Node>, appendIfNotEmpty: String = "") = this@Writer.also {
         if (v.isNotEmpty()) {
             append('<')
             v.forEachIndexed { index, node ->
                 if (index > 0) append(",")
-                if (node == null) append('*') else children(node)
+                children(node)
             }
             append('>').append(appendIfNotEmpty)
         }

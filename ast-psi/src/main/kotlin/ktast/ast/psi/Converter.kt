@@ -273,16 +273,21 @@ open class Converter {
         typeRef = v.extendsBound?.let(::convertTypeRef)
     ).map(v)
 
-    open fun convertTypeProjections(v: KtTypeArgumentList?) = v?.arguments?.map {
-        if (it.projectionKind == KtProjectionKind.STAR) null
-        else convertTypeProjection(it)
-    } ?: emptyList()
+    open fun convertTypeProjections(v: KtTypeArgumentList?): List<Node.TypeProjection> =
+        v?.arguments?.map(::convertTypeProjection) ?: emptyList()
 
-    open fun convertTypeProjection(v: KtTypeProjection): Node.TypeProjection? =
-        v.typeReference?.let {
-            Node.TypeProjection(
+    open fun convertTypeProjection(v: KtTypeProjection): Node.TypeProjection =
+        if (v.projectionKind == KtProjectionKind.STAR) {
+            Node.TypeProjection.Asterisk(
+                asterisk = convertKeyword(
+                    v.projectionToken ?: error("No projection token for $v"),
+                    Node.Keyword::Asterisk
+                ),
+            ).map(v)
+        } else {
+            Node.TypeProjection.Type(
                 mods = v.modifierList?.let(::convertModifiers),
-                typeRef = convertTypeRef(it),
+                typeRef = convertTypeRef(v.typeReference ?: error("No type reference for $v")),
             ).map(v)
         }
 

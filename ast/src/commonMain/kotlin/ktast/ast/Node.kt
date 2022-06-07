@@ -91,7 +91,7 @@ sealed class Node {
             sealed class Parent : Node() {
                 data class CallConstructor(
                     val type: Node.Type.Simple,
-                    val typeArgs: List<TypeProjection?>,
+                    val typeArgs: List<TypeProjection>,
                     val args: ValueArgs?,
                     val lambda: Expr.Call.TrailLambda?
                 ) : Parent()
@@ -296,8 +296,7 @@ sealed class Node {
         ) : Type() {
             data class Piece(
                 val name: Expr.Name,
-                // Null means any
-                val typeParams: List<TypeProjection?>
+                val typeParams: List<TypeProjection>
             ) : Node()
         }
 
@@ -311,10 +310,19 @@ sealed class Node {
         data class Dynamic(val _unused_: Boolean = false) : Type()
     }
 
-    data class TypeProjection(
-        override val mods: NodeList<Modifier>?,
-        val typeRef: TypeRef,
-    ) : Node(), WithModifiers
+    /**
+     * AST node corresponds to KtTypeProjection.
+     */
+    sealed class TypeProjection : Node() {
+        data class Asterisk(
+            val asterisk: Keyword.Asterisk,
+        ) : TypeProjection()
+
+        data class Type(
+            override val mods: NodeList<Modifier>?,
+            val typeRef: TypeRef,
+        ) : TypeProjection(), WithModifiers
+    }
 
     /**
      * AST node corresponds to KtTypeReference.
@@ -629,7 +637,7 @@ sealed class Node {
          */
         data class Call(
             val expr: Expr,
-            val typeArgs: List<TypeProjection?>,
+            val typeArgs: List<TypeProjection>,
             val args: ValueArgs?,
             val lambda: TrailLambda?
         ) : Expr() {
@@ -794,6 +802,7 @@ sealed class Node {
         class Colon : Keyword(":")
         class Comma : Keyword(",")
         class Question : Keyword("?")
+        class Asterisk : Keyword("*")
         class LPar : Keyword("(")
         class RPar : Keyword(")")
         class LBracket : Keyword("[")

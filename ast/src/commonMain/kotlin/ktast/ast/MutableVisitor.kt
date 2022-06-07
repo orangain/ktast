@@ -168,7 +168,10 @@ open class MutableVisitor {
                         name = visitChildren(name, newCh),
                         typeRef = visitChildren(typeRef, newCh)
                     )
-                    is Node.TypeProjection -> copy(
+                    is Node.TypeProjection.Asterisk -> copy(
+                        asterisk = visitChildren(asterisk, newCh),
+                    )
+                    is Node.TypeProjection.Type -> copy(
                         mods = visitChildren(mods, newCh),
                         typeRef = visitChildren(typeRef, newCh),
                     )
