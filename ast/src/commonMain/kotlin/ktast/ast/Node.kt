@@ -5,9 +5,9 @@ sealed class Node {
 
     data class NodeList<out T : Node>(
         val children: List<T>,
-        val separator: String,
-        val prefix: String,
-        val suffix: String,
+        val separator: String = "",
+        val prefix: String = "",
+        val suffix: String = "",
         val trailingSeparator: Keyword? = null,
     ) : Node()
 
@@ -23,7 +23,7 @@ sealed class Node {
 
     interface Entry : WithAnnotations {
         val pkg: Package?
-        val imports: List<Import>
+        val imports: NodeList<Import>?
     }
 
     interface WithOptionalParentheses {
@@ -38,22 +38,28 @@ sealed class Node {
     data class File(
         override val anns: List<Modifier.AnnotationSet>,
         override val pkg: Package?,
-        override val imports: List<Import>,
+        override val imports: NodeList<Import>?,
         val decls: List<Decl>
     ) : Node(), Entry
 
     data class Script(
         override val anns: List<Modifier.AnnotationSet>,
         override val pkg: Package?,
-        override val imports: List<Import>,
+        override val imports: NodeList<Import>?,
         val exprs: List<Expr>
     ) : Node(), Entry
 
+    /**
+     * AST node corresponds to KtPackageDirective.
+     */
     data class Package(
         override val mods: NodeList<Modifier>?,
         val packageNameExpr: Expr,
     ) : Node(), WithModifiers
 
+    /**
+     * AST node corresponds to KtImportDirective.
+     */
     data class Import(
         val importKeyword: Keyword.Import,
         val names: List<String>,

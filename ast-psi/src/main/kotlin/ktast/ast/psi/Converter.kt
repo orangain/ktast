@@ -21,13 +21,17 @@ open class Converter {
     open fun convertFile(v: KtFile) = Node.File(
         anns = convertAnnotationSets(v),
         pkg = v.packageDirective?.takeIf { it.packageNames.isNotEmpty() }?.let(::convertPackage),
-        imports = v.importDirectives.map(::convertImport),
+        imports = v.importList?.let(::convertImports),
         decls = v.declarations.map(::convertDecl)
     ).map(v)
 
     open fun convertPackage(v: KtPackageDirective) = Node.Package(
         mods = v.modifierList?.let(::convertModifiers),
         packageNameExpr = v.packageNameExpression?.let(::convertExpr) ?: error("No package name expression for $v"),
+    ).map(v)
+
+    open fun convertImports(v: KtImportList): Node.NodeList<Node.Import> = Node.NodeList(
+        children = v.imports.map(::convertImport),
     ).map(v)
 
     open fun convertImport(v: KtImportDirective) = Node.Import(
