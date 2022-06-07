@@ -106,6 +106,13 @@ sealed class Node {
                 val constructorKeyword: Keyword.Constructor?,
                 val params: Func.Params?
             ) : Node(), WithModifiers
+
+            /**
+             * AST node corresponds to KtClassBody.
+             */
+            data class Body(
+                val decls: List<Decl>
+            ) : Node()
         }
 
         data class Init(val block: Expr.Block) : Decl()
@@ -236,7 +243,7 @@ sealed class Node {
             override val mods: NodeList<Modifier>?,
             val name: Expr.Name,
             val args: ValueArgs?,
-            val members: List<Decl>,
+            val body: Structured.Body?,
             /**
              * Whether this enum entry has comma or not. All entries excluding the last one should have value true.
              * The last entry can have both true or false.
@@ -635,6 +642,9 @@ sealed class Node {
             val decl: Decl.Property
         ) : Expr()
 
+        /**
+         * AST node corresponds to KtBlockExpression.
+         */
         data class Block(val stmts: List<Stmt>) : Expr()
     }
 

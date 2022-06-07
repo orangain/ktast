@@ -247,8 +247,12 @@ open class Converter {
         mods = v.modifierList?.let(::convertModifiers),
         name = v.nameIdentifier?.let(::convertName) ?: error("Unnamed enum"),
         args = v.initializerList?.let(::convertValueArgs),
-        members = v.declarations.map(::convertDecl),
+        body = v.body?.let(::convertClassBody),
         hasComma = findChildByType(v, KtTokens.COMMA) != null,
+    ).map(v)
+
+    open fun convertClassBody(v: KtClassBody) = Node.Decl.Structured.Body(
+        decls = v.declarations.map(::convertDecl),
     ).map(v)
 
     open fun convertInitializer(equalsToken: PsiElement, expr: KtExpression, parent: PsiElement) = Node.Initializer(

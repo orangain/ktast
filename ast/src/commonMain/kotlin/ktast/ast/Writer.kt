@@ -83,6 +83,9 @@ open class Writer(
                     children(constructorKeyword)
                     children(params)
                 }
+                is Node.Decl.Structured.Body -> {
+                    children(decls, prefix = "{", suffix = "}")
+                }
                 is Node.Decl.Init ->
                     append("init").also { children(block) }
                 is Node.Decl.Func -> {
@@ -173,10 +176,8 @@ open class Writer(
                 is Node.Decl.EnumEntry -> {
                     children(mods)
                     children(name)
-                    if (args != null) parenChildren(args)
-                    if (members.isNotEmpty()) append("{").run {
-                        children(members)
-                    }.append("}")
+                    children(args)
+                    children(body)
                     if (hasComma) {
                         append(",")
                     }

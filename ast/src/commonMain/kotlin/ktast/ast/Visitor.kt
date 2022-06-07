@@ -59,6 +59,9 @@ open class Visitor {
                 visitChildren(constructorKeyword)
                 visitChildren(params)
             }
+            is Node.Decl.Structured.Body -> {
+                visitChildren(decls)
+            }
             is Node.Decl.Init -> {
                 visitChildren(block)
             }
@@ -147,7 +150,7 @@ open class Visitor {
                 visitChildren(mods)
                 visitChildren(name)
                 visitChildren(args)
-                visitChildren(members)
+                visitChildren(body)
             }
             is Node.Initializer -> {
                 visitChildren(equals)

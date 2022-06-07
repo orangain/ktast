@@ -63,6 +63,9 @@ open class MutableVisitor {
                         constructorKeyword = visitChildren(constructorKeyword, newCh),
                         params = visitChildren(params, newCh)
                     )
+                    is Node.Decl.Structured.Body -> copy(
+                        decls = visitChildren(decls, newCh),
+                    )
                     is Node.Decl.Init -> copy(
                         block = visitChildren(block, newCh)
                     )
@@ -151,7 +154,7 @@ open class MutableVisitor {
                         mods = visitChildren(mods, newCh),
                         name = visitChildren(name, newCh),
                         args = visitChildren(args, newCh),
-                        members = visitChildren(members, newCh)
+                        body = visitChildren(body, newCh)
                     )
                     is Node.Initializer -> copy(
                         equals = visitChildren(equals, newCh),
