@@ -415,10 +415,8 @@ open class Writer(
                 is Node.Expr.Call -> {
                     children(expr)
                     bracketedChildren(typeArgs)
-                    if (args != null || lambda == null) parenChildren(args)
-                    if (lambda != null) {
-                        children(lambda)
-                    }
+                    children(args)
+                    children(lambda)
                 }
                 is Node.Expr.Call.TrailLambda -> {
                     if (anns.isNotEmpty()) childAnns(sameLine = true)

@@ -618,12 +618,18 @@ sealed class Node {
             val expr: Expr
         ) : Expr(), WithAnnotations
 
+        /**
+         * AST node corresponds to KtCallExpression.
+         */
         data class Call(
             val expr: Expr,
             val typeArgs: List<TypeProjection?>,
             val args: ValueArgs?,
             val lambda: TrailLambda?
         ) : Expr() {
+            /**
+             * AST node corresponds to KtLambdaArgument.
+             */
             data class TrailLambda(
                 override val anns: List<Modifier.AnnotationSet>,
                 val label: String?,
