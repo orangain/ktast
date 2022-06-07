@@ -532,7 +532,7 @@ open class Writer(
     // Ends with newline (or space if sameLine) if there are any
     protected fun Node.WithAnnotations.childAnns(sameLine: Boolean = false) = this@Writer.also {
         if (anns.isNotEmpty()) (this@childAnns as Node).apply {
-            if (sameLine) children(anns, " ", "", " ")
+            if (sameLine) children(anns, " ")
             else anns.forEach { ann -> children(ann) }
         }
     }
