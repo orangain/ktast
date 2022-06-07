@@ -244,6 +244,9 @@ open class Writer(
                 is Node.ConstructorCallee -> {
                     children(type)
                 }
+                is Node.Body -> {
+                    children(expr)
+                }
                 is Node.ValueArgs -> {
                     parenChildren(args)
                 }
@@ -272,7 +275,7 @@ open class Writer(
                 is Node.Expr.For -> {
                     append("for (")
                     childAnns(sameLine = true)
-                    childVars(vars).append("in ").also { children(inExpr) }.append(") ")
+                    childVars(vars).append("in ").also { children(inExpr) }.append(")")
                     children(body)
                 }
                 is Node.Expr.While -> {

@@ -209,6 +209,9 @@ open class Visitor {
                 visitChildren(name)
                 visitChildren(expr)
             }
+            is Node.Body -> {
+                visitChildren(expr)
+            }
             is Node.Expr.If -> {
                 visitChildren(lPar)
                 visitChildren(expr)

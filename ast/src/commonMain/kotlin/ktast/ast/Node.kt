@@ -143,11 +143,11 @@ sealed class Node {
              * Virtual AST node corresponds to function body.
              */
             sealed class Body : Node() {
-                data class Block(val block: Node.Expr.Block) : Body()
+                data class Block(val block: Node.Expr.Block) : Func.Body()
                 data class Expr(
                     val equals: Keyword.Equal,
                     val expr: Node.Expr,
-                ) : Body()
+                ) : Func.Body()
             }
         }
 
@@ -342,6 +342,13 @@ sealed class Node {
         ) : Node()
     }
 
+    /**
+     * AST node corresponds to PsiElement having type of BODY.
+     */
+    data class Body(
+        val expr: Expr,
+    ) : Node()
+
     sealed class Expr : Node() {
         /**
          * AST node corresponds to KtIfExpression.
@@ -368,12 +375,15 @@ sealed class Node {
             ) : Node(), WithAnnotations
         }
 
+        /**
+         * AST node corresponds to KtForExpression.
+         */
         data class For(
             override val anns: List<Modifier.AnnotationSet>,
             // More than one means destructure, null means underscore
             val vars: List<Decl.Property.Var?>,
             val inExpr: Expr,
-            val body: Expr
+            val body: Body
         ) : Expr(), WithAnnotations
 
         data class While(

@@ -408,6 +408,10 @@ open class Converter {
         expr = convertExpr(v.getArgumentExpression() ?: error("No expr for value arg"))
     ).map(v)
 
+    open fun convertBody(v: PsiElement) = Node.Body(
+        expr = convertExpr(findChildByClass<KtExpression>(v) ?: error("No body for $v")),
+    ).map(v)
+
     open fun convertExpr(v: KtExpression): Node.Expr = when (v) {
         is KtIfExpression -> convertIf(v)
         is KtTryExpression -> convertTry(v)
@@ -476,7 +480,7 @@ open class Converter {
         anns = v.loopParameter?.annotations?.map(::convertAnnotationSet) ?: emptyList(),
         vars = convertPropertyVars(v.loopParameter ?: error("No param on for $v")),
         inExpr = convertExpr(v.loopRange ?: error("No in range for $v")),
-        body = convertExpr(v.body ?: error("No body for $v"))
+        body = convertBody(findChildByType(v, KtNodeTypes.BODY) ?: error("No body for $v"))
     ).map(v)
 
     open fun convertWhile(v: KtWhileExpressionBase) = Node.Expr.While(
@@ -885,8 +889,11 @@ open class Converter {
                     ASTNode::getTreeNext
                 ).takeWhile { it.elementType != KtTokens.COLONCOLON }.count { it.elementType == KtTokens.QUEST }
 
-        internal fun findChildByType(element: KtElement, type: IElementType): PsiElement? =
-            element.node.findChildByType(type)?.psi
+        internal fun findChildByType(v: KtElement, type: IElementType): PsiElement? =
+            v.node.findChildByType(type)?.psi
+
+        internal inline fun <reified T> findChildByClass(v: PsiElement): T? =
+            v.children.firstOrNull { it is T } as? T
 
         internal fun findTrailingSeparator(v: KtElement, elementType: IElementType): PsiElement? =
             // Note that v.children.lastOrNull() is not equal to v.lastChild. children contain only KtElements, but lastChild is a last element of allChildren.
