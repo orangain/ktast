@@ -320,6 +320,13 @@ sealed class Node {
     ) : Node()
 
     /**
+     * AST node corresponds to KtConstructorCalleeExpression.
+     */
+    data class ConstructorCallee(
+        val type: Type.Simple,
+    ) : Node()
+
+    /**
      * AST node corresponds to KtValueArgumentList or KtInitializerList.
      */
     data class ValueArgs(
@@ -639,7 +646,7 @@ sealed class Node {
              * AST node corresponds to KtAnnotationEntry.
              */
             data class Annotation(
-                val nameType: Type,
+                val constructorCallee: ConstructorCallee,
                 val args: ValueArgs?
             ) : Node()
         }

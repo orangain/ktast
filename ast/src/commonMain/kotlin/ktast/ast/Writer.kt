@@ -241,6 +241,9 @@ open class Writer(
                 is Node.ContextReceiver -> {
                     children(typeRef)
                 }
+                is Node.ConstructorCallee -> {
+                    children(type)
+                }
                 is Node.ValueArgs -> {
                     parenChildren(args)
                 }
@@ -448,7 +451,7 @@ open class Writer(
                     children(rBracket)
                 }
                 is Node.Modifier.AnnotationSet.Annotation -> {
-                    children(nameType)
+                    children(constructorCallee)
                     children(args)
                 }
                 is Node.Modifier.Lit ->

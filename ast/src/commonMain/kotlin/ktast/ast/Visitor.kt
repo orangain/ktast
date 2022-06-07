@@ -199,6 +199,9 @@ open class Visitor {
             is Node.ContextReceiver -> {
                 visitChildren(typeRef)
             }
+            is Node.ConstructorCallee -> {
+                visitChildren(type)
+            }
             is Node.ValueArgs -> {
                 visitChildren(args)
             }
@@ -372,7 +375,7 @@ open class Visitor {
                 visitChildren(rBracket)
             }
             is Node.Modifier.AnnotationSet.Annotation -> {
-                visitChildren(nameType)
+                visitChildren(constructorCallee)
                 visitChildren(args)
             }
             is Node.Modifier.Lit -> {}

@@ -203,6 +203,9 @@ open class MutableVisitor {
                     is Node.ContextReceiver -> copy(
                         typeRef = visitChildren(typeRef, newCh),
                     )
+                    is Node.ConstructorCallee -> copy(
+                        type = visitChildren(type, newCh),
+                    )
                     is Node.ValueArgs -> copy(
                         args = visitChildren(args, newCh),
                     )
@@ -376,7 +379,7 @@ open class MutableVisitor {
                         rBracket = visitChildren(rBracket, newCh),
                     )
                     is Node.Modifier.AnnotationSet.Annotation -> copy(
-                        nameType = visitChildren(nameType, newCh),
+                        constructorCallee = visitChildren(constructorCallee, newCh),
                         args = visitChildren(args, newCh),
                     )
                     is Node.Modifier.Lit -> this

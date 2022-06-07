@@ -387,6 +387,12 @@ open class Converter {
         expr = convertExpr(v.getExpression()),
     ).map(v)
 
+    open fun convertConstructorCallee(v: KtConstructorCalleeExpression) = Node.ConstructorCallee(
+        type = convertType(
+            v.typeReference?.typeElement ?: error("No type reference or type element for $v")
+        ) as? Node.Type.Simple ?: error(""),
+    ).map(v)
+
     open fun convertValueArgs(v: KtValueArgumentList) = Node.ValueArgs(
         args = v.arguments.map(::convertValueArg)
     ).map(v)
@@ -433,6 +439,7 @@ open class Converter {
         is KtLabeledExpression -> convertLabeled(v)
         is KtAnnotatedExpression -> convertAnnotated(v)
         is KtCallExpression -> convertCall(v)
+        is KtConstructorCalleeExpression -> error("Supposed to be unreachable here. KtConstructorCalleeExpression is expected to be inside of KtSuperTypeCallEntry or KtAnnotationEntry.")
         is KtArrayAccessExpression -> convertArrayAccess(v)
         is KtNamedFunction -> convertAnonFunc(v)
         is KtProperty -> convertPropertyExpr(v)
@@ -744,11 +751,6 @@ open class Converter {
         decl = convertProperty(v)
     ).map(v)
 
-    open fun convertAnnotation(v: KtAnnotationEntry) = Node.Modifier.AnnotationSet.Annotation(
-        nameType = convertType(v.typeReference?.typeElement ?: error("Missing annotation name")),
-        args = v.valueArgumentList?.let(::convertValueArgs)
-    ).map(v)
-
     open fun convertBlock(v: KtBlockExpression) = Node.Expr.Block(
         stmts = v.statements.map(::convertStmtNo)
     ).map(v)
@@ -797,6 +799,11 @@ open class Converter {
         AnnotationUseSiteTarget.SETTER_PARAMETER -> Node.Modifier.AnnotationSet.Target.SETPARAM
         AnnotationUseSiteTarget.PROPERTY_DELEGATE_FIELD -> Node.Modifier.AnnotationSet.Target.DELEGATE
     }
+
+    open fun convertAnnotation(v: KtAnnotationEntry) = Node.Modifier.AnnotationSet.Annotation(
+        constructorCallee = convertConstructorCallee(v.calleeExpression ?: error("No callee expression for $v")),
+        args = v.valueArgumentList?.let(::convertValueArgs),
+    ).map(v)
 
     open fun convertModifiers(v: KtModifierList): Node.NodeList<Node.Modifier> = Node.NodeList(
         children = v.node.children().mapNotNull { node ->
