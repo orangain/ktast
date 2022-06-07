@@ -2,7 +2,6 @@ package ktast.ast.psi
 
 import ktast.ast.Node
 import org.jetbrains.kotlin.KtNodeTypes
-import org.jetbrains.kotlin.com.intellij.lang.ASTNode
 import org.jetbrains.kotlin.com.intellij.psi.PsiComment
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
@@ -539,20 +538,33 @@ open class Converter {
     )
 
     open fun convertDoubleColonRefCallable(v: KtCallableReferenceExpression) = Node.Expr.DoubleColonRef.Callable(
-        recv = v.receiverExpression?.let { convertDoubleColonRefRecv(it, v.questionMarks) },
+        recv = v.receiverExpression?.let { expr ->
+            convertDoubleColonRefRecv(
+                expr,
+                v.questionMarks.map { convertKeyword(it, Node.Keyword::Question) }
+            )
+        },
         name = convertName(v.callableReference)
     ).map(v)
 
     open fun convertDoubleColonRefClass(v: KtClassLiteralExpression) = Node.Expr.DoubleColonRef.Class(
-        recv = v.receiverExpression?.let { convertDoubleColonRefRecv(it, v.questionMarks) }
+        recv = v.receiverExpression?.let { expr ->
+            convertDoubleColonRefRecv(
+                expr,
+                v.questionMarks.map { convertKeyword(it, Node.Keyword::Question) }
+            )
+        }
     ).map(v)
 
-    open fun convertDoubleColonRefRecv(v: KtExpression, questionMarks: Int): Node.Expr.DoubleColonRef.Recv = when (v) {
+    open fun convertDoubleColonRefRecv(
+        v: KtExpression,
+        questionMarks: List<Node.Keyword.Question>
+    ): Node.Expr.DoubleColonRef.Recv = when (v) {
         is KtSimpleNameExpression -> Node.Expr.DoubleColonRef.Recv.Type(
             type = Node.Type.Simple(
                 listOf(Node.Type.Simple.Piece(convertName(v.getReferencedNameElement()), emptyList()).map(v))
             ).mapNotCorrespondsPsiElement(v),
-            questionMarks = questionMarks
+            questionMarks = questionMarks,
         ).map(v)
         is KtCallExpression ->
             if (v.valueArgumentList == null && v.lambdaArguments.isEmpty())
@@ -564,7 +576,7 @@ open class Converter {
                             typeParams = convertTypeProjections(v.typeArgumentList)
                         ).mapNotCorrespondsPsiElement(v)
                     )).mapNotCorrespondsPsiElement(v),
-                    questionMarks = questionMarks
+                    questionMarks = questionMarks,
                 ).map(v)
             else Node.Expr.DoubleColonRef.Recv.Expr(convertExpr(v)).map(v)
         is KtDotQualifiedExpression -> {
@@ -573,7 +585,7 @@ open class Converter {
             if (lhs is Node.Expr.DoubleColonRef.Recv.Type && rhs is Node.Expr.DoubleColonRef.Recv.Type)
                 Node.Expr.DoubleColonRef.Recv.Type(
                     type = Node.Type.Simple(lhs.type.pieces + rhs.type.pieces).map(v),
-                    questionMarks = 0
+                    questionMarks = listOf(),
                 ).map(v)
             else Node.Expr.DoubleColonRef.Recv.Expr(convertExpr(v)).map(v)
         }
@@ -891,11 +903,10 @@ open class Converter {
 
         internal val KtTypeReference.contextReceiverList get() = getStubOrPsiChild(KtStubElementTypes.CONTEXT_RECEIVER_LIST)
         internal val KtDoubleColonExpression.questionMarks
-            get() =
-                generateSequence(
-                    node.firstChildNode,
-                    ASTNode::getTreeNext
-                ).takeWhile { it.elementType != KtTokens.COLONCOLON }.count { it.elementType == KtTokens.QUEST }
+            get() = allChildren
+                .takeWhile { it.node.elementType != KtTokens.COLONCOLON }
+                .filter { it.node.elementType == KtTokens.QUEST }
+                .toList()
 
         internal fun findChildByType(v: KtElement, type: IElementType): PsiElement? =
             v.node.findChildByType(type)?.psi

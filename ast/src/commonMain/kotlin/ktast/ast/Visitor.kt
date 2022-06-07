@@ -273,6 +273,7 @@ open class Visitor {
             }
             is Node.Expr.DoubleColonRef.Recv.Type -> {
                 visitChildren(type)
+                visitChildren(questionMarks)
             }
             is Node.Expr.Paren -> {
                 visitChildren(expr)

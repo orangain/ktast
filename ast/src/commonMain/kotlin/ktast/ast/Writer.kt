@@ -309,8 +309,10 @@ open class Writer(
                 }
                 is Node.Expr.DoubleColonRef.Recv.Expr ->
                     children(expr)
-                is Node.Expr.DoubleColonRef.Recv.Type ->
-                    children(type).append("?".repeat(questionMarks))
+                is Node.Expr.DoubleColonRef.Recv.Type -> {
+                    children(type)
+                    children(questionMarks)
+                }
                 is Node.Expr.Paren ->
                     append('(').also { children(expr) }.append(')')
                 is Node.Expr.StringTmpl ->

@@ -454,11 +454,17 @@ sealed class Node {
         sealed class DoubleColonRef : Expr() {
             abstract val recv: Recv?
 
+            /**
+             * AST node corresponds to KtCallableReferenceExpression.
+             */
             data class Callable(
                 override val recv: Recv?,
                 val name: Name
             ) : DoubleColonRef()
 
+            /**
+             * AST node corresponds to KtClassLiteralExpression.
+             */
             data class Class(
                 override val recv: Recv?
             ) : DoubleColonRef()
@@ -467,7 +473,7 @@ sealed class Node {
                 data class Expr(val expr: Node.Expr) : Recv()
                 data class Type(
                     val type: Node.Type.Simple,
-                    val questionMarks: Int
+                    val questionMarks: List<Keyword.Question>,
                 ) : Recv()
             }
         }
@@ -787,6 +793,7 @@ sealed class Node {
         class Equal : Keyword("=")
         class Colon : Keyword(":")
         class Comma : Keyword(",")
+        class Question : Keyword("?")
         class LPar : Keyword("(")
         class RPar : Keyword(")")
         class LBracket : Keyword("[")

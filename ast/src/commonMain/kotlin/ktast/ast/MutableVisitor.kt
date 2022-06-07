@@ -276,7 +276,8 @@ open class MutableVisitor {
                         expr = visitChildren(expr, newCh)
                     )
                     is Node.Expr.DoubleColonRef.Recv.Type -> copy(
-                        type = visitChildren(type, newCh)
+                        type = visitChildren(type, newCh),
+                        questionMarks = visitChildren(questionMarks, newCh),
                     )
                     is Node.Expr.Paren -> copy(
                         expr = visitChildren(expr, newCh)
