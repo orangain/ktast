@@ -81,7 +81,7 @@ open class Converter {
         is KtSuperTypeCallEntry -> Node.Decl.Structured.Parent.CallConstructor(
             type = v.typeReference?.typeElement?.let(::convertType) as? Node.Type.Simple
                 ?: error("Bad type on super call $v"),
-            typeArgs = v.typeArguments.map(::convertTypeProjection),
+            typeArgs = v.typeArgumentList.let(::convertTypeProjections),
             args = v.valueArgumentList?.let(::convertValueArgs),
             // TODO
             lambda = null
@@ -759,7 +759,7 @@ open class Converter {
 
     open fun convertCall(v: KtCallExpression) = Node.Expr.Call(
         expr = convertExpr(v.calleeExpression ?: error("No call expr for $v")),
-        typeArgs = v.typeArguments.map(::convertTypeProjection),
+        typeArgs = v.typeArgumentList.let(::convertTypeProjections),
         args = v.valueArgumentList?.let(::convertValueArgs),
         lambda = v.lambdaArguments.firstOrNull()?.let(::convertCallTrailLambda)
     ).map(v)
