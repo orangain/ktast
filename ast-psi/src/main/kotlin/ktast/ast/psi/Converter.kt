@@ -501,7 +501,8 @@ open class Converter {
         varName = v.catchParameter?.name ?: error("No catch param name for $v"),
         varType = v.catchParameter?.typeReference?.typeElement?.let(::convertType) as? Node.Type.Simple
             ?: error("Invalid catch param type for $v"),
-        block = convertBlock(v.catchBody as? KtBlockExpression ?: error("No catch block for $v"))
+        trailingComma = v.parameterList?.trailingComma?.let(::convertComma),
+        block = convertBlock(v.catchBody as? KtBlockExpression ?: error("No catch block for $v")),
     ).map(v)
 
     open fun convertFor(v: KtForExpression) = Node.Expr.For(

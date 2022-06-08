@@ -399,15 +399,22 @@ sealed class Node {
             val elseBody: Expr?
         ) : Expr()
 
+        /**
+         * AST node corresponds to KtTryExpression.
+         */
         data class Try(
             val block: Block,
             val catches: List<Catch>,
             val finallyBlock: Block?
         ) : Expr() {
+            /**
+             * AST node corresponds to KtCatchClause.
+             */
             data class Catch(
                 override val anns: List<Modifier.AnnotationSet>,
                 val varName: String,
                 val varType: Type.Simple,
+                val trailingComma: Keyword.Comma?,
                 val block: Block
             ) : Node(), WithAnnotations
         }

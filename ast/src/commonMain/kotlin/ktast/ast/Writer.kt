@@ -277,7 +277,10 @@ open class Writer(
                 is Node.Expr.Try.Catch -> {
                     append("catch (")
                     childAnns(sameLine = true)
-                    appendName(varName).append(": ").also { children(varType) }.append(")")
+                    appendName(varName).append(": ")
+                    children(varType)
+                    children(trailingComma)
+                    append(")")
                     children(block)
                 }
                 is Node.Expr.For -> {

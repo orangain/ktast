@@ -244,7 +244,8 @@ open class MutableVisitor {
                     is Node.Expr.Try.Catch -> copy(
                         anns = visitChildren(anns, newCh),
                         varType = visitChildren(varType, newCh),
-                        block = visitChildren(block, newCh)
+                        trailingComma = visitChildren(trailingComma, newCh),
+                        block = visitChildren(block, newCh),
                     )
                     is Node.Expr.For -> copy(
                         anns = visitChildren(anns, newCh),

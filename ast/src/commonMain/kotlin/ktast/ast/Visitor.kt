@@ -240,6 +240,7 @@ open class Visitor {
             is Node.Expr.Try.Catch -> {
                 visitChildren(anns)
                 visitChildren(varType)
+                visitChildren(trailingComma)
                 visitChildren(block)
             }
             is Node.Expr.For -> {
