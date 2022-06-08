@@ -364,7 +364,8 @@ sealed class Node {
      * AST node corresponds to KtValueArgumentList or KtInitializerList.
      */
     data class ValueArgs(
-        val args: List<ValueArg>
+        val args: List<ValueArg>,
+        val trailingComma: Keyword.Comma?,
     ) : Node() {
         /**
          * AST node corresponds to KtValueArgument.

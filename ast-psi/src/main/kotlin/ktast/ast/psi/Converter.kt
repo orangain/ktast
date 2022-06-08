@@ -410,13 +410,18 @@ open class Converter {
     ).map(v)
 
     open fun convertValueArgs(v: KtValueArgumentList) = Node.ValueArgs(
-        args = v.arguments.map(::convertValueArg)
+        args = v.arguments.map(::convertValueArg),
+        trailingComma = v.trailingComma?.let { convertKeyword(it, Node.Keyword::Comma) },
     ).map(v)
 
-    open fun convertValueArgs(v: KtInitializerList) = Node.ValueArgs(
-        args = ((v.initializers.firstOrNull() as? KtSuperTypeCallEntry)?.valueArgumentList?.arguments
-            ?: error("No value arguments for $v")).map(::convertValueArg)
-    ).map(v)
+    open fun convertValueArgs(v: KtInitializerList): Node.ValueArgs {
+        val valueArgumentList = (v.initializers.firstOrNull() as? KtSuperTypeCallEntry)?.valueArgumentList
+        return Node.ValueArgs(
+            args = (valueArgumentList?.arguments
+                ?: error("No value arguments for $v")).map(::convertValueArg),
+            trailingComma = valueArgumentList.trailingComma?.let { convertKeyword(it, Node.Keyword::Comma) },
+        ).map(v)
+    }
 
     open fun convertValueArg(v: KtValueArgument) = Node.ValueArgs.ValueArg(
         name = v.getArgumentName()?.referenceExpression?.let(::convertName),

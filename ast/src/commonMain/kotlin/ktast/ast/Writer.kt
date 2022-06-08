@@ -257,7 +257,10 @@ open class Writer(
                     children(expr)
                 }
                 is Node.ValueArgs -> {
-                    parenChildren(args)
+                    append("(")
+                    children(args, ",")
+                    children(trailingComma)
+                    append(")")
                 }
                 is Node.ValueArgs.ValueArg -> {
                     if (name != null) children(name).append("=")
