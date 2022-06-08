@@ -732,7 +732,8 @@ open class Converter {
     ).map(v)
 
     open fun convertCollLit(v: KtCollectionLiteralExpression) = Node.Expr.CollLit(
-        exprs = v.getInnerExpressions().map(::convertExpr)
+        exprs = v.getInnerExpressions().map(::convertExpr),
+        trailingComma = v.trailingComma?.let(::convertComma),
     ).map(v)
 
     open fun convertName(v: KtSimpleNameExpression) =

@@ -415,7 +415,7 @@ open class Writer(
                     if (label != null) append('@').appendName(label)
                 }
                 is Node.Expr.CollLit ->
-                    children(exprs, ",", "[", "]")
+                    children(exprs, ",", "[", "]", trailingComma)
                 is Node.Expr.Name ->
                     appendName(name)
                 is Node.Expr.Labeled ->

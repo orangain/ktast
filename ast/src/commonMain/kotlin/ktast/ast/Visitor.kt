@@ -349,6 +349,7 @@ open class Visitor {
             is Node.Expr.Break -> {}
             is Node.Expr.CollLit -> {
                 visitChildren(exprs)
+                visitChildren(trailingComma)
             }
             is Node.Expr.Name -> {}
             is Node.Expr.Labeled -> {

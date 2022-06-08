@@ -352,7 +352,8 @@ open class MutableVisitor {
                     is Node.Expr.Continue -> this
                     is Node.Expr.Break -> this
                     is Node.Expr.CollLit -> copy(
-                        exprs = visitChildren(exprs, newCh)
+                        exprs = visitChildren(exprs, newCh),
+                        trailingComma = visitChildren(trailingComma, newCh),
                     )
                     is Node.Expr.Name -> this
                     is Node.Expr.Labeled -> copy(

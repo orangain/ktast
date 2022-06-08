@@ -636,8 +636,12 @@ sealed class Node {
             val label: String?
         ) : Expr()
 
+        /**
+         * AST node corresponds to KtCollectionLiteralExpression.
+         */
         data class CollLit(
-            val exprs: List<Expr>
+            val exprs: List<Expr>,
+            val trailingComma: Keyword.Comma?,
         ) : Expr()
 
         data class Name(
@@ -706,6 +710,9 @@ sealed class Node {
     }
 
     sealed class Modifier : Node() {
+        /**
+         * AST node corresponds to KtAnnotation or single KtAnnotationEntry.
+         */
         data class AnnotationSet(
             val atSymbol: Node.Keyword.At?,
             val target: Target?,
