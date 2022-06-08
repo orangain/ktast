@@ -282,6 +282,7 @@ sealed class Node {
      */
     data class TypeParams(
         val params: List<TypeParam>,
+        val trailingComma: Keyword.Comma?,
     ) : Node() {
         /**
          * AST node corresponds to KtTypeParameter.

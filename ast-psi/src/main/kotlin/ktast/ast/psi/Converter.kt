@@ -271,6 +271,7 @@ open class Converter {
 
     open fun convertTypeParams(v: KtTypeParameterList) = Node.TypeParams(
         params = v.parameters.map(::convertTypeParam),
+        trailingComma = v.trailingComma?.let(::convertComma),
     ).map(v)
 
     open fun convertTypeParam(v: KtTypeParameter) = Node.TypeParams.TypeParam(

@@ -162,6 +162,7 @@ open class Visitor {
             }
             is Node.TypeParams -> {
                 visitChildren(params)
+                visitChildren(trailingComma)
             }
             is Node.TypeParams.TypeParam -> {
                 visitChildren(mods)

@@ -166,6 +166,7 @@ open class MutableVisitor {
                     )
                     is Node.TypeParams -> copy(
                         params = visitChildren(params, newCh),
+                        trailingComma = visitChildren(trailingComma, newCh),
                     )
                     is Node.TypeParams.TypeParam -> copy(
                         mods = visitChildren(mods, newCh),

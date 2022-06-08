@@ -190,7 +190,7 @@ open class Writer(
                     children(expr)
                 }
                 is Node.TypeParams -> {
-                    bracketedChildren(params)
+                    bracketedChildren(params, trailingComma)
                 }
                 is Node.TypeParams.TypeParam -> {
                     children(mods)
@@ -234,7 +234,7 @@ open class Writer(
                 is Node.Type.Simple ->
                     children(pieces, ".")
                 is Node.Type.Simple.Piece ->
-                    children(name).also { bracketedChildren(typeParams) }
+                    children(name).also { bracketedChildren(typeParams, null) }
                 is Node.Type.Nullable -> {
                     children(lPar)
                     children(mods)
@@ -424,7 +424,7 @@ open class Writer(
                     childAnns().also { children(expr) }
                 is Node.Expr.Call -> {
                     children(expr)
-                    bracketedChildren(typeArgs)
+                    bracketedChildren(typeArgs, null)
                     children(args)
                     children(lambda)
                 }
@@ -544,14 +544,15 @@ open class Writer(
     }
 
     // Null list values are asterisks
-    protected fun Node.bracketedChildren(v: List<Node>, appendIfNotEmpty: String = "") = this@Writer.also {
+    protected fun Node.bracketedChildren(v: List<Node>, trailingComma: Node.Keyword.Comma?) = this@Writer.also {
         if (v.isNotEmpty()) {
             append('<')
             v.forEachIndexed { index, node ->
                 if (index > 0) append(",")
                 children(node)
             }
-            append('>').append(appendIfNotEmpty)
+            children(trailingComma)
+            append('>')
         }
     }
 
