@@ -650,8 +650,7 @@ open class Converter {
     open fun convertLambdaParams(v: KtParameterList): Node.NodeList<Node.Expr.Lambda.Param> = Node.NodeList(
         children = v.parameters.map(::convertLambdaParam),
         separator = ",",
-        prefix = "",
-        suffix = "",
+        trailingSeparator = v.trailingComma?.let(::convertComma),
     ).map(v)
 
     open fun convertLambdaParam(v: KtParameter) = Node.Expr.Lambda.Param(
