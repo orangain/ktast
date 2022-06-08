@@ -321,9 +321,14 @@ open class MutableVisitor {
                         rPar = visitChildren(rPar, newCh),
                         entries = visitChildren(entries, newCh),
                     )
-                    is Node.Expr.When.Entry -> copy(
+                    is Node.Expr.When.Entry.Conds -> copy(
                         conds = visitChildren(conds, newCh),
-                        body = visitChildren(body, newCh)
+                        trailingComma = visitChildren(trailingComma, newCh),
+                        body = visitChildren(body, newCh),
+                    )
+                    is Node.Expr.When.Entry.Else -> copy(
+                        elseKeyword = visitChildren(elseKeyword, newCh),
+                        body = visitChildren(body, newCh),
                     )
                     is Node.Expr.When.Cond.Expr -> copy(
                         expr = visitChildren(expr, newCh)

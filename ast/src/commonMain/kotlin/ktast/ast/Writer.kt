@@ -378,9 +378,12 @@ open class Writer(
                     children(entries)
                     append("}")
                 }
-                is Node.Expr.When.Entry -> {
-                    if (conds.isEmpty()) append("else")
-                    else children(conds, ",")
+                is Node.Expr.When.Entry.Conds -> {
+                    children(conds, ",", trailingSeparator = trailingComma)
+                    append("->").also { children(body) }
+                }
+                is Node.Expr.When.Entry.Else -> {
+                    children(elseKeyword)
                     append("->").also { children(body) }
                 }
                 is Node.Expr.When.Cond.Expr ->

@@ -678,10 +678,21 @@ open class Converter {
         entries = v.entries.map(::convertWhenEntry),
     ).map(v)
 
-    open fun convertWhenEntry(v: KtWhenEntry) = Node.Expr.When.Entry(
-        conds = v.conditions.map(::convertWhenCond),
-        body = convertExpr(v.expression ?: error("No when entry body for $v"))
-    ).map(v)
+    open fun convertWhenEntry(v: KtWhenEntry): Node.Expr.When.Entry {
+        val elseKeyword = v.elseKeyword
+        return if (elseKeyword == null) {
+            Node.Expr.When.Entry.Conds(
+                conds = v.conditions.map(::convertWhenCond),
+                trailingComma = v.trailingComma?.let(::convertComma),
+                body = convertExpr(v.expression ?: error("No when entry body for $v"))
+            ).map(v)
+        } else {
+            Node.Expr.When.Entry.Else(
+                elseKeyword = convertKeyword(elseKeyword, Node.Keyword::Else),
+                body = convertExpr(v.expression ?: error("No when entry body for $v")),
+            ).map(v)
+        }
+    }
 
     open fun convertWhenCond(v: KtWhenCondition) = when (v) {
         is KtWhenConditionWithExpression -> Node.Expr.When.Cond.Expr(

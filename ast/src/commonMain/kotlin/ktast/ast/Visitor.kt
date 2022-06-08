@@ -317,8 +317,13 @@ open class Visitor {
                 visitChildren(rPar)
                 visitChildren(entries)
             }
-            is Node.Expr.When.Entry -> {
+            is Node.Expr.When.Entry.Conds -> {
                 visitChildren(conds)
+                visitChildren(trailingComma)
+                visitChildren(body)
+            }
+            is Node.Expr.When.Entry.Else -> {
+                visitChildren(elseKeyword)
                 visitChildren(body)
             }
             is Node.Expr.When.Cond.Expr -> {

@@ -571,10 +571,18 @@ sealed class Node {
             /**
              * AST node corresponds to KtWhenEntry.
              */
-            data class Entry(
-                val conds: List<Cond>,
-                val body: Expr
-            ) : Node()
+            sealed class Entry : Node() {
+                data class Conds(
+                    val conds: List<Cond>,
+                    val trailingComma: Keyword.Comma?,
+                    val body: Expr,
+                ) : When.Entry()
+
+                data class Else(
+                    val elseKeyword: Keyword.Else,
+                    val body: Expr,
+                ) : When.Entry()
+            }
 
             /**
              * AST node corresponds to KtWhenCondition.
