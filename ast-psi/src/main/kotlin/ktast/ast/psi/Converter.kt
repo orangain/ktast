@@ -126,6 +126,7 @@ open class Converter {
 
     open fun convertFuncParams(v: KtParameterList) = Node.Decl.Func.Params(
         params = v.parameters.map(::convertFuncParam),
+        trailingComma = v.trailingComma?.let { convertKeyword(it, Node.Keyword::Comma) },
     ).map(v)
 
     open fun convertFuncParam(v: KtParameter) = Node.Decl.Func.Params.Param(
@@ -366,7 +367,7 @@ open class Converter {
         separator = ",",
         prefix = "(",
         suffix = ")",
-        trailingSeparator = findTrailingSeparator(v, KtTokens.COMMA)?.let { convertKeyword(it, Node.Keyword::Comma) }
+        trailingSeparator = v.trailingComma?.let { convertKeyword(it, Node.Keyword::Comma) }
     ).map(v)
 
     open fun convertTypeFuncParam(v: KtParameter) = Node.Type.Func.Param(

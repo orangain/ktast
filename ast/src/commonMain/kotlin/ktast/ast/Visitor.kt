@@ -79,6 +79,7 @@ open class Visitor {
             }
             is Node.Decl.Func.Params -> {
                 visitChildren(params)
+                visitChildren(trailingComma)
             }
             is Node.Decl.Func.Params.Param -> {
                 visitChildren(mods)

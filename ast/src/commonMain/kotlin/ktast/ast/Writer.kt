@@ -101,7 +101,10 @@ open class Writer(
                     children(body)
                 }
                 is Node.Decl.Func.Params -> {
-                    parenChildren(params)
+                    append("(")
+                    children(params, ",")
+                    children(trailingComma)
+                    append(")")
                 }
                 is Node.Decl.Func.Params.Param -> {
                     children(mods)

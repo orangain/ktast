@@ -139,9 +139,16 @@ sealed class Node {
             override val postMods: List<PostModifier>,
             val body: Body?
         ) : Decl(), WithModifiers, WithPostModifiers {
+            /**
+             * AST node corresponds to KtParameterList under KtNamedFunction.
+             */
             data class Params(
-                val params: List<Param>
+                val params: List<Param>,
+                val trailingComma: Keyword.Comma?,
             ) : Node() {
+                /**
+                 * AST node corresponds to KtParameter.
+                 */
                 data class Param(
                     override val mods: NodeList<Modifier>?,
                     val readOnly: Boolean?,
