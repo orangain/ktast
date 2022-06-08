@@ -100,6 +100,7 @@ open class Visitor {
                 visitChildren(typeParams)
                 visitChildren(receiverTypeRef)
                 visitChildren(vars)
+                visitChildren(trailingComma)
                 visitChildren(typeConstraints)
                 visitChildren(initializer)
                 visitChildren(delegate)

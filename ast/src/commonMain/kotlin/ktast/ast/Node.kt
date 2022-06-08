@@ -181,6 +181,7 @@ sealed class Node {
             val receiverTypeRef: TypeRef?,
             // Always at least one, more than one is destructuring, null is underscore in destructure
             val vars: List<Var?>,
+            val trailingComma: Keyword.Comma?,
             val typeConstraints: List<PostModifier.TypeConstraints.TypeConstraint>,
             val initializer: Initializer?,
             val delegate: Delegate?,

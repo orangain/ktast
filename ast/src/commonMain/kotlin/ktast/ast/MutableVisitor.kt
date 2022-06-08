@@ -104,6 +104,7 @@ open class MutableVisitor {
                         typeParams = visitChildren(typeParams, newCh),
                         receiverTypeRef = visitChildren(receiverTypeRef, newCh),
                         vars = visitChildren(vars, newCh),
+                        trailingComma = visitChildren(trailingComma, newCh),
                         typeConstraints = visitChildren(typeConstraints, newCh),
                         initializer = visitChildren(initializer, newCh),
                         delegate = visitChildren(delegate, newCh),

@@ -119,7 +119,7 @@ open class Writer(
                     children(valOrVar)
                     children(typeParams)
                     if (receiverTypeRef != null) children(receiverTypeRef).append('.')
-                    childVars(vars)
+                    childVars(vars, trailingComma)
                     childTypeConstraints(typeConstraints)
                     children(initializer)
                     children(delegate)
@@ -281,7 +281,7 @@ open class Writer(
                 is Node.Expr.For -> {
                     append("for (")
                     childAnns(sameLine = true)
-                    childVars(vars).append("in ").also { children(inExpr) }.append(")")
+                    childVars(vars, null).append("in ").also { children(inExpr) }.append(")")
                     children(body)
                 }
                 is Node.Expr.While -> {
@@ -353,7 +353,7 @@ open class Writer(
                     append("}")
                 }
                 is Node.Expr.Lambda.Param -> {
-                    childVars(vars)
+                    childVars(vars, null)
                     if (destructTypeRef != null) append(": ").also { children(destructTypeRef) }
                 }
                 is Node.Expr.Lambda.Body -> {
@@ -522,8 +522,8 @@ open class Writer(
             if (v.isNotEmpty()) append(" where ").also { children(v, ", ") }
         }
 
-    protected fun Node.childVars(vars: List<Node.Decl.Property.Var?>) =
-        if (vars.size == 1) {
+    protected fun Node.childVars(vars: List<Node.Decl.Property.Var?>, trailingComma: Node.Keyword.Comma?) =
+        if (vars.size == 1 && trailingComma == null) {
             if (vars.single() == null) append('_') else children(vars)
         } else {
             append('(')
@@ -531,6 +531,7 @@ open class Writer(
                 if (v == null) append('_') else children(v)
                 if (index < vars.size - 1) append(",")
             }
+            children(trailingComma)
             append(')')
         }
 

@@ -164,6 +164,7 @@ open class Converter {
                 typeRef = v.typeReference?.let(::convertTypeRef)
             ).mapNotCorrespondsPsiElement(v)
         ),
+        trailingComma = null,
         typeConstraints = v.typeConstraints.map(::convertTypeConstraint),
         initializer = v.initializer?.let {
             convertInitializer(v.equalsToken ?: error("No equals token for initializer of $v"), it, v)
@@ -183,6 +184,7 @@ open class Converter {
         typeParams = null,
         receiverTypeRef = null,
         vars = v.entries.map(::convertPropertyVar),
+        trailingComma = v.trailingComma?.let(::convertComma),
         typeConstraints = emptyList(),
         initializer = v.initializer?.let {
             convertInitializer(findChildByType(v, KtTokens.EQ) ?: error("No equals token for initializer of $v"), it, v)
