@@ -101,10 +101,7 @@ open class Writer(
                     children(body)
                 }
                 is Node.Decl.Func.Params -> {
-                    append("(")
-                    children(params, ",")
-                    children(trailingComma)
-                    append(")")
+                    children(params, ",", "(", ")", trailingComma)
                 }
                 is Node.Decl.Func.Params.Param -> {
                     children(mods)
@@ -257,10 +254,7 @@ open class Writer(
                     children(expr)
                 }
                 is Node.ValueArgs -> {
-                    append("(")
-                    children(args, ",")
-                    children(trailingComma)
-                    append(")")
+                    children(args, ",", "(", ")", trailingComma)
                 }
                 is Node.ValueArgs.ValueArg -> {
                     if (name != null) children(name).append("=")
