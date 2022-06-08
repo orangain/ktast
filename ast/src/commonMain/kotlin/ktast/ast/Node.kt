@@ -417,6 +417,7 @@ sealed class Node {
              * AST node corresponds to KtCatchClause.
              */
             data class Catch(
+                val catchKeyword: Keyword.Catch,
                 override val anns: List<Modifier.AnnotationSet>,
                 val varName: String,
                 val varType: Type.Simple,
@@ -843,6 +844,7 @@ sealed class Node {
         class Constructor : Keyword("constructor")
         class Return : Keyword("return")
         class Else : Keyword("else")
+        class Catch : Keyword("catch")
         class By : Keyword("by")
         class Contract : Keyword("contract")
         class Where : Keyword("where")

@@ -239,6 +239,7 @@ open class Visitor {
                 visitChildren(finallyBlock)
             }
             is Node.Expr.Try.Catch -> {
+                visitChildren(catchKeyword)
                 visitChildren(anns)
                 visitChildren(varType)
                 visitChildren(trailingComma)

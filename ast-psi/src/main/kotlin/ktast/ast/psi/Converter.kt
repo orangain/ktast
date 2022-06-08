@@ -498,6 +498,10 @@ open class Converter {
     ).map(v)
 
     open fun convertTryCatch(v: KtCatchClause) = Node.Expr.Try.Catch(
+        catchKeyword = convertKeyword(
+            findChildByType(v, KtTokens.CATCH_KEYWORD) ?: error("No catch keyword for $v"),
+            Node.Keyword::Catch
+        ),
         anns = v.catchParameter?.annotations?.map(::convertAnnotationSet) ?: emptyList(),
         varName = v.catchParameter?.name ?: error("No catch param name for $v"),
         varType = v.catchParameter?.typeReference?.typeElement?.let(::convertType) as? Node.Type.Simple

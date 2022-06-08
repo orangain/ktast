@@ -278,7 +278,8 @@ open class Writer(
                     if (finallyBlock != null) append(" finally ").also { children(finallyBlock) }
                 }
                 is Node.Expr.Try.Catch -> {
-                    append("catch (")
+                    children(catchKeyword)
+                    append("(")
                     childAnns(sameLine = true)
                     appendName(varName).append(": ")
                     children(varType)
