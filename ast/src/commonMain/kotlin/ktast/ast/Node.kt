@@ -91,7 +91,7 @@ sealed class Node {
             sealed class Parent : Node() {
                 data class CallConstructor(
                     val type: Node.Type.Simple,
-                    val typeArgs: List<TypeProjection>,
+                    val typeArgs: NodeList<TypeProjection>?,
                     val args: ValueArgs?,
                     val lambda: Expr.Call.TrailLambda?
                 ) : Parent()
@@ -311,7 +311,7 @@ sealed class Node {
         ) : Type() {
             data class Piece(
                 val name: Expr.Name,
-                val typeParams: List<TypeProjection>
+                val typeParams: NodeList<TypeProjection>?
             ) : Node()
         }
 
@@ -665,7 +665,7 @@ sealed class Node {
          */
         data class Call(
             val expr: Expr,
-            val typeArgs: List<TypeProjection>,
+            val typeArgs: NodeList<TypeProjection>?,
             val args: ValueArgs?,
             val lambda: TrailLambda?
         ) : Expr() {

@@ -233,8 +233,10 @@ open class Writer(
                 }
                 is Node.Type.Simple ->
                     children(pieces, ".")
-                is Node.Type.Simple.Piece ->
-                    children(name).also { bracketedChildren(typeParams, null) }
+                is Node.Type.Simple.Piece -> {
+                    children(name)
+                    children(typeParams)
+                }
                 is Node.Type.Nullable -> {
                     children(lPar)
                     children(mods)
@@ -424,7 +426,7 @@ open class Writer(
                     childAnns().also { children(expr) }
                 is Node.Expr.Call -> {
                     children(expr)
-                    bracketedChildren(typeArgs, null)
+                    children(typeArgs)
                     children(args)
                     children(lambda)
                 }
@@ -556,7 +558,6 @@ open class Writer(
         }
     }
 
-    protected fun Node.parenChildren(v: List<Node?>) = children(v, ",", "(", ")")
     protected fun Node.parenChildren(v: Node.ValueArgs?) = v?.args?.let { children(it, ",", "(", ")") }
 
     protected fun Node.children(vararg v: Node?) = this@Writer.also { v.forEach { visitChildren(it) } }
