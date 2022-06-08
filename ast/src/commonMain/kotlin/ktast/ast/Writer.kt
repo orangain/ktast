@@ -101,7 +101,7 @@ open class Writer(
                     children(body)
                 }
                 is Node.Decl.Func.Params -> {
-                    children(params, ",", "(", ")", trailingComma)
+                    children(params, ",", "(", ")", trailingComma, this)
                 }
                 is Node.Decl.Func.Params.Param -> {
                     children(mods)
@@ -256,7 +256,7 @@ open class Writer(
                     children(expr)
                 }
                 is Node.ValueArgs -> {
-                    children(args, ",", "(", ")", trailingComma)
+                    children(args, ",", "(", ")", trailingComma, this)
                 }
                 is Node.ValueArgs.ValueArg -> {
                     if (name != null) children(name).append("=")
@@ -570,7 +570,8 @@ open class Writer(
         sep: String = "",
         prefix: String = "",
         suffix: String = "",
-        trailingSeparator: Node? = null
+        trailingSeparator: Node? = null,
+        parent: Node? = null,
     ) =
         this@Writer.also {
             append(prefix)
@@ -579,6 +580,7 @@ open class Writer(
                 if (index < v.size - 1) append(sep)
             }
             children(trailingSeparator)
+            parent?.writeExtrasWithin()
             append(suffix)
         }
 
