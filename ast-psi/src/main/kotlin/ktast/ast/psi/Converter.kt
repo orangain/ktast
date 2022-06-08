@@ -431,7 +431,7 @@ open class Converter {
     }
 
     open fun convertValueArg(v: KtValueArgument) = Node.ValueArgs.ValueArg(
-        name = v.getArgumentName()?.referenceExpression?.let(::convertName),
+        name = v.getArgumentName()?.let(::convertValueArgName),
         asterisk = v.getSpreadElement() != null,
         expr = convertExpr(v.getArgumentExpression() ?: error("No expr for value arg"))
     ).map(v)
@@ -748,6 +748,10 @@ open class Converter {
     open fun convertCollLit(v: KtCollectionLiteralExpression) = Node.Expr.CollLit(
         exprs = v.getInnerExpressions().map(::convertExpr),
         trailingComma = v.trailingComma?.let(::convertComma),
+    ).map(v)
+
+    open fun convertValueArgName(v: KtValueArgumentName) = Node.Expr.Name(
+        name = (v.referenceExpression.getIdentifier() ?: error("No identifier for $v")).text,
     ).map(v)
 
     open fun convertName(v: KtSimpleNameExpression) =
