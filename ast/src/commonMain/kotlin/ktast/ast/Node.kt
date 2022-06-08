@@ -121,7 +121,13 @@ sealed class Node {
             ) : Node()
         }
 
-        data class Init(val block: Expr.Block) : Decl()
+        /**
+         * AST node corresponds to KtAnonymousInitializer.
+         */
+        data class Init(
+            override val mods: NodeList<Modifier>?,
+            val block: Expr.Block,
+        ) : Decl(), WithModifiers
 
         /**
          * AST node corresponds to KtNamedFunction.

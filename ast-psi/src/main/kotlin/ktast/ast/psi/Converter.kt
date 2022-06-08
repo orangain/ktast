@@ -106,7 +106,8 @@ open class Converter {
     ).map(v)
 
     open fun convertInit(v: KtAnonymousInitializer) = Node.Decl.Init(
-        block = convertBlock(v.body as? KtBlockExpression ?: error("No init block for $v"))
+        mods = v.modifierList?.let(::convertModifiers),
+        block = convertBlock(v.body as? KtBlockExpression ?: error("No init block for $v")),
     ).map(v)
 
     open fun convertFunc(v: KtNamedFunction) = Node.Decl.Func(

@@ -67,7 +67,8 @@ open class MutableVisitor {
                         decls = visitChildren(decls, newCh),
                     )
                     is Node.Decl.Init -> copy(
-                        block = visitChildren(block, newCh)
+                        mods = visitChildren(mods, newCh),
+                        block = visitChildren(block, newCh),
                     )
                     is Node.Decl.Func -> copy(
                         mods = visitChildren(mods, newCh),

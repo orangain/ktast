@@ -63,6 +63,7 @@ open class Visitor {
                 visitChildren(decls)
             }
             is Node.Decl.Init -> {
+                visitChildren(mods)
                 visitChildren(block)
             }
             is Node.Decl.Func -> {

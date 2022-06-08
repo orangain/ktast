@@ -86,8 +86,11 @@ open class Writer(
                 is Node.Decl.Structured.Body -> {
                     children(decls, prefix = "{", suffix = "}")
                 }
-                is Node.Decl.Init ->
-                    append("init").also { children(block) }
+                is Node.Decl.Init -> {
+                    children(mods)
+                    append("init")
+                    children(block)
+                }
                 is Node.Decl.Func -> {
                     children(mods)
                     children(funKeyword)
