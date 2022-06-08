@@ -152,14 +152,16 @@ open class Writer(
                 is Node.Decl.Property.Accessor.Set -> {
                     children(mods).append("set")
                     if (body != null) {
-                        append('(')
-                        children(paramMods)
-                        children(paramName ?: error("Missing setter param name when body present"))
-                        if (paramTypeRef != null) append(":").also { children(paramTypeRef) }
+                        append("(")
+                        children(params)
                         append(")")
                         children(postMods)
                         children(body)
                     }
+                }
+                is Node.Decl.Property.Accessor.Params -> {
+                    children(params, ",")
+                    children(trailingComma)
                 }
                 is Node.Decl.TypeAlias -> {
                     children(mods).append("typealias")

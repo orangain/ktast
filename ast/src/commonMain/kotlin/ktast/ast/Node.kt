@@ -218,12 +218,18 @@ sealed class Node {
 
                 data class Set(
                     override val mods: NodeList<Modifier>?,
-                    val paramMods: NodeList<Modifier>?,
-                    val paramName: Expr.Name?,
-                    val paramTypeRef: TypeRef?,
+                    val params: Params?,
                     override val postMods: List<PostModifier>,
                     val body: Func.Body?
                 ) : Accessor()
+
+                /**
+                 * AST node corresponds to KtParameterList under KtPropertyAccessor.
+                 */
+                data class Params(
+                    val params: List<Func.Params.Param>,
+                    val trailingComma: Keyword.Comma?,
+                ) : Node()
             }
         }
 

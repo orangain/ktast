@@ -125,11 +125,13 @@ open class Visitor {
             }
             is Node.Decl.Property.Accessor.Set -> {
                 visitChildren(mods)
-                visitChildren(paramMods)
-                visitChildren(paramName)
-                visitChildren(paramTypeRef)
+                visitChildren(params)
                 visitChildren(postMods)
                 visitChildren(body)
+            }
+            is Node.Decl.Property.Accessor.Params -> {
+                visitChildren(params)
+                visitChildren(trailingComma)
             }
             is Node.Decl.TypeAlias -> {
                 visitChildren(mods)

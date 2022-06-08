@@ -218,12 +218,15 @@ open class Converter {
             body = convertFuncBody(v),
         ).map(v) else Node.Decl.Property.Accessor.Set(
             mods = v.modifierList?.let(::convertModifiers),
-            paramMods = v.parameter?.modifierList?.let(::convertModifiers),
-            paramName = v.parameter?.nameIdentifier?.let(::convertName),
-            paramTypeRef = v.parameter?.typeReference?.let(::convertTypeRef),
+            params = v.parameterList?.let { convertPropertyAccessorParams(it) },
             postMods = convertPostModifiers(v),
             body = convertFuncBody(v),
         ).map(v)
+
+    open fun convertPropertyAccessorParams(v: KtParameterList) = Node.Decl.Property.Accessor.Params(
+        params = v.parameters.map(::convertFuncParam),
+        trailingComma = v.trailingComma?.let { convertKeyword(it, Node.Keyword::Comma) },
+    ).map(v)
 
     open fun convertTypeAlias(v: KtTypeAlias) = Node.Decl.TypeAlias(
         mods = v.modifierList?.let(::convertModifiers),
