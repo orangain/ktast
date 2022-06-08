@@ -369,7 +369,8 @@ open class MutableVisitor {
                     )
                     is Node.Expr.ArrayAccess -> copy(
                         expr = visitChildren(expr, newCh),
-                        indices = visitChildren(indices, newCh)
+                        indices = visitChildren(indices, newCh),
+                        trailingComma = visitChildren(trailingComma, newCh),
                     )
                     is Node.Expr.AnonFunc -> copy(
                         func = visitChildren(func, newCh)

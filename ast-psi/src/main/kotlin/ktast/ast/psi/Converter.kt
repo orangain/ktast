@@ -776,7 +776,8 @@ open class Converter {
 
     open fun convertArrayAccess(v: KtArrayAccessExpression) = Node.Expr.ArrayAccess(
         expr = convertExpr(v.arrayExpression ?: error("No array expr for $v")),
-        indices = v.indexExpressions.map(::convertExpr)
+        indices = v.indexExpressions.map(::convertExpr),
+        trailingComma = v.trailingComma?.let { convertKeyword(it, Node.Keyword::Comma) },
     ).map(v)
 
     open fun convertAnonFunc(v: KtNamedFunction) = Node.Expr.AnonFunc(convertFunc(v))

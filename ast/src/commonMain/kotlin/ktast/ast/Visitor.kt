@@ -366,6 +366,7 @@ open class Visitor {
             is Node.Expr.ArrayAccess -> {
                 visitChildren(expr)
                 visitChildren(indices)
+                visitChildren(trailingComma)
             }
             is Node.Expr.AnonFunc -> {
                 visitChildren(func)

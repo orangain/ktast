@@ -665,9 +665,13 @@ sealed class Node {
             ) : Node(), WithAnnotations
         }
 
+        /**
+         * AST node corresponds to KtArrayAccessExpression.
+         */
         data class ArrayAccess(
             val expr: Expr,
-            val indices: List<Expr>
+            val indices: List<Expr>,
+            val trailingComma: Keyword.Comma?,
         ) : Expr()
 
         data class AnonFunc(

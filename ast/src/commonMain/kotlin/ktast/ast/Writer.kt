@@ -438,7 +438,7 @@ open class Writer(
                 }
                 is Node.Expr.ArrayAccess -> {
                     children(expr)
-                    children(indices, ",", "[", "]")
+                    children(indices, ",", "[", "]", trailingComma)
                 }
                 is Node.Expr.AnonFunc ->
                     children(func)
@@ -562,13 +562,20 @@ open class Writer(
 
     protected fun Node.children(vararg v: Node?) = this@Writer.also { v.forEach { visitChildren(it) } }
 
-    protected fun Node.children(v: List<Node?>, sep: String = "", prefix: String = "", suffix: String = "") =
+    protected fun Node.children(
+        v: List<Node?>,
+        sep: String = "",
+        prefix: String = "",
+        suffix: String = "",
+        trailingSeparator: Node? = null
+    ) =
         this@Writer.also {
             append(prefix)
             v.forEachIndexed { index, t ->
                 visit(t, this)
                 if (index < v.size - 1) append(sep)
             }
+            children(trailingSeparator)
             append(suffix)
         }
 
