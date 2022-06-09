@@ -361,9 +361,12 @@ open class Writer(
                     children(body)
                     append("}")
                 }
-                is Node.Expr.Lambda.Param -> {
-                    childVars(vars, null)
-                    if (destructTypeRef != null) append(": ").also { children(destructTypeRef) }
+                is Node.Expr.Lambda.Param.Single -> {
+                    children(variable)
+                }
+                is Node.Expr.Lambda.Param.Multi -> {
+                    children(vars, ",", "(", ")")
+                    if (destructTypeRef != null) append(":").also { children(destructTypeRef) }
                 }
                 is Node.Expr.Lambda.Body -> {
                     if (stmts.isNotEmpty()) {

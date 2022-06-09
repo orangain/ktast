@@ -550,11 +550,18 @@ sealed class Node {
             /**
              * AST node corresponds to KtParameter in lambda arguments.
              */
-            data class Param(
-                // Multiple means destructure, null means underscore
-                val vars: List<Decl.Property.Var?>,
-                val destructTypeRef: TypeRef?
-            ) : Expr()
+            sealed class Param : Node() {
+                data class Single(
+                    // null means underscore
+                    val variable: Decl.Property.Var?,
+                ) : Param()
+
+                data class Multi(
+                    // null means underscore
+                    val vars: List<Decl.Property.Var?>,
+                    val destructTypeRef: TypeRef?
+                ) : Param()
+            }
 
             /**
              * AST node corresponds to KtBlockExpression in lambda body.

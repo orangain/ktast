@@ -309,7 +309,10 @@ open class MutableVisitor {
                         params = visitChildren(params, newCh),
                         body = visitChildren(body, newCh)
                     )
-                    is Node.Expr.Lambda.Param -> copy(
+                    is Node.Expr.Lambda.Param.Single -> copy(
+                        variable = visitChildren(variable, newCh),
+                    )
+                    is Node.Expr.Lambda.Param.Multi -> copy(
                         vars = visitChildren(vars, newCh),
                         destructTypeRef = visitChildren(destructTypeRef, newCh)
                     )

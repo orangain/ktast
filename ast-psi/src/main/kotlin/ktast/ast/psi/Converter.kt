@@ -678,10 +678,22 @@ open class Converter {
         trailingSeparator = v.trailingComma?.let(::convertComma),
     ).map(v)
 
-    open fun convertLambdaParam(v: KtParameter) = Node.Expr.Lambda.Param(
-        vars = convertPropertyVars(v),
-        destructTypeRef = if (v.destructuringDeclaration != null) v.typeReference?.let(::convertTypeRef) else null
-    ).map(v)
+    open fun convertLambdaParam(v: KtParameter): Node.Expr.Lambda.Param {
+        val destructuringDeclaration = v.destructuringDeclaration
+        return if (destructuringDeclaration == null) {
+            Node.Expr.Lambda.Param.Single(
+                variable = Node.Decl.Property.Var(
+                    name = v.nameIdentifier?.let(::convertName) ?: error("No property name on $v"),
+                    typeRef = v.typeReference?.let(::convertTypeRef)
+                ).mapNotCorrespondsPsiElement(v),
+            ).map(v)
+        } else {
+            Node.Expr.Lambda.Param.Multi(
+                vars = convertPropertyVars(v),
+                destructTypeRef = v.typeReference?.let(::convertTypeRef)
+            ).map(v)
+        }
+    }
 
     open fun convertLambdaBody(v: KtBlockExpression) = Node.Expr.Lambda.Body(
         stmts = v.statements.map(::convertStmtNo)

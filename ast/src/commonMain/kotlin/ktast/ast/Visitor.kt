@@ -305,7 +305,10 @@ open class Visitor {
                 visitChildren(params)
                 visitChildren(body)
             }
-            is Node.Expr.Lambda.Param -> {
+            is Node.Expr.Lambda.Param.Single -> {
+                visitChildren(variable)
+            }
+            is Node.Expr.Lambda.Param.Multi -> {
                 visitChildren(vars)
                 visitChildren(destructTypeRef)
             }
