@@ -201,14 +201,14 @@ open class Converter {
 
     open fun convertPropertyVars(v: KtParameter) =
         v.destructuringDeclaration?.entries?.map(::convertPropertyVar) ?: listOf(
-            if (v.name == "_") null else Node.Decl.Property.Var(
+            Node.Decl.Property.Var(
                 name = v.nameIdentifier?.let(::convertName) ?: error("No property name on $v"),
                 typeRef = v.typeReference?.let(::convertTypeRef)
             ).map(v)
         )
 
     open fun convertPropertyVar(v: KtDestructuringDeclarationEntry) =
-        if (v.name == "_") null else Node.Decl.Property.Var(
+        Node.Decl.Property.Var(
             name = v.nameIdentifier?.let(::convertName) ?: error("No property name on $v"),
             typeRef = v.typeReference?.let(::convertTypeRef)
         ).map(v)

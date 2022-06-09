@@ -185,8 +185,8 @@ sealed class Node {
             val valOrVar: Keyword.ValOrVar,
             val typeParams: TypeParams?,
             val receiverTypeRef: TypeRef?,
-            // Always at least one, more than one is destructuring, null is underscore in destructure
-            val vars: List<Var?>,
+            // Always at least one, more than one is destructuring
+            val vars: List<Var>,
             val trailingComma: Keyword.Comma?,
             val typeConstraints: NodeList<PostModifier.TypeConstraints.TypeConstraint>?,
             val initializer: Initializer?,
@@ -431,8 +431,8 @@ sealed class Node {
          */
         data class For(
             override val anns: List<Modifier.AnnotationSet>,
-            // More than one means destructure, null means underscore
-            val vars: List<Decl.Property.Var?>,
+            // More than one means destructure
+            val vars: List<Decl.Property.Var>,
             val inExpr: Expr,
             val body: Body,
         ) : Expr(), WithAnnotations
@@ -552,13 +552,11 @@ sealed class Node {
              */
             sealed class Param : Node() {
                 data class Single(
-                    // null means underscore
-                    val variable: Decl.Property.Var?,
+                    val variable: Decl.Property.Var,
                 ) : Param()
 
                 data class Multi(
-                    // null means underscore
-                    val vars: List<Decl.Property.Var?>,
+                    val vars: List<Decl.Property.Var>,
                     val destructTypeRef: TypeRef?
                 ) : Param()
             }

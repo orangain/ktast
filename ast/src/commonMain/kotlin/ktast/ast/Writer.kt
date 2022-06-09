@@ -534,13 +534,13 @@ open class Writer(
             if (v != null) append("where").also { children(v) }
         }
 
-    protected fun Node.childVars(vars: List<Node.Decl.Property.Var?>, trailingComma: Node.Keyword.Comma?) =
+    protected fun Node.childVars(vars: List<Node.Decl.Property.Var>, trailingComma: Node.Keyword.Comma?) =
         if (vars.size == 1 && trailingComma == null) {
-            if (vars.single() == null) append('_') else children(vars)
+            children(vars)
         } else {
             append('(')
             vars.forEachIndexed { index, v ->
-                if (v == null) append('_') else children(v)
+                children(v)
                 if (index < vars.size - 1) append(",")
             }
             children(trailingComma)
