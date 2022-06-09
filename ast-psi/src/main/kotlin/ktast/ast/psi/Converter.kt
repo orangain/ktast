@@ -207,6 +207,13 @@ open class Converter {
             ).map(v)
         )
 
+    open fun convertPropertyVars(v: KtDestructuringDeclaration): Node.NodeList<Node.Decl.Property.Var> = Node.NodeList(
+        children = v.entries.map(::convertPropertyVar),
+        separator = ",",
+        prefix = "(",
+        suffix = ")",
+    ).map(v)
+
     open fun convertPropertyVar(v: KtDestructuringDeclarationEntry) =
         Node.Decl.Property.Var(
             name = v.nameIdentifier?.let(::convertName) ?: error("No property name on $v"),
@@ -689,7 +696,7 @@ open class Converter {
             ).map(v)
         } else {
             Node.Expr.Lambda.Param.Multi(
-                vars = convertPropertyVars(v),
+                vars = convertPropertyVars(destructuringDeclaration),
                 destructTypeRef = v.typeReference?.let(::convertTypeRef)
             ).map(v)
         }

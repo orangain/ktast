@@ -556,7 +556,7 @@ sealed class Node {
                 ) : Param()
 
                 data class Multi(
-                    val vars: List<Decl.Property.Var>,
+                    val vars: NodeList<Decl.Property.Var>,
                     val destructTypeRef: TypeRef?
                 ) : Param()
             }

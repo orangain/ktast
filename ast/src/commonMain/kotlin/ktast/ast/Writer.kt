@@ -365,7 +365,7 @@ open class Writer(
                     children(variable)
                 }
                 is Node.Expr.Lambda.Param.Multi -> {
-                    children(vars, ",", "(", ")")
+                    children(vars)
                     if (destructTypeRef != null) append(":").also { children(destructTypeRef) }
                 }
                 is Node.Expr.Lambda.Body -> {
