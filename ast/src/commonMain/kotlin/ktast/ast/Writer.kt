@@ -479,7 +479,7 @@ open class Writer(
                     append(keyword.name.lowercase())
                 is Node.PostModifier.TypeConstraints -> {
                     children(whereKeyword)
-                    children(constraints, ",")
+                    children(constraints)
                 }
                 is Node.PostModifier.TypeConstraints.TypeConstraint -> {
                     childAnns(sameLine = true)
@@ -526,9 +526,9 @@ open class Writer(
         }
     }
 
-    protected fun Node.childTypeConstraints(v: List<Node.PostModifier.TypeConstraints.TypeConstraint>) =
+    protected fun Node.childTypeConstraints(v: Node.NodeList<Node.PostModifier.TypeConstraints.TypeConstraint>?) =
         this@Writer.also {
-            if (v.isNotEmpty()) append(" where ").also { children(v, ", ") }
+            if (v != null) append("where").also { children(v) }
         }
 
     protected fun Node.childVars(vars: List<Node.Decl.Property.Var?>, trailingComma: Node.Keyword.Comma?) =

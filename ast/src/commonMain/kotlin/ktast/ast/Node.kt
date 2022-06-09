@@ -77,7 +77,7 @@ sealed class Node {
             val colon: Keyword.Colon?,
             val parentAnns: List<Modifier.AnnotationSet>,
             val parents: List<Parent>,
-            val typeConstraints: List<PostModifier.TypeConstraints.TypeConstraint>,
+            val typeConstraints: NodeList<PostModifier.TypeConstraints.TypeConstraint>?,
             // TODO: Can include primary constructor
             val body: NodeList<Decl>?,
         ) : Decl(), WithModifiers {
@@ -188,7 +188,7 @@ sealed class Node {
             // Always at least one, more than one is destructuring, null is underscore in destructure
             val vars: List<Var?>,
             val trailingComma: Keyword.Comma?,
-            val typeConstraints: List<PostModifier.TypeConstraints.TypeConstraint>,
+            val typeConstraints: NodeList<PostModifier.TypeConstraints.TypeConstraint>?,
             val initializer: Initializer?,
             val delegate: Delegate?,
             val accessors: Accessors?
@@ -765,7 +765,7 @@ sealed class Node {
          */
         data class TypeConstraints(
             val whereKeyword: Keyword.Where,
-            val constraints: List<TypeConstraint>,
+            val constraints: NodeList<TypeConstraint>,
         ) : PostModifier() {
             /**
              * AST node corresponds to KtTypeConstraint.

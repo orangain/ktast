@@ -73,7 +73,7 @@ open class Converter {
         // TODO: this
         parentAnns = emptyList(),
         parents = v.superTypeListEntries.map(::convertParent),
-        typeConstraints = v.typeConstraints.map(::convertTypeConstraint),
+        typeConstraints = v.typeConstraintList?.let(::convertTypeConstraints),
         body = v.body?.let { convertDecls(it) },
     ).map(v)
 
@@ -166,7 +166,7 @@ open class Converter {
             ).mapNotCorrespondsPsiElement(v)
         ),
         trailingComma = null,
-        typeConstraints = v.typeConstraints.map(::convertTypeConstraint),
+        typeConstraints = v.typeConstraintList?.let(::convertTypeConstraints),
         initializer = v.initializer?.let {
             convertInitializer(v.equalsToken ?: error("No equals token for initializer of $v"), it, v)
         },
@@ -186,7 +186,7 @@ open class Converter {
         receiverTypeRef = null,
         vars = v.entries.map(::convertPropertyVar),
         trailingComma = v.trailingComma?.let(::convertComma),
-        typeConstraints = emptyList(),
+        typeConstraints = null,
         initializer = v.initializer?.let {
             convertInitializer(findChildByType(v, KtTokens.EQ) ?: error("No equals token for initializer of $v"), it, v)
         },
@@ -337,6 +337,12 @@ open class Converter {
             rPar = rPar?.let { convertKeyword(it, Node.Keyword::RPar) },
         ).map(v)
     }
+
+    open fun convertTypeConstraints(v: KtTypeConstraintList): Node.NodeList<Node.PostModifier.TypeConstraints.TypeConstraint> =
+        Node.NodeList(
+            children = v.constraints.map(::convertTypeConstraint),
+            separator = ",",
+        ).map(v)
 
     open fun convertTypeConstraint(v: KtTypeConstraint) = Node.PostModifier.TypeConstraints.TypeConstraint(
         anns = v.children.mapNotNull {
@@ -910,7 +916,7 @@ open class Converter {
             when (psi) {
                 is KtTypeConstraintList -> Node.PostModifier.TypeConstraints(
                     whereKeyword = convertKeyword(prevPsi, Node.Keyword::Where),
-                    constraints = psi.constraints.map(::convertTypeConstraint),
+                    constraints = convertTypeConstraints(psi),
                 ).mapNotCorrespondsPsiElement(v)
                 is KtContractEffectList -> Node.PostModifier.Contract(
                     contractKeyword = convertKeyword(prevPsi, Node.Keyword::Contract),
