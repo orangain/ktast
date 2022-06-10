@@ -225,6 +225,7 @@ sealed class Node {
             sealed class Accessor : Node(), WithModifiers, WithPostModifiers {
                 data class Get(
                     override val mods: NodeList<Modifier>?,
+                    val getKeyword: Keyword.Get,
                     val typeRef: TypeRef?,
                     override val postMods: List<PostModifier>,
                     val body: Func.Body?
@@ -232,6 +233,7 @@ sealed class Node {
 
                 data class Set(
                     override val mods: NodeList<Modifier>?,
+                    val setKeyword: Keyword.Set,
                     val params: Params?,
                     override val postMods: List<PostModifier>,
                     val body: Func.Body?
@@ -882,6 +884,8 @@ sealed class Node {
         class By : Keyword("by")
         class Contract : Keyword("contract")
         class Where : Keyword("where")
+        class Get : Keyword("get")
+        class Set : Keyword("set")
         class Equal : Keyword("=")
         class Colon : Keyword(":")
         class Comma : Keyword(",")

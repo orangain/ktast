@@ -127,12 +127,14 @@ open class Visitor {
             }
             is Node.Decl.Property.Accessor.Get -> {
                 visitChildren(mods)
+                visitChildren(getKeyword)
                 visitChildren(typeRef)
                 visitChildren(postMods)
                 visitChildren(body)
             }
             is Node.Decl.Property.Accessor.Set -> {
                 visitChildren(mods)
+                visitChildren(setKeyword)
                 visitChildren(params)
                 visitChildren(postMods)
                 visitChildren(body)

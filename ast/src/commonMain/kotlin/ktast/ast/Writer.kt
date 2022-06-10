@@ -145,7 +145,8 @@ open class Writer(
                     if (second != null) children(second)
                 }
                 is Node.Decl.Property.Accessor.Get -> {
-                    children(mods).append("get")
+                    children(mods)
+                    children(getKeyword)
                     if (body != null) {
                         append("()")
                         if (typeRef != null) append(":").also { children(typeRef) }
@@ -154,7 +155,8 @@ open class Writer(
                     }
                 }
                 is Node.Decl.Property.Accessor.Set -> {
-                    children(mods).append("set")
+                    children(mods)
+                    children(setKeyword)
                     if (body != null) {
                         append("(")
                         children(params)

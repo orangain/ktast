@@ -131,12 +131,14 @@ open class MutableVisitor {
                     )
                     is Node.Decl.Property.Accessor.Get -> copy(
                         mods = visitChildren(mods, newCh),
+                        getKeyword = visitChildren(getKeyword, newCh),
                         typeRef = visitChildren(typeRef, newCh),
                         postMods = visitChildren(postMods, newCh),
                         body = visitChildren(body, newCh)
                     )
                     is Node.Decl.Property.Accessor.Set -> copy(
                         mods = visitChildren(mods, newCh),
+                        setKeyword = visitChildren(setKeyword, newCh),
                         params = visitChildren(params, newCh),
                         postMods = visitChildren(postMods, newCh),
                         body = visitChildren(body, newCh)

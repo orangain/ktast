@@ -237,11 +237,19 @@ open class Converter {
     open fun convertPropertyAccessor(v: KtPropertyAccessor) =
         if (v.isGetter) Node.Decl.Property.Accessor.Get(
             mods = v.modifierList?.let(::convertModifiers),
+            getKeyword = convertKeyword(
+                findChildByType(v, KtTokens.GET_KEYWORD) ?: error("No get keyword for $v"),
+                Node.Keyword::Get
+            ),
             typeRef = v.returnTypeReference?.let(::convertTypeRef),
             postMods = convertPostModifiers(v),
             body = convertFuncBody(v),
         ).map(v) else Node.Decl.Property.Accessor.Set(
             mods = v.modifierList?.let(::convertModifiers),
+            setKeyword = convertKeyword(
+                findChildByType(v, KtTokens.SET_KEYWORD) ?: error("No set keyword for $v"),
+                Node.Keyword::Set
+            ),
             params = v.parameterList?.let { convertPropertyAccessorParams(it) },
             postMods = convertPostModifiers(v),
             body = convertFuncBody(v),
