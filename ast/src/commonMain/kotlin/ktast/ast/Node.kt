@@ -164,7 +164,7 @@ sealed class Node {
                  */
                 data class Param(
                     override val mods: NodeList<Modifier>?,
-                    val readOnly: Boolean?,
+                    val valOrVar: Keyword.ValOrVar?,
                     val name: Expr.Name,
                     // Type can be null for anon functions
                     val typeRef: TypeRef?,

@@ -89,6 +89,7 @@ open class Visitor {
             }
             is Node.Decl.Func.Params.Param -> {
                 visitChildren(mods)
+                visitChildren(valOrVar)
                 visitChildren(name)
                 visitChildren(typeRef)
                 visitChildren(initializer)

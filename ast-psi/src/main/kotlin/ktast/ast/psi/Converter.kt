@@ -146,7 +146,7 @@ open class Converter {
 
     open fun convertFuncParam(v: KtParameter) = Node.Decl.Func.Params.Param(
         mods = v.modifierList?.let(::convertModifiers),
-        readOnly = if (v.hasValOrVar()) !v.isMutable else null,
+        valOrVar = v.valOrVarKeyword?.let(::convertValOrVarKeyword),
         name = v.nameIdentifier?.let(::convertName) ?: error("No param name"),
         typeRef = v.typeReference?.let(::convertTypeRef),
         initializer = v.defaultValue?.let {

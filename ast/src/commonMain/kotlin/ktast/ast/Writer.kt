@@ -112,7 +112,7 @@ open class Writer(
                 }
                 is Node.Decl.Func.Params.Param -> {
                     children(mods)
-                    if (readOnly == true) append("val") else if (readOnly == false) append("var")
+                    children(valOrVar)
                     children(name)
                     if (typeRef != null) append(":").also { children(typeRef) }
                     children(initializer)

@@ -93,6 +93,7 @@ open class MutableVisitor {
                     )
                     is Node.Decl.Func.Params.Param -> copy(
                         mods = visitChildren(mods, newCh),
+                        valOrVar = visitChildren(valOrVar, newCh),
                         name = visitChildren(name, newCh),
                         typeRef = visitChildren(typeRef, newCh),
                         initializer = visitChildren(initializer, newCh)
