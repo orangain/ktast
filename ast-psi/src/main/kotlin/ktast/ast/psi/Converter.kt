@@ -379,8 +379,8 @@ open class Converter {
 
     open fun convertType(v: KtTypeElement): Node.Type = when (v) {
         is KtFunctionType -> Node.Type.Func(
-            receiverTypeRef = v.receiverTypeReference?.let(::convertTypeRef),
-            params = v.parameterList?.let { convertTypeFuncParams(it) },
+            receiver = v.receiver?.let(::convertTypeFuncReceiver),
+            params = v.parameterList?.let(::convertTypeFuncParams),
             typeRef = convertTypeRef(v.returnTypeReference ?: error("No return type"))
         ).map(v)
         is KtUserType -> Node.Type.Simple(
@@ -400,6 +400,10 @@ open class Converter {
         is KtDynamicType -> Node.Type.Dynamic().map(v)
         else -> error("Unrecognized type of $v")
     }
+
+    open fun convertTypeFuncReceiver(v: KtFunctionTypeReceiver) = Node.Type.Func.Receiver(
+        typeRef = convertTypeRef(v.typeReference),
+    ).map(v)
 
     open fun convertTypeFuncParams(v: KtParameterList): Node.NodeList<Node.Type.Func.Param> = Node.NodeList(
         children = v.parameters.map(::convertTypeFuncParam),

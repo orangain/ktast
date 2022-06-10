@@ -308,17 +308,33 @@ sealed class Node {
     }
 
     sealed class Type : Node() {
+        /**
+         * AST node corresponds to KtFunctionType.
+         */
         data class Func(
-            val receiverTypeRef: TypeRef?,
+            val receiver: Receiver?,
             val params: NodeList<Param>?,
             val typeRef: TypeRef
         ) : Type() {
+            /**
+             * AST node corresponds KtFunctionTypeReceiver.
+             */
+            data class Receiver(
+                val typeRef: TypeRef,
+            ) : Node()
+
+            /**
+             * AST node corresponds to KtParameter.
+             */
             data class Param(
                 val name: Expr.Name?,
                 val typeRef: TypeRef
             ) : Node()
         }
 
+        /**
+         * AST node corresponds to KtUserType.
+         */
         data class Simple(
             val pieces: List<Piece>
         ) : Type() {
@@ -328,6 +344,9 @@ sealed class Node {
             ) : Node()
         }
 
+        /**
+         * AST node corresponds to KtNullableType.
+         */
         data class Nullable(
             override val lPar: Keyword.LPar?,
             override val mods: NodeList<Modifier>?,
@@ -335,6 +354,9 @@ sealed class Node {
             override val rPar: Keyword.RPar?,
         ) : Type(), WithModifiers, WithOptionalParentheses
 
+        /**
+         * AST node corresponds to KtDynamicType.
+         */
         data class Dynamic(val _unused_: Boolean = false) : Type()
     }
 

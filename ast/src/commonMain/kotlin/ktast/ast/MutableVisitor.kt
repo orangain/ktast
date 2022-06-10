@@ -195,13 +195,16 @@ open class MutableVisitor {
                         rPar = visitChildren(rPar, newCh),
                     )
                     is Node.Type.Func -> copy(
-                        receiverTypeRef = visitChildren(receiverTypeRef, newCh),
+                        receiver = visitChildren(receiver, newCh),
                         params = visitChildren(params, newCh),
-                        typeRef = visitChildren(typeRef, newCh)
+                        typeRef = visitChildren(typeRef, newCh),
+                    )
+                    is Node.Type.Func.Receiver -> copy(
+                        typeRef = visitChildren(typeRef, newCh),
                     )
                     is Node.Type.Func.Param -> copy(
                         name = visitChildren(name, newCh),
-                        typeRef = visitChildren(typeRef, newCh)
+                        typeRef = visitChildren(typeRef, newCh),
                     )
                     is Node.Type.Simple -> copy(
                         pieces = visitChildren(pieces, newCh)

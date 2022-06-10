@@ -223,15 +223,18 @@ open class Writer(
                     children(rPar)
                 }
                 is Node.Type.Func -> {
-                    if (receiverTypeRef != null) {
-                        children(receiverTypeRef)
-                        if (receiverTypeRef.type != null) {
+                    if (receiver != null) {
+                        children(receiver)
+                        if (receiver.typeRef.type != null) {
                             append('.')
                         }
                     }
                     if (params != null) {
                         children(params).append("->")
                     }
+                    children(typeRef)
+                }
+                is Node.Type.Func.Receiver -> {
                     children(typeRef)
                 }
                 is Node.Type.Func.Param -> {
