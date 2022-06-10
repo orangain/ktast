@@ -27,6 +27,11 @@ open class Visitor {
             }
             is Node.Import -> {
                 visitChildren(importKeyword)
+                visitChildren(names)
+                visitChildren(alias)
+            }
+            is Node.Import.Alias -> {
+                visitChildren(name)
             }
             is Node.Decl.Structured -> {
                 visitChildren(mods)

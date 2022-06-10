@@ -38,9 +38,23 @@ open class Converter {
             findChildByType(v, KtTokens.IMPORT_KEYWORD) ?: error("Missing import keyword"),
             Node.Keyword::Import
         ),
-        names = v.importedFqName?.pathSegments()?.map { it.asString() } ?: error("Missing import path"),
-        wildcard = v.isAllUnder,
-        alias = v.aliasName
+        names = convertImportNames(v.importedReference ?: error("No imported reference for $v"))
+                + listOfNotNull(findChildByType(v, KtTokens.MUL)?.let(::convertName)),
+        alias = v.alias?.let(::convertImportAlias)
+    ).map(v)
+
+    open fun convertImportNames(v: KtExpression): List<Node.Expr.Name> = when (v) {
+        // Flatten nest of KtDotQualifiedExpression into list.
+        is KtDotQualifiedExpression ->
+            convertImportNames(v.receiverExpression) + listOf(
+                convertName(v.selectorExpression as? KtNameReferenceExpression ?: error("No name reference for $v"))
+            )
+        is KtReferenceExpression -> listOf(convertName(v))
+        else -> error("Unexpected type $v")
+    }
+
+    open fun convertImportAlias(v: KtImportAlias) = Node.Import.Alias(
+        name = convertName(v.nameIdentifier ?: error("No name identifier for $v")),
     ).map(v)
 
     open fun convertDecls(v: KtClassBody): Node.NodeList<Node.Decl> = Node.NodeList(
@@ -784,9 +798,9 @@ open class Converter {
         name = (v.referenceExpression.getIdentifier() ?: error("No identifier for $v")).text,
     ).map(v)
 
-    open fun convertName(v: KtSimpleNameExpression) =
-        convertName(v.getIdentifier() ?: error("Name identifier not found for $v"))
-            .map(v)
+    open fun convertName(v: KtSimpleNameExpression) = Node.Expr.Name(
+        name = (v.getIdentifier() ?: error("No identifier for $v")).text,
+    ).map(v)
 
     open fun convertName(v: PsiElement) = Node.Expr.Name(
         name = v.text

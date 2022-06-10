@@ -62,10 +62,17 @@ sealed class Node {
      */
     data class Import(
         val importKeyword: Keyword.Import,
-        val names: List<String>,
-        val wildcard: Boolean,
-        val alias: String?
-    ) : Node()
+        val names: List<Expr.Name>,
+        val alias: Alias?
+    ) : Node() {
+
+        /**
+         * AST node corresponds to KtImportAlias.
+         */
+        data class Alias(
+            val name: Expr.Name,
+        ) : Node()
+    }
 
     sealed class Decl : Node() {
         data class Structured(

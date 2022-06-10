@@ -51,8 +51,12 @@ open class Writer(
                 }
                 is Node.Import -> {
                     children(importKeyword)
-                    appendNames(names, ".")
-                    if (wildcard) append(".*") else if (alias != null) append(" as ").appendName(alias)
+                    children(names, ".")
+                    children(alias)
+                }
+                is Node.Import.Alias -> {
+                    append("as")
+                    children(name)
                 }
                 is Node.Decl.Structured -> {
                     children(mods)
