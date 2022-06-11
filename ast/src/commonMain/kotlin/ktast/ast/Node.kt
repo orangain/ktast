@@ -381,11 +381,13 @@ sealed class Node {
      * AST node corresponds to KtTypeReference.
      */
     data class TypeRef(
+        override val lPar: Keyword.LPar?,
         val contextReceivers: NodeList<ContextReceiver>?,
         override val mods: NodeList<Modifier>?,
-        override val lPar: Keyword.LPar?,
+        val innerLPar: Keyword.LPar?,
         val innerMods: NodeList<Modifier>?,
         val type: Type?,
+        val innerRPar: Keyword.RPar?,
         override val rPar: Keyword.RPar?,
     ) : Node(), WithModifiers, WithOptionalParentheses
 

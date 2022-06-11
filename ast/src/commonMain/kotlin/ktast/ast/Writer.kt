@@ -214,14 +214,16 @@ open class Writer(
                     children(typeRef)
                 }
                 is Node.TypeRef -> {
+                    children(lPar)
                     if (contextReceivers != null) {
                         append("context")
                         children(contextReceivers)
                     }
                     children(mods)
-                    children(lPar)
+                    children(innerLPar)
                     children(innerMods)
                     children(type)
+                    children(innerRPar)
                     children(rPar)
                 }
                 is Node.Type.Func -> {

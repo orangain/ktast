@@ -342,12 +342,20 @@ open class Converter {
     open fun convertTypeRef(v: KtTypeReference): Node.TypeRef {
         var lPar: PsiElement? = null
         var rPar: PsiElement? = null
+        var allChildren = v.allChildren.toList()
+        if (v.firstChild.node.elementType == KtTokens.LPAR && v.lastChild.node.elementType == KtTokens.RPAR) {
+            lPar = v.firstChild
+            rPar = v.lastChild
+            allChildren = allChildren.subList(1, allChildren.size - 1)
+        }
+        var innerLPar: PsiElement? = null
+        var innerRPar: PsiElement? = null
         var mods: KtModifierList? = null
         var innerMods: KtModifierList? = null
-        v.allChildren.forEach {
+        allChildren.forEach {
             when (it) {
                 is KtModifierList -> {
-                    if (lPar == null) {
+                    if (innerLPar == null) {
                         mods = it
                     } else {
                         innerMods = it
@@ -355,8 +363,8 @@ open class Converter {
                 }
                 else -> {
                     when (it.node.elementType) {
-                        KtTokens.LPAR -> lPar = it
-                        KtTokens.RPAR -> rPar = it
+                        KtTokens.LPAR -> innerLPar = it
+                        KtTokens.RPAR -> innerRPar = it
                         else -> {}
                     }
                 }
@@ -364,11 +372,13 @@ open class Converter {
         }
 
         return Node.TypeRef(
+            lPar = lPar?.let { convertKeyword(it, Node.Keyword::LPar) },
             contextReceivers = v.contextReceiverList?.let { convertContextReceivers(it) },
             mods = mods?.let { convertModifiers(it) },
-            lPar = lPar?.let { convertKeyword(it, Node.Keyword::LPar) },
+            innerLPar = innerLPar?.let { convertKeyword(it, Node.Keyword::LPar) },
             innerMods = innerMods?.let { convertModifiers(it) },
             type = v.typeElement?.let { convertType(it) }, // v.typeElement is null when the type reference has only context receivers.
+            innerRPar = innerRPar?.let { convertKeyword(it, Node.Keyword::RPar) },
             rPar = rPar?.let { convertKeyword(it, Node.Keyword::RPar) },
         ).map(v)
     }

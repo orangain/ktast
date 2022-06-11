@@ -214,6 +214,25 @@ class WriterTest {
         )
     }
 
+    @Test
+    fun testFuncTypeParentheses() {
+        assertParseAndWriteExact(
+            """
+                val lambdaType: (@A() (() -> C))
+            """.trimIndent()
+        )
+    }
+
+    @Test
+    fun testNullableTypeParentheses() {
+        assertParseAndWriteExact(
+            """
+                val temp3: (suspend (String) -> Int)? = { 5 }
+                val temp4: ((((String) -> Int)?) -> Int)? = { 5 }
+            """.trimIndent()
+        )
+    }
+
     private fun assertParseAndWriteExact(origCode: String) {
 
         val origExtrasConv = ConverterWithExtras()

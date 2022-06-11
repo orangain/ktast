@@ -186,11 +186,13 @@ open class Visitor {
                 visitChildren(typeRef)
             }
             is Node.TypeRef -> {
+                visitChildren(lPar)
                 visitChildren(contextReceivers)
                 visitChildren(mods)
-                visitChildren(lPar)
+                visitChildren(innerLPar)
                 visitChildren(innerMods)
                 visitChildren(type)
+                visitChildren(innerRPar)
                 visitChildren(rPar)
             }
             is Node.Type.Func -> {
