@@ -7,6 +7,7 @@ open class Visitor {
         when (this) {
             is Node.NodeList<*> -> {
                 visitChildren(children)
+                visitChildren(trailingSeparator)
             }
             is Node.File -> {
                 visitChildren(anns)
@@ -26,6 +27,11 @@ open class Visitor {
             }
             is Node.Import -> {
                 visitChildren(importKeyword)
+                visitChildren(names)
+                visitChildren(alias)
+            }
+            is Node.Import.Alias -> {
+                visitChildren(name)
             }
             is Node.Decl.Structured -> {
                 visitChildren(mods)
@@ -58,7 +64,11 @@ open class Visitor {
                 visitChildren(constructorKeyword)
                 visitChildren(params)
             }
+            is Node.Decl.Structured.Body -> {
+                visitChildren(decls)
+            }
             is Node.Decl.Init -> {
+                visitChildren(mods)
                 visitChildren(block)
             }
             is Node.Decl.Func -> {
@@ -67,17 +77,19 @@ open class Visitor {
                 visitChildren(typeParams)
                 visitChildren(receiverTypeRef)
                 visitChildren(name)
-                visitChildren(paramTypeParams)
+                visitChildren(postTypeParams)
                 visitChildren(params)
                 visitChildren(typeRef)
-                visitChildren(typeConstraints)
+                visitChildren(postMods)
                 visitChildren(body)
             }
             is Node.Decl.Func.Params -> {
                 visitChildren(params)
+                visitChildren(trailingComma)
             }
             is Node.Decl.Func.Params.Param -> {
                 visitChildren(mods)
+                visitChildren(valOrVar)
                 visitChildren(name)
                 visitChildren(typeRef)
                 visitChildren(initializer)
@@ -86,6 +98,7 @@ open class Visitor {
                 visitChildren(block)
             }
             is Node.Decl.Func.Body.Expr -> {
+                visitChildren(equals)
                 visitChildren(expr)
             }
             is Node.Decl.Property -> {
@@ -94,6 +107,7 @@ open class Visitor {
                 visitChildren(typeParams)
                 visitChildren(receiverTypeRef)
                 visitChildren(vars)
+                visitChildren(trailingComma)
                 visitChildren(typeConstraints)
                 visitChildren(initializer)
                 visitChildren(delegate)
@@ -113,15 +127,21 @@ open class Visitor {
             }
             is Node.Decl.Property.Accessor.Get -> {
                 visitChildren(mods)
+                visitChildren(getKeyword)
                 visitChildren(typeRef)
+                visitChildren(postMods)
                 visitChildren(body)
             }
             is Node.Decl.Property.Accessor.Set -> {
                 visitChildren(mods)
-                visitChildren(paramMods)
-                visitChildren(paramName)
-                visitChildren(paramTypeRef)
+                visitChildren(setKeyword)
+                visitChildren(params)
+                visitChildren(postMods)
                 visitChildren(body)
+            }
+            is Node.Decl.Property.Accessor.Params -> {
+                visitChildren(params)
+                visitChildren(trailingComma)
             }
             is Node.Decl.TypeAlias -> {
                 visitChildren(mods)
@@ -143,7 +163,7 @@ open class Visitor {
                 visitChildren(mods)
                 visitChildren(name)
                 visitChildren(args)
-                visitChildren(members)
+                visitChildren(body)
             }
             is Node.Initializer -> {
                 visitChildren(equals)
@@ -151,32 +171,36 @@ open class Visitor {
             }
             is Node.TypeParams -> {
                 visitChildren(params)
+                visitChildren(trailingComma)
             }
             is Node.TypeParams.TypeParam -> {
                 visitChildren(mods)
                 visitChildren(name)
-                visitChildren(type)
+                visitChildren(typeRef)
             }
-            is Node.TypeProjection -> {
+            is Node.TypeProjection.Asterisk -> {
+                visitChildren(asterisk)
+            }
+            is Node.TypeProjection.Type -> {
                 visitChildren(mods)
                 visitChildren(typeRef)
             }
             is Node.TypeRef -> {
+                visitChildren(lPar)
                 visitChildren(contextReceivers)
                 visitChildren(mods)
-                visitChildren(lPar)
+                visitChildren(innerLPar)
                 visitChildren(innerMods)
                 visitChildren(type)
+                visitChildren(innerRPar)
                 visitChildren(rPar)
             }
-            is Node.TypeConstraint -> {
-                visitChildren(anns)
-                visitChildren(name)
+            is Node.Type.Func -> {
+                visitChildren(receiver)
+                visitChildren(params)
                 visitChildren(typeRef)
             }
-            is Node.Type.Func -> {
-                visitChildren(receiverTypeRef)
-                visitChildren(params)
+            is Node.Type.Func.Receiver -> {
                 visitChildren(typeRef)
             }
             is Node.Type.Func.Param -> {
@@ -200,11 +224,18 @@ open class Visitor {
             is Node.ContextReceiver -> {
                 visitChildren(typeRef)
             }
+            is Node.ConstructorCallee -> {
+                visitChildren(type)
+            }
             is Node.ValueArgs -> {
                 visitChildren(args)
+                visitChildren(trailingComma)
             }
             is Node.ValueArgs.ValueArg -> {
                 visitChildren(name)
+                visitChildren(expr)
+            }
+            is Node.Body -> {
                 visitChildren(expr)
             }
             is Node.Expr.If -> {
@@ -212,6 +243,7 @@ open class Visitor {
                 visitChildren(expr)
                 visitChildren(rPar)
                 visitChildren(body)
+                visitChildren(elseKeyword)
                 visitChildren(elseBody)
             }
             is Node.Expr.Try -> {
@@ -220,8 +252,10 @@ open class Visitor {
                 visitChildren(finallyBlock)
             }
             is Node.Expr.Try.Catch -> {
+                visitChildren(catchKeyword)
                 visitChildren(anns)
                 visitChildren(varType)
+                visitChildren(trailingComma)
                 visitChildren(block)
             }
             is Node.Expr.For -> {
@@ -264,6 +298,7 @@ open class Visitor {
             }
             is Node.Expr.DoubleColonRef.Recv.Type -> {
                 visitChildren(type)
+                visitChildren(questionMarks)
             }
             is Node.Expr.Paren -> {
                 visitChildren(expr)
@@ -283,7 +318,10 @@ open class Visitor {
                 visitChildren(params)
                 visitChildren(body)
             }
-            is Node.Expr.Lambda.Param -> {
+            is Node.Expr.Lambda.Param.Single -> {
+                visitChildren(variable)
+            }
+            is Node.Expr.Lambda.Param.Multi -> {
                 visitChildren(vars)
                 visitChildren(destructTypeRef)
             }
@@ -295,11 +333,18 @@ open class Visitor {
                 visitChildren(typeArg)
             }
             is Node.Expr.When -> {
+                visitChildren(lPar)
                 visitChildren(expr)
+                visitChildren(rPar)
                 visitChildren(entries)
             }
-            is Node.Expr.When.Entry -> {
+            is Node.Expr.When.Entry.Conds -> {
                 visitChildren(conds)
+                visitChildren(trailingComma)
+                visitChildren(body)
+            }
+            is Node.Expr.When.Entry.Else -> {
+                visitChildren(elseKeyword)
                 visitChildren(body)
             }
             is Node.Expr.When.Cond.Expr -> {
@@ -312,8 +357,7 @@ open class Visitor {
                 visitChildren(typeRef)
             }
             is Node.Expr.Object -> {
-                visitChildren(parents)
-                visitChildren(members)
+                visitChildren(decl)
             }
             is Node.Expr.Throw -> {
                 visitChildren(expr)
@@ -326,6 +370,7 @@ open class Visitor {
             is Node.Expr.Break -> {}
             is Node.Expr.CollLit -> {
                 visitChildren(exprs)
+                visitChildren(trailingComma)
             }
             is Node.Expr.Name -> {}
             is Node.Expr.Labeled -> {
@@ -339,15 +384,16 @@ open class Visitor {
                 visitChildren(expr)
                 visitChildren(typeArgs)
                 visitChildren(args)
-                visitChildren(lambda)
+                visitChildren(lambdaArgs)
             }
-            is Node.Expr.Call.TrailLambda -> {
+            is Node.Expr.Call.LambdaArg -> {
                 visitChildren(anns)
                 visitChildren(func)
             }
             is Node.Expr.ArrayAccess -> {
                 visitChildren(expr)
                 visitChildren(indices)
+                visitChildren(trailingComma)
             }
             is Node.Expr.AnonFunc -> {
                 visitChildren(func)
@@ -371,11 +417,26 @@ open class Visitor {
                 visitChildren(rBracket)
             }
             is Node.Modifier.AnnotationSet.Annotation -> {
-                visitChildren(nameType)
-                visitChildren(typeArgs)
+                visitChildren(constructorCallee)
                 visitChildren(args)
             }
             is Node.Modifier.Lit -> {}
+            is Node.PostModifier.TypeConstraints -> {
+                visitChildren(whereKeyword)
+                visitChildren(constraints)
+            }
+            is Node.PostModifier.TypeConstraints.TypeConstraint -> {
+                visitChildren(anns)
+                visitChildren(name)
+                visitChildren(typeRef)
+            }
+            is Node.PostModifier.Contract -> {
+                visitChildren(contractKeyword)
+                visitChildren(contractEffects)
+            }
+            is Node.PostModifier.Contract.ContractEffect -> {
+                visitChildren(expr)
+            }
             is Node.Keyword -> {}
             is Node.Extra -> {}
             null -> {}

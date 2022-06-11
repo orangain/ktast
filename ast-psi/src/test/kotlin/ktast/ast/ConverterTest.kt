@@ -15,6 +15,7 @@ class ConverterTest {
             """.trimIndent(),
             """
                 Node.File
+                  Node.NodeList
                   Node.Decl.Property
                     Node.Keyword.ValOrVar
                     AFTER: Node.Extra.Whitespace
@@ -37,6 +38,7 @@ class ConverterTest {
             """.trimIndent(),
             """
                 Node.File
+                  Node.NodeList
                   Node.Decl.Property
                     Node.Keyword.ValOrVar
                     AFTER: Node.Extra.Whitespace

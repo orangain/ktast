@@ -203,6 +203,36 @@ class WriterTest {
         )
     }
 
+    @Test
+    fun testObjectLiteralExpression() {
+        assertParseAndWriteExact(
+            """
+                val foo = object<T, R> private (x: Int, y: Int) : Bar, Baz {
+                    fun foo() {}
+                }
+            """.trimIndent()
+        )
+    }
+
+    @Test
+    fun testFuncTypeParentheses() {
+        assertParseAndWriteExact(
+            """
+                val lambdaType: (@A() (() -> C))
+            """.trimIndent()
+        )
+    }
+
+    @Test
+    fun testNullableTypeParentheses() {
+        assertParseAndWriteExact(
+            """
+                val temp3: (suspend (String) -> Int)? = { 5 }
+                val temp4: ((((String) -> Int)?) -> Int)? = { 5 }
+            """.trimIndent()
+        )
+    }
+
     private fun assertParseAndWriteExact(origCode: String) {
 
         val origExtrasConv = ConverterWithExtras()
