@@ -67,7 +67,7 @@ open class Writer(
                     children(colon)
                     children(parentAnns)
                     children(parents, ",")
-                    childTypeConstraints(typeConstraints)
+                    children(typeConstraints)
                     children(body)
                 }
                 is Node.Decl.Structured.Parent.CallConstructor -> {
@@ -127,7 +127,7 @@ open class Writer(
                     children(typeParams)
                     if (receiverTypeRef != null) children(receiverTypeRef).append('.')
                     childVars(vars, trailingComma)
-                    childTypeConstraints(typeConstraints)
+                    children(typeConstraints)
                     children(initializer)
                     children(delegate)
                     if (accessors != null) children(accessors)
@@ -539,11 +539,6 @@ open class Writer(
             append(it.text)
         }
     }
-
-    protected fun Node.childTypeConstraints(v: Node.NodeList<Node.PostModifier.TypeConstraints.TypeConstraint>?) =
-        this@Writer.also {
-            if (v != null) append("where").also { children(v) }
-        }
 
     protected fun Node.childVars(vars: List<Node.Decl.Property.Var>, trailingComma: Node.Keyword.Comma?) =
         if (vars.size == 1 && trailingComma == null) {

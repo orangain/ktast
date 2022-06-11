@@ -87,7 +87,14 @@ open class Converter {
         // TODO: this
         parentAnns = emptyList(),
         parents = v.superTypeListEntries.map(::convertParent),
-        typeConstraints = v.typeConstraintList?.let(::convertTypeConstraints),
+        typeConstraints = v.typeConstraintList?.let { typeConstraintList ->
+            Node.PostModifier.TypeConstraints(
+                whereKeyword = convertKeyword(
+                    findChildByType(v, KtTokens.WHERE_KEYWORD) ?: error("No where keyword for $v"), Node.Keyword::Where
+                ),
+                constraints = convertTypeConstraints(typeConstraintList),
+            ).mapNotCorrespondsPsiElement(v)
+        },
         body = v.body?.let { convertDecls(it) },
     ).map(v)
 
@@ -186,7 +193,14 @@ open class Converter {
             ).mapNotCorrespondsPsiElement(v)
         ),
         trailingComma = null,
-        typeConstraints = v.typeConstraintList?.let(::convertTypeConstraints),
+        typeConstraints = v.typeConstraintList?.let { typeConstraintList ->
+            Node.PostModifier.TypeConstraints(
+                whereKeyword = convertKeyword(
+                    findChildByType(v, KtTokens.WHERE_KEYWORD) ?: error("No where keyword for $v"), Node.Keyword::Where
+                ),
+                constraints = convertTypeConstraints(typeConstraintList),
+            ).mapNotCorrespondsPsiElement(v)
+        },
         initializer = v.initializer?.let {
             convertInitializer(v.equalsToken ?: error("No equals token for initializer of $v"), it, v)
         },

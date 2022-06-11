@@ -75,6 +75,9 @@ sealed class Node {
     }
 
     sealed class Decl : Node() {
+        /**
+         * AST node corresponds to KtClassOrObject.
+         */
         data class Structured(
             override val mods: NodeList<Modifier>?,
             val declarationKeyword: Keyword.Declaration,
@@ -84,7 +87,7 @@ sealed class Node {
             val colon: Keyword.Colon?,
             val parentAnns: List<Modifier.AnnotationSet>,
             val parents: List<Parent>,
-            val typeConstraints: NodeList<PostModifier.TypeConstraints.TypeConstraint>?,
+            val typeConstraints: PostModifier.TypeConstraints?,
             // TODO: Can include primary constructor
             val body: NodeList<Decl>?,
         ) : Decl(), WithModifiers {
@@ -196,7 +199,7 @@ sealed class Node {
             // Always at least one, more than one is destructuring
             val vars: List<Var>,
             val trailingComma: Keyword.Comma?,
-            val typeConstraints: NodeList<PostModifier.TypeConstraints.TypeConstraint>?,
+            val typeConstraints: PostModifier.TypeConstraints?,
             val initializer: Initializer?,
             val delegate: Delegate?,
             val accessors: Accessors?
