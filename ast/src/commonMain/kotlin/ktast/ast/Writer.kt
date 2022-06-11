@@ -301,7 +301,7 @@ open class Writer(
                 is Node.Expr.For -> {
                     append("for (")
                     children(anns)
-                    childVars(vars, null).append("in ").also { children(inExpr) }.append(")")
+                    children(loopParam).append("in ").also { children(inExpr) }.append(")")
                     children(body)
                 }
                 is Node.Expr.While -> {

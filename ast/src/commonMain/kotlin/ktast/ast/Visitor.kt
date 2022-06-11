@@ -260,7 +260,7 @@ open class Visitor {
             }
             is Node.Expr.For -> {
                 visitChildren(anns)
-                visitChildren(vars)
+                visitChildren(loopParam)
                 visitChildren(inExpr)
                 visitChildren(body)
             }

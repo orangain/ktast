@@ -581,7 +581,7 @@ open class Converter {
 
     open fun convertFor(v: KtForExpression) = Node.Expr.For(
         anns = v.loopParameter?.annotations?.map(::convertAnnotationSet) ?: emptyList(),
-        vars = convertPropertyVars(v.loopParameter ?: error("No param on for $v")),
+        loopParam = convertLambdaParam(v.loopParameter ?: error("No param on for $v")),
         inExpr = convertExpr(v.loopRange ?: error("No in range for $v")),
         body = convertBody(findChildByType(v, KtNodeTypes.BODY) ?: error("No body for $v")),
     ).map(v)

@@ -468,8 +468,7 @@ sealed class Node {
          */
         data class For(
             override val anns: List<Modifier.AnnotationSet>,
-            // More than one means destructure
-            val vars: List<Decl.Property.Var>,
+            val loopParam: Lambda.Param,
             val inExpr: Expr,
             val body: Body,
         ) : Expr(), WithAnnotations

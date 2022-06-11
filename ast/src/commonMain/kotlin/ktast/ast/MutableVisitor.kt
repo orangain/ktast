@@ -264,7 +264,7 @@ open class MutableVisitor {
                     )
                     is Node.Expr.For -> copy(
                         anns = visitChildren(anns, newCh),
-                        vars = visitChildren(vars, newCh),
+                        loopParam = visitChildren(loopParam, newCh),
                         inExpr = visitChildren(inExpr, newCh),
                         body = visitChildren(body, newCh)
                     )
