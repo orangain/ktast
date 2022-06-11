@@ -77,7 +77,7 @@ open class Visitor {
                 visitChildren(typeParams)
                 visitChildren(receiverTypeRef)
                 visitChildren(name)
-                visitChildren(paramTypeParams)
+                visitChildren(postTypeParams)
                 visitChildren(params)
                 visitChildren(typeRef)
                 visitChildren(postMods)

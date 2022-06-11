@@ -136,7 +136,7 @@ open class Converter {
             if (hasTypeParameterListBeforeFunctionName) v.typeParameterList?.let(::convertTypeParams) else null,
             receiverTypeRef = v.receiverTypeReference?.let(::convertTypeRef),
             name = v.nameIdentifier?.let(::convertName),
-            paramTypeParams =
+            postTypeParams =
             if (!hasTypeParameterListBeforeFunctionName) v.typeParameterList?.let(::convertTypeParams) else null,
             params = v.valueParameterList?.let(::convertFuncParams),
             typeRef = v.typeReference?.let(::convertTypeRef),
