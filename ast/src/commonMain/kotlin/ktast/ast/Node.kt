@@ -469,9 +469,16 @@ sealed class Node {
         data class For(
             override val anns: List<Modifier.AnnotationSet>,
             val loopParam: Lambda.Param,
-            val inExpr: Expr,
+            val loopRange: LoopRange,
             val body: Body,
-        ) : Expr(), WithAnnotations
+        ) : Expr(), WithAnnotations {
+            /**
+             * AST node corresponds to KtContainerNode under KtForExpression.
+             */
+            data class LoopRange(
+                val expr: Expr,
+            ) : Node()
+        }
 
         /**
          * AST node corresponds to KtWhileExpressionBase.
@@ -584,15 +591,22 @@ sealed class Node {
             val body: Body?
         ) : Expr() {
             /**
-             * AST node corresponds to KtParameter in lambda arguments.
+             * AST node corresponds to KtParameter or KtDestructuringDeclarationEntry in lambda arguments or for statement.
              */
             sealed class Param : Node() {
+                /**
+                 * AST node corresponds to KtParameter whose child is IDENTIFIER or KtDestructuringDeclarationEntry.
+                 */
                 data class Single(
-                    val variable: Decl.Property.Var,
+                    val name: Name,
+                    val typeRef: TypeRef?
                 ) : Param()
 
+                /**
+                 * AST node corresponds to KtParameter whose child is KtDestructuringDeclaration.
+                 */
                 data class Multi(
-                    val vars: NodeList<Decl.Property.Var>,
+                    val vars: NodeList<Single>,
                     val destructTypeRef: TypeRef?
                 ) : Param()
             }

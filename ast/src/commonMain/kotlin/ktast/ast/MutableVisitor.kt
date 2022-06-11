@@ -265,8 +265,11 @@ open class MutableVisitor {
                     is Node.Expr.For -> copy(
                         anns = visitChildren(anns, newCh),
                         loopParam = visitChildren(loopParam, newCh),
-                        inExpr = visitChildren(inExpr, newCh),
+                        loopRange = visitChildren(loopRange, newCh),
                         body = visitChildren(body, newCh)
+                    )
+                    is Node.Expr.For.LoopRange -> copy(
+                        expr = visitChildren(expr, newCh),
                     )
                     is Node.Expr.While -> copy(
                         expr = visitChildren(expr, newCh),
@@ -323,7 +326,8 @@ open class MutableVisitor {
                         body = visitChildren(body, newCh)
                     )
                     is Node.Expr.Lambda.Param.Single -> copy(
-                        variable = visitChildren(variable, newCh),
+                        name = visitChildren(name, newCh),
+                        typeRef = visitChildren(typeRef, newCh),
                     )
                     is Node.Expr.Lambda.Param.Multi -> copy(
                         vars = visitChildren(vars, newCh),

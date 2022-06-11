@@ -582,8 +582,12 @@ open class Converter {
     open fun convertFor(v: KtForExpression) = Node.Expr.For(
         anns = v.loopParameter?.annotations?.map(::convertAnnotationSet) ?: emptyList(),
         loopParam = convertLambdaParam(v.loopParameter ?: error("No param on for $v")),
-        inExpr = convertExpr(v.loopRange ?: error("No in range for $v")),
+        loopRange = convertForLoopRange(findChildByType(v, KtNodeTypes.LOOP_RANGE) ?: error("No in range for $v")),
         body = convertBody(findChildByType(v, KtNodeTypes.BODY) ?: error("No body for $v")),
+    ).map(v)
+
+    open fun convertForLoopRange(v: PsiElement) = Node.Expr.For.LoopRange(
+        expr = convertExpr(findChildByClass<KtExpression>(v) ?: error("No expression for $v")),
     ).map(v)
 
     open fun convertWhile(v: KtWhileExpressionBase) = Node.Expr.While(
@@ -745,18 +749,30 @@ open class Converter {
         val destructuringDeclaration = v.destructuringDeclaration
         return if (destructuringDeclaration == null) {
             Node.Expr.Lambda.Param.Single(
-                variable = Node.Decl.Property.Var(
-                    name = v.nameIdentifier?.let(::convertName) ?: error("No property name on $v"),
-                    typeRef = v.typeReference?.let(::convertTypeRef)
-                ).mapNotCorrespondsPsiElement(v),
+                name = v.nameIdentifier?.let(::convertName) ?: error("No property name on $v"),
+                typeRef = v.typeReference?.let(::convertTypeRef),
             ).map(v)
         } else {
             Node.Expr.Lambda.Param.Multi(
-                vars = convertPropertyVars(destructuringDeclaration),
-                destructTypeRef = v.typeReference?.let(::convertTypeRef)
+                vars = convertLambdaParamVars(destructuringDeclaration),
+                destructTypeRef = v.typeReference?.let(::convertTypeRef),
             ).map(v)
         }
     }
+
+    open fun convertLambdaParamVars(v: KtDestructuringDeclaration): Node.NodeList<Node.Expr.Lambda.Param.Single> =
+        Node.NodeList(
+            children = v.entries.map(::convertLambdaParamVar),
+            separator = ",",
+            prefix = "(",
+            suffix = ")",
+        ).map(v)
+
+    open fun convertLambdaParamVar(v: KtDestructuringDeclarationEntry) =
+        Node.Expr.Lambda.Param.Single(
+            name = v.nameIdentifier?.let(::convertName) ?: error("No property name on $v"),
+            typeRef = v.typeReference?.let(::convertTypeRef)
+        ).map(v)
 
     open fun convertLambdaBody(v: KtBlockExpression) = Node.Expr.Lambda.Body(
         stmts = v.statements.map(::convertStmtNo)

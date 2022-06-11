@@ -301,8 +301,14 @@ open class Writer(
                 is Node.Expr.For -> {
                     append("for (")
                     children(anns)
-                    children(loopParam).append("in ").also { children(inExpr) }.append(")")
+                    children(loopParam)
+                    append("in")
+                    children(loopRange)
+                    append(")")
                     children(body)
+                }
+                is Node.Expr.For.LoopRange -> {
+                    children(expr)
                 }
                 is Node.Expr.While -> {
                     if (!doWhile) append("while (").also { children(expr) }.append(")").also { children(body) }
@@ -373,7 +379,11 @@ open class Writer(
                     append("}")
                 }
                 is Node.Expr.Lambda.Param.Single -> {
-                    children(variable)
+                    children(name)
+                    if (typeRef != null) {
+                        append(":")
+                        children(typeRef)
+                    }
                 }
                 is Node.Expr.Lambda.Param.Multi -> {
                     children(vars)

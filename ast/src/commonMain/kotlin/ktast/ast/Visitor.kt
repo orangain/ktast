@@ -261,8 +261,11 @@ open class Visitor {
             is Node.Expr.For -> {
                 visitChildren(anns)
                 visitChildren(loopParam)
-                visitChildren(inExpr)
+                visitChildren(loopRange)
                 visitChildren(body)
+            }
+            is Node.Expr.For.LoopRange -> {
+                visitChildren(expr)
             }
             is Node.Expr.While -> {
                 visitChildren(expr)
@@ -319,7 +322,8 @@ open class Visitor {
                 visitChildren(body)
             }
             is Node.Expr.Lambda.Param.Single -> {
-                visitChildren(variable)
+                visitChildren(name)
+                visitChildren(typeRef)
             }
             is Node.Expr.Lambda.Param.Multi -> {
                 visitChildren(vars)
