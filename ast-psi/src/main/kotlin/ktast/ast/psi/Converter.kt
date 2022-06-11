@@ -124,20 +124,26 @@ open class Converter {
         block = convertBlock(v.body as? KtBlockExpression ?: error("No init block for $v")),
     ).map(v)
 
-    open fun convertFunc(v: KtNamedFunction) = Node.Decl.Func(
-        mods = v.modifierList?.let(::convertModifiers),
-        funKeyword = v.funKeyword?.let { convertKeyword(it, Node.Keyword::Fun) } ?: error("No fun keyword for $v"),
-        typeParams =
-        if (v.hasTypeParameterListBeforeFunctionName()) v.typeParameterList?.let(::convertTypeParams) else null,
-        receiverTypeRef = v.receiverTypeReference?.let(::convertTypeRef),
-        name = v.nameIdentifier?.let(::convertName),
-        paramTypeParams =
-        if (!v.hasTypeParameterListBeforeFunctionName()) v.typeParameterList?.let(::convertTypeParams) else null,
-        params = v.valueParameterList?.let(::convertFuncParams),
-        typeRef = v.typeReference?.let(::convertTypeRef),
-        postMods = convertPostModifiers(v),
-        body = convertFuncBody(v),
-    ).map(v)
+    open fun convertFunc(v: KtNamedFunction): Node.Decl.Func {
+        val hasTypeParameterListBeforeFunctionName = v.allChildren.find {
+            it is KtTypeParameterList || it is KtTypeReference || it.node.elementType == KtTokens.IDENTIFIER
+        } is KtTypeParameterList
+
+        return Node.Decl.Func(
+            mods = v.modifierList?.let(::convertModifiers),
+            funKeyword = v.funKeyword?.let { convertKeyword(it, Node.Keyword::Fun) } ?: error("No fun keyword for $v"),
+            typeParams =
+            if (hasTypeParameterListBeforeFunctionName) v.typeParameterList?.let(::convertTypeParams) else null,
+            receiverTypeRef = v.receiverTypeReference?.let(::convertTypeRef),
+            name = v.nameIdentifier?.let(::convertName),
+            paramTypeParams =
+            if (!hasTypeParameterListBeforeFunctionName) v.typeParameterList?.let(::convertTypeParams) else null,
+            params = v.valueParameterList?.let(::convertFuncParams),
+            typeRef = v.typeReference?.let(::convertTypeRef),
+            postMods = convertPostModifiers(v),
+            body = convertFuncBody(v),
+        ).map(v)
+    }
 
     open fun convertFuncParams(v: KtParameterList) = Node.Decl.Func.Params(
         params = v.parameters.map(::convertFuncParam),
