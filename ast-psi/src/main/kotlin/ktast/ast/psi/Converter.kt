@@ -34,12 +34,9 @@ open class Converter {
     ).map(v)
 
     open fun convertImport(v: KtImportDirective) = Node.Import(
-        importKeyword = convertKeyword(
-            findChildByType(v, KtTokens.IMPORT_KEYWORD) ?: error("Missing import keyword"),
-            Node.Keyword::Import
-        ),
+        importKeyword = convertKeyword(v.importKeyword, Node.Keyword::Import),
         names = convertImportNames(v.importedReference ?: error("No imported reference for $v"))
-                + listOfNotNull(findChildByType(v, KtTokens.MUL)?.let(::convertName)),
+                + listOfNotNull(v.asterisk?.let(::convertName)),
         alias = v.alias?.let(::convertImportAlias)
     ).map(v)
 
@@ -89,9 +86,7 @@ open class Converter {
         parents = v.superTypeListEntries.map(::convertParent),
         typeConstraints = v.typeConstraintList?.let { typeConstraintList ->
             Node.PostModifier.TypeConstraints(
-                whereKeyword = convertKeyword(
-                    findChildByType(v, KtTokens.WHERE_KEYWORD) ?: error("No where keyword for $v"), Node.Keyword::Where
-                ),
+                whereKeyword = convertKeyword(v.whereKeyword, Node.Keyword::Where),
                 constraints = convertTypeConstraints(typeConstraintList),
             ).mapNotCorrespondsPsiElement(v)
         },
@@ -192,9 +187,7 @@ open class Converter {
         ).mapNotCorrespondsPsiElement(v),
         typeConstraints = v.typeConstraintList?.let { typeConstraintList ->
             Node.PostModifier.TypeConstraints(
-                whereKeyword = convertKeyword(
-                    findChildByType(v, KtTokens.WHERE_KEYWORD) ?: error("No where keyword for $v"), Node.Keyword::Where
-                ),
+                whereKeyword = convertKeyword(v.whereKeyword, Node.Keyword::Where),
                 constraints = convertTypeConstraints(typeConstraintList),
             ).mapNotCorrespondsPsiElement(v)
         },
@@ -220,9 +213,7 @@ open class Converter {
             trailingComma = v.trailingComma?.let(::convertComma),
         ),
         typeConstraints = null,
-        initializer = v.initializer?.let {
-            convertInitializer(findChildByType(v, KtTokens.EQ) ?: error("No equals token for initializer of $v"), it, v)
-        },
+        initializer = v.initializer?.let { convertInitializer(v.equalsToken, it, v) },
         delegate = null,
         accessors = null
     ).map(v)
@@ -240,19 +231,13 @@ open class Converter {
     open fun convertPropertyAccessor(v: KtPropertyAccessor) =
         if (v.isGetter) Node.Decl.Property.Accessor.Get(
             mods = v.modifierList?.let(::convertModifiers),
-            getKeyword = convertKeyword(
-                findChildByType(v, KtTokens.GET_KEYWORD) ?: error("No get keyword for $v"),
-                Node.Keyword::Get
-            ),
+            getKeyword = convertKeyword(v.getKeyword, Node.Keyword::Get),
             typeRef = v.returnTypeReference?.let(::convertTypeRef),
             postMods = convertPostModifiers(v),
             body = convertFuncBody(v),
         ).map(v) else Node.Decl.Property.Accessor.Set(
             mods = v.modifierList?.let(::convertModifiers),
-            setKeyword = convertKeyword(
-                findChildByType(v, KtTokens.SET_KEYWORD) ?: error("No set keyword for $v"),
-                Node.Keyword::Set
-            ),
+            setKeyword = convertKeyword(v.setKeyword, Node.Keyword::Set),
             params = v.parameterList?.let { convertPropertyAccessorParams(it) },
             postMods = convertPostModifiers(v),
             body = convertFuncBody(v),
@@ -290,7 +275,7 @@ open class Converter {
         name = v.nameIdentifier?.let(::convertName) ?: error("Unnamed enum"),
         args = v.initializerList?.let(::convertValueArgs),
         body = v.body?.let(::convertClassBody),
-        hasComma = findChildByType(v, KtTokens.COMMA) != null,
+        hasComma = v.comma != null,
     ).map(v)
 
     open fun convertClassBody(v: KtClassBody) = Node.Decl.Structured.Body(
@@ -413,10 +398,10 @@ open class Converter {
             }
         ).map(v)
         is KtNullableType -> Node.Type.Nullable(
-            lPar = findChildByType(v, KtTokens.LPAR)?.let { convertKeyword(it, Node.Keyword::LPar) },
+            lPar = v.leftParenthesis?.let { convertKeyword(it, Node.Keyword::LPar) },
             mods = v.modifierList?.let(::convertModifiers),
             type = convertType(v.innerType ?: error("No inner type for nullable")),
-            rPar = findChildByType(v, KtTokens.RPAR)?.let { convertKeyword(it, Node.Keyword::RPar) },
+            rPar = v.rightParenthesis?.let { convertKeyword(it, Node.Keyword::RPar) },
         ).map(v)
         is KtDynamicType -> Node.Type.Dynamic().map(v)
         else -> error("Unrecognized type of $v")
@@ -489,8 +474,8 @@ open class Converter {
         expr = convertExpr(v.getArgumentExpression() ?: error("No expr for value arg"))
     ).map(v)
 
-    open fun convertBody(v: PsiElement) = Node.Body(
-        expr = convertExpr(findChildByClass<KtExpression>(v) ?: error("No body for $v")),
+    open fun convertBody(v: KtContainerNodeForControlStructureBody) = Node.Body(
+        expr = convertExpr(v.expression ?: error("No expression for $v")),
     ).map(v)
 
     open fun convertExpr(v: KtExpression): Node.Expr = when (v) {
@@ -550,10 +535,7 @@ open class Converter {
     ).map(v)
 
     open fun convertTryCatch(v: KtCatchClause) = Node.Expr.Try.Catch(
-        catchKeyword = convertKeyword(
-            findChildByType(v, KtTokens.CATCH_KEYWORD) ?: error("No catch keyword for $v"),
-            Node.Keyword::Catch
-        ),
+        catchKeyword = convertKeyword(v.catchKeyword, Node.Keyword::Catch),
         anns = v.catchParameter?.annotations?.map(::convertAnnotationSet) ?: emptyList(),
         varName = v.catchParameter?.name ?: error("No catch param name for $v"),
         varType = v.catchParameter?.typeReference?.typeElement?.let(::convertType) as? Node.Type.Simple
@@ -565,17 +547,17 @@ open class Converter {
     open fun convertFor(v: KtForExpression) = Node.Expr.For(
         anns = v.loopParameter?.annotations?.map(::convertAnnotationSet) ?: emptyList(),
         loopParam = convertLambdaParam(v.loopParameter ?: error("No param on for $v")),
-        loopRange = convertForLoopRange(findChildByType(v, KtNodeTypes.LOOP_RANGE) ?: error("No in range for $v")),
-        body = convertBody(findChildByType(v, KtNodeTypes.BODY) ?: error("No body for $v")),
+        loopRange = convertForLoopRange(v.loopRangeContainer),
+        body = convertBody(v.bodyContainer),
     ).map(v)
 
-    open fun convertForLoopRange(v: PsiElement) = Node.Expr.For.LoopRange(
-        expr = convertExpr(findChildByClass<KtExpression>(v) ?: error("No expression for $v")),
+    open fun convertForLoopRange(v: KtContainerNode) = Node.Expr.For.LoopRange(
+        expr = convertExpr(v.expression),
     ).map(v)
 
     open fun convertWhile(v: KtWhileExpressionBase) = Node.Expr.While(
         expr = convertExpr(v.condition ?: error("No while cond for $v")),
-        body = convertBody(findChildByType(v, KtNodeTypes.BODY) ?: error("No body for $v")),
+        body = convertBody(v.bodyContainer),
         doWhile = v is KtDoWhileExpression
     ).map(v)
 
@@ -1025,17 +1007,57 @@ open class Converter {
         internal val unaryTokensByText = Node.Expr.UnaryOp.Token.values().associateBy { it.str }
         internal val typeTokensByText = Node.Expr.TypeOp.Token.values().associateBy { it.str }
 
-        internal val KtTypeReference.contextReceiverList get() = getStubOrPsiChild(KtStubElementTypes.CONTEXT_RECEIVER_LIST)
+        internal val KtImportDirective.importKeyword: PsiElement
+            get() = findChildByType(this, KtTokens.IMPORT_KEYWORD) ?: error("Missing import keyword for $this")
+        internal val KtImportDirective.asterisk: PsiElement?
+            get() = findChildByType(this, KtTokens.MUL)
+
+        internal val KtTypeParameterListOwner.whereKeyword: PsiElement
+            get() = findChildByType(this, KtTokens.WHERE_KEYWORD) ?: error("No where keyword for $this")
+
+        internal val KtDeclarationWithInitializer.equalsToken: PsiElement
+            get() = findChildByType(this, KtTokens.EQ) ?: error("No equals token for initializer of $this")
+
+        internal val KtPropertyAccessor.setKeyword: PsiElement
+            get() = findChildByType(this, KtTokens.SET_KEYWORD) ?: error("No set keyword for $this")
+        internal val KtPropertyAccessor.getKeyword: PsiElement
+            get() = findChildByType(this, KtTokens.GET_KEYWORD) ?: error("No get keyword for $this")
+
+        private val KtEnumEntry.comma: PsiElement?
+            get() = findChildByType(this, KtTokens.COMMA)
+
+        internal val KtTypeReference.contextReceiverList
+            get() = getStubOrPsiChild(KtStubElementTypes.CONTEXT_RECEIVER_LIST)
+
+        internal val KtNullableType.leftParenthesis: PsiElement?
+            get() = findChildByType(this, KtTokens.LPAR)
+        internal val KtNullableType.rightParenthesis: PsiElement?
+            get() = findChildByType(this, KtTokens.RPAR)
+
+        internal val KtCatchClause.catchKeyword: PsiElement
+            get() = findChildByType(this, KtTokens.CATCH_KEYWORD) ?: error("No catch keyword for $this")
+
+        internal val KtForExpression.loopRangeContainer: KtContainerNode
+            get() = findChildByType(this, KtNodeTypes.LOOP_RANGE)
+                    as? KtContainerNode ?: error("No in range for $this")
+
+        internal val KtLoopExpression.bodyContainer: KtContainerNodeForControlStructureBody
+            get() = findChildByType(this, KtNodeTypes.BODY)
+                    as? KtContainerNodeForControlStructureBody ?: error("No body for $this")
+
         internal val KtDoubleColonExpression.questionMarks
             get() = allChildren
                 .takeWhile { it.node.elementType != KtTokens.COLONCOLON }
                 .filter { it.node.elementType == KtTokens.QUEST }
                 .toList()
 
-        internal fun findChildByType(v: KtElement, type: IElementType): PsiElement? =
+        private fun findChildByType(v: KtElement, type: IElementType): PsiElement? =
             v.node.findChildByType(type)?.psi
 
-        internal inline fun <reified T> findChildByClass(v: PsiElement): T? =
+        internal val KtContainerNode.expression: KtExpression
+            get() = findChildByClass<KtExpression>(this) ?: error("No expression for $this")
+
+        private inline fun <reified T> findChildByClass(v: PsiElement): T? =
             v.children.firstOrNull { it is T } as? T
 
         internal fun findTrailingSeparator(v: KtElement, elementType: IElementType): PsiElement? =
