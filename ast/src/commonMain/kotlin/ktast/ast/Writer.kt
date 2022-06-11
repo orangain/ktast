@@ -72,7 +72,7 @@ open class Writer(
                 }
                 is Node.Decl.Structured.Parent.CallConstructor -> {
                     children(type)
-                    parenChildren(args)
+                    children(args)
                 }
                 is Node.Decl.Structured.Parent.DelegatedType -> {
                     children(type)
@@ -186,7 +186,7 @@ open class Writer(
                     children(block)
                 }
                 is Node.Decl.Constructor.DelegationCall ->
-                    append(target.name.lowercase()).also { parenChildren(args) }
+                    append(target.name.lowercase()).also { children(args) }
                 is Node.Decl.EnumEntry -> {
                     children(mods)
                     children(name)
@@ -555,10 +555,6 @@ open class Writer(
 
     protected fun Node.bracketedChildren(v: List<Node>, trailingComma: Node.Keyword.Comma?) =
         children(v, ",", "<", ">", trailingComma)
-
-    protected fun Node.parenChildren(v: Node.ValueArgs?): Writer = this@Writer.also {
-        v?.args?.let { parenChildren(it, null) }
-    }
 
     protected fun Node.parenChildren(v: List<Node>, trailingComma: Node.Keyword.Comma?) =
         children(v, ",", "(", ")", trailingComma)
