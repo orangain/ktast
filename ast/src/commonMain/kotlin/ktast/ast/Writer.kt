@@ -28,7 +28,7 @@ open class Writer(
                     // First, do all the enum entries if there are any
                     val enumEntries = children.takeWhile { it is Node.Decl.EnumEntry }
                     if (enumEntries.isNotEmpty()) {
-                        children(enumEntries) // Each EnumEntry has contains commas and trailing semicolon.
+                        children(enumEntries) // Each EnumEntry contains commas and trailing semicolon.
                     }
 
                     // Now the rest of the members
