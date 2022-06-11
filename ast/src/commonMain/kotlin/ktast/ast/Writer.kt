@@ -40,7 +40,7 @@ open class Writer(
                     append(suffix)
                 }
                 is Node.File -> {
-                    if (anns.isNotEmpty()) childAnns()
+                    children(anns)
                     children(pkg)
                     children(imports)
                     children(decls)
@@ -291,7 +291,7 @@ open class Writer(
                 is Node.Expr.Try.Catch -> {
                     children(catchKeyword)
                     append("(")
-                    childAnns(sameLine = true)
+                    children(anns)
                     appendName(varName).append(": ")
                     children(varType)
                     children(trailingComma)
@@ -300,7 +300,7 @@ open class Writer(
                 }
                 is Node.Expr.For -> {
                     append("for (")
-                    childAnns(sameLine = true)
+                    children(anns)
                     childVars(vars, null).append("in ").also { children(inExpr) }.append(")")
                     children(body)
                 }
@@ -444,7 +444,7 @@ open class Writer(
                 is Node.Expr.Labeled ->
                     appendName(label).append("@").also { children(expr) }
                 is Node.Expr.Annotated ->
-                    childAnns().also { children(expr) }
+                    children(anns).also { children(expr) }
                 is Node.Expr.Call -> {
                     children(expr)
                     children(typeArgs)
@@ -452,7 +452,7 @@ open class Writer(
                     children(lambdaArgs)
                 }
                 is Node.Expr.Call.LambdaArg -> {
-                    if (anns.isNotEmpty()) childAnns(sameLine = true)
+                    children(anns)
                     if (label != null) appendName(label).append("@")
                     children(func)
                 }
@@ -496,7 +496,7 @@ open class Writer(
                     children(constraints)
                 }
                 is Node.PostModifier.TypeConstraints.TypeConstraint -> {
-                    childAnns(sameLine = true)
+                    children(anns)
                     children(name)
                     append(":")
                     children(typeRef)
@@ -549,37 +549,18 @@ open class Writer(
         if (vars.size == 1 && trailingComma == null) {
             children(vars)
         } else {
-            append('(')
-            vars.forEachIndexed { index, v ->
-                children(v)
-                if (index < vars.size - 1) append(",")
-            }
-            children(trailingComma)
-            append(')')
+            parenChildren(vars, trailingComma)
         }
 
-    // Ends with newline (or space if sameLine) if there are any
-    protected fun Node.WithAnnotations.childAnns(sameLine: Boolean = false) = this@Writer.also {
-        if (anns.isNotEmpty()) (this@childAnns as Node).apply {
-            if (sameLine) children(anns, " ")
-            else anns.forEach { ann -> children(ann) }
-        }
+    protected fun Node.bracketedChildren(v: List<Node>, trailingComma: Node.Keyword.Comma?) =
+        children(v, ",", "<", ">", trailingComma)
+
+    protected fun Node.parenChildren(v: Node.ValueArgs?): Writer = this@Writer.also {
+        v?.args?.let { parenChildren(it, null) }
     }
 
-    // Null list values are asterisks
-    protected fun Node.bracketedChildren(v: List<Node>, trailingComma: Node.Keyword.Comma?) = this@Writer.also {
-        if (v.isNotEmpty()) {
-            append('<')
-            v.forEachIndexed { index, node ->
-                if (index > 0) append(",")
-                children(node)
-            }
-            children(trailingComma)
-            append('>')
-        }
-    }
-
-    protected fun Node.parenChildren(v: Node.ValueArgs?) = v?.args?.let { children(it, ",", "(", ")") }
+    protected fun Node.parenChildren(v: List<Node>, trailingComma: Node.Keyword.Comma?) =
+        children(v, ",", "(", ")", trailingComma)
 
     protected fun Node.children(vararg v: Node?) = this@Writer.also { v.forEach { visitChildren(it) } }
 
