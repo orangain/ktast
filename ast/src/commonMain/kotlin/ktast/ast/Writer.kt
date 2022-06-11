@@ -447,9 +447,9 @@ open class Writer(
                     children(expr)
                     children(typeArgs)
                     children(args)
-                    children(lambda)
+                    children(lambdaArgs)
                 }
-                is Node.Expr.Call.TrailLambda -> {
+                is Node.Expr.Call.LambdaArg -> {
                     if (anns.isNotEmpty()) childAnns(sameLine = true)
                     if (label != null) appendName(label).append("@")
                     children(func)

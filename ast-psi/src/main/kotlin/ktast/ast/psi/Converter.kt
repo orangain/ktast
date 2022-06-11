@@ -838,10 +838,10 @@ open class Converter {
         expr = convertExpr(v.calleeExpression ?: error("No call expr for $v")),
         typeArgs = v.typeArgumentList?.let(::convertTypeProjections),
         args = v.valueArgumentList?.let(::convertValueArgs),
-        lambda = v.lambdaArguments.firstOrNull()?.let(::convertCallTrailLambda)
+        lambdaArgs = v.lambdaArguments.map(::convertCallLambdaArg)
     ).map(v)
 
-    open fun convertCallTrailLambda(v: KtLambdaArgument): Node.Expr.Call.TrailLambda {
+    open fun convertCallLambdaArg(v: KtLambdaArgument): Node.Expr.Call.LambdaArg {
         var label: String? = null
         var anns: List<Node.Modifier.AnnotationSet> = emptyList()
         fun KtExpression.extractLambda(allowParens: Boolean = false): KtLambdaExpression? = when (this) {
@@ -857,7 +857,7 @@ open class Converter {
         }
 
         val expr = v.getArgumentExpression()?.extractLambda() ?: error("No lambda for $v")
-        return Node.Expr.Call.TrailLambda(
+        return Node.Expr.Call.LambdaArg(
             anns = anns,
             label = label,
             func = convertLambda(expr)

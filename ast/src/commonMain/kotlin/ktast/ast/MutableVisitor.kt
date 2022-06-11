@@ -386,9 +386,9 @@ open class MutableVisitor {
                         expr = visitChildren(expr, newCh),
                         typeArgs = visitChildren(typeArgs, newCh),
                         args = visitChildren(args, newCh),
-                        lambda = visitChildren(lambda, newCh)
+                        lambdaArgs = visitChildren(lambdaArgs, newCh)
                     )
-                    is Node.Expr.Call.TrailLambda -> copy(
+                    is Node.Expr.Call.LambdaArg -> copy(
                         anns = visitChildren(anns, newCh),
                         func = visitChildren(func, newCh)
                     )

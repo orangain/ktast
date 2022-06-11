@@ -100,7 +100,7 @@ sealed class Node {
                     val type: Node.Type.Simple,
                     val typeArgs: NodeList<TypeProjection>?,
                     val args: ValueArgs?,
-                    val lambda: Expr.Call.TrailLambda?
+                    val lambda: Expr.Call.LambdaArg?
                 ) : Parent()
 
                 data class DelegatedType(
@@ -718,12 +718,13 @@ sealed class Node {
             val expr: Expr,
             val typeArgs: NodeList<TypeProjection>?,
             val args: ValueArgs?,
-            val lambda: TrailLambda?
+            // According to the Kotlin syntax, at most one lambda argument is allowed. However, Kotlin compiler can parse multiple lambda arguments.
+            val lambdaArgs: List<LambdaArg>
         ) : Expr() {
             /**
              * AST node corresponds to KtLambdaArgument.
              */
-            data class TrailLambda(
+            data class LambdaArg(
                 override val anns: List<Modifier.AnnotationSet>,
                 val label: String?,
                 val func: Lambda

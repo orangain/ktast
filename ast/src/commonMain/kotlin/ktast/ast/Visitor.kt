@@ -382,9 +382,9 @@ open class Visitor {
                 visitChildren(expr)
                 visitChildren(typeArgs)
                 visitChildren(args)
-                visitChildren(lambda)
+                visitChildren(lambdaArgs)
             }
-            is Node.Expr.Call.TrailLambda -> {
+            is Node.Expr.Call.LambdaArg -> {
                 visitChildren(anns)
                 visitChildren(func)
             }
