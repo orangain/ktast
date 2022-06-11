@@ -141,7 +141,7 @@ open class Writer(
                     if (typeRef != null) append(":").also { children(typeRef) }
                 }
                 is Node.Decl.Property.Variable.Multi -> {
-                    childVars(vars, trailingComma)
+                    parenChildren(vars, trailingComma)
                 }
                 is Node.Decl.Property.Accessors -> {
                     children(first)
@@ -552,13 +552,6 @@ open class Writer(
             append(it.text)
         }
     }
-
-    protected fun Node.childVars(vars: List<Node.Decl.Property.Variable>, trailingComma: Node.Keyword.Comma?) =
-        if (vars.size == 1 && trailingComma == null) {
-            children(vars)
-        } else {
-            parenChildren(vars, trailingComma)
-        }
 
     protected fun Node.bracketedChildren(v: List<Node>, trailingComma: Node.Keyword.Comma?) =
         children(v, ",", "<", ">", trailingComma)
