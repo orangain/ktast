@@ -19,7 +19,7 @@ class ConverterTest {
                   Node.Decl.Property
                     Node.Keyword.ValOrVar
                     AFTER: Node.Extra.Whitespace
-                    Node.Decl.Property.Var
+                    Node.Decl.Property.Variable.Single
                       Node.Expr.Name
                       AFTER: Node.Extra.Whitespace
                     Node.Initializer
@@ -42,7 +42,7 @@ class ConverterTest {
                   Node.Decl.Property
                     Node.Keyword.ValOrVar
                     AFTER: Node.Extra.Whitespace
-                    Node.Decl.Property.Var
+                    Node.Decl.Property.Variable.Single
                       Node.Expr.Name
                       AFTER: Node.Extra.Whitespace
                     Node.Initializer

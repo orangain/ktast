@@ -197,21 +197,34 @@ sealed class Node {
             val typeParams: TypeParams?,
             val receiverTypeRef: TypeRef?,
             // Always at least one, more than one is destructuring
-            val vars: List<Var>,
-            val trailingComma: Keyword.Comma?,
+            val variable: Variable,
             val typeConstraints: PostModifier.TypeConstraints?,
             val initializer: Initializer?,
             val delegate: Delegate?,
             val accessors: Accessors?
         ) : Decl(), WithModifiers {
             /**
-             * AST node corresponds to KtParameter or KtDestructuringDeclarationEntry,
-             * or virtual node corresponds a part of KtProperty.
+             * Virtual AST node corresponds a part of KtProperty,
+             * virtual AST node corresponds to a list of KtDestructuringDeclarationEntry or
+             * AST node corresponds to KtDestructuringDeclarationEntry.
              */
-            data class Var(
-                val name: Expr.Name,
-                val typeRef: TypeRef?
-            ) : Node()
+            sealed class Variable : Node() {
+                /**
+                 * Virtual AST node corresponds a part of KtProperty or AST node corresponds to KtDestructuringDeclarationEntry.
+                 */
+                data class Single(
+                    val name: Expr.Name,
+                    val typeRef: TypeRef?
+                ) : Variable()
+
+                /**
+                 * Virtual AST node corresponds to a list of KtDestructuringDeclarationEntry.
+                 */
+                data class Multi(
+                    val vars: List<Single>,
+                    val trailingComma: Keyword.Comma?,
+                ) : Variable()
+            }
 
             data class Delegate(
                 val byKeyword: Keyword.By,

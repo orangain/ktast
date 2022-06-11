@@ -110,8 +110,7 @@ open class MutableVisitor {
                         valOrVar = visitChildren(valOrVar, newCh),
                         typeParams = visitChildren(typeParams, newCh),
                         receiverTypeRef = visitChildren(receiverTypeRef, newCh),
-                        vars = visitChildren(vars, newCh),
-                        trailingComma = visitChildren(trailingComma, newCh),
+                        variable = visitChildren(variable, newCh),
                         typeConstraints = visitChildren(typeConstraints, newCh),
                         initializer = visitChildren(initializer, newCh),
                         delegate = visitChildren(delegate, newCh),
@@ -121,9 +120,13 @@ open class MutableVisitor {
                         byKeyword = visitChildren(byKeyword, newCh),
                         expr = visitChildren(expr, newCh),
                     )
-                    is Node.Decl.Property.Var -> copy(
+                    is Node.Decl.Property.Variable.Single -> copy(
                         name = visitChildren(name, newCh),
                         typeRef = visitChildren(typeRef, newCh)
+                    )
+                    is Node.Decl.Property.Variable.Multi -> copy(
+                        vars = visitChildren(vars, newCh),
+                        trailingComma = visitChildren(trailingComma, newCh),
                     )
                     is Node.Decl.Property.Accessors -> copy(
                         first = visitChildren(first, newCh),

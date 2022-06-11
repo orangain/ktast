@@ -126,7 +126,7 @@ open class Writer(
                     children(valOrVar)
                     children(typeParams)
                     if (receiverTypeRef != null) children(receiverTypeRef).append('.')
-                    childVars(vars, trailingComma)
+                    children(variable)
                     children(typeConstraints)
                     children(initializer)
                     children(delegate)
@@ -136,9 +136,12 @@ open class Writer(
                     children(byKeyword)
                     children(expr)
                 }
-                is Node.Decl.Property.Var -> {
+                is Node.Decl.Property.Variable.Single -> {
                     children(name)
                     if (typeRef != null) append(":").also { children(typeRef) }
+                }
+                is Node.Decl.Property.Variable.Multi -> {
+                    childVars(vars, trailingComma)
                 }
                 is Node.Decl.Property.Accessors -> {
                     children(first)
@@ -550,7 +553,7 @@ open class Writer(
         }
     }
 
-    protected fun Node.childVars(vars: List<Node.Decl.Property.Var>, trailingComma: Node.Keyword.Comma?) =
+    protected fun Node.childVars(vars: List<Node.Decl.Property.Variable>, trailingComma: Node.Keyword.Comma?) =
         if (vars.size == 1 && trailingComma == null) {
             children(vars)
         } else {

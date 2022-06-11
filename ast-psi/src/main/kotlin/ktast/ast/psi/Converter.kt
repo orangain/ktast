@@ -186,13 +186,10 @@ open class Converter {
         valOrVar = convertValOrVarKeyword(v.valOrVarKeyword),
         typeParams = v.typeParameterList?.let(::convertTypeParams),
         receiverTypeRef = v.receiverTypeReference?.let(::convertTypeRef),
-        vars = listOf(
-            Node.Decl.Property.Var(
-                name = v.nameIdentifier?.let(::convertName) ?: error("No property name on $v"),
-                typeRef = v.typeReference?.let(::convertTypeRef)
-            ).mapNotCorrespondsPsiElement(v)
-        ),
-        trailingComma = null,
+        variable = Node.Decl.Property.Variable.Single(
+            name = v.nameIdentifier?.let(::convertName) ?: error("No property name on $v"),
+            typeRef = v.typeReference?.let(::convertTypeRef)
+        ).mapNotCorrespondsPsiElement(v),
         typeConstraints = v.typeConstraintList?.let { typeConstraintList ->
             Node.PostModifier.TypeConstraints(
                 whereKeyword = convertKeyword(
@@ -218,8 +215,10 @@ open class Converter {
         valOrVar = v.valOrVarKeyword?.let(::convertValOrVarKeyword) ?: error("Missing valOrVarKeyword"),
         typeParams = null,
         receiverTypeRef = null,
-        vars = v.entries.map(::convertPropertyVar),
-        trailingComma = v.trailingComma?.let(::convertComma),
+        variable = Node.Decl.Property.Variable.Multi(
+            vars = v.entries.map(::convertPropertyVariable),
+            trailingComma = v.trailingComma?.let(::convertComma),
+        ),
         typeConstraints = null,
         initializer = v.initializer?.let {
             convertInitializer(findChildByType(v, KtTokens.EQ) ?: error("No equals token for initializer of $v"), it, v)
@@ -228,31 +227,15 @@ open class Converter {
         accessors = null
     ).map(v)
 
+    open fun convertPropertyVariable(v: KtDestructuringDeclarationEntry) = Node.Decl.Property.Variable.Single(
+        name = v.nameIdentifier?.let(::convertName) ?: error("No property name on $v"),
+        typeRef = v.typeReference?.let(::convertTypeRef)
+    ).map(v)
+
     open fun convertPropertyDelegate(v: KtPropertyDelegate) = Node.Decl.Property.Delegate(
         byKeyword = convertKeyword(v.byKeywordNode.psi, Node.Keyword::By),
         expr = convertExpr(v.expression ?: error("Missing expression for $v")),
     ).map(v)
-
-    open fun convertPropertyVars(v: KtParameter) =
-        v.destructuringDeclaration?.entries?.map(::convertPropertyVar) ?: listOf(
-            Node.Decl.Property.Var(
-                name = v.nameIdentifier?.let(::convertName) ?: error("No property name on $v"),
-                typeRef = v.typeReference?.let(::convertTypeRef)
-            ).map(v)
-        )
-
-    open fun convertPropertyVars(v: KtDestructuringDeclaration): Node.NodeList<Node.Decl.Property.Var> = Node.NodeList(
-        children = v.entries.map(::convertPropertyVar),
-        separator = ",",
-        prefix = "(",
-        suffix = ")",
-    ).map(v)
-
-    open fun convertPropertyVar(v: KtDestructuringDeclarationEntry) =
-        Node.Decl.Property.Var(
-            name = v.nameIdentifier?.let(::convertName) ?: error("No property name on $v"),
-            typeRef = v.typeReference?.let(::convertTypeRef)
-        ).map(v)
 
     open fun convertPropertyAccessor(v: KtPropertyAccessor) =
         if (v.isGetter) Node.Decl.Property.Accessor.Get(
