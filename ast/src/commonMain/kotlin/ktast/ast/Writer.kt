@@ -141,7 +141,7 @@ open class Writer(
                     if (typeRef != null) append(":").also { children(typeRef) }
                 }
                 is Node.Decl.Property.Variable.Multi -> {
-                    parenChildren(vars, trailingComma)
+                    children(vars, ",", "(", ")", trailingComma)
                 }
                 is Node.Decl.Property.Accessors -> {
                     children(first)
@@ -202,7 +202,7 @@ open class Writer(
                     children(expr)
                 }
                 is Node.TypeParams -> {
-                    bracketedChildren(params, trailingComma)
+                    children(params, ",", "<", ">", trailingComma)
                 }
                 is Node.TypeParams.TypeParam -> {
                     children(mods)
@@ -552,12 +552,6 @@ open class Writer(
             append(it.text)
         }
     }
-
-    protected fun Node.bracketedChildren(v: List<Node>, trailingComma: Node.Keyword.Comma?) =
-        children(v, ",", "<", ">", trailingComma)
-
-    protected fun Node.parenChildren(v: List<Node>, trailingComma: Node.Keyword.Comma?) =
-        children(v, ",", "(", ")", trailingComma)
 
     protected fun Node.children(vararg v: Node?) = this@Writer.also { v.forEach { visitChildren(it) } }
 
