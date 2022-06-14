@@ -545,6 +545,7 @@ open class Converter {
     ).map(v)
 
     open fun convertFor(v: KtForExpression) = Node.Expr.For(
+        forKeyword = convertKeyword(v.forKeyword, Node.Keyword::For),
         anns = v.loopParameter?.annotations?.map(::convertAnnotationSet) ?: emptyList(),
         loopParam = convertLambdaParam(v.loopParameter ?: error("No param on for $v")),
         loopRange = convertForLoopRange(v.loopRangeContainer),
@@ -556,6 +557,7 @@ open class Converter {
     ).map(v)
 
     open fun convertWhile(v: KtWhileExpressionBase) = Node.Expr.While(
+        whileKeyword = convertKeyword(v.whileKeyword, Node.Keyword::While),
         expr = convertExpr(v.condition ?: error("No while cond for $v")),
         body = convertBody(v.bodyContainer),
         doWhile = v is KtDoWhileExpression
@@ -1040,6 +1042,9 @@ open class Converter {
         internal val KtForExpression.loopRangeContainer: KtContainerNode
             get() = findChildByType(this, KtNodeTypes.LOOP_RANGE)
                     as? KtContainerNode ?: error("No in range for $this")
+
+        private val KtWhileExpressionBase.whileKeyword: PsiElement
+            get() = findChildByType(this, KtTokens.WHILE_KEYWORD) ?: error("No while keyword for $this")
 
         internal val KtLoopExpression.bodyContainer: KtContainerNodeForControlStructureBody
             get() = findChildByType(this, KtNodeTypes.BODY)

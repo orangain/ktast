@@ -262,6 +262,7 @@ open class Visitor {
                 visitChildren(block)
             }
             is Node.Expr.For -> {
+                visitChildren(forKeyword)
                 visitChildren(anns)
                 visitChildren(loopParam)
                 visitChildren(loopRange)
@@ -271,6 +272,7 @@ open class Visitor {
                 visitChildren(expr)
             }
             is Node.Expr.While -> {
+                visitChildren(whileKeyword)
                 visitChildren(expr)
                 visitChildren(body)
             }

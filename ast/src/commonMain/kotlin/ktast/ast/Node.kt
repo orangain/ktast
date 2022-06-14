@@ -480,6 +480,7 @@ sealed class Node {
          * AST node corresponds to KtForExpression.
          */
         data class For(
+            val forKeyword: Keyword.For,
             override val anns: List<Modifier.AnnotationSet>,
             val loopParam: Lambda.Param,
             val loopRange: LoopRange,
@@ -497,6 +498,7 @@ sealed class Node {
          * AST node corresponds to KtWhileExpressionBase.
          */
         data class While(
+            val whileKeyword: Keyword.While,
             val expr: Expr,
             val body: Body,
             val doWhile: Boolean
@@ -912,6 +914,8 @@ sealed class Node {
         class Fun : Keyword("fun")
         class Constructor : Keyword("constructor")
         class Return : Keyword("return")
+        class For : Keyword("for")
+        class While : Keyword("while")
         class Else : Keyword("else")
         class Catch : Keyword("catch")
         class By : Keyword("by")

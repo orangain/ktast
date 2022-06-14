@@ -288,8 +288,8 @@ open class Writer(
                 is Node.Expr.Try -> {
                     append("try")
                     children(block)
-                    if (catches.isNotEmpty()) children(catches, "", prefix = "")
-                    if (finallyBlock != null) append(" finally ").also { children(finallyBlock) }
+                    if (catches.isNotEmpty()) children(catches)
+                    if (finallyBlock != null) append("finally").also { children(finallyBlock) }
                 }
                 is Node.Expr.Try.Catch -> {
                     children(catchKeyword)
@@ -302,7 +302,8 @@ open class Writer(
                     children(block)
                 }
                 is Node.Expr.For -> {
-                    append("for (")
+                    children(forKeyword)
+                    append("(")
                     children(anns)
                     children(loopParam)
                     append("in")
@@ -314,8 +315,20 @@ open class Writer(
                     children(expr)
                 }
                 is Node.Expr.While -> {
-                    if (!doWhile) append("while (").also { children(expr) }.append(")").also { children(body) }
-                    else append("do").also { children(body) }.append("while (").also { children(expr) }.append(')')
+                    if (!doWhile) {
+                        children(whileKeyword)
+                        append("(")
+                        children(expr)
+                        append(")")
+                        children(body)
+                    } else {
+                        append("do")
+                        children(body)
+                        children(whileKeyword)
+                        append("(")
+                        children(expr)
+                        append(")")
+                    }
                 }
                 is Node.Expr.BinaryOp -> {
                     children(listOf(lhs, oper, rhs))
