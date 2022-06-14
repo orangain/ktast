@@ -475,12 +475,9 @@ sealed class Node {
              */
             data class Catch(
                 val catchKeyword: Keyword.Catch,
-                override val anns: List<Modifier.AnnotationSet>,
-                val varName: String,
-                val varType: Type.Simple,
-                val trailingComma: Keyword.Comma?,
+                val params: Decl.Func.Params,
                 val block: Block
-            ) : Node(), WithAnnotations
+            ) : Node()
         }
 
         /**

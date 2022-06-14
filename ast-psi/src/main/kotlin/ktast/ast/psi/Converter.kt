@@ -540,11 +540,7 @@ open class Converter {
 
     open fun convertTryCatch(v: KtCatchClause) = Node.Expr.Try.Catch(
         catchKeyword = convertKeyword(v.catchKeyword, Node.Keyword::Catch),
-        anns = v.catchParameter?.annotations?.map(::convertAnnotationSet) ?: emptyList(),
-        varName = v.catchParameter?.name ?: error("No catch param name for $v"),
-        varType = v.catchParameter?.typeReference?.typeElement?.let(::convertType) as? Node.Type.Simple
-            ?: error("Invalid catch param type for $v"),
-        trailingComma = v.parameterList?.trailingComma?.let(::convertComma),
+        params = convertFuncParams(v.parameterList ?: error("No catch params for $v")),
         block = convertBlock(v.catchBody as? KtBlockExpression ?: error("No catch block for $v")),
     ).map(v)
 

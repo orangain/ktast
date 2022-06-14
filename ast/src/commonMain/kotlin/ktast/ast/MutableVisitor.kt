@@ -263,9 +263,7 @@ open class MutableVisitor {
                     )
                     is Node.Expr.Try.Catch -> copy(
                         catchKeyword = visitChildren(catchKeyword, newCh),
-                        anns = visitChildren(anns, newCh),
-                        varType = visitChildren(varType, newCh),
-                        trailingComma = visitChildren(trailingComma, newCh),
+                        params = visitChildren(params, newCh),
                         block = visitChildren(block, newCh),
                     )
                     is Node.Expr.For -> copy(

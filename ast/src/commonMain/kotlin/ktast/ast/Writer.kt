@@ -296,12 +296,7 @@ open class Writer(
                 }
                 is Node.Expr.Try.Catch -> {
                     children(catchKeyword)
-                    append("(")
-                    children(anns)
-                    appendName(varName).append(": ")
-                    children(varType)
-                    children(trailingComma)
-                    append(")")
+                    children(params)
                     children(block)
                 }
                 is Node.Expr.For -> {

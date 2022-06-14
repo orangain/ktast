@@ -259,9 +259,7 @@ open class Visitor {
             }
             is Node.Expr.Try.Catch -> {
                 visitChildren(catchKeyword)
-                visitChildren(anns)
-                visitChildren(varType)
-                visitChildren(trailingComma)
+                visitChildren(params)
                 visitChildren(block)
             }
             is Node.Expr.For -> {
