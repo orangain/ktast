@@ -478,6 +478,10 @@ open class Converter {
         expr = convertExpr(v.expression ?: error("No expression for $v")),
     ).map(v)
 
+    open fun convertContainer(v: KtContainerNode) = Node.Container(
+        expr = convertExpr(v.expression),
+    ).map(v)
+
     open fun convertExpr(v: KtExpression): Node.Expr = when (v) {
         is KtIfExpression -> convertIf(v)
         is KtTryExpression -> convertTry(v)
@@ -558,7 +562,7 @@ open class Converter {
 
     open fun convertWhile(v: KtWhileExpressionBase) = Node.Expr.While(
         whileKeyword = convertKeyword(v.whileKeyword, Node.Keyword::While),
-        expr = convertExpr(v.condition ?: error("No while cond for $v")),
+        condition = convertContainer(v.conditionContainer),
         body = convertBody(v.bodyContainer),
         doWhile = v is KtDoWhileExpression
     ).map(v)
@@ -1049,6 +1053,10 @@ open class Converter {
         internal val KtLoopExpression.bodyContainer: KtContainerNodeForControlStructureBody
             get() = findChildByType(this, KtNodeTypes.BODY)
                     as? KtContainerNodeForControlStructureBody ?: error("No body for $this")
+
+        private val KtWhileExpressionBase.conditionContainer: KtContainerNode
+            get() = findChildByType(this, KtNodeTypes.CONDITION)
+                    as? KtContainerNode ?: error("No condition for $this")
 
         internal val KtDoubleColonExpression.questionMarks
             get() = allChildren

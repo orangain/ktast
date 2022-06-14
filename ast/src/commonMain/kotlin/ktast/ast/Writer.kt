@@ -272,6 +272,9 @@ open class Writer(
                 is Node.Body -> {
                     children(expr)
                 }
+                is Node.Container -> {
+                    children(expr)
+                }
                 is Node.ValueArgs -> {
                     children(args, ",", "(", ")", trailingComma, this)
                 }
@@ -318,7 +321,7 @@ open class Writer(
                     if (!doWhile) {
                         children(whileKeyword)
                         append("(")
-                        children(expr)
+                        children(condition)
                         append(")")
                         children(body)
                     } else {
@@ -326,7 +329,7 @@ open class Writer(
                         children(body)
                         children(whileKeyword)
                         append("(")
-                        children(expr)
+                        children(condition)
                         append(")")
                     }
                 }

@@ -442,6 +442,13 @@ sealed class Node {
         val expr: Expr,
     ) : Node()
 
+    /**
+     * AST node corresponds to KtContainerNode.
+     */
+    data class Container(
+        val expr: Expr,
+    ) : Node()
+
     sealed class Expr : Node() {
         /**
          * AST node corresponds to KtIfExpression.
@@ -499,7 +506,7 @@ sealed class Node {
          */
         data class While(
             val whileKeyword: Keyword.While,
-            val expr: Expr,
+            val condition: Container,
             val body: Body,
             val doWhile: Boolean
         ) : Expr()

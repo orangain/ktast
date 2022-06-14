@@ -241,6 +241,9 @@ open class Visitor {
             is Node.Body -> {
                 visitChildren(expr)
             }
+            is Node.Container -> {
+                visitChildren(expr)
+            }
             is Node.Expr.If -> {
                 visitChildren(lPar)
                 visitChildren(expr)
@@ -273,7 +276,7 @@ open class Visitor {
             }
             is Node.Expr.While -> {
                 visitChildren(whileKeyword)
-                visitChildren(expr)
+                visitChildren(condition)
                 visitChildren(body)
             }
             is Node.Expr.BinaryOp -> {

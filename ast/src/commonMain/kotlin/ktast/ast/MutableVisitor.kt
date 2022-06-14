@@ -245,6 +245,9 @@ open class MutableVisitor {
                     is Node.Body -> copy(
                         expr = visitChildren(expr, newCh),
                     )
+                    is Node.Container -> copy(
+                        expr = visitChildren(expr, newCh),
+                    )
                     is Node.Expr.If -> copy(
                         lPar = visitChildren(lPar, newCh),
                         expr = visitChildren(expr, newCh),
@@ -277,7 +280,7 @@ open class MutableVisitor {
                     )
                     is Node.Expr.While -> copy(
                         whileKeyword = visitChildren(whileKeyword, newCh),
-                        expr = visitChildren(expr, newCh),
+                        condition = visitChildren(condition, newCh),
                         body = visitChildren(body, newCh),
                     )
                     is Node.Expr.BinaryOp -> copy(
