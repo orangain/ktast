@@ -130,10 +130,6 @@ open class MutableVisitor {
                         vars = visitChildren(vars, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
-                    is Node.Decl.Property.Accessors -> copy(
-                        first = visitChildren(first, newCh),
-                        second = visitChildren(second, newCh)
-                    )
                     is Node.Decl.Property.Accessor.Get -> copy(
                         mods = visitChildren(mods, newCh),
                         getKeyword = visitChildren(getKeyword, newCh),

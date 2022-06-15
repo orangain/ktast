@@ -136,7 +136,7 @@ open class Writer(
                     children(typeConstraints)
                     children(initializer)
                     children(delegate)
-                    if (accessors != null) children(accessors)
+                    children(accessors)
                 }
                 is Node.Decl.Property.Delegate -> {
                     children(byKeyword)
@@ -148,10 +148,6 @@ open class Writer(
                 }
                 is Node.Decl.Property.Variable.Multi -> {
                     children(vars, ",", "(", ")", trailingComma)
-                }
-                is Node.Decl.Property.Accessors -> {
-                    children(first)
-                    if (second != null) children(second)
                 }
                 is Node.Decl.Property.Accessor.Get -> {
                     children(mods)

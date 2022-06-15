@@ -126,10 +126,6 @@ open class Visitor {
                 visitChildren(vars)
                 visitChildren(trailingComma)
             }
-            is Node.Decl.Property.Accessors -> {
-                visitChildren(first)
-                visitChildren(second)
-            }
             is Node.Decl.Property.Accessor.Get -> {
                 visitChildren(mods)
                 visitChildren(getKeyword)

@@ -219,7 +219,7 @@ sealed class Node {
             val typeConstraints: PostModifier.TypeConstraints?,
             val initializer: Initializer?,
             val delegate: Delegate?,
-            val accessors: Accessors?
+            val accessors: List<Accessor>
         ) : Decl(), WithModifiers {
             /**
              * Virtual AST node corresponds a part of KtProperty,
@@ -247,11 +247,6 @@ sealed class Node {
             data class Delegate(
                 val byKeyword: Keyword.By,
                 val expr: Expr,
-            ) : Node()
-
-            data class Accessors(
-                val first: Accessor,
-                val second: Accessor?
             ) : Node()
 
             /**

@@ -197,12 +197,7 @@ open class Converter {
             convertInitializer(v.equalsToken ?: error("No equals token for initializer of $v"), it, v)
         },
         delegate = v.delegate?.let(::convertPropertyDelegate),
-        accessors = v.accessors.map(::convertPropertyAccessor).let {
-            if (it.isEmpty()) null else Node.Decl.Property.Accessors(
-                first = it.first(),
-                second = it.getOrNull(1)
-            )
-        }
+        accessors = v.accessors.map(::convertPropertyAccessor),
     ).map(v)
 
     open fun convertProperty(v: KtDestructuringDeclaration) = Node.Decl.Property(
@@ -217,7 +212,7 @@ open class Converter {
         typeConstraints = null,
         initializer = v.initializer?.let { convertInitializer(v.equalsToken, it, v) },
         delegate = null,
-        accessors = null
+        accessors = listOf(),
     ).map(v)
 
     open fun convertPropertyVariable(v: KtDestructuringDeclarationEntry) = Node.Decl.Property.Variable.Single(
