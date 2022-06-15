@@ -99,7 +99,13 @@ sealed class Node {
             val isCompanion = mods?.children.orEmpty().contains(Modifier.Lit(Modifier.Keyword.COMPANION))
             val isEnum = mods?.children.orEmpty().contains(Modifier.Lit(Modifier.Keyword.ENUM))
 
+            /**
+             * AST node corresponds to KtSuperTypeListEntry.
+             */
             sealed class Parent : Node() {
+                /**
+                 * AST node corresponds to KtSuperTypeCallEntry.
+                 */
                 data class CallConstructor(
                     val type: Node.Type.Simple,
                     val typeArgs: NodeList<TypeProjection>?,
@@ -107,17 +113,26 @@ sealed class Node {
                     val lambda: Expr.Call.LambdaArg?
                 ) : Parent()
 
+                /**
+                 * AST node corresponds to KtDelegatedSuperTypeEntry.
+                 */
                 data class DelegatedType(
                     val type: Node.Type.Simple,
                     val byKeyword: Keyword.By,
                     val expr: Expr
                 ) : Parent()
 
+                /**
+                 * AST node corresponds to KtSuperTypeEntry.
+                 */
                 data class Type(
                     val type: Node.Type.Simple,
                 ) : Parent()
             }
 
+            /**
+             * AST node corresponds to KtPrimaryConstructor.
+             */
             data class PrimaryConstructor(
                 override val mods: NodeList<Modifier>?,
                 val constructorKeyword: Keyword.Constructor?,
