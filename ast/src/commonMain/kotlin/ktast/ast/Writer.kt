@@ -309,9 +309,6 @@ open class Writer(
                     append(")")
                     children(body)
                 }
-                is Node.Expr.For.LoopRange -> {
-                    children(expr)
-                }
                 is Node.Expr.While -> {
                     if (!doWhile) {
                         children(whileKeyword)

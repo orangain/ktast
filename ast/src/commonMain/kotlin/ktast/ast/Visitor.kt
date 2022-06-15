@@ -269,9 +269,6 @@ open class Visitor {
                 visitChildren(loopRange)
                 visitChildren(body)
             }
-            is Node.Expr.For.LoopRange -> {
-                visitChildren(expr)
-            }
             is Node.Expr.While -> {
                 visitChildren(whileKeyword)
                 visitChildren(condition)

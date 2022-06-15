@@ -548,12 +548,8 @@ open class Converter {
         forKeyword = convertKeyword(v.forKeyword, Node.Keyword::For),
         anns = v.loopParameter?.annotations?.map(::convertAnnotationSet) ?: emptyList(),
         loopParam = convertLambdaParam(v.loopParameter ?: error("No param on for $v")),
-        loopRange = convertForLoopRange(v.loopRangeContainer),
+        loopRange = convertContainer(v.loopRangeContainer),
         body = convertBody(v.bodyContainer),
-    ).map(v)
-
-    open fun convertForLoopRange(v: KtContainerNode) = Node.Expr.For.LoopRange(
-        expr = convertExpr(v.expression),
     ).map(v)
 
     open fun convertWhile(v: KtWhileExpressionBase) = Node.Expr.While(

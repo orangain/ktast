@@ -487,16 +487,9 @@ sealed class Node {
             val forKeyword: Keyword.For,
             override val anns: List<Modifier.AnnotationSet>,
             val loopParam: Lambda.Param,
-            val loopRange: LoopRange,
+            val loopRange: Container,
             val body: Body,
-        ) : Expr(), WithAnnotations {
-            /**
-             * AST node corresponds to KtContainerNode under KtForExpression.
-             */
-            data class LoopRange(
-                val expr: Expr,
-            ) : Node()
-        }
+        ) : Expr(), WithAnnotations
 
         /**
          * AST node corresponds to KtWhileExpressionBase.

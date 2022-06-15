@@ -273,9 +273,6 @@ open class MutableVisitor {
                         loopRange = visitChildren(loopRange, newCh),
                         body = visitChildren(body, newCh)
                     )
-                    is Node.Expr.For.LoopRange -> copy(
-                        expr = visitChildren(expr, newCh),
-                    )
                     is Node.Expr.While -> copy(
                         whileKeyword = visitChildren(whileKeyword, newCh),
                         condition = visitChildren(condition, newCh),
