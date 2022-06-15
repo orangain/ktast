@@ -436,13 +436,6 @@ sealed class Node {
     }
 
     /**
-     * AST node corresponds to PsiElement having type of BODY.
-     */
-    data class Body(
-        val expr: Expr,
-    ) : Node()
-
-    /**
      * AST node corresponds to KtContainerNode.
      */
     data class Container(
@@ -488,7 +481,7 @@ sealed class Node {
             override val anns: List<Modifier.AnnotationSet>,
             val loopParam: Lambda.Param,
             val loopRange: Container,
-            val body: Body,
+            val body: Container,
         ) : Expr(), WithAnnotations
 
         /**
@@ -497,7 +490,7 @@ sealed class Node {
         data class While(
             val whileKeyword: Keyword.While,
             val condition: Container,
-            val body: Body,
+            val body: Container,
             val doWhile: Boolean
         ) : Expr()
 

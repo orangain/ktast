@@ -269,9 +269,6 @@ open class Writer(
                 is Node.ConstructorCallee -> {
                     children(type)
                 }
-                is Node.Body -> {
-                    children(expr)
-                }
                 is Node.Container -> {
                     children(expr)
                 }

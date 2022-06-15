@@ -474,10 +474,6 @@ open class Converter {
         expr = convertExpr(v.getArgumentExpression() ?: error("No expr for value arg"))
     ).map(v)
 
-    open fun convertBody(v: KtContainerNodeForControlStructureBody) = Node.Body(
-        expr = convertExpr(v.expression ?: error("No expression for $v")),
-    ).map(v)
-
     open fun convertContainer(v: KtContainerNode) = Node.Container(
         expr = convertExpr(v.expression),
     ).map(v)
@@ -549,13 +545,13 @@ open class Converter {
         anns = v.loopParameter?.annotations?.map(::convertAnnotationSet) ?: emptyList(),
         loopParam = convertLambdaParam(v.loopParameter ?: error("No param on for $v")),
         loopRange = convertContainer(v.loopRangeContainer),
-        body = convertBody(v.bodyContainer),
+        body = convertContainer(v.bodyContainer),
     ).map(v)
 
     open fun convertWhile(v: KtWhileExpressionBase) = Node.Expr.While(
         whileKeyword = convertKeyword(v.whileKeyword, Node.Keyword::While),
         condition = convertContainer(v.conditionContainer),
-        body = convertBody(v.bodyContainer),
+        body = convertContainer(v.bodyContainer),
         doWhile = v is KtDoWhileExpression
     ).map(v)
 

@@ -238,9 +238,6 @@ open class Visitor {
                 visitChildren(name)
                 visitChildren(expr)
             }
-            is Node.Body -> {
-                visitChildren(expr)
-            }
             is Node.Container -> {
                 visitChildren(expr)
             }
