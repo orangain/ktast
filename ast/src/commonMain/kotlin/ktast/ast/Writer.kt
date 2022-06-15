@@ -46,8 +46,10 @@ open class Writer(
                     children(decls)
                 }
                 is Node.Package -> {
-                    children(mods).append("package")
-                    children(packageNameExpr)
+                    children(mods)
+                    children(packageKeyword)
+                    children(names, ".")
+                    writeExtrasWithin()
                 }
                 is Node.Import -> {
                     children(importKeyword)

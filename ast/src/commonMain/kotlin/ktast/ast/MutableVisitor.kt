@@ -27,7 +27,8 @@ open class MutableVisitor {
                     )
                     is Node.Package -> copy(
                         mods = visitChildren(mods, newCh),
-                        packageNameExpr = visitChildren(packageNameExpr, newCh),
+                        packageKeyword = visitChildren(packageKeyword, newCh),
+                        names = visitChildren(names, newCh),
                     )
                     is Node.Import -> copy(
                         importKeyword = visitChildren(importKeyword, newCh),

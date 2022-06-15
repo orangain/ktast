@@ -25,8 +25,9 @@ open class Converter {
     ).map(v)
 
     open fun convertPackage(v: KtPackageDirective) = Node.Package(
+        packageKeyword = convertKeyword(v.packageKeyword ?: error("No package keyword $v"), Node.Keyword::Package),
         mods = v.modifierList?.let(::convertModifiers),
-        packageNameExpr = v.packageNameExpression?.let(::convertExpr) ?: error("No package name expression for $v"),
+        names = v.packageNames.map(::convertName),
     ).map(v)
 
     open fun convertImports(v: KtImportList): Node.NodeList<Node.Import> = Node.NodeList(

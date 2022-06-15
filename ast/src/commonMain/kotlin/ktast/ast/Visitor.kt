@@ -23,7 +23,8 @@ open class Visitor {
             }
             is Node.Package -> {
                 visitChildren(mods)
-                visitChildren(packageNameExpr)
+                visitChildren(packageKeyword)
+                visitChildren(names)
             }
             is Node.Import -> {
                 visitChildren(importKeyword)

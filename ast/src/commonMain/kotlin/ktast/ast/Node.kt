@@ -54,7 +54,8 @@ sealed class Node {
      */
     data class Package(
         override val mods: NodeList<Modifier>?,
-        val packageNameExpr: Expr,
+        val packageKeyword: Keyword.Package,
+        val names: List<Expr.Name>,
     ) : Node(), WithModifiers
 
     /**
@@ -900,6 +901,7 @@ sealed class Node {
             INTERFACE, CLASS, OBJECT,
         }
 
+        class Package : Keyword("package")
         class Import : Keyword("import")
         class Fun : Keyword("fun")
         class Constructor : Keyword("constructor")
