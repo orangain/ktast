@@ -86,7 +86,6 @@ sealed class Node {
             val typeParams: TypeParams?,
             val primaryConstructor: PrimaryConstructor?,
             val colon: Keyword.Colon?,
-            val parentAnns: List<Modifier.AnnotationSet>,
             val parents: List<Parent>,
             val typeConstraints: PostModifier.TypeConstraints?,
             // TODO: Can include primary constructor

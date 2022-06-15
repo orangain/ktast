@@ -45,7 +45,6 @@ open class MutableVisitor {
                         typeParams = visitChildren(typeParams, newCh),
                         primaryConstructor = visitChildren(primaryConstructor, newCh),
                         colon = visitChildren(colon, newCh),
-                        parentAnns = visitChildren(parentAnns, newCh),
                         parents = visitChildren(parents, newCh),
                         typeConstraints = visitChildren(typeConstraints, newCh),
                         body = visitChildren(body, newCh)

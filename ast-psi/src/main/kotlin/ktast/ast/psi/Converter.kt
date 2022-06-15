@@ -83,7 +83,6 @@ open class Converter {
         primaryConstructor = v.primaryConstructor?.let(::convertPrimaryConstructor),
         colon = v.getColon()?.let { convertKeyword(it, Node.Keyword::Colon) },
         // TODO: this
-        parentAnns = emptyList(),
         parents = v.superTypeListEntries.map(::convertParent),
         typeConstraints = v.typeConstraintList?.let { typeConstraintList ->
             Node.PostModifier.TypeConstraints(

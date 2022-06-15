@@ -67,7 +67,6 @@ open class Writer(
                     children(typeParams)
                     children(primaryConstructor)
                     children(colon)
-                    children(parentAnns)
                     children(parents, ",")
                     children(typeConstraints)
                     children(body)
