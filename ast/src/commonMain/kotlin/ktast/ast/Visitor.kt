@@ -40,10 +40,12 @@ open class Visitor {
                 visitChildren(name)
                 visitChildren(typeParams)
                 visitChildren(primaryConstructor)
-                visitChildren(colon)
                 visitChildren(parents)
                 visitChildren(typeConstraints)
                 visitChildren(body)
+            }
+            is Node.Decl.Structured.Parents -> {
+                visitChildren(items)
             }
             is Node.Decl.Structured.Parent.CallConstructor -> {
                 visitChildren(type)

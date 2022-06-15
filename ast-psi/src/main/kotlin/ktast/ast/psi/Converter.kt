@@ -81,9 +81,7 @@ open class Converter {
         name = v.nameIdentifier?.let(::convertName),
         typeParams = v.typeParameterList?.let(::convertTypeParams),
         primaryConstructor = v.primaryConstructor?.let(::convertPrimaryConstructor),
-        colon = v.getColon()?.let { convertKeyword(it, Node.Keyword::Colon) },
-        // TODO: this
-        parents = v.superTypeListEntries.map(::convertParent),
+        parents = v.getSuperTypeList()?.let(::convertParents),
         typeConstraints = v.typeConstraintList?.let { typeConstraintList ->
             Node.PostModifier.TypeConstraints(
                 whereKeyword = convertKeyword(v.whereKeyword, Node.Keyword::Where),
@@ -91,6 +89,10 @@ open class Converter {
             ).mapNotCorrespondsPsiElement(v)
         },
         body = v.body?.let { convertDecls(it) },
+    ).map(v)
+
+    open fun convertParents(v: KtSuperTypeList) = Node.Decl.Structured.Parents(
+        items = v.entries.map(::convertParent),
     ).map(v)
 
     open fun convertParent(v: KtSuperTypeListEntry) = when (v) {

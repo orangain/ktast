@@ -66,10 +66,15 @@ open class Writer(
                     children(name)
                     children(typeParams)
                     children(primaryConstructor)
-                    children(colon)
-                    children(parents, ",")
+                    if (parents != null) {
+                        append(":")
+                        children(parents)
+                    }
                     children(typeConstraints)
                     children(body)
+                }
+                is Node.Decl.Structured.Parents -> {
+                    children(items, ",")
                 }
                 is Node.Decl.Structured.Parent.CallConstructor -> {
                     children(type)

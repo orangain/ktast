@@ -85,8 +85,7 @@ sealed class Node {
             val name: Expr.Name?,
             val typeParams: TypeParams?,
             val primaryConstructor: PrimaryConstructor?,
-            val colon: Keyword.Colon?,
-            val parents: List<Parent>,
+            val parents: Parents?,
             val typeConstraints: PostModifier.TypeConstraints?,
             // TODO: Can include primary constructor
             val body: NodeList<Decl>?,
@@ -97,6 +96,11 @@ sealed class Node {
             val isInterface = declarationKeyword.token == Keyword.DeclarationToken.INTERFACE
             val isCompanion = mods?.children.orEmpty().contains(Modifier.Lit(Modifier.Keyword.COMPANION))
             val isEnum = mods?.children.orEmpty().contains(Modifier.Lit(Modifier.Keyword.ENUM))
+
+            /**
+             * AST node corresponds to KtSuperTypeList.
+             */
+            data class Parents(val items: List<Parent>) : Node()
 
             /**
              * AST node corresponds to KtSuperTypeListEntry.
@@ -930,7 +934,6 @@ sealed class Node {
         class Get : Keyword("get")
         class Set : Keyword("set")
         class Equal : Keyword("=")
-        class Colon : Keyword(":")
         class Comma : Keyword(",")
         class Question : Keyword("?")
         class Asterisk : Keyword("*")

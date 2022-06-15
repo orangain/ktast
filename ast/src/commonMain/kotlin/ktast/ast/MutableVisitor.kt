@@ -44,10 +44,12 @@ open class MutableVisitor {
                         name = visitChildren(name, newCh),
                         typeParams = visitChildren(typeParams, newCh),
                         primaryConstructor = visitChildren(primaryConstructor, newCh),
-                        colon = visitChildren(colon, newCh),
                         parents = visitChildren(parents, newCh),
                         typeConstraints = visitChildren(typeConstraints, newCh),
                         body = visitChildren(body, newCh)
+                    )
+                    is Node.Decl.Structured.Parents -> copy(
+                        items = visitChildren(items, newCh),
                     )
                     is Node.Decl.Structured.Parent.CallConstructor -> copy(
                         type = visitChildren(type, newCh),
