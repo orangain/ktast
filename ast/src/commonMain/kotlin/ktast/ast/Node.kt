@@ -87,7 +87,6 @@ sealed class Node {
             val primaryConstructor: PrimaryConstructor?,
             val parents: Parents?,
             val typeConstraints: PostModifier.TypeConstraints?,
-            // TODO: Can include primary constructor
             val body: NodeList<Decl>?,
         ) : Decl(), WithModifiers {
 
