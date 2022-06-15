@@ -244,6 +244,9 @@ sealed class Node {
                 ) : Variable()
             }
 
+            /**
+             * AST node corresponds to KtPropertyDelegate.
+             */
             data class Delegate(
                 val byKeyword: Keyword.By,
                 val expr: Expr,

@@ -221,7 +221,7 @@ open class Converter {
     ).map(v)
 
     open fun convertPropertyDelegate(v: KtPropertyDelegate) = Node.Decl.Property.Delegate(
-        byKeyword = convertKeyword(v.byKeywordNode.psi, Node.Keyword::By),
+        byKeyword = convertKeyword(v.byKeyword, Node.Keyword::By),
         expr = convertExpr(v.expression ?: error("Missing expression for $v")),
     ).map(v)
 
@@ -1008,6 +1008,9 @@ open class Converter {
 
         internal val KtDeclarationWithInitializer.equalsToken: PsiElement
             get() = findChildByType(this, KtTokens.EQ) ?: error("No equals token for initializer of $this")
+
+        internal val KtPropertyDelegate.byKeyword: PsiElement
+            get() = byKeywordNode.psi
 
         internal val KtPropertyAccessor.setKeyword: PsiElement
             get() = findChildByType(this, KtTokens.SET_KEYWORD) ?: error("No set keyword for $this")
