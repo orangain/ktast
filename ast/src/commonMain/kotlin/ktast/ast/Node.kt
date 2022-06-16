@@ -11,14 +11,17 @@ sealed class Node {
         val trailingSeparator: Keyword? = null,
     ) : Node()
 
-    abstract class BaseNodeList<out E : Node> : Node() {
+    abstract class BaseNodeList<out E : Node>(
+        val prefix: String = "",
+        val suffix: String = "",
+    ) : Node() {
         abstract val elements: List<E>
     }
 
     abstract class BaseCommaSeparatedNodeList<out E : Node>(
-        val prefix: String,
-        val suffix: String,
-    ) : BaseNodeList<E>() {
+        prefix: String,
+        suffix: String,
+    ) : BaseNodeList<E>(prefix, suffix) {
         abstract val trailingComma: Keyword.Comma?
     }
 
@@ -93,6 +96,13 @@ sealed class Node {
         ) : Node()
     }
 
+    /**
+     * AST node corresponds to KtClassBody.
+     */
+    data class Decls(
+        override val elements: List<Decl>,
+    ) : BaseNodeList<Decl>("{", "}")
+
     sealed class Decl : Node() {
         /**
          * AST node corresponds to KtClassOrObject.
@@ -105,7 +115,7 @@ sealed class Node {
             val primaryConstructor: PrimaryConstructor?,
             val parents: Parents?,
             val typeConstraints: PostModifier.TypeConstraints?,
-            val body: NodeList<Decl>?,
+            val body: Decls?,
         ) : Decl(), WithModifiers {
 
             val isClass = declarationKeyword.token == Keyword.DeclarationToken.CLASS

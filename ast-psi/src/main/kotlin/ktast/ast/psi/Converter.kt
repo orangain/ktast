@@ -55,11 +55,8 @@ open class Converter {
         name = convertName(v.nameIdentifier ?: error("No name identifier for $v")),
     ).map(v)
 
-    open fun convertDecls(v: KtClassBody): Node.NodeList<Node.Decl> = Node.NodeList(
-        children = v.declarations.map(::convertDecl),
-        separator = "",
-        prefix = "{",
-        suffix = "}",
+    open fun convertDecls(v: KtClassBody) = Node.Decls(
+        elements = v.declarations.map(::convertDecl),
     ).map(v)
 
     open fun convertDecl(v: KtDeclaration): Node.Decl = when (v) {

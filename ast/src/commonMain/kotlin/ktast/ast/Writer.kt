@@ -43,7 +43,7 @@ open class Writer(
                     children(elements, ",", prefix, suffix, trailingComma, parent = this)
                 }
                 is Node.BaseNodeList<*> -> {
-                    children(elements, parent = this)
+                    children(elements, prefix = prefix, suffix = suffix, parent = this)
                 }
                 is Node.File -> {
                     children(anns)
