@@ -189,6 +189,10 @@ open class MutableVisitor {
                         name = visitChildren(name, newCh),
                         typeRef = visitChildren(typeRef, newCh)
                     )
+                    is Node.TypeProjections -> copy(
+                        elements = visitChildren(elements, newCh),
+                        trailingComma = visitChildren(trailingComma, newCh),
+                    )
                     is Node.TypeProjection.Asterisk -> copy(
                         asterisk = visitChildren(asterisk, newCh),
                     )

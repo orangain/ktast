@@ -294,13 +294,10 @@ open class Converter {
         typeRef = v.extendsBound?.let(::convertTypeRef)
     ).map(v)
 
-    open fun convertTypeProjections(v: KtTypeArgumentList): Node.NodeList<Node.TypeProjection> = Node.NodeList(
-        children = v.arguments.map(::convertTypeProjection),
-        separator = ",",
-        prefix = "<",
-        suffix = ">",
-        trailingSeparator = v.trailingComma?.let(::convertComma),
-    )
+    open fun convertTypeProjections(v: KtTypeArgumentList) = Node.TypeProjections(
+        elements = v.arguments.map(::convertTypeProjection),
+        trailingComma = v.trailingComma?.let(::convertComma),
+    ).map(v)
 
     open fun convertTypeProjection(v: KtTypeProjection): Node.TypeProjection =
         if (v.projectionKind == KtProjectionKind.STAR) {
@@ -618,7 +615,7 @@ open class Converter {
                 listOf(
                     Node.Type.Simple.Piece(
                         convertName(v.getReferencedNameElement()),
-                        Node.NodeList(emptyList(), ",")
+                        null,
                     ).map(v)
                 )
             ).mapNotCorrespondsPsiElement(v),
