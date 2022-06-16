@@ -520,7 +520,7 @@ open class Converter {
 
     open fun convertIf(v: KtIfExpression) = Node.Expr.If(
         ifKeyword = convertKeyword(v.ifKeyword, Node.Keyword::If),
-        expr = convertExpr(v.condition ?: error("No cond on if for $v")),
+        condition = convertExpr(v.condition ?: error("No cond on if for $v")),
         body = convertContainer(v.thenContainer),
         elseBody = v.elseContainer?.let(::convertContainer),
     ).map(v)

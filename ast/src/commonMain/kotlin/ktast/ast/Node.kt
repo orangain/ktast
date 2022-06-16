@@ -476,7 +476,7 @@ sealed class Node {
          */
         data class If(
             val ifKeyword: Keyword.If,
-            val expr: Expr,
+            val condition: Expr,
             val body: Container,
             val elseBody: Container?
         ) : Expr()

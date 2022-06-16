@@ -241,7 +241,7 @@ open class Visitor {
             }
             is Node.Expr.If -> {
                 visitChildren(ifKeyword)
-                visitChildren(expr)
+                visitChildren(condition)
                 visitChildren(body)
                 visitChildren(elseBody)
             }

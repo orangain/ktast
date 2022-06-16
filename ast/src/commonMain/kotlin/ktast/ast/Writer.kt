@@ -285,7 +285,7 @@ open class Writer(
                 is Node.Expr.If -> {
                     children(ifKeyword)
                     append("(")
-                    children(expr)
+                    children(condition)
                     append(")")
                     children(body)
                     if (elseBody != null) {
