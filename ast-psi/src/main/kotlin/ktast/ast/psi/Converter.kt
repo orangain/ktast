@@ -417,11 +417,9 @@ open class Converter {
         typeRef = convertTypeRef(v.typeReference ?: error("No param type"))
     ).map(v)
 
-    open fun convertContextReceivers(v: KtContextReceiverList): Node.NodeList<Node.ContextReceiver> = Node.NodeList(
-        children = v.contextReceivers().map(::convertContextReceiver),
-        separator = ",",
-        prefix = "(",
-        suffix = ")",
+    open fun convertContextReceivers(v: KtContextReceiverList) = Node.ContextReceivers(
+        elements = v.contextReceivers().map(::convertContextReceiver),
+        trailingComma = null,
     ).map(v)
 
     open fun convertContextReceiver(v: KtContextReceiver) = Node.ContextReceiver(

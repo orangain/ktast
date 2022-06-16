@@ -466,7 +466,7 @@ sealed class Node {
      */
     data class TypeRef(
         override val lPar: Keyword.LPar?,
-        val contextReceivers: NodeList<ContextReceiver>?,
+        val contextReceivers: ContextReceivers?,
         override val mods: Modifiers?,
         val innerLPar: Keyword.LPar?,
         val innerMods: Modifiers?,
@@ -475,6 +475,17 @@ sealed class Node {
         override val rPar: Keyword.RPar?,
     ) : Node(), WithModifiers, WithOptionalParentheses
 
+    /**
+     * AST node corresponds to KtContextReceiverList.
+     */
+    data class ContextReceivers(
+        override val elements: List<ContextReceiver>,
+        override val trailingComma: Keyword.Comma?,
+    ) : BaseCommaSeparatedNodeList<ContextReceiver>("(", ")")
+
+    /**
+     * AST node corresponds to KtContextReceiver.
+     */
     data class ContextReceiver(
         val typeRef: TypeRef,
     ) : Node()

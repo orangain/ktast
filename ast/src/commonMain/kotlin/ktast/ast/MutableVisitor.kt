@@ -236,6 +236,10 @@ open class MutableVisitor {
                         rPar = visitChildren(rPar, newCh),
                     )
                     is Node.Type.Dynamic -> this
+                    is Node.ContextReceivers -> copy(
+                        elements = visitChildren(elements, newCh),
+                        trailingComma = visitChildren(trailingComma, newCh),
+                    )
                     is Node.ContextReceiver -> copy(
                         typeRef = visitChildren(typeRef, newCh),
                     )
