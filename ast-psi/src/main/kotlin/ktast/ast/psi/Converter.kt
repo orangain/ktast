@@ -404,12 +404,9 @@ open class Converter {
         typeRef = convertTypeRef(v.typeReference),
     ).map(v)
 
-    open fun convertTypeFuncParams(v: KtParameterList): Node.NodeList<Node.Type.Func.Param> = Node.NodeList(
-        children = v.parameters.map(::convertTypeFuncParam),
-        separator = ",",
-        prefix = "(",
-        suffix = ")",
-        trailingSeparator = v.trailingComma?.let(::convertComma)
+    open fun convertTypeFuncParams(v: KtParameterList) = Node.Type.Func.Params(
+        elements = v.parameters.map(::convertTypeFuncParam),
+        trailingComma = v.trailingComma?.let(::convertComma)
     ).map(v)
 
     open fun convertTypeFuncParam(v: KtParameter) = Node.Type.Func.Param(

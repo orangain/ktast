@@ -218,6 +218,10 @@ open class MutableVisitor {
                     is Node.Type.Func.Receiver -> copy(
                         typeRef = visitChildren(typeRef, newCh),
                     )
+                    is Node.Type.Func.Params -> copy(
+                        elements = visitChildren(elements, newCh),
+                        trailingComma = visitChildren(trailingComma, newCh),
+                    )
                     is Node.Type.Func.Param -> copy(
                         name = visitChildren(name, newCh),
                         typeRef = visitChildren(typeRef, newCh),

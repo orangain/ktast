@@ -392,7 +392,7 @@ sealed class Node {
          */
         data class Func(
             val receiver: Receiver?,
-            val params: NodeList<Param>?,
+            val params: Params?,
             val typeRef: TypeRef
         ) : Type() {
             /**
@@ -401,6 +401,14 @@ sealed class Node {
             data class Receiver(
                 val typeRef: TypeRef,
             ) : Node()
+
+            /**
+             * AST node corresponds to KtParameterList.
+             */
+            data class Params(
+                override val elements: List<Param>,
+                override val trailingComma: Keyword.Comma?,
+            ) : BaseCommaSeparatedNodeList<Param>("(", ")")
 
             /**
              * AST node corresponds to KtParameter.
