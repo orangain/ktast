@@ -39,8 +39,11 @@ open class Writer(
                     writeExtrasWithin()
                     append(suffix)
                 }
-                is Node.BaseNodeList<*, *> -> {
-                    children(elements, separator, prefix, suffix, trailingSeparator, parent = this)
+                is Node.BaseCommaSeparatedNodeList<*> -> {
+                    children(elements, ",", prefix, suffix, trailingComma, parent = this)
+                }
+                is Node.BaseNodeList<*> -> {
+                    children(elements, parent = this)
                 }
                 is Node.File -> {
                     children(anns)

@@ -9,9 +9,12 @@ open class Visitor {
                 visitChildren(children)
                 visitChildren(trailingSeparator)
             }
-            is Node.BaseNodeList<*, *> -> {
+            is Node.BaseCommaSeparatedNodeList<*> -> {
                 visitChildren(elements)
-                visitChildren(trailingSeparator)
+                visitChildren(trailingComma)
+            }
+            is Node.BaseNodeList<*> -> {
+                visitChildren(elements)
             }
             is Node.File -> {
                 visitChildren(anns)
