@@ -9,6 +9,10 @@ open class Visitor {
                 visitChildren(children)
                 visitChildren(trailingSeparator)
             }
+            is Node.BaseNodeList<*, *> -> {
+                visitChildren(elements)
+                visitChildren(trailingSeparator)
+            }
             is Node.File -> {
                 visitChildren(anns)
                 visitChildren(pkg)
@@ -169,10 +173,6 @@ open class Visitor {
             is Node.Initializer -> {
                 visitChildren(equals)
                 visitChildren(expr)
-            }
-            is Node.TypeParams -> {
-                visitChildren(params)
-                visitChildren(trailingComma)
             }
             is Node.TypeParam -> {
                 visitChildren(mods)

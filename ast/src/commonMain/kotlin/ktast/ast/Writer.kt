@@ -39,6 +39,9 @@ open class Writer(
                     writeExtrasWithin()
                     append(suffix)
                 }
+                is Node.BaseNodeList<*, *> -> {
+                    children(elements, separator, prefix, suffix, trailingSeparator, parent = this)
+                }
                 is Node.File -> {
                     children(anns)
                     children(pkg)
@@ -202,9 +205,6 @@ open class Writer(
                 is Node.Initializer -> {
                     children(equals)
                     children(expr)
-                }
-                is Node.TypeParams -> {
-                    children(params, ",", "<", ">", trailingComma)
                 }
                 is Node.TypeParam -> {
                     children(mods)

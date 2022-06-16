@@ -11,6 +11,15 @@ sealed class Node {
         val trailingSeparator: Keyword? = null,
     ) : Node()
 
+    abstract class BaseNodeList<out E : Node, S : Keyword>(
+        val separator: String,
+        val prefix: String,
+        val suffix: String,
+    ) : Node() {
+        abstract val elements: List<E>
+        abstract val trailingSeparator: S?
+    }
+
     interface WithAnnotations {
         val anns: List<Modifier.AnnotationSet>
     }
@@ -340,10 +349,14 @@ sealed class Node {
     /**
      * AST node corresponds to KtTypeParameterList.
      */
+//    data class TypeParams(
+//        val params: List<TypeParam>,
+//        val trailingComma: Keyword.Comma?,
+//    ) : Node()
     data class TypeParams(
-        val params: List<TypeParam>,
-        val trailingComma: Keyword.Comma?,
-    ) : Node()
+        override val elements: List<TypeParam>,
+        override val trailingSeparator: Keyword.Comma?,
+    ) : BaseNodeList<TypeParam, Keyword.Comma>(",", "<", ">")
 
     /**
      * AST node corresponds to KtTypeParameter.

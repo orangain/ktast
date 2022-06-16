@@ -287,8 +287,8 @@ open class Converter {
     ).mapNotCorrespondsPsiElement(parent)
 
     open fun convertTypeParams(v: KtTypeParameterList) = Node.TypeParams(
-        params = v.parameters.map(::convertTypeParam),
-        trailingComma = v.trailingComma?.let(::convertComma),
+        elements = v.parameters.map(::convertTypeParam),
+        trailingSeparator = v.trailingComma?.let(::convertComma),
     ).map(v)
 
     open fun convertTypeParam(v: KtTypeParameter) = Node.TypeParam(
