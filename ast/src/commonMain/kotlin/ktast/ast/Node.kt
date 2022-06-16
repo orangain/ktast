@@ -329,6 +329,9 @@ sealed class Node {
         ) : Decl(), WithModifiers
     }
 
+    /**
+     * Virtual AST node corresponds to a pair of equals and expression.
+     */
     data class Initializer(
         val equals: Keyword.Equal,
         val expr: Expr,
