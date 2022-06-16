@@ -150,14 +150,14 @@ open class Visitor {
                 visitChildren(typeParams)
                 visitChildren(typeRef)
             }
-            is Node.Decl.Constructor -> {
+            is Node.Decl.SecondaryConstructor -> {
                 visitChildren(mods)
                 visitChildren(constructorKeyword)
                 visitChildren(params)
                 visitChildren(delegationCall)
                 visitChildren(block)
             }
-            is Node.Decl.Constructor.DelegationCall -> {
+            is Node.Decl.SecondaryConstructor.DelegationCall -> {
                 visitChildren(args)
             }
             is Node.Decl.EnumEntry -> {

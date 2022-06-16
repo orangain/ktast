@@ -292,7 +292,10 @@ sealed class Node {
             val typeRef: TypeRef
         ) : Decl(), WithModifiers
 
-        data class Constructor(
+        /**
+         * AST node corresponds to KtSecondaryConstructor.
+         */
+        data class SecondaryConstructor(
             override val mods: NodeList<Modifier>?,
             val constructorKeyword: Keyword.Constructor,
             val params: Func.Params?,

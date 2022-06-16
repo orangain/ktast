@@ -70,7 +70,7 @@ open class Converter {
         is KtDestructuringDeclaration -> convertProperty(v)
         is KtProperty -> convertProperty(v)
         is KtTypeAlias -> convertTypeAlias(v)
-        is KtSecondaryConstructor -> convertConstructor(v)
+        is KtSecondaryConstructor -> convertSecondaryConstructor(v)
         else -> error("Unrecognized declaration type for $v")
     }
 
@@ -252,15 +252,15 @@ open class Converter {
         typeRef = convertTypeRef(v.getTypeReference() ?: error("No type alias ref for $v"))
     ).map(v)
 
-    open fun convertConstructor(v: KtSecondaryConstructor) = Node.Decl.Constructor(
+    open fun convertSecondaryConstructor(v: KtSecondaryConstructor) = Node.Decl.SecondaryConstructor(
         mods = v.modifierList?.let(::convertModifiers),
         constructorKeyword = convertKeyword(v.getConstructorKeyword(), Node.Keyword::Constructor),
         params = v.valueParameterList?.let(::convertFuncParams),
         delegationCall = if (v.hasImplicitDelegationCall()) null else v.getDelegationCall().let {
-            Node.Decl.Constructor.DelegationCall(
+            Node.Decl.SecondaryConstructor.DelegationCall(
                 target =
-                if (it.isCallToThis) Node.Decl.Constructor.DelegationTarget.THIS
-                else Node.Decl.Constructor.DelegationTarget.SUPER,
+                if (it.isCallToThis) Node.Decl.SecondaryConstructor.DelegationTarget.THIS
+                else Node.Decl.SecondaryConstructor.DelegationTarget.SUPER,
                 args = it.valueArgumentList?.let(::convertValueArgs)
             ).map(it)
         },

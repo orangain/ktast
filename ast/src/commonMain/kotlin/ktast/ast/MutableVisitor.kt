@@ -154,14 +154,14 @@ open class MutableVisitor {
                         typeParams = visitChildren(typeParams, newCh),
                         typeRef = visitChildren(typeRef, newCh)
                     )
-                    is Node.Decl.Constructor -> copy(
+                    is Node.Decl.SecondaryConstructor -> copy(
                         mods = visitChildren(mods, newCh),
                         constructorKeyword = visitChildren(constructorKeyword, newCh),
                         params = visitChildren(params, newCh),
                         delegationCall = visitChildren(delegationCall, newCh),
                         block = visitChildren(block, newCh)
                     )
-                    is Node.Decl.Constructor.DelegationCall -> copy(
+                    is Node.Decl.SecondaryConstructor.DelegationCall -> copy(
                         args = visitChildren(args, newCh)
                     )
                     is Node.Decl.EnumEntry -> copy(

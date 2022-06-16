@@ -180,14 +180,14 @@ open class Writer(
                     children(typeParams).append("=")
                     children(typeRef)
                 }
-                is Node.Decl.Constructor -> {
+                is Node.Decl.SecondaryConstructor -> {
                     children(mods)
                     children(constructorKeyword)
                     children(params)
                     if (delegationCall != null) append(":").also { children(delegationCall) }
                     children(block)
                 }
-                is Node.Decl.Constructor.DelegationCall ->
+                is Node.Decl.SecondaryConstructor.DelegationCall ->
                     append(target.name.lowercase()).also { children(args) }
                 is Node.Decl.EnumEntry -> {
                     children(mods)
