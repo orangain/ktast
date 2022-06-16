@@ -517,12 +517,10 @@ open class Converter {
     }
 
     open fun convertIf(v: KtIfExpression) = Node.Expr.If(
-        lPar = convertKeyword(v.leftParenthesis ?: error("No leftParenthesis on if for $v"), Node.Keyword::LPar),
+        ifKeyword = convertKeyword(v.ifKeyword, Node.Keyword::If),
         expr = convertExpr(v.condition ?: error("No cond on if for $v")),
-        rPar = convertKeyword(v.rightParenthesis ?: error("No rightParenthesis on if for $v"), Node.Keyword::RPar),
-        body = convertExpr(v.then ?: error("No then on if for $v")),
-        elseKeyword = v.elseKeyword?.let { convertKeyword(it, Node.Keyword::Else) },
-        elseBody = v.`else`?.let(::convertExpr)
+        body = convertContainer(v.thenContainer),
+        elseBody = v.elseContainer?.let(::convertContainer),
     ).map(v)
 
     open fun convertTry(v: KtTryExpression) = Node.Expr.Try(
@@ -1027,6 +1025,11 @@ open class Converter {
             get() = findChildByType(this, KtTokens.LPAR)
         internal val KtNullableType.rightParenthesis: PsiElement?
             get() = findChildByType(this, KtTokens.RPAR)
+
+        internal val KtIfExpression.thenContainer: KtContainerNode
+            get() = findChildByType(this, KtNodeTypes.THEN) as? KtContainerNode ?: error("No then container for $this")
+        internal val KtIfExpression.elseContainer: KtContainerNode?
+            get() = findChildByType(this, KtNodeTypes.ELSE) as? KtContainerNode
 
         internal val KtCatchClause.catchKeyword: PsiElement
             get() = findChildByType(this, KtTokens.CATCH_KEYWORD) ?: error("No catch keyword for $this")

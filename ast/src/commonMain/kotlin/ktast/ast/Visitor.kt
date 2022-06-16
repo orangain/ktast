@@ -240,11 +240,9 @@ open class Visitor {
                 visitChildren(expr)
             }
             is Node.Expr.If -> {
-                visitChildren(lPar)
+                visitChildren(ifKeyword)
                 visitChildren(expr)
-                visitChildren(rPar)
                 visitChildren(body)
-                visitChildren(elseKeyword)
                 visitChildren(elseBody)
             }
             is Node.Expr.Try -> {

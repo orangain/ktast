@@ -283,9 +283,15 @@ open class Writer(
                     children(expr)
                 }
                 is Node.Expr.If -> {
-                    append("if")
-                    children(lPar, expr, rPar, body)
-                    children(elseKeyword, elseBody)
+                    children(ifKeyword)
+                    append("(")
+                    children(expr)
+                    append(")")
+                    children(body)
+                    if (elseBody != null) {
+                        append("else")
+                        children(elseBody)
+                    }
                 }
                 is Node.Expr.Try -> {
                     append("try")
