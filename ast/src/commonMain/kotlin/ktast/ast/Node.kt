@@ -34,7 +34,7 @@ sealed class Node {
 
     interface Entry : WithAnnotations {
         val pkg: Package?
-        val imports: NodeList<Import>?
+        val imports: Imports?
     }
 
     interface WithOptionalParentheses {
@@ -49,14 +49,14 @@ sealed class Node {
     data class File(
         override val anns: List<Modifier.AnnotationSet>,
         override val pkg: Package?,
-        override val imports: NodeList<Import>?,
+        override val imports: Imports?,
         val decls: List<Decl>
     ) : Node(), Entry
 
     data class Script(
         override val anns: List<Modifier.AnnotationSet>,
         override val pkg: Package?,
-        override val imports: NodeList<Import>?,
+        override val imports: Imports?,
         val exprs: List<Expr>
     ) : Node(), Entry
 
@@ -68,6 +68,13 @@ sealed class Node {
         val packageKeyword: Keyword.Package,
         val names: List<Expr.Name>,
     ) : Node(), WithModifiers
+
+    /**
+     * AST node corresponds to KtImportList.
+     */
+    data class Imports(
+        override val elements: List<Import>,
+    ) : BaseNodeList<Import>()
 
     /**
      * AST node corresponds to KtImportDirective.

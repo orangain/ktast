@@ -30,8 +30,8 @@ open class Converter {
         names = v.packageNames.map(::convertName),
     ).map(v)
 
-    open fun convertImports(v: KtImportList): Node.NodeList<Node.Import> = Node.NodeList(
-        children = v.imports.map(::convertImport),
+    open fun convertImports(v: KtImportList) = Node.Imports(
+        elements = v.imports.map(::convertImport),
     ).map(v)
 
     open fun convertImport(v: KtImportDirective) = Node.Import(

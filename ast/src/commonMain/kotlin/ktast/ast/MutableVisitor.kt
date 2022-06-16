@@ -30,6 +30,9 @@ open class MutableVisitor {
                         packageKeyword = visitChildren(packageKeyword, newCh),
                         names = visitChildren(names, newCh),
                     )
+                    is Node.Imports -> copy(
+                        elements = visitChildren(elements, newCh),
+                    )
                     is Node.Import -> copy(
                         importKeyword = visitChildren(importKeyword, newCh),
                         names = visitChildren(names, newCh),
