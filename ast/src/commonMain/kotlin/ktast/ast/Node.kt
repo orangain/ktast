@@ -282,6 +282,9 @@ sealed class Node {
             }
         }
 
+        /**
+         * AST node corresponds to KtTypeAlias.
+         */
         data class TypeAlias(
             override val mods: NodeList<Modifier>?,
             val name: Expr.Name,
