@@ -930,8 +930,8 @@ open class Converter {
         args = v.valueArgumentList?.let(::convertValueArgs),
     ).map(v)
 
-    open fun convertModifiers(v: KtModifierList): Node.NodeList<Node.Modifier> = Node.NodeList(
-        children = v.node.children().mapNotNull { node ->
+    open fun convertModifiers(v: KtModifierList) = Node.Modifiers(
+        elements = v.node.children().mapNotNull { node ->
             // We go over the node children because we want to preserve order
             node.psi.let { psi ->
                 when (psi) {
@@ -946,9 +946,6 @@ open class Converter {
                 }
             }
         }.toList(),
-        separator = "",
-        prefix = "",
-        suffix = "",
     ).map(v)
 
     open fun convertPostModifiers(v: KtElement): List<Node.PostModifier> {
