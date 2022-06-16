@@ -302,6 +302,9 @@ sealed class Node {
             val delegationCall: DelegationCall?,
             val block: Expr.Block?
         ) : Decl(), WithModifiers {
+            /**
+             * AST node corresponds to KtConstructorDelegationCall.
+             */
             data class DelegationCall(
                 val target: DelegationTarget,
                 val args: ValueArgs?

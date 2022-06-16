@@ -256,16 +256,18 @@ open class Converter {
         mods = v.modifierList?.let(::convertModifiers),
         constructorKeyword = convertKeyword(v.getConstructorKeyword(), Node.Keyword::Constructor),
         params = v.valueParameterList?.let(::convertFuncParams),
-        delegationCall = if (v.hasImplicitDelegationCall()) null else v.getDelegationCall().let {
-            Node.Decl.SecondaryConstructor.DelegationCall(
-                target =
-                if (it.isCallToThis) Node.Decl.SecondaryConstructor.DelegationTarget.THIS
-                else Node.Decl.SecondaryConstructor.DelegationTarget.SUPER,
-                args = it.valueArgumentList?.let(::convertValueArgs)
-            ).map(it)
-        },
+        delegationCall = if (v.hasImplicitDelegationCall()) null else convertSecondaryConstructorDelegationCall(v.getDelegationCall()),
         block = v.bodyExpression?.let(::convertBlock)
     ).map(v)
+
+    open fun convertSecondaryConstructorDelegationCall(v: KtConstructorDelegationCall) =
+        Node.Decl.SecondaryConstructor.DelegationCall(
+            target = if (v.isCallToThis)
+                Node.Decl.SecondaryConstructor.DelegationTarget.THIS
+            else
+                Node.Decl.SecondaryConstructor.DelegationTarget.SUPER,
+            args = v.valueArgumentList?.let(::convertValueArgs)
+        ).map(v)
 
     open fun convertEnumEntry(v: KtEnumEntry) = Node.Decl.EnumEntry(
         mods = v.modifierList?.let(::convertModifiers),
