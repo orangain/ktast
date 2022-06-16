@@ -343,16 +343,16 @@ sealed class Node {
     data class TypeParams(
         val params: List<TypeParam>,
         val trailingComma: Keyword.Comma?,
-    ) : Node() {
-        /**
-         * AST node corresponds to KtTypeParameter.
-         */
-        data class TypeParam(
-            override val mods: NodeList<Modifier>?,
-            val name: Expr.Name,
-            val typeRef: TypeRef?
-        ) : Node(), WithModifiers
-    }
+    ) : Node()
+
+    /**
+     * AST node corresponds to KtTypeParameter.
+     */
+    data class TypeParam(
+        override val mods: NodeList<Modifier>?,
+        val name: Expr.Name,
+        val typeRef: TypeRef?
+    ) : Node(), WithModifiers
 
     sealed class Type : Node() {
         /**

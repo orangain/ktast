@@ -174,7 +174,7 @@ open class Visitor {
                 visitChildren(params)
                 visitChildren(trailingComma)
             }
-            is Node.TypeParams.TypeParam -> {
+            is Node.TypeParam -> {
                 visitChildren(mods)
                 visitChildren(name)
                 visitChildren(typeRef)

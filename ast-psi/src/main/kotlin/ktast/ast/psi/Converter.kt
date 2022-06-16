@@ -291,7 +291,7 @@ open class Converter {
         trailingComma = v.trailingComma?.let(::convertComma),
     ).map(v)
 
-    open fun convertTypeParam(v: KtTypeParameter) = Node.TypeParams.TypeParam(
+    open fun convertTypeParam(v: KtTypeParameter) = Node.TypeParam(
         mods = v.modifierList?.let(::convertModifiers),
         name = v.nameIdentifier?.let(::convertName) ?: error("No type param name for $v"),
         typeRef = v.extendsBound?.let(::convertTypeRef)

@@ -206,7 +206,7 @@ open class Writer(
                 is Node.TypeParams -> {
                     children(params, ",", "<", ">", trailingComma)
                 }
-                is Node.TypeParams.TypeParam -> {
+                is Node.TypeParam -> {
                     children(mods)
                     children(name)
                     if (typeRef != null) append(":").also { children(typeRef) }
