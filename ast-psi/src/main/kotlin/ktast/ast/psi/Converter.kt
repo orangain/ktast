@@ -638,7 +638,7 @@ open class Converter {
 
     open fun convertParen(v: KtParenthesizedExpression) = Node.Expr.Paren(
         expr = convertExpr(v.expression ?: error("No paren expr for $v"))
-    )
+    ).map(v)
 
     open fun convertStringTmpl(v: KtStringTemplateExpression) = Node.Expr.StringTmpl(
         elems = v.entries.map(::convertStringTmplElem),
