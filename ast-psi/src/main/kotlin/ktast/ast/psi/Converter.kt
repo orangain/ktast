@@ -574,7 +574,7 @@ open class Converter {
             Node.Expr.TypeOp.Oper(typeTokensByText[it.text] ?: error("Unable to find op ref $it")).map(it)
         },
         rhs = convertTypeRef(v.typeReference ?: error("No type op rhs for $v"))
-    )
+    ).map(v)
 
     open fun convertDoubleColonRefCallable(v: KtCallableReferenceExpression) = Node.Expr.DoubleColonRef.Callable(
         recv = v.receiverExpression?.let { expr ->
