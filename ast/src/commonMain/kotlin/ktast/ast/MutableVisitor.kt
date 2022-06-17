@@ -339,6 +339,10 @@ open class MutableVisitor {
                         params = visitChildren(params, newCh),
                         body = visitChildren(body, newCh)
                     )
+                    is Node.Expr.Lambda.Params -> copy(
+                        elements = visitChildren(elements, newCh),
+                        trailingComma = visitChildren(trailingComma, newCh),
+                    )
                     is Node.Expr.Lambda.Param.Single -> copy(
                         name = visitChildren(name, newCh),
                         typeRef = visitChildren(typeRef, newCh),

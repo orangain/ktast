@@ -677,9 +677,17 @@ sealed class Node {
          * AST node corresponds to KtLambdaExpression.
          */
         data class Lambda(
-            val params: NodeList<Param>?,
+            val params: Params?,
             val body: Body?
         ) : Expr() {
+            /**
+             * AST node corresponds to KtParameterList under KtLambdaExpression.
+             */
+            data class Params(
+                override val elements: List<Param>,
+                override val trailingComma: Keyword.Comma?,
+            ) : BaseCommaSeparatedNodeList<Param>("", "")
+
             /**
              * AST node corresponds to KtParameter or KtDestructuringDeclarationEntry in lambda arguments or for statement.
              */
