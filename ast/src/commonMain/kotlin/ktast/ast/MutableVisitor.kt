@@ -185,14 +185,14 @@ open class MutableVisitor {
                         name = visitChildren(name, newCh),
                         typeRef = visitChildren(typeRef, newCh)
                     )
-                    is Node.TypeProjections -> copy(
+                    is Node.TypeArgs -> copy(
                         elements = visitChildren(elements, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
-                    is Node.TypeProjection.Asterisk -> copy(
+                    is Node.TypeArg.Asterisk -> copy(
                         asterisk = visitChildren(asterisk, newCh),
                     )
-                    is Node.TypeProjection.Type -> copy(
+                    is Node.TypeArg.Type -> copy(
                         mods = visitChildren(mods, newCh),
                         typeRef = visitChildren(typeRef, newCh),
                     )

@@ -197,10 +197,10 @@ open class Writer(
                     children(name)
                     if (typeRef != null) append(":").also { children(typeRef) }
                 }
-                is Node.TypeProjection.Asterisk -> {
+                is Node.TypeArg.Asterisk -> {
                     children(asterisk)
                 }
-                is Node.TypeProjection.Type -> {
+                is Node.TypeArg.Type -> {
                     children(mods)
                     children(typeRef)
                 }

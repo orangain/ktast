@@ -130,7 +130,7 @@ sealed class Node {
                  */
                 data class CallConstructor(
                     val type: Node.Type.Simple,
-                    val typeArgs: TypeProjections?,
+                    val typeArgs: TypeArgs?,
                     val args: ValueArgs?,
                     val lambda: Expr.Call.LambdaArg?
                 ) : Parent()
@@ -419,7 +419,7 @@ sealed class Node {
         ) : Type() {
             data class Piece(
                 val name: Expr.Name,
-                val typeParams: TypeProjections?
+                val typeParams: TypeArgs?
             ) : Node()
         }
 
@@ -442,23 +442,23 @@ sealed class Node {
     /**
      * AST node corresponds to KtTypeArgumentList.
      */
-    data class TypeProjections(
-        override val elements: List<TypeProjection>,
+    data class TypeArgs(
+        override val elements: List<TypeArg>,
         override val trailingComma: Keyword.Comma?,
-    ) : CommaSeparatedNodeList<TypeProjection>("<", ">")
+    ) : CommaSeparatedNodeList<TypeArg>("<", ">")
 
     /**
      * AST node corresponds to KtTypeProjection.
      */
-    sealed class TypeProjection : Node() {
+    sealed class TypeArg : Node() {
         data class Asterisk(
             val asterisk: Keyword.Asterisk,
-        ) : TypeProjection()
+        ) : TypeArg()
 
         data class Type(
             override val mods: Modifiers?,
             val typeRef: TypeRef,
-        ) : TypeProjection(), WithModifiers
+        ) : TypeArg(), WithModifiers
     }
 
     /**
@@ -831,7 +831,7 @@ sealed class Node {
          */
         data class Call(
             val expr: Expr,
-            val typeArgs: TypeProjections?,
+            val typeArgs: TypeArgs?,
             val args: ValueArgs?,
             // According to the Kotlin syntax, at most one lambda argument is allowed. However, Kotlin compiler can parse multiple lambda arguments.
             val lambdaArgs: List<LambdaArg>
