@@ -22,10 +22,10 @@ open class Writer(
         v?.writeExtrasBefore()
         v?.apply {
             when (this) {
-                is Node.BaseCommaSeparatedNodeList<*> -> {
+                is Node.CommaSeparatedNodeList<*> -> {
                     children(elements, ",", prefix, suffix, trailingComma, parent = this)
                 }
-                is Node.BaseNodeList<*> -> {
+                is Node.NodeList<*> -> {
                     children(elements, prefix = prefix, suffix = suffix, parent = this)
                 }
                 is Node.File -> {

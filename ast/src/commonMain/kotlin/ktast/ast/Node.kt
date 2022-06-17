@@ -3,17 +3,17 @@ package ktast.ast
 sealed class Node {
     var tag: Any? = null
 
-    abstract class BaseNodeList<out E : Node>(
+    abstract class NodeList<out E : Node>(
         val prefix: String = "",
         val suffix: String = "",
     ) : Node() {
         abstract val elements: List<E>
     }
 
-    abstract class BaseCommaSeparatedNodeList<out E : Node>(
+    abstract class CommaSeparatedNodeList<out E : Node>(
         prefix: String,
         suffix: String,
-    ) : BaseNodeList<E>(prefix, suffix) {
+    ) : NodeList<E>(prefix, suffix) {
         abstract val trailingComma: Keyword.Comma?
     }
 
@@ -69,7 +69,7 @@ sealed class Node {
      */
     data class Imports(
         override val elements: List<Import>,
-    ) : BaseNodeList<Import>()
+    ) : NodeList<Import>()
 
     /**
      * AST node corresponds to KtImportDirective.
@@ -93,7 +93,7 @@ sealed class Node {
      */
     data class Decls(
         override val elements: List<Decl>,
-    ) : BaseNodeList<Decl>("{", "}")
+    ) : NodeList<Decl>("{", "}")
 
     sealed class Decl : Node() {
         /**
@@ -367,7 +367,7 @@ sealed class Node {
     data class TypeParams(
         override val elements: List<TypeParam>,
         override val trailingComma: Keyword.Comma?,
-    ) : BaseCommaSeparatedNodeList<TypeParam>("<", ">")
+    ) : CommaSeparatedNodeList<TypeParam>("<", ">")
 
     /**
      * AST node corresponds to KtTypeParameter.
@@ -400,7 +400,7 @@ sealed class Node {
             data class Params(
                 override val elements: List<Param>,
                 override val trailingComma: Keyword.Comma?,
-            ) : BaseCommaSeparatedNodeList<Param>("(", ")")
+            ) : CommaSeparatedNodeList<Param>("(", ")")
 
             /**
              * AST node corresponds to KtParameter.
@@ -445,7 +445,7 @@ sealed class Node {
     data class TypeProjections(
         override val elements: List<TypeProjection>,
         override val trailingComma: Keyword.Comma?,
-    ) : BaseCommaSeparatedNodeList<TypeProjection>("<", ">")
+    ) : CommaSeparatedNodeList<TypeProjection>("<", ">")
 
     /**
      * AST node corresponds to KtTypeProjection.
@@ -481,7 +481,7 @@ sealed class Node {
     data class ContextReceivers(
         override val elements: List<ContextReceiver>,
         override val trailingComma: Keyword.Comma?,
-    ) : BaseCommaSeparatedNodeList<ContextReceiver>("(", ")")
+    ) : CommaSeparatedNodeList<ContextReceiver>("(", ")")
 
     /**
      * AST node corresponds to KtContextReceiver.
@@ -678,7 +678,7 @@ sealed class Node {
             data class Params(
                 override val elements: List<Param>,
                 override val trailingComma: Keyword.Comma?,
-            ) : BaseCommaSeparatedNodeList<Param>("", "")
+            ) : CommaSeparatedNodeList<Param>("", "")
 
             /**
              * AST node corresponds to KtParameter or KtDestructuringDeclarationEntry in lambda arguments or for statement.
@@ -705,7 +705,7 @@ sealed class Node {
                     data class Variables(
                         override val elements: List<Single>,
                         override val trailingComma: Keyword.Comma?,
-                    ) : BaseCommaSeparatedNodeList<Single>("(", ")")
+                    ) : CommaSeparatedNodeList<Single>("(", ")")
                 }
             }
 
@@ -884,7 +884,7 @@ sealed class Node {
      */
     data class Modifiers(
         override val elements: List<Modifier>,
-    ) : BaseNodeList<Modifier>()
+    ) : NodeList<Modifier>()
 
     sealed class Modifier : Node() {
         /**
@@ -933,7 +933,7 @@ sealed class Node {
              */
             data class TypeConstraintList(
                 override val elements: List<TypeConstraint>,
-            ) : BaseCommaSeparatedNodeList<TypeConstraint>("", "") {
+            ) : CommaSeparatedNodeList<TypeConstraint>("", "") {
                 override val trailingComma: Keyword.Comma? = null // Trailing comma is not allowed.
             }
 
@@ -960,7 +960,7 @@ sealed class Node {
             data class ContractEffects(
                 override val elements: List<ContractEffect>,
                 override val trailingComma: Keyword.Comma?,
-            ) : BaseCommaSeparatedNodeList<ContractEffect>("[", "]")
+            ) : CommaSeparatedNodeList<ContractEffect>("[", "]")
 
             /**
              * AST node corresponds to KtContractEffect.

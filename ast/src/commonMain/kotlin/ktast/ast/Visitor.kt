@@ -5,11 +5,11 @@ open class Visitor {
 
     protected open fun visit(v: Node?, parent: Node) = v.run {
         when (this) {
-            is Node.BaseCommaSeparatedNodeList<*> -> {
+            is Node.CommaSeparatedNodeList<*> -> {
                 visitChildren(elements)
                 visitChildren(trailingComma)
             }
-            is Node.BaseNodeList<*> -> {
+            is Node.NodeList<*> -> {
                 visitChildren(elements)
             }
             is Node.File -> {
