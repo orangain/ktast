@@ -423,14 +423,10 @@ open class Converter {
         typeRef = convertTypeRef(v.typeReference() ?: error("Missing type reference for $v")),
     ).map(v)
 
-    open fun convertContractEffects(v: KtContractEffectList): Node.NodeList<Node.PostModifier.Contract.ContractEffect> =
-        Node.NodeList(
-            children = v.children.filterIsInstance<KtContractEffect>().map(::convertContractEffect),
-            separator = ",",
-            prefix = "[",
-            suffix = "]",
-            trailingSeparator = findTrailingSeparator(v, KtTokens.COMMA)?.let(::convertComma),
-        ).map(v)
+    open fun convertContractEffects(v: KtContractEffectList) = Node.PostModifier.Contract.ContractEffects(
+        elements = v.children.filterIsInstance<KtContractEffect>().map(::convertContractEffect),
+        trailingComma = findTrailingSeparator(v, KtTokens.COMMA)?.let(::convertComma),
+    ).map(v)
 
     open fun convertContractEffect(v: KtContractEffect) = Node.PostModifier.Contract.ContractEffect(
         expr = convertExpr(v.getExpression()),

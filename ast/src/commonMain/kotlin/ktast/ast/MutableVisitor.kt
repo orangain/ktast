@@ -467,6 +467,10 @@ open class MutableVisitor {
                         contractKeyword = visitChildren(contractKeyword, newCh),
                         contractEffects = visitChildren(contractEffects, newCh),
                     )
+                    is Node.PostModifier.Contract.ContractEffects -> copy(
+                        elements = visitChildren(elements, newCh),
+                        trailingComma = visitChildren(trailingComma, newCh),
+                    )
                     is Node.PostModifier.Contract.ContractEffect -> copy(
                         expr = visitChildren(expr, newCh),
                     )

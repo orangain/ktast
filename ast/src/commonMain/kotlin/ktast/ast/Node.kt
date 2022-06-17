@@ -951,8 +951,16 @@ sealed class Node {
          */
         data class Contract(
             val contractKeyword: Keyword.Contract,
-            val contractEffects: NodeList<ContractEffect>,
+            val contractEffects: ContractEffects,
         ) : PostModifier() {
+            /**
+             * AST node corresponds to KtContractEffectList.
+             */
+            data class ContractEffects(
+                override val elements: List<ContractEffect>,
+                override val trailingComma: Keyword.Comma?,
+            ) : BaseCommaSeparatedNodeList<ContractEffect>("[", "]")
+
             /**
              * AST node corresponds to KtContractEffect.
              */
