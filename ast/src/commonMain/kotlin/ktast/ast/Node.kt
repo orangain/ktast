@@ -3,14 +3,6 @@ package ktast.ast
 sealed class Node {
     var tag: Any? = null
 
-    data class NodeList<out T : Node>(
-        val children: List<T>,
-        val separator: String = "",
-        val prefix: String = "",
-        val suffix: String = "",
-        val trailingSeparator: Keyword? = null,
-    ) : Node()
-
     abstract class BaseNodeList<out E : Node>(
         val prefix: String = "",
         val suffix: String = "",

@@ -22,23 +22,6 @@ open class Writer(
         v?.writeExtrasBefore()
         v?.apply {
             when (this) {
-                is Node.NodeList<*> -> {
-                    append(prefix)
-
-                    // First, do all the enum entries if there are any
-                    val enumEntries = children.takeWhile { it is Node.Decl.EnumEntry }
-                    if (enumEntries.isNotEmpty()) {
-                        children(enumEntries) // Each EnumEntry contains commas and trailing semicolon.
-                    }
-
-                    // Now the rest of the members
-                    val restChildren = children.drop(enumEntries.size)
-                    children(restChildren, separator)
-                    children(trailingSeparator)
-
-                    writeExtrasWithin()
-                    append(suffix)
-                }
                 is Node.BaseCommaSeparatedNodeList<*> -> {
                     children(elements, ",", prefix, suffix, trailingComma, parent = this)
                 }
