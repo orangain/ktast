@@ -704,9 +704,17 @@ sealed class Node {
                  * AST node corresponds to KtParameter whose child is KtDestructuringDeclaration.
                  */
                 data class Multi(
-                    val vars: NodeList<Single>,
+                    val vars: Variables,
                     val destructTypeRef: TypeRef?
-                ) : Param()
+                ) : Param() {
+                    /**
+                     * AST node corresponds to KtDestructuringDeclaration in lambda arguments.
+                     */
+                    data class Variables(
+                        override val elements: List<Single>,
+                        override val trailingComma: Keyword.Comma?,
+                    ) : BaseCommaSeparatedNodeList<Single>("(", ")")
+                }
             }
 
             /**

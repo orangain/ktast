@@ -704,13 +704,10 @@ open class Converter {
         }
     }
 
-    open fun convertLambdaParamVars(v: KtDestructuringDeclaration): Node.NodeList<Node.Expr.Lambda.Param.Single> =
-        Node.NodeList(
-            children = v.entries.map(::convertLambdaParamVar),
-            separator = ",",
-            prefix = "(",
-            suffix = ")",
-        ).map(v)
+    open fun convertLambdaParamVars(v: KtDestructuringDeclaration) = Node.Expr.Lambda.Param.Multi.Variables(
+        elements = v.entries.map(::convertLambdaParamVar),
+        trailingComma = v.trailingComma?.let(::convertComma),
+    ).map(v)
 
     open fun convertLambdaParamVar(v: KtDestructuringDeclarationEntry) =
         Node.Expr.Lambda.Param.Single(
