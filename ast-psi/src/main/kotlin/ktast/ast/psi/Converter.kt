@@ -358,11 +358,9 @@ open class Converter {
         ).map(v)
     }
 
-    open fun convertTypeConstraints(v: KtTypeConstraintList): Node.NodeList<Node.PostModifier.TypeConstraints.TypeConstraint> =
-        Node.NodeList(
-            children = v.constraints.map(::convertTypeConstraint),
-            separator = ",",
-        ).map(v)
+    open fun convertTypeConstraints(v: KtTypeConstraintList) = Node.PostModifier.TypeConstraints.TypeConstraintList(
+        elements = v.constraints.map(::convertTypeConstraint),
+    ).map(v)
 
     open fun convertTypeConstraint(v: KtTypeConstraint) = Node.PostModifier.TypeConstraints.TypeConstraint(
         anns = v.children.mapNotNull {

@@ -934,8 +934,17 @@ sealed class Node {
          */
         data class TypeConstraints(
             val whereKeyword: Keyword.Where,
-            val constraints: NodeList<TypeConstraint>,
+            val constraints: TypeConstraintList,
         ) : PostModifier() {
+            /**
+             * AST node corresponds to KtTypeConstraintList.
+             */
+            data class TypeConstraintList(
+                override val elements: List<TypeConstraint>,
+            ) : BaseCommaSeparatedNodeList<TypeConstraint>("", "") {
+                override val trailingComma: Keyword.Comma? = null // Trailing comma is not allowed.
+            }
+
             /**
              * AST node corresponds to KtTypeConstraint.
              */
