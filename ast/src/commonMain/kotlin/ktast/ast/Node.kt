@@ -360,10 +360,6 @@ sealed class Node {
     /**
      * AST node corresponds to KtTypeParameterList.
      */
-//    data class TypeParams(
-//        val params: List<TypeParam>,
-//        val trailingComma: Keyword.Comma?,
-//    ) : Node()
     data class TypeParams(
         override val elements: List<TypeParam>,
         override val trailingComma: Keyword.Comma?,
