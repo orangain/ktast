@@ -240,7 +240,7 @@ open class Writer(
                     children(pieces, ".")
                 is Node.Type.Simple.Piece -> {
                     children(name)
-                    children(typeParams)
+                    children(typeArgs)
                 }
                 is Node.Type.Nullable -> {
                     children(lPar)

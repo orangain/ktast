@@ -227,7 +227,7 @@ open class MutableVisitor {
                     )
                     is Node.Type.Simple.Piece -> copy(
                         name = visitChildren(name, newCh),
-                        typeParams = visitChildren(typeParams, newCh)
+                        typeArgs = visitChildren(typeArgs, newCh)
                     )
                     is Node.Type.Nullable -> copy(
                         lPar = visitChildren(lPar, newCh),

@@ -419,7 +419,7 @@ sealed class Node {
         ) : Type() {
             data class Piece(
                 val name: Expr.Name,
-                val typeParams: TypeArgs?
+                val typeArgs: TypeArgs?
             ) : Node()
         }
 

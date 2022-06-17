@@ -384,7 +384,7 @@ open class Converter {
             pieces = generateSequence(v) { it.qualifier }.toList().reversed().map { type ->
                 Node.Type.Simple.Piece(
                     name = type.referenceExpression?.let(::convertName) ?: error("No type name for $type"),
-                    typeParams = type.typeArgumentList?.let(::convertTypeArgs),
+                    typeArgs = type.typeArgumentList?.let(::convertTypeArgs),
                 ).mapNotCorrespondsPsiElement(type)
             }
         ).map(v)
@@ -617,7 +617,7 @@ open class Converter {
                         Node.Type.Simple.Piece(
                             name = v.calleeExpression?.let { (it as? KtSimpleNameExpression)?.let(::convertName) }
                                 ?: error("Missing text for call ref type of $v"),
-                            typeParams = v.typeArgumentList?.let(::convertTypeArgs)
+                            typeArgs = v.typeArgumentList?.let(::convertTypeArgs)
                         ).mapNotCorrespondsPsiElement(v)
                     )).mapNotCorrespondsPsiElement(v),
                     questionMarks = questionMarks,

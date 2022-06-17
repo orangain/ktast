@@ -212,7 +212,7 @@ open class Visitor {
             }
             is Node.Type.Simple.Piece -> {
                 visitChildren(name)
-                visitChildren(typeParams)
+                visitChildren(typeArgs)
             }
             is Node.Type.Nullable -> {
                 visitChildren(lPar)
