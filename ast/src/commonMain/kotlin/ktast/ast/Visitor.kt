@@ -362,7 +362,6 @@ open class Visitor {
                 visitChildren(expr)
             }
             is Node.Expr.Return -> {
-                visitChildren(returnKeyword)
                 visitChildren(expr)
             }
             is Node.Expr.Continue -> {}
