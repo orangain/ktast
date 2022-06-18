@@ -437,15 +437,15 @@ open class Converter {
     ).map(v)
 
     open fun convertValueArgs(v: KtValueArgumentList) = Node.ValueArgs(
-        args = v.arguments.map(::convertValueArg),
+        elements = v.arguments.map(::convertValueArg),
         trailingComma = v.trailingComma?.let(::convertComma),
     ).map(v)
 
     open fun convertValueArgs(v: KtInitializerList): Node.ValueArgs {
         val valueArgumentList = (v.initializers.firstOrNull() as? KtSuperTypeCallEntry)?.valueArgumentList
+            ?: error("No value arguments for $v")
         return Node.ValueArgs(
-            args = (valueArgumentList?.arguments
-                ?: error("No value arguments for $v")).map(::convertValueArg),
+            elements = (valueArgumentList.arguments).map(::convertValueArg),
             trailingComma = valueArgumentList.trailingComma?.let(::convertComma),
         ).map(v)
     }

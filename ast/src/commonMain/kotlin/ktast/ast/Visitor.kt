@@ -227,10 +227,6 @@ open class Visitor {
             is Node.ConstructorCallee -> {
                 visitChildren(type)
             }
-            is Node.ValueArgs -> {
-                visitChildren(args)
-                visitChildren(trailingComma)
-            }
             is Node.ValueArg -> {
                 visitChildren(name)
                 visitChildren(expr)

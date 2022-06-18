@@ -502,9 +502,9 @@ sealed class Node {
      * AST node corresponds to KtValueArgumentList or KtInitializerList.
      */
     data class ValueArgs(
-        val args: List<ValueArg>,
-        val trailingComma: Keyword.Comma?,
-    ) : Node()
+        override val elements: List<ValueArg>,
+        override val trailingComma: Keyword.Comma?,
+    ) : CommaSeparatedNodeList<ValueArg>("(", ")")
 
     /**
      * AST node corresponds to KtValueArgument.
