@@ -205,19 +205,19 @@ sealed class Node {
             data class Params(
                 val params: List<Param>,
                 val trailingComma: Keyword.Comma?,
-            ) : Node() {
-                /**
-                 * AST node corresponds to KtParameter.
-                 */
-                data class Param(
-                    override val mods: Modifiers?,
-                    val valOrVar: Keyword.ValOrVar?,
-                    val name: Expr.Name,
-                    // Type can be null for anon functions
-                    val typeRef: TypeRef?,
-                    val initializer: Initializer?
-                ) : Node(), WithModifiers
-            }
+            ) : Node()
+
+            /**
+             * AST node corresponds to KtParameter.
+             */
+            data class Param(
+                override val mods: Modifiers?,
+                val valOrVar: Keyword.ValOrVar?,
+                val name: Expr.Name,
+                // Type can be null for anon functions
+                val typeRef: TypeRef?,
+                val initializer: Initializer?
+            ) : Node(), WithModifiers
 
             /**
              * Virtual AST node corresponds to function body.
@@ -301,7 +301,7 @@ sealed class Node {
                  * AST node corresponds to KtParameterList under KtPropertyAccessor.
                  */
                 data class Params(
-                    val params: List<Func.Params.Param>,
+                    val params: List<Func.Param>,
                     val trailingComma: Keyword.Comma?,
                 ) : Node()
             }
