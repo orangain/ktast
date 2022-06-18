@@ -3,27 +3,33 @@ package ktast.ast
 sealed class Node {
     var tag: Any? = null
 
-    data class NodeList<out T : Node>(
-        val children: List<T>,
-        val separator: String = "",
+    abstract class NodeList<out E : Node>(
         val prefix: String = "",
         val suffix: String = "",
-        val trailingSeparator: Keyword? = null,
-    ) : Node()
+    ) : Node() {
+        abstract val elements: List<E>
+    }
+
+    abstract class CommaSeparatedNodeList<out E : Node>(
+        prefix: String,
+        suffix: String,
+    ) : NodeList<E>(prefix, suffix) {
+        abstract val trailingComma: Keyword.Comma?
+    }
 
     interface WithAnnotations {
         val anns: List<Modifier.AnnotationSet>
     }
 
     interface WithModifiers : WithAnnotations {
-        val mods: NodeList<Modifier>?
+        val mods: Modifiers?
         override val anns: List<Modifier.AnnotationSet>
-            get() = mods?.children.orEmpty().mapNotNull { it as? Modifier.AnnotationSet }
+            get() = mods?.elements.orEmpty().mapNotNull { it as? Modifier.AnnotationSet }
     }
 
     interface Entry : WithAnnotations {
         val pkg: Package?
-        val imports: NodeList<Import>?
+        val imports: Imports?
     }
 
     interface WithOptionalParentheses {
@@ -38,14 +44,14 @@ sealed class Node {
     data class File(
         override val anns: List<Modifier.AnnotationSet>,
         override val pkg: Package?,
-        override val imports: NodeList<Import>?,
+        override val imports: Imports?,
         val decls: List<Decl>
     ) : Node(), Entry
 
     data class Script(
         override val anns: List<Modifier.AnnotationSet>,
         override val pkg: Package?,
-        override val imports: NodeList<Import>?,
+        override val imports: Imports?,
         val exprs: List<Expr>
     ) : Node(), Entry
 
@@ -53,10 +59,17 @@ sealed class Node {
      * AST node corresponds to KtPackageDirective.
      */
     data class Package(
-        override val mods: NodeList<Modifier>?,
+        override val mods: Modifiers?,
         val packageKeyword: Keyword.Package,
         val names: List<Expr.Name>,
     ) : Node(), WithModifiers
+
+    /**
+     * AST node corresponds to KtImportList.
+     */
+    data class Imports(
+        override val elements: List<Import>,
+    ) : NodeList<Import>()
 
     /**
      * AST node corresponds to KtImportDirective.
@@ -75,26 +88,33 @@ sealed class Node {
         ) : Node()
     }
 
+    /**
+     * AST node corresponds to KtClassBody.
+     */
+    data class Decls(
+        override val elements: List<Decl>,
+    ) : NodeList<Decl>("{", "}")
+
     sealed class Decl : Node() {
         /**
          * AST node corresponds to KtClassOrObject.
          */
         data class Structured(
-            override val mods: NodeList<Modifier>?,
+            override val mods: Modifiers?,
             val declarationKeyword: Keyword.Declaration,
             val name: Expr.Name?,
             val typeParams: TypeParams?,
             val primaryConstructor: PrimaryConstructor?,
             val parents: Parents?,
             val typeConstraints: PostModifier.TypeConstraints?,
-            val body: NodeList<Decl>?,
+            val body: Decls?,
         ) : Decl(), WithModifiers {
 
             val isClass = declarationKeyword.token == Keyword.DeclarationToken.CLASS
             val isObject = declarationKeyword.token == Keyword.DeclarationToken.OBJECT
             val isInterface = declarationKeyword.token == Keyword.DeclarationToken.INTERFACE
-            val isCompanion = mods?.children.orEmpty().contains(Modifier.Lit(Modifier.Keyword.COMPANION))
-            val isEnum = mods?.children.orEmpty().contains(Modifier.Lit(Modifier.Keyword.ENUM))
+            val isCompanion = mods?.elements.orEmpty().contains(Modifier.Lit(Modifier.Keyword.COMPANION))
+            val isEnum = mods?.elements.orEmpty().contains(Modifier.Lit(Modifier.Keyword.ENUM))
 
             /**
              * AST node corresponds to KtSuperTypeList.
@@ -110,7 +130,7 @@ sealed class Node {
                  */
                 data class CallConstructor(
                     val type: Node.Type.Simple,
-                    val typeArgs: NodeList<TypeProjection>?,
+                    val typeArgs: TypeProjections?,
                     val args: ValueArgs?,
                     val lambda: Expr.Call.LambdaArg?
                 ) : Parent()
@@ -136,7 +156,7 @@ sealed class Node {
              * AST node corresponds to KtPrimaryConstructor.
              */
             data class PrimaryConstructor(
-                override val mods: NodeList<Modifier>?,
+                override val mods: Modifiers?,
                 val constructorKeyword: Keyword.Constructor?,
                 val params: Func.Params?
             ) : Node(), WithModifiers
@@ -153,7 +173,7 @@ sealed class Node {
          * AST node corresponds to KtAnonymousInitializer.
          */
         data class Init(
-            override val mods: NodeList<Modifier>?,
+            override val mods: Modifiers?,
             val block: Expr.Block,
         ) : Decl(), WithModifiers
 
@@ -161,7 +181,7 @@ sealed class Node {
          * AST node corresponds to KtNamedFunction.
          */
         data class Func(
-            override val mods: NodeList<Modifier>?,
+            override val mods: Modifiers?,
             val funKeyword: Keyword.Fun,
             val typeParams: TypeParams?,
             val receiverTypeRef: TypeRef?,
@@ -185,7 +205,7 @@ sealed class Node {
                  * AST node corresponds to KtParameter.
                  */
                 data class Param(
-                    override val mods: NodeList<Modifier>?,
+                    override val mods: Modifiers?,
                     val valOrVar: Keyword.ValOrVar?,
                     val name: Expr.Name,
                     // Type can be null for anon functions
@@ -210,7 +230,7 @@ sealed class Node {
          * AST node corresponds to KtProperty or KtDestructuringDeclaration.
          */
         data class Property(
-            override val mods: NodeList<Modifier>?,
+            override val mods: Modifiers?,
             val valOrVar: Keyword.ValOrVar,
             val typeParams: TypeParams?,
             val receiverTypeRef: TypeRef?,
@@ -257,7 +277,7 @@ sealed class Node {
              */
             sealed class Accessor : Node(), WithModifiers, WithPostModifiers {
                 data class Get(
-                    override val mods: NodeList<Modifier>?,
+                    override val mods: Modifiers?,
                     val getKeyword: Keyword.Get,
                     val typeRef: TypeRef?,
                     override val postMods: List<PostModifier>,
@@ -265,7 +285,7 @@ sealed class Node {
                 ) : Accessor()
 
                 data class Set(
-                    override val mods: NodeList<Modifier>?,
+                    override val mods: Modifiers?,
                     val setKeyword: Keyword.Set,
                     val params: Params?,
                     override val postMods: List<PostModifier>,
@@ -286,7 +306,7 @@ sealed class Node {
          * AST node corresponds to KtTypeAlias.
          */
         data class TypeAlias(
-            override val mods: NodeList<Modifier>?,
+            override val mods: Modifiers?,
             val name: Expr.Name,
             val typeParams: TypeParams?,
             val typeRef: TypeRef
@@ -296,7 +316,7 @@ sealed class Node {
          * AST node corresponds to KtSecondaryConstructor.
          */
         data class SecondaryConstructor(
-            override val mods: NodeList<Modifier>?,
+            override val mods: Modifiers?,
             val constructorKeyword: Keyword.Constructor,
             val params: Func.Params?,
             val delegationCall: DelegationCall?,
@@ -317,7 +337,7 @@ sealed class Node {
          * AST node corresponds to KtEnumEntry.
          */
         data class EnumEntry(
-            override val mods: NodeList<Modifier>?,
+            override val mods: Modifiers?,
             val name: Expr.Name,
             val args: ValueArgs?,
             val body: Structured.Body?,
@@ -340,16 +360,20 @@ sealed class Node {
     /**
      * AST node corresponds to KtTypeParameterList.
      */
+//    data class TypeParams(
+//        val params: List<TypeParam>,
+//        val trailingComma: Keyword.Comma?,
+//    ) : Node()
     data class TypeParams(
-        val params: List<TypeParam>,
-        val trailingComma: Keyword.Comma?,
-    ) : Node()
+        override val elements: List<TypeParam>,
+        override val trailingComma: Keyword.Comma?,
+    ) : CommaSeparatedNodeList<TypeParam>("<", ">")
 
     /**
      * AST node corresponds to KtTypeParameter.
      */
     data class TypeParam(
-        override val mods: NodeList<Modifier>?,
+        override val mods: Modifiers?,
         val name: Expr.Name,
         val typeRef: TypeRef?
     ) : Node(), WithModifiers
@@ -360,7 +384,7 @@ sealed class Node {
          */
         data class Func(
             val receiver: Receiver?,
-            val params: NodeList<Param>?,
+            val params: Params?,
             val typeRef: TypeRef
         ) : Type() {
             /**
@@ -369,6 +393,14 @@ sealed class Node {
             data class Receiver(
                 val typeRef: TypeRef,
             ) : Node()
+
+            /**
+             * AST node corresponds to KtParameterList.
+             */
+            data class Params(
+                override val elements: List<Param>,
+                override val trailingComma: Keyword.Comma?,
+            ) : CommaSeparatedNodeList<Param>("(", ")")
 
             /**
              * AST node corresponds to KtParameter.
@@ -387,7 +419,7 @@ sealed class Node {
         ) : Type() {
             data class Piece(
                 val name: Expr.Name,
-                val typeParams: NodeList<TypeProjection>?
+                val typeParams: TypeProjections?
             ) : Node()
         }
 
@@ -396,7 +428,7 @@ sealed class Node {
          */
         data class Nullable(
             override val lPar: Keyword.LPar?,
-            override val mods: NodeList<Modifier>?,
+            override val mods: Modifiers?,
             val type: Type,
             override val rPar: Keyword.RPar?,
         ) : Type(), WithModifiers, WithOptionalParentheses
@@ -408,6 +440,14 @@ sealed class Node {
     }
 
     /**
+     * AST node corresponds to KtTypeArgumentList.
+     */
+    data class TypeProjections(
+        override val elements: List<TypeProjection>,
+        override val trailingComma: Keyword.Comma?,
+    ) : CommaSeparatedNodeList<TypeProjection>("<", ">")
+
+    /**
      * AST node corresponds to KtTypeProjection.
      */
     sealed class TypeProjection : Node() {
@@ -416,7 +456,7 @@ sealed class Node {
         ) : TypeProjection()
 
         data class Type(
-            override val mods: NodeList<Modifier>?,
+            override val mods: Modifiers?,
             val typeRef: TypeRef,
         ) : TypeProjection(), WithModifiers
     }
@@ -426,15 +466,26 @@ sealed class Node {
      */
     data class TypeRef(
         override val lPar: Keyword.LPar?,
-        val contextReceivers: NodeList<ContextReceiver>?,
-        override val mods: NodeList<Modifier>?,
+        val contextReceivers: ContextReceivers?,
+        override val mods: Modifiers?,
         val innerLPar: Keyword.LPar?,
-        val innerMods: NodeList<Modifier>?,
+        val innerMods: Modifiers?,
         val type: Type?,
         val innerRPar: Keyword.RPar?,
         override val rPar: Keyword.RPar?,
     ) : Node(), WithModifiers, WithOptionalParentheses
 
+    /**
+     * AST node corresponds to KtContextReceiverList.
+     */
+    data class ContextReceivers(
+        override val elements: List<ContextReceiver>,
+        override val trailingComma: Keyword.Comma?,
+    ) : CommaSeparatedNodeList<ContextReceiver>("(", ")")
+
+    /**
+     * AST node corresponds to KtContextReceiver.
+     */
     data class ContextReceiver(
         val typeRef: TypeRef,
     ) : Node()
@@ -618,9 +669,17 @@ sealed class Node {
          * AST node corresponds to KtLambdaExpression.
          */
         data class Lambda(
-            val params: NodeList<Param>?,
+            val params: Params?,
             val body: Body?
         ) : Expr() {
+            /**
+             * AST node corresponds to KtParameterList under KtLambdaExpression.
+             */
+            data class Params(
+                override val elements: List<Param>,
+                override val trailingComma: Keyword.Comma?,
+            ) : CommaSeparatedNodeList<Param>("", "")
+
             /**
              * AST node corresponds to KtParameter or KtDestructuringDeclarationEntry in lambda arguments or for statement.
              */
@@ -637,9 +696,17 @@ sealed class Node {
                  * AST node corresponds to KtParameter whose child is KtDestructuringDeclaration.
                  */
                 data class Multi(
-                    val vars: NodeList<Single>,
+                    val vars: Variables,
                     val destructTypeRef: TypeRef?
-                ) : Param()
+                ) : Param() {
+                    /**
+                     * AST node corresponds to KtDestructuringDeclaration in lambda arguments.
+                     */
+                    data class Variables(
+                        override val elements: List<Single>,
+                        override val trailingComma: Keyword.Comma?,
+                    ) : CommaSeparatedNodeList<Single>("(", ")")
+                }
             }
 
             /**
@@ -765,7 +832,7 @@ sealed class Node {
          */
         data class Call(
             val expr: Expr,
-            val typeArgs: NodeList<TypeProjection>?,
+            val typeArgs: TypeProjections?,
             val args: ValueArgs?,
             // According to the Kotlin syntax, at most one lambda argument is allowed. However, Kotlin compiler can parse multiple lambda arguments.
             val lambdaArgs: List<LambdaArg>
@@ -812,6 +879,13 @@ sealed class Node {
         data class Expr(val expr: Node.Expr) : Stmt()
     }
 
+    /**
+     * AST node corresponds to KtModifierList.
+     */
+    data class Modifiers(
+        override val elements: List<Modifier>,
+    ) : NodeList<Modifier>()
+
     sealed class Modifier : Node() {
         /**
          * AST node corresponds to KtAnnotation or single KtAnnotationEntry.
@@ -852,8 +926,17 @@ sealed class Node {
          */
         data class TypeConstraints(
             val whereKeyword: Keyword.Where,
-            val constraints: NodeList<TypeConstraint>,
+            val constraints: TypeConstraintList,
         ) : PostModifier() {
+            /**
+             * AST node corresponds to KtTypeConstraintList.
+             */
+            data class TypeConstraintList(
+                override val elements: List<TypeConstraint>,
+            ) : CommaSeparatedNodeList<TypeConstraint>("", "") {
+                override val trailingComma: Keyword.Comma? = null // Trailing comma is not allowed.
+            }
+
             /**
              * AST node corresponds to KtTypeConstraint.
              */
@@ -869,8 +952,16 @@ sealed class Node {
          */
         data class Contract(
             val contractKeyword: Keyword.Contract,
-            val contractEffects: NodeList<ContractEffect>,
+            val contractEffects: ContractEffects,
         ) : PostModifier() {
+            /**
+             * AST node corresponds to KtContractEffectList.
+             */
+            data class ContractEffects(
+                override val elements: List<ContractEffect>,
+                override val trailingComma: Keyword.Comma?,
+            ) : CommaSeparatedNodeList<ContractEffect>("[", "]")
+
             /**
              * AST node corresponds to KtContractEffect.
              */

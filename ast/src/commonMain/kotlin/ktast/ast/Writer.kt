@@ -22,22 +22,11 @@ open class Writer(
         v?.writeExtrasBefore()
         v?.apply {
             when (this) {
+                is Node.CommaSeparatedNodeList<*> -> {
+                    children(elements, ",", prefix, suffix, trailingComma, parent = this)
+                }
                 is Node.NodeList<*> -> {
-                    append(prefix)
-
-                    // First, do all the enum entries if there are any
-                    val enumEntries = children.takeWhile { it is Node.Decl.EnumEntry }
-                    if (enumEntries.isNotEmpty()) {
-                        children(enumEntries) // Each EnumEntry contains commas and trailing semicolon.
-                    }
-
-                    // Now the rest of the members
-                    val restChildren = children.drop(enumEntries.size)
-                    children(restChildren, separator)
-                    children(trailingSeparator)
-
-                    writeExtrasWithin()
-                    append(suffix)
+                    children(elements, prefix = prefix, suffix = suffix, parent = this)
                 }
                 is Node.File -> {
                     children(anns)
@@ -202,9 +191,6 @@ open class Writer(
                 is Node.Initializer -> {
                     children(equals)
                     children(expr)
-                }
-                is Node.TypeParams -> {
-                    children(params, ",", "<", ">", trailingComma)
                 }
                 is Node.TypeParam -> {
                     children(mods)

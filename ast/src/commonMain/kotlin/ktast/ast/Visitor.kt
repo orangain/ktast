@@ -5,9 +5,12 @@ open class Visitor {
 
     protected open fun visit(v: Node?, parent: Node) = v.run {
         when (this) {
+            is Node.CommaSeparatedNodeList<*> -> {
+                visitChildren(elements)
+                visitChildren(trailingComma)
+            }
             is Node.NodeList<*> -> {
-                visitChildren(children)
-                visitChildren(trailingSeparator)
+                visitChildren(elements)
             }
             is Node.File -> {
                 visitChildren(anns)
@@ -169,10 +172,6 @@ open class Visitor {
             is Node.Initializer -> {
                 visitChildren(equals)
                 visitChildren(expr)
-            }
-            is Node.TypeParams -> {
-                visitChildren(params)
-                visitChildren(trailingComma)
             }
             is Node.TypeParam -> {
                 visitChildren(mods)

@@ -30,8 +30,8 @@ open class Converter {
         names = v.packageNames.map(::convertName),
     ).map(v)
 
-    open fun convertImports(v: KtImportList): Node.NodeList<Node.Import> = Node.NodeList(
-        children = v.imports.map(::convertImport),
+    open fun convertImports(v: KtImportList) = Node.Imports(
+        elements = v.imports.map(::convertImport),
     ).map(v)
 
     open fun convertImport(v: KtImportDirective) = Node.Import(
@@ -55,11 +55,8 @@ open class Converter {
         name = convertName(v.nameIdentifier ?: error("No name identifier for $v")),
     ).map(v)
 
-    open fun convertDecls(v: KtClassBody): Node.NodeList<Node.Decl> = Node.NodeList(
-        children = v.declarations.map(::convertDecl),
-        separator = "",
-        prefix = "{",
-        suffix = "}",
+    open fun convertDecls(v: KtClassBody) = Node.Decls(
+        elements = v.declarations.map(::convertDecl),
     ).map(v)
 
     open fun convertDecl(v: KtDeclaration): Node.Decl = when (v) {
@@ -287,7 +284,7 @@ open class Converter {
     ).mapNotCorrespondsPsiElement(parent)
 
     open fun convertTypeParams(v: KtTypeParameterList) = Node.TypeParams(
-        params = v.parameters.map(::convertTypeParam),
+        elements = v.parameters.map(::convertTypeParam),
         trailingComma = v.trailingComma?.let(::convertComma),
     ).map(v)
 
@@ -297,13 +294,10 @@ open class Converter {
         typeRef = v.extendsBound?.let(::convertTypeRef)
     ).map(v)
 
-    open fun convertTypeProjections(v: KtTypeArgumentList): Node.NodeList<Node.TypeProjection> = Node.NodeList(
-        children = v.arguments.map(::convertTypeProjection),
-        separator = ",",
-        prefix = "<",
-        suffix = ">",
-        trailingSeparator = v.trailingComma?.let(::convertComma),
-    )
+    open fun convertTypeProjections(v: KtTypeArgumentList) = Node.TypeProjections(
+        elements = v.arguments.map(::convertTypeProjection),
+        trailingComma = v.trailingComma?.let(::convertComma),
+    ).map(v)
 
     open fun convertTypeProjection(v: KtTypeProjection): Node.TypeProjection =
         if (v.projectionKind == KtProjectionKind.STAR) {
@@ -364,11 +358,9 @@ open class Converter {
         ).map(v)
     }
 
-    open fun convertTypeConstraints(v: KtTypeConstraintList): Node.NodeList<Node.PostModifier.TypeConstraints.TypeConstraint> =
-        Node.NodeList(
-            children = v.constraints.map(::convertTypeConstraint),
-            separator = ",",
-        ).map(v)
+    open fun convertTypeConstraints(v: KtTypeConstraintList) = Node.PostModifier.TypeConstraints.TypeConstraintList(
+        elements = v.constraints.map(::convertTypeConstraint),
+    ).map(v)
 
     open fun convertTypeConstraint(v: KtTypeConstraint) = Node.PostModifier.TypeConstraints.TypeConstraint(
         anns = v.children.mapNotNull {
@@ -410,12 +402,9 @@ open class Converter {
         typeRef = convertTypeRef(v.typeReference),
     ).map(v)
 
-    open fun convertTypeFuncParams(v: KtParameterList): Node.NodeList<Node.Type.Func.Param> = Node.NodeList(
-        children = v.parameters.map(::convertTypeFuncParam),
-        separator = ",",
-        prefix = "(",
-        suffix = ")",
-        trailingSeparator = v.trailingComma?.let(::convertComma)
+    open fun convertTypeFuncParams(v: KtParameterList) = Node.Type.Func.Params(
+        elements = v.parameters.map(::convertTypeFuncParam),
+        trailingComma = v.trailingComma?.let(::convertComma)
     ).map(v)
 
     open fun convertTypeFuncParam(v: KtParameter) = Node.Type.Func.Param(
@@ -423,25 +412,19 @@ open class Converter {
         typeRef = convertTypeRef(v.typeReference ?: error("No param type"))
     ).map(v)
 
-    open fun convertContextReceivers(v: KtContextReceiverList): Node.NodeList<Node.ContextReceiver> = Node.NodeList(
-        children = v.contextReceivers().map(::convertContextReceiver),
-        separator = ",",
-        prefix = "(",
-        suffix = ")",
+    open fun convertContextReceivers(v: KtContextReceiverList) = Node.ContextReceivers(
+        elements = v.contextReceivers().map(::convertContextReceiver),
+        trailingComma = null,
     ).map(v)
 
     open fun convertContextReceiver(v: KtContextReceiver) = Node.ContextReceiver(
         typeRef = convertTypeRef(v.typeReference() ?: error("Missing type reference for $v")),
     ).map(v)
 
-    open fun convertContractEffects(v: KtContractEffectList): Node.NodeList<Node.PostModifier.Contract.ContractEffect> =
-        Node.NodeList(
-            children = v.children.filterIsInstance<KtContractEffect>().map(::convertContractEffect),
-            separator = ",",
-            prefix = "[",
-            suffix = "]",
-            trailingSeparator = findTrailingSeparator(v, KtTokens.COMMA)?.let(::convertComma),
-        ).map(v)
+    open fun convertContractEffects(v: KtContractEffectList) = Node.PostModifier.Contract.ContractEffects(
+        elements = v.children.filterIsInstance<KtContractEffect>().map(::convertContractEffect),
+        trailingComma = findTrailingSeparator(v, KtTokens.COMMA)?.let(::convertComma),
+    ).map(v)
 
     open fun convertContractEffect(v: KtContractEffect) = Node.PostModifier.Contract.ContractEffect(
         expr = convertExpr(v.getExpression()),
@@ -621,7 +604,7 @@ open class Converter {
                 listOf(
                     Node.Type.Simple.Piece(
                         convertName(v.getReferencedNameElement()),
-                        Node.NodeList(emptyList(), ",")
+                        null,
                     ).map(v)
                 )
             ).mapNotCorrespondsPsiElement(v),
@@ -695,10 +678,9 @@ open class Converter {
         body = v.bodyExpression?.let(::convertLambdaBody)
     ).map(v)
 
-    open fun convertLambdaParams(v: KtParameterList): Node.NodeList<Node.Expr.Lambda.Param> = Node.NodeList(
-        children = v.parameters.map(::convertLambdaParam),
-        separator = ",",
-        trailingSeparator = v.trailingComma?.let(::convertComma),
+    open fun convertLambdaParams(v: KtParameterList) = Node.Expr.Lambda.Params(
+        elements = v.parameters.map(::convertLambdaParam),
+        trailingComma = v.trailingComma?.let(::convertComma),
     ).map(v)
 
     open fun convertLambdaParam(v: KtParameter): Node.Expr.Lambda.Param {
@@ -716,13 +698,10 @@ open class Converter {
         }
     }
 
-    open fun convertLambdaParamVars(v: KtDestructuringDeclaration): Node.NodeList<Node.Expr.Lambda.Param.Single> =
-        Node.NodeList(
-            children = v.entries.map(::convertLambdaParamVar),
-            separator = ",",
-            prefix = "(",
-            suffix = ")",
-        ).map(v)
+    open fun convertLambdaParamVars(v: KtDestructuringDeclaration) = Node.Expr.Lambda.Param.Multi.Variables(
+        elements = v.entries.map(::convertLambdaParamVar),
+        trailingComma = v.trailingComma?.let(::convertComma),
+    ).map(v)
 
     open fun convertLambdaParamVar(v: KtDestructuringDeclarationEntry) =
         Node.Expr.Lambda.Param.Single(
@@ -930,8 +909,8 @@ open class Converter {
         args = v.valueArgumentList?.let(::convertValueArgs),
     ).map(v)
 
-    open fun convertModifiers(v: KtModifierList): Node.NodeList<Node.Modifier> = Node.NodeList(
-        children = v.node.children().mapNotNull { node ->
+    open fun convertModifiers(v: KtModifierList) = Node.Modifiers(
+        elements = v.node.children().mapNotNull { node ->
             // We go over the node children because we want to preserve order
             node.psi.let { psi ->
                 when (psi) {
@@ -946,9 +925,6 @@ open class Converter {
                 }
             }
         }.toList(),
-        separator = "",
-        prefix = "",
-        suffix = "",
     ).map(v)
 
     open fun convertPostModifiers(v: KtElement): List<Node.PostModifier> {

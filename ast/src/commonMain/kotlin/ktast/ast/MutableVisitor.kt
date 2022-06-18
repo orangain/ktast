@@ -9,10 +9,6 @@ open class MutableVisitor {
         ch.sub { newCh ->
             preVisit(this, parent)?.run {
                 val new: Node = when (this) {
-                    is Node.NodeList<*> -> copy(
-                        children = visitChildren(children, newCh),
-                        trailingSeparator = visitChildren(trailingSeparator, newCh),
-                    )
                     is Node.File -> copy(
                         anns = visitChildren(anns, newCh),
                         pkg = visitChildren(pkg, newCh),
@@ -30,6 +26,9 @@ open class MutableVisitor {
                         packageKeyword = visitChildren(packageKeyword, newCh),
                         names = visitChildren(names, newCh),
                     )
+                    is Node.Imports -> copy(
+                        elements = visitChildren(elements, newCh),
+                    )
                     is Node.Import -> copy(
                         importKeyword = visitChildren(importKeyword, newCh),
                         names = visitChildren(names, newCh),
@@ -37,6 +36,9 @@ open class MutableVisitor {
                     )
                     is Node.Import.Alias -> copy(
                         name = visitChildren(name, newCh),
+                    )
+                    is Node.Decls -> copy(
+                        elements = visitChildren(elements, newCh),
                     )
                     is Node.Decl.Structured -> copy(
                         mods = visitChildren(mods, newCh),
@@ -175,13 +177,17 @@ open class MutableVisitor {
                         expr = visitChildren(expr, newCh),
                     )
                     is Node.TypeParams -> copy(
-                        params = visitChildren(params, newCh),
+                        elements = visitChildren(elements, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
                     is Node.TypeParam -> copy(
                         mods = visitChildren(mods, newCh),
                         name = visitChildren(name, newCh),
                         typeRef = visitChildren(typeRef, newCh)
+                    )
+                    is Node.TypeProjections -> copy(
+                        elements = visitChildren(elements, newCh),
+                        trailingComma = visitChildren(trailingComma, newCh),
                     )
                     is Node.TypeProjection.Asterisk -> copy(
                         asterisk = visitChildren(asterisk, newCh),
@@ -208,6 +214,10 @@ open class MutableVisitor {
                     is Node.Type.Func.Receiver -> copy(
                         typeRef = visitChildren(typeRef, newCh),
                     )
+                    is Node.Type.Func.Params -> copy(
+                        elements = visitChildren(elements, newCh),
+                        trailingComma = visitChildren(trailingComma, newCh),
+                    )
                     is Node.Type.Func.Param -> copy(
                         name = visitChildren(name, newCh),
                         typeRef = visitChildren(typeRef, newCh),
@@ -226,6 +236,10 @@ open class MutableVisitor {
                         rPar = visitChildren(rPar, newCh),
                     )
                     is Node.Type.Dynamic -> this
+                    is Node.ContextReceivers -> copy(
+                        elements = visitChildren(elements, newCh),
+                        trailingComma = visitChildren(trailingComma, newCh),
+                    )
                     is Node.ContextReceiver -> copy(
                         typeRef = visitChildren(typeRef, newCh),
                     )
@@ -321,6 +335,10 @@ open class MutableVisitor {
                         params = visitChildren(params, newCh),
                         body = visitChildren(body, newCh)
                     )
+                    is Node.Expr.Lambda.Params -> copy(
+                        elements = visitChildren(elements, newCh),
+                        trailingComma = visitChildren(trailingComma, newCh),
+                    )
                     is Node.Expr.Lambda.Param.Single -> copy(
                         name = visitChildren(name, newCh),
                         typeRef = visitChildren(typeRef, newCh),
@@ -328,6 +346,10 @@ open class MutableVisitor {
                     is Node.Expr.Lambda.Param.Multi -> copy(
                         vars = visitChildren(vars, newCh),
                         destructTypeRef = visitChildren(destructTypeRef, newCh)
+                    )
+                    is Node.Expr.Lambda.Param.Multi.Variables -> copy(
+                        elements = visitChildren(elements, newCh),
+                        trailingComma = visitChildren(trailingComma, newCh),
                     )
                     is Node.Expr.Lambda.Body -> copy(
                         stmts = visitChildren(stmts, newCh)
@@ -414,6 +436,9 @@ open class MutableVisitor {
                     is Node.Stmt.Expr -> copy(
                         expr = visitChildren(expr, newCh)
                     )
+                    is Node.Modifiers -> copy(
+                        elements = visitChildren(elements, newCh),
+                    )
                     is Node.Modifier.AnnotationSet -> copy(
                         atSymbol = visitChildren(atSymbol, newCh),
                         lBracket = visitChildren(lBracket, newCh),
@@ -429,6 +454,9 @@ open class MutableVisitor {
                         whereKeyword = visitChildren(whereKeyword, newCh),
                         constraints = visitChildren(constraints, newCh),
                     )
+                    is Node.PostModifier.TypeConstraints.TypeConstraintList -> copy(
+                        elements = visitChildren(elements, newCh),
+                    )
                     is Node.PostModifier.TypeConstraints.TypeConstraint -> copy(
                         anns = visitChildren(anns, newCh),
                         name = visitChildren(name, newCh),
@@ -437,6 +465,10 @@ open class MutableVisitor {
                     is Node.PostModifier.Contract -> copy(
                         contractKeyword = visitChildren(contractKeyword, newCh),
                         contractEffects = visitChildren(contractEffects, newCh),
+                    )
+                    is Node.PostModifier.Contract.ContractEffects -> copy(
+                        elements = visitChildren(elements, newCh),
+                        trailingComma = visitChildren(trailingComma, newCh),
                     )
                     is Node.PostModifier.Contract.ContractEffect -> copy(
                         expr = visitChildren(expr, newCh),
