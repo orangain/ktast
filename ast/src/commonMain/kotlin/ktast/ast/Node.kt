@@ -54,7 +54,8 @@ sealed class Node {
      */
     data class Package(
         override val mods: NodeList<Modifier>?,
-        val packageNameExpr: Expr,
+        val packageKeyword: Keyword.Package,
+        val names: List<Expr.Name>,
     ) : Node(), WithModifiers
 
     /**
@@ -75,17 +76,17 @@ sealed class Node {
     }
 
     sealed class Decl : Node() {
+        /**
+         * AST node corresponds to KtClassOrObject.
+         */
         data class Structured(
             override val mods: NodeList<Modifier>?,
             val declarationKeyword: Keyword.Declaration,
             val name: Expr.Name?,
             val typeParams: TypeParams?,
             val primaryConstructor: PrimaryConstructor?,
-            val colon: Keyword.Colon?,
-            val parentAnns: List<Modifier.AnnotationSet>,
-            val parents: List<Parent>,
-            val typeConstraints: NodeList<PostModifier.TypeConstraints.TypeConstraint>?,
-            // TODO: Can include primary constructor
+            val parents: Parents?,
+            val typeConstraints: PostModifier.TypeConstraints?,
             val body: NodeList<Decl>?,
         ) : Decl(), WithModifiers {
 
@@ -95,7 +96,18 @@ sealed class Node {
             val isCompanion = mods?.children.orEmpty().contains(Modifier.Lit(Modifier.Keyword.COMPANION))
             val isEnum = mods?.children.orEmpty().contains(Modifier.Lit(Modifier.Keyword.ENUM))
 
+            /**
+             * AST node corresponds to KtSuperTypeList.
+             */
+            data class Parents(val items: List<Parent>) : Node()
+
+            /**
+             * AST node corresponds to KtSuperTypeListEntry.
+             */
             sealed class Parent : Node() {
+                /**
+                 * AST node corresponds to KtSuperTypeCallEntry.
+                 */
                 data class CallConstructor(
                     val type: Node.Type.Simple,
                     val typeArgs: NodeList<TypeProjection>?,
@@ -103,17 +115,26 @@ sealed class Node {
                     val lambda: Expr.Call.LambdaArg?
                 ) : Parent()
 
+                /**
+                 * AST node corresponds to KtDelegatedSuperTypeEntry.
+                 */
                 data class DelegatedType(
                     val type: Node.Type.Simple,
                     val byKeyword: Keyword.By,
                     val expr: Expr
                 ) : Parent()
 
+                /**
+                 * AST node corresponds to KtSuperTypeEntry.
+                 */
                 data class Type(
                     val type: Node.Type.Simple,
                 ) : Parent()
             }
 
+            /**
+             * AST node corresponds to KtPrimaryConstructor.
+             */
             data class PrimaryConstructor(
                 override val mods: NodeList<Modifier>?,
                 val constructorKeyword: Keyword.Constructor?,
@@ -194,30 +215,41 @@ sealed class Node {
             val typeParams: TypeParams?,
             val receiverTypeRef: TypeRef?,
             // Always at least one, more than one is destructuring
-            val vars: List<Var>,
-            val trailingComma: Keyword.Comma?,
-            val typeConstraints: NodeList<PostModifier.TypeConstraints.TypeConstraint>?,
+            val variable: Variable,
+            val typeConstraints: PostModifier.TypeConstraints?,
             val initializer: Initializer?,
             val delegate: Delegate?,
-            val accessors: Accessors?
+            val accessors: List<Accessor>
         ) : Decl(), WithModifiers {
             /**
-             * AST node corresponds to KtParameter or KtDestructuringDeclarationEntry,
-             * or virtual node corresponds a part of KtProperty.
+             * Virtual AST node corresponds a part of KtProperty,
+             * virtual AST node corresponds to a list of KtDestructuringDeclarationEntry or
+             * AST node corresponds to KtDestructuringDeclarationEntry.
              */
-            data class Var(
-                val name: Expr.Name,
-                val typeRef: TypeRef?
-            ) : Node()
+            sealed class Variable : Node() {
+                /**
+                 * Virtual AST node corresponds a part of KtProperty or AST node corresponds to KtDestructuringDeclarationEntry.
+                 */
+                data class Single(
+                    val name: Expr.Name,
+                    val typeRef: TypeRef?
+                ) : Variable()
 
+                /**
+                 * Virtual AST node corresponds to a list of KtDestructuringDeclarationEntry.
+                 */
+                data class Multi(
+                    val vars: List<Single>,
+                    val trailingComma: Keyword.Comma?,
+                ) : Variable()
+            }
+
+            /**
+             * AST node corresponds to KtPropertyDelegate.
+             */
             data class Delegate(
                 val byKeyword: Keyword.By,
                 val expr: Expr,
-            ) : Node()
-
-            data class Accessors(
-                val first: Accessor,
-                val second: Accessor?
             ) : Node()
 
             /**
@@ -250,6 +282,9 @@ sealed class Node {
             }
         }
 
+        /**
+         * AST node corresponds to KtTypeAlias.
+         */
         data class TypeAlias(
             override val mods: NodeList<Modifier>?,
             val name: Expr.Name,
@@ -257,13 +292,19 @@ sealed class Node {
             val typeRef: TypeRef
         ) : Decl(), WithModifiers
 
-        data class Constructor(
+        /**
+         * AST node corresponds to KtSecondaryConstructor.
+         */
+        data class SecondaryConstructor(
             override val mods: NodeList<Modifier>?,
             val constructorKeyword: Keyword.Constructor,
             val params: Func.Params?,
             val delegationCall: DelegationCall?,
             val block: Expr.Block?
         ) : Decl(), WithModifiers {
+            /**
+             * AST node corresponds to KtConstructorDelegationCall.
+             */
             data class DelegationCall(
                 val target: DelegationTarget,
                 val args: ValueArgs?
@@ -288,6 +329,9 @@ sealed class Node {
         ) : Decl(), WithModifiers
     }
 
+    /**
+     * Virtual AST node corresponds to a pair of equals and expression.
+     */
     data class Initializer(
         val equals: Keyword.Equal,
         val expr: Expr,
@@ -299,16 +343,16 @@ sealed class Node {
     data class TypeParams(
         val params: List<TypeParam>,
         val trailingComma: Keyword.Comma?,
-    ) : Node() {
-        /**
-         * AST node corresponds to KtTypeParameter.
-         */
-        data class TypeParam(
-            override val mods: NodeList<Modifier>?,
-            val name: Expr.Name,
-            val typeRef: TypeRef?
-        ) : Node(), WithModifiers
-    }
+    ) : Node()
+
+    /**
+     * AST node corresponds to KtTypeParameter.
+     */
+    data class TypeParam(
+        override val mods: NodeList<Modifier>?,
+        val name: Expr.Name,
+        val typeRef: TypeRef?
+    ) : Node(), WithModifiers
 
     sealed class Type : Node() {
         /**
@@ -420,9 +464,9 @@ sealed class Node {
     }
 
     /**
-     * AST node corresponds to PsiElement having type of BODY.
+     * AST node corresponds to KtContainerNode.
      */
-    data class Body(
+    data class Container(
         val expr: Expr,
     ) : Node()
 
@@ -431,12 +475,10 @@ sealed class Node {
          * AST node corresponds to KtIfExpression.
          */
         data class If(
-            val lPar: Keyword.LPar,
-            val expr: Expr,
-            val rPar: Keyword.RPar,
-            val body: Expr,
-            val elseKeyword: Keyword.Else?,
-            val elseBody: Expr?
+            val ifKeyword: Keyword.If,
+            val condition: Expr,
+            val body: Container,
+            val elseBody: Container?
         ) : Expr()
 
         /**
@@ -452,31 +494,29 @@ sealed class Node {
              */
             data class Catch(
                 val catchKeyword: Keyword.Catch,
-                override val anns: List<Modifier.AnnotationSet>,
-                val varName: String,
-                val varType: Type.Simple,
-                val trailingComma: Keyword.Comma?,
+                val params: Decl.Func.Params,
                 val block: Block
-            ) : Node(), WithAnnotations
+            ) : Node()
         }
 
         /**
          * AST node corresponds to KtForExpression.
          */
         data class For(
+            val forKeyword: Keyword.For,
             override val anns: List<Modifier.AnnotationSet>,
-            // More than one means destructure
-            val vars: List<Decl.Property.Var>,
-            val inExpr: Expr,
-            val body: Body,
+            val loopParam: Lambda.Param,
+            val loopRange: Container,
+            val body: Container,
         ) : Expr(), WithAnnotations
 
         /**
          * AST node corresponds to KtWhileExpressionBase.
          */
         data class While(
-            val expr: Expr,
-            val body: Body,
+            val whileKeyword: Keyword.While,
+            val condition: Container,
+            val body: Container,
             val doWhile: Boolean
         ) : Expr()
 
@@ -582,15 +622,22 @@ sealed class Node {
             val body: Body?
         ) : Expr() {
             /**
-             * AST node corresponds to KtParameter in lambda arguments.
+             * AST node corresponds to KtParameter or KtDestructuringDeclarationEntry in lambda arguments or for statement.
              */
             sealed class Param : Node() {
+                /**
+                 * AST node corresponds to KtParameter whose child is IDENTIFIER or KtDestructuringDeclarationEntry.
+                 */
                 data class Single(
-                    val variable: Decl.Property.Var,
+                    val name: Name,
+                    val typeRef: TypeRef?
                 ) : Param()
 
+                /**
+                 * AST node corresponds to KtParameter whose child is KtDestructuringDeclaration.
+                 */
                 data class Multi(
-                    val vars: NodeList<Decl.Property.Var>,
+                    val vars: NodeList<Single>,
                     val destructTypeRef: TypeRef?
                 ) : Param()
             }
@@ -879,10 +926,14 @@ sealed class Node {
             INTERFACE, CLASS, OBJECT,
         }
 
+        class Package : Keyword("package")
         class Import : Keyword("import")
         class Fun : Keyword("fun")
         class Constructor : Keyword("constructor")
         class Return : Keyword("return")
+        class For : Keyword("for")
+        class While : Keyword("while")
+        class If : Keyword("if")
         class Else : Keyword("else")
         class Catch : Keyword("catch")
         class By : Keyword("by")
@@ -891,7 +942,6 @@ sealed class Node {
         class Get : Keyword("get")
         class Set : Keyword("set")
         class Equal : Keyword("=")
-        class Colon : Keyword(":")
         class Comma : Keyword(",")
         class Question : Keyword("?")
         class Asterisk : Keyword("*")

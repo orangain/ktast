@@ -23,7 +23,8 @@ open class Visitor {
             }
             is Node.Package -> {
                 visitChildren(mods)
-                visitChildren(packageNameExpr)
+                visitChildren(packageKeyword)
+                visitChildren(names)
             }
             is Node.Import -> {
                 visitChildren(importKeyword)
@@ -39,11 +40,12 @@ open class Visitor {
                 visitChildren(name)
                 visitChildren(typeParams)
                 visitChildren(primaryConstructor)
-                visitChildren(colon)
-                visitChildren(parentAnns)
                 visitChildren(parents)
                 visitChildren(typeConstraints)
                 visitChildren(body)
+            }
+            is Node.Decl.Structured.Parents -> {
+                visitChildren(items)
             }
             is Node.Decl.Structured.Parent.CallConstructor -> {
                 visitChildren(type)
@@ -106,8 +108,7 @@ open class Visitor {
                 visitChildren(valOrVar)
                 visitChildren(typeParams)
                 visitChildren(receiverTypeRef)
-                visitChildren(vars)
-                visitChildren(trailingComma)
+                visitChildren(variable)
                 visitChildren(typeConstraints)
                 visitChildren(initializer)
                 visitChildren(delegate)
@@ -117,13 +118,13 @@ open class Visitor {
                 visitChildren(byKeyword)
                 visitChildren(expr)
             }
-            is Node.Decl.Property.Var -> {
+            is Node.Decl.Property.Variable.Single -> {
                 visitChildren(name)
                 visitChildren(typeRef)
             }
-            is Node.Decl.Property.Accessors -> {
-                visitChildren(first)
-                visitChildren(second)
+            is Node.Decl.Property.Variable.Multi -> {
+                visitChildren(vars)
+                visitChildren(trailingComma)
             }
             is Node.Decl.Property.Accessor.Get -> {
                 visitChildren(mods)
@@ -149,14 +150,14 @@ open class Visitor {
                 visitChildren(typeParams)
                 visitChildren(typeRef)
             }
-            is Node.Decl.Constructor -> {
+            is Node.Decl.SecondaryConstructor -> {
                 visitChildren(mods)
                 visitChildren(constructorKeyword)
                 visitChildren(params)
                 visitChildren(delegationCall)
                 visitChildren(block)
             }
-            is Node.Decl.Constructor.DelegationCall -> {
+            is Node.Decl.SecondaryConstructor.DelegationCall -> {
                 visitChildren(args)
             }
             is Node.Decl.EnumEntry -> {
@@ -173,7 +174,7 @@ open class Visitor {
                 visitChildren(params)
                 visitChildren(trailingComma)
             }
-            is Node.TypeParams.TypeParam -> {
+            is Node.TypeParam -> {
                 visitChildren(mods)
                 visitChildren(name)
                 visitChildren(typeRef)
@@ -235,15 +236,13 @@ open class Visitor {
                 visitChildren(name)
                 visitChildren(expr)
             }
-            is Node.Body -> {
+            is Node.Container -> {
                 visitChildren(expr)
             }
             is Node.Expr.If -> {
-                visitChildren(lPar)
-                visitChildren(expr)
-                visitChildren(rPar)
+                visitChildren(ifKeyword)
+                visitChildren(condition)
                 visitChildren(body)
-                visitChildren(elseKeyword)
                 visitChildren(elseBody)
             }
             is Node.Expr.Try -> {
@@ -253,19 +252,19 @@ open class Visitor {
             }
             is Node.Expr.Try.Catch -> {
                 visitChildren(catchKeyword)
-                visitChildren(anns)
-                visitChildren(varType)
-                visitChildren(trailingComma)
+                visitChildren(params)
                 visitChildren(block)
             }
             is Node.Expr.For -> {
+                visitChildren(forKeyword)
                 visitChildren(anns)
-                visitChildren(vars)
-                visitChildren(inExpr)
+                visitChildren(loopParam)
+                visitChildren(loopRange)
                 visitChildren(body)
             }
             is Node.Expr.While -> {
-                visitChildren(expr)
+                visitChildren(whileKeyword)
+                visitChildren(condition)
                 visitChildren(body)
             }
             is Node.Expr.BinaryOp -> {
@@ -319,7 +318,8 @@ open class Visitor {
                 visitChildren(body)
             }
             is Node.Expr.Lambda.Param.Single -> {
-                visitChildren(variable)
+                visitChildren(name)
+                visitChildren(typeRef)
             }
             is Node.Expr.Lambda.Param.Multi -> {
                 visitChildren(vars)

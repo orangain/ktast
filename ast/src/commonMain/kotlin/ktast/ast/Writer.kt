@@ -46,8 +46,10 @@ open class Writer(
                     children(decls)
                 }
                 is Node.Package -> {
-                    children(mods).append("package")
-                    children(packageNameExpr)
+                    children(mods)
+                    children(packageKeyword)
+                    children(names, ".")
+                    writeExtrasWithin()
                 }
                 is Node.Import -> {
                     children(importKeyword)
@@ -64,15 +66,19 @@ open class Writer(
                     children(name)
                     children(typeParams)
                     children(primaryConstructor)
-                    children(colon)
-                    children(parentAnns)
-                    children(parents, ",")
-                    childTypeConstraints(typeConstraints)
+                    if (parents != null) {
+                        append(":")
+                        children(parents)
+                    }
+                    children(typeConstraints)
                     children(body)
+                }
+                is Node.Decl.Structured.Parents -> {
+                    children(items, ",")
                 }
                 is Node.Decl.Structured.Parent.CallConstructor -> {
                     children(type)
-                    parenChildren(args)
+                    children(args)
                 }
                 is Node.Decl.Structured.Parent.DelegatedType -> {
                     children(type)
@@ -126,23 +132,22 @@ open class Writer(
                     children(valOrVar)
                     children(typeParams)
                     if (receiverTypeRef != null) children(receiverTypeRef).append('.')
-                    childVars(vars, trailingComma)
-                    childTypeConstraints(typeConstraints)
+                    children(variable)
+                    children(typeConstraints)
                     children(initializer)
                     children(delegate)
-                    if (accessors != null) children(accessors)
+                    children(accessors)
                 }
                 is Node.Decl.Property.Delegate -> {
                     children(byKeyword)
                     children(expr)
                 }
-                is Node.Decl.Property.Var -> {
+                is Node.Decl.Property.Variable.Single -> {
                     children(name)
                     if (typeRef != null) append(":").also { children(typeRef) }
                 }
-                is Node.Decl.Property.Accessors -> {
-                    children(first)
-                    if (second != null) children(second)
+                is Node.Decl.Property.Variable.Multi -> {
+                    children(vars, ",", "(", ")", trailingComma)
                 }
                 is Node.Decl.Property.Accessor.Get -> {
                     children(mods)
@@ -175,15 +180,15 @@ open class Writer(
                     children(typeParams).append("=")
                     children(typeRef)
                 }
-                is Node.Decl.Constructor -> {
+                is Node.Decl.SecondaryConstructor -> {
                     children(mods)
                     children(constructorKeyword)
                     children(params)
                     if (delegationCall != null) append(":").also { children(delegationCall) }
                     children(block)
                 }
-                is Node.Decl.Constructor.DelegationCall ->
-                    append(target.name.lowercase()).also { parenChildren(args) }
+                is Node.Decl.SecondaryConstructor.DelegationCall ->
+                    append(target.name.lowercase()).also { children(args) }
                 is Node.Decl.EnumEntry -> {
                     children(mods)
                     children(name)
@@ -199,9 +204,9 @@ open class Writer(
                     children(expr)
                 }
                 is Node.TypeParams -> {
-                    bracketedChildren(params, trailingComma)
+                    children(params, ",", "<", ">", trailingComma)
                 }
-                is Node.TypeParams.TypeParam -> {
+                is Node.TypeParam -> {
                     children(mods)
                     children(name)
                     if (typeRef != null) append(":").also { children(typeRef) }
@@ -266,7 +271,7 @@ open class Writer(
                 is Node.ConstructorCallee -> {
                     children(type)
                 }
-                is Node.Body -> {
+                is Node.Container -> {
                     children(expr)
                 }
                 is Node.ValueArgs -> {
@@ -278,35 +283,52 @@ open class Writer(
                     children(expr)
                 }
                 is Node.Expr.If -> {
-                    append("if")
-                    children(lPar, expr, rPar, body)
-                    children(elseKeyword, elseBody)
+                    children(ifKeyword)
+                    append("(")
+                    children(condition)
+                    append(")")
+                    children(body)
+                    if (elseBody != null) {
+                        append("else")
+                        children(elseBody)
+                    }
                 }
                 is Node.Expr.Try -> {
                     append("try")
                     children(block)
-                    if (catches.isNotEmpty()) children(catches, "", prefix = "")
-                    if (finallyBlock != null) append(" finally ").also { children(finallyBlock) }
+                    if (catches.isNotEmpty()) children(catches)
+                    if (finallyBlock != null) append("finally").also { children(finallyBlock) }
                 }
                 is Node.Expr.Try.Catch -> {
                     children(catchKeyword)
-                    append("(")
-                    children(anns)
-                    appendName(varName).append(": ")
-                    children(varType)
-                    children(trailingComma)
-                    append(")")
+                    children(params)
                     children(block)
                 }
                 is Node.Expr.For -> {
-                    append("for (")
+                    children(forKeyword)
+                    append("(")
                     children(anns)
-                    childVars(vars, null).append("in ").also { children(inExpr) }.append(")")
+                    children(loopParam)
+                    append("in")
+                    children(loopRange)
+                    append(")")
                     children(body)
                 }
                 is Node.Expr.While -> {
-                    if (!doWhile) append("while (").also { children(expr) }.append(")").also { children(body) }
-                    else append("do").also { children(body) }.append("while (").also { children(expr) }.append(')')
+                    if (!doWhile) {
+                        children(whileKeyword)
+                        append("(")
+                        children(condition)
+                        append(")")
+                        children(body)
+                    } else {
+                        append("do")
+                        children(body)
+                        children(whileKeyword)
+                        append("(")
+                        children(condition)
+                        append(")")
+                    }
                 }
                 is Node.Expr.BinaryOp -> {
                     children(listOf(lhs, oper, rhs))
@@ -373,7 +395,11 @@ open class Writer(
                     append("}")
                 }
                 is Node.Expr.Lambda.Param.Single -> {
-                    children(variable)
+                    children(name)
+                    if (typeRef != null) {
+                        append(":")
+                        children(typeRef)
+                    }
                 }
                 is Node.Expr.Lambda.Param.Multi -> {
                     children(vars)
@@ -539,28 +565,6 @@ open class Writer(
             append(it.text)
         }
     }
-
-    protected fun Node.childTypeConstraints(v: Node.NodeList<Node.PostModifier.TypeConstraints.TypeConstraint>?) =
-        this@Writer.also {
-            if (v != null) append("where").also { children(v) }
-        }
-
-    protected fun Node.childVars(vars: List<Node.Decl.Property.Var>, trailingComma: Node.Keyword.Comma?) =
-        if (vars.size == 1 && trailingComma == null) {
-            children(vars)
-        } else {
-            parenChildren(vars, trailingComma)
-        }
-
-    protected fun Node.bracketedChildren(v: List<Node>, trailingComma: Node.Keyword.Comma?) =
-        children(v, ",", "<", ">", trailingComma)
-
-    protected fun Node.parenChildren(v: Node.ValueArgs?): Writer = this@Writer.also {
-        v?.args?.let { parenChildren(it, null) }
-    }
-
-    protected fun Node.parenChildren(v: List<Node>, trailingComma: Node.Keyword.Comma?) =
-        children(v, ",", "(", ")", trailingComma)
 
     protected fun Node.children(vararg v: Node?) = this@Writer.also { v.forEach { visitChildren(it) } }
 
