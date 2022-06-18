@@ -178,10 +178,10 @@ open class Visitor {
                 visitChildren(name)
                 visitChildren(typeRef)
             }
-            is Node.TypeProjection.Asterisk -> {
+            is Node.TypeArg.Asterisk -> {
                 visitChildren(asterisk)
             }
-            is Node.TypeProjection.Type -> {
+            is Node.TypeArg.Type -> {
                 visitChildren(mods)
                 visitChildren(typeRef)
             }
@@ -212,7 +212,7 @@ open class Visitor {
             }
             is Node.Type.Simple.Piece -> {
                 visitChildren(name)
-                visitChildren(typeParams)
+                visitChildren(typeArgs)
             }
             is Node.Type.Nullable -> {
                 visitChildren(lPar)
@@ -325,7 +325,7 @@ open class Visitor {
                 visitChildren(destructTypeRef)
             }
             is Node.Expr.Lambda.Body -> {
-                visitChildren(stmts)
+                visitChildren(statements)
             }
             is Node.Expr.This -> {}
             is Node.Expr.Super -> {
@@ -362,7 +362,6 @@ open class Visitor {
                 visitChildren(expr)
             }
             is Node.Expr.Return -> {
-                visitChildren(returnKeyword)
                 visitChildren(expr)
             }
             is Node.Expr.Continue -> {}
@@ -401,13 +400,7 @@ open class Visitor {
                 visitChildren(decl)
             }
             is Node.Expr.Block -> {
-                visitChildren(stmts)
-            }
-            is Node.Stmt.Decl -> {
-                visitChildren(decl)
-            }
-            is Node.Stmt.Expr -> {
-                visitChildren(expr)
+                visitChildren(statements)
             }
             is Node.Modifier.AnnotationSet -> {
                 visitChildren(atSymbol)

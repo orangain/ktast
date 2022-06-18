@@ -89,13 +89,18 @@ sealed class Node {
     }
 
     /**
+     * Base class of Node.Decl and Node.Expr.
+     */
+    sealed class Statement : Node()
+
+    /**
      * AST node corresponds to KtClassBody.
      */
     data class Decls(
         override val elements: List<Decl>,
     ) : NodeList<Decl>("{", "}")
 
-    sealed class Decl : Node() {
+    sealed class Decl : Statement() {
         /**
          * AST node corresponds to KtClassOrObject.
          */
@@ -130,7 +135,7 @@ sealed class Node {
                  */
                 data class CallConstructor(
                     val type: Node.Type.Simple,
-                    val typeArgs: TypeProjections?,
+                    val typeArgs: TypeArgs?,
                     val args: ValueArgs?,
                     val lambda: Expr.Call.LambdaArg?
                 ) : Parent()
@@ -360,10 +365,6 @@ sealed class Node {
     /**
      * AST node corresponds to KtTypeParameterList.
      */
-//    data class TypeParams(
-//        val params: List<TypeParam>,
-//        val trailingComma: Keyword.Comma?,
-//    ) : Node()
     data class TypeParams(
         override val elements: List<TypeParam>,
         override val trailingComma: Keyword.Comma?,
@@ -419,7 +420,7 @@ sealed class Node {
         ) : Type() {
             data class Piece(
                 val name: Expr.Name,
-                val typeParams: TypeProjections?
+                val typeArgs: TypeArgs?
             ) : Node()
         }
 
@@ -442,23 +443,23 @@ sealed class Node {
     /**
      * AST node corresponds to KtTypeArgumentList.
      */
-    data class TypeProjections(
-        override val elements: List<TypeProjection>,
+    data class TypeArgs(
+        override val elements: List<TypeArg>,
         override val trailingComma: Keyword.Comma?,
-    ) : CommaSeparatedNodeList<TypeProjection>("<", ">")
+    ) : CommaSeparatedNodeList<TypeArg>("<", ">")
 
     /**
      * AST node corresponds to KtTypeProjection.
      */
-    sealed class TypeProjection : Node() {
+    sealed class TypeArg : Node() {
         data class Asterisk(
             val asterisk: Keyword.Asterisk,
-        ) : TypeProjection()
+        ) : TypeArg()
 
         data class Type(
             override val mods: Modifiers?,
             val typeRef: TypeRef,
-        ) : TypeProjection(), WithModifiers
+        ) : TypeArg(), WithModifiers
     }
 
     /**
@@ -521,7 +522,7 @@ sealed class Node {
         val expr: Expr,
     ) : Node()
 
-    sealed class Expr : Node() {
+    sealed class Expr : Statement() {
         /**
          * AST node corresponds to KtIfExpression.
          */
@@ -716,7 +717,7 @@ sealed class Node {
              *
              * <Lambda> = { <Param>, <Param> -> <Body> }
              */
-            data class Body(val stmts: List<Stmt>) : Expr()
+            data class Body(val statements: List<Statement>) : Expr()
         }
 
         data class This(
@@ -792,7 +793,6 @@ sealed class Node {
         ) : Expr()
 
         data class Return(
-            val returnKeyword: Keyword.Return,
             val label: String?,
             val expr: Expr?
         ) : Expr()
@@ -832,7 +832,7 @@ sealed class Node {
          */
         data class Call(
             val expr: Expr,
-            val typeArgs: TypeProjections?,
+            val typeArgs: TypeArgs?,
             val args: ValueArgs?,
             // According to the Kotlin syntax, at most one lambda argument is allowed. However, Kotlin compiler can parse multiple lambda arguments.
             val lambdaArgs: List<LambdaArg>
@@ -871,12 +871,7 @@ sealed class Node {
         /**
          * AST node corresponds to KtBlockExpression.
          */
-        data class Block(val stmts: List<Stmt>) : Expr()
-    }
-
-    sealed class Stmt : Node() {
-        data class Decl(val decl: Node.Decl) : Stmt()
-        data class Expr(val expr: Node.Expr) : Stmt()
+        data class Block(val statements: List<Statement>) : Expr()
     }
 
     /**
@@ -1021,7 +1016,6 @@ sealed class Node {
         class Import : Keyword("import")
         class Fun : Keyword("fun")
         class Constructor : Keyword("constructor")
-        class Return : Keyword("return")
         class For : Keyword("for")
         class While : Keyword("while")
         class If : Keyword("if")

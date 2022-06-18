@@ -185,14 +185,14 @@ open class MutableVisitor {
                         name = visitChildren(name, newCh),
                         typeRef = visitChildren(typeRef, newCh)
                     )
-                    is Node.TypeProjections -> copy(
+                    is Node.TypeArgs -> copy(
                         elements = visitChildren(elements, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
-                    is Node.TypeProjection.Asterisk -> copy(
+                    is Node.TypeArg.Asterisk -> copy(
                         asterisk = visitChildren(asterisk, newCh),
                     )
-                    is Node.TypeProjection.Type -> copy(
+                    is Node.TypeArg.Type -> copy(
                         mods = visitChildren(mods, newCh),
                         typeRef = visitChildren(typeRef, newCh),
                     )
@@ -227,7 +227,7 @@ open class MutableVisitor {
                     )
                     is Node.Type.Simple.Piece -> copy(
                         name = visitChildren(name, newCh),
-                        typeParams = visitChildren(typeParams, newCh)
+                        typeArgs = visitChildren(typeArgs, newCh)
                     )
                     is Node.Type.Nullable -> copy(
                         lPar = visitChildren(lPar, newCh),
@@ -352,7 +352,7 @@ open class MutableVisitor {
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
                     is Node.Expr.Lambda.Body -> copy(
-                        stmts = visitChildren(stmts, newCh)
+                        statements = visitChildren(statements, newCh)
                     )
                     is Node.Expr.This -> this
                     is Node.Expr.Super -> copy(
@@ -389,7 +389,6 @@ open class MutableVisitor {
                         expr = visitChildren(expr, newCh)
                     )
                     is Node.Expr.Return -> copy(
-                        returnKeyword = visitChildren(returnKeyword, newCh),
                         expr = visitChildren(expr, newCh)
                     )
                     is Node.Expr.Continue -> this
@@ -428,13 +427,7 @@ open class MutableVisitor {
                         decl = visitChildren(decl, newCh)
                     )
                     is Node.Expr.Block -> copy(
-                        stmts = visitChildren(stmts, newCh)
-                    )
-                    is Node.Stmt.Decl -> copy(
-                        decl = visitChildren(decl, newCh)
-                    )
-                    is Node.Stmt.Expr -> copy(
-                        expr = visitChildren(expr, newCh)
+                        statements = visitChildren(statements, newCh)
                     )
                     is Node.Modifiers -> copy(
                         elements = visitChildren(elements, newCh),

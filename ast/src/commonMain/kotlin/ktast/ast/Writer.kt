@@ -197,10 +197,10 @@ open class Writer(
                     children(name)
                     if (typeRef != null) append(":").also { children(typeRef) }
                 }
-                is Node.TypeProjection.Asterisk -> {
+                is Node.TypeArg.Asterisk -> {
                     children(asterisk)
                 }
-                is Node.TypeProjection.Type -> {
+                is Node.TypeArg.Type -> {
                     children(mods)
                     children(typeRef)
                 }
@@ -240,7 +240,7 @@ open class Writer(
                     children(pieces, ".")
                 is Node.Type.Simple.Piece -> {
                     children(name)
-                    children(typeParams)
+                    children(typeArgs)
                 }
                 is Node.Type.Nullable -> {
                     children(lPar)
@@ -392,9 +392,7 @@ open class Writer(
                     if (destructTypeRef != null) append(":").also { children(destructTypeRef) }
                 }
                 is Node.Expr.Lambda.Body -> {
-                    if (stmts.isNotEmpty()) {
-                        children(stmts)
-                    }
+                    children(statements)
                     writeExtrasWithin()
                 }
                 is Node.Expr.This -> {
@@ -437,7 +435,7 @@ open class Writer(
                 is Node.Expr.Throw ->
                     append("throw").also { children(expr) }
                 is Node.Expr.Return -> {
-                    children(returnKeyword)
+                    append("return")
                     if (label != null) append('@').appendName(label)
                     children(expr)
                 }
@@ -478,18 +476,11 @@ open class Writer(
                     children(decl)
                 is Node.Expr.Block -> {
                     append("{").run {
-                        if (stmts.isNotEmpty()) {
-                            children(stmts)
-                        }
+                        children(statements)
                         writeExtrasWithin()
                     }
                     append("}")
                 }
-                is Node.Stmt.Decl -> {
-                    children(decl)
-                }
-                is Node.Stmt.Expr ->
-                    children(expr)
                 is Node.Modifier.AnnotationSet -> {
                     children(atSymbol)
                     if (target != null) append(target.name.lowercase()).append(':')
