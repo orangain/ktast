@@ -352,7 +352,7 @@ open class MutableVisitor {
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
                     is Node.Expr.Lambda.Body -> copy(
-                        stmts = visitChildren(stmts, newCh)
+                        statements = visitChildren(statements, newCh)
                     )
                     is Node.Expr.This -> this
                     is Node.Expr.Super -> copy(
@@ -427,7 +427,7 @@ open class MutableVisitor {
                         decl = visitChildren(decl, newCh)
                     )
                     is Node.Expr.Block -> copy(
-                        stmts = visitChildren(stmts, newCh)
+                        statements = visitChildren(statements, newCh)
                     )
                     is Node.Modifiers -> copy(
                         elements = visitChildren(elements, newCh),

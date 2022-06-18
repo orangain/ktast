@@ -392,8 +392,8 @@ open class Writer(
                     if (destructTypeRef != null) append(":").also { children(destructTypeRef) }
                 }
                 is Node.Expr.Lambda.Body -> {
-                    if (stmts.isNotEmpty()) {
-                        children(stmts)
+                    if (statements.isNotEmpty()) {
+                        children(statements)
                     }
                     writeExtrasWithin()
                 }
@@ -478,8 +478,8 @@ open class Writer(
                     children(decl)
                 is Node.Expr.Block -> {
                     append("{").run {
-                        if (stmts.isNotEmpty()) {
-                            children(stmts)
+                        if (statements.isNotEmpty()) {
+                            children(statements)
                         }
                         writeExtrasWithin()
                     }

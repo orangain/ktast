@@ -717,7 +717,7 @@ sealed class Node {
              *
              * <Lambda> = { <Param>, <Param> -> <Body> }
              */
-            data class Body(val stmts: List<Statement>) : Expr()
+            data class Body(val statements: List<Statement>) : Expr()
         }
 
         data class This(
@@ -871,7 +871,7 @@ sealed class Node {
         /**
          * AST node corresponds to KtBlockExpression.
          */
-        data class Block(val stmts: List<Statement>) : Expr()
+        data class Block(val statements: List<Statement>) : Expr()
     }
 
     /**

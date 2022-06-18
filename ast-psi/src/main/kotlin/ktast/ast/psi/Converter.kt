@@ -710,7 +710,7 @@ open class Converter {
         ).map(v)
 
     open fun convertLambdaBody(v: KtBlockExpression) = Node.Expr.Lambda.Body(
-        stmts = v.statements.map(::convertStatement)
+        statements = v.statements.map(::convertStatement)
     ).map(v)
 
     open fun convertThis(v: KtThisExpression) = Node.Expr.This(
@@ -855,7 +855,7 @@ open class Converter {
     ).map(v)
 
     open fun convertBlock(v: KtBlockExpression) = Node.Expr.Block(
-        stmts = v.statements.map(::convertStatement)
+        statements = v.statements.map(::convertStatement)
     ).map(v)
 
     open fun convertStatement(v: KtExpression): Node.Statement =

@@ -325,7 +325,7 @@ open class Visitor {
                 visitChildren(destructTypeRef)
             }
             is Node.Expr.Lambda.Body -> {
-                visitChildren(stmts)
+                visitChildren(statements)
             }
             is Node.Expr.This -> {}
             is Node.Expr.Super -> {
@@ -400,7 +400,7 @@ open class Visitor {
                 visitChildren(decl)
             }
             is Node.Expr.Block -> {
-                visitChildren(stmts)
+                visitChildren(statements)
             }
             is Node.Modifier.AnnotationSet -> {
                 visitChildren(atSymbol)
