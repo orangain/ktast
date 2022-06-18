@@ -140,7 +140,7 @@ open class Visitor {
                 visitChildren(body)
             }
             is Node.Decl.Property.Accessor.Params -> {
-                visitChildren(params)
+                visitChildren(elements)
                 visitChildren(trailingComma)
             }
             is Node.Decl.TypeAlias -> {

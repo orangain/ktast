@@ -299,11 +299,12 @@ sealed class Node {
 
                 /**
                  * AST node corresponds to KtParameterList under KtPropertyAccessor.
+                 * Unlike [Func.Params], it does not contain parentheses.
                  */
                 data class Params(
-                    val params: List<Func.Param>,
-                    val trailingComma: Keyword.Comma?,
-                ) : Node()
+                    override val elements: List<Func.Param>,
+                    override val trailingComma: Keyword.Comma?,
+                ) : CommaSeparatedNodeList<Func.Param>("", "")
             }
         }
 

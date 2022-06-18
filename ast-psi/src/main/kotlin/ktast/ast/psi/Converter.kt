@@ -232,13 +232,13 @@ open class Converter {
         ).map(v) else Node.Decl.Property.Accessor.Set(
             mods = v.modifierList?.let(::convertModifiers),
             setKeyword = convertKeyword(v.setKeyword, Node.Keyword::Set),
-            params = v.parameterList?.let { convertPropertyAccessorParams(it) },
+            params = v.parameterList?.let(::convertPropertyAccessorParams),
             postMods = convertPostModifiers(v),
             body = convertFuncBody(v),
         ).map(v)
 
     open fun convertPropertyAccessorParams(v: KtParameterList) = Node.Decl.Property.Accessor.Params(
-        params = v.parameters.map(::convertFuncParam),
+        elements = v.parameters.map(::convertFuncParam),
         trailingComma = v.trailingComma?.let(::convertComma),
     ).map(v)
 

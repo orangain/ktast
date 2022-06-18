@@ -156,10 +156,6 @@ open class Writer(
                         children(body)
                     }
                 }
-                is Node.Decl.Property.Accessor.Params -> {
-                    children(params, ",")
-                    children(trailingComma)
-                }
                 is Node.Decl.TypeAlias -> {
                     children(mods).append("typealias")
                     children(name)
