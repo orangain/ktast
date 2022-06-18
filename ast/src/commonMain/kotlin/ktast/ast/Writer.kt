@@ -11,13 +11,6 @@ open class Writer(
         if (label != null) append('@').append(label)
     }
 
-    protected fun appendNames(names: List<String>, sep: String) = also {
-        names.forEachIndexed { index, name ->
-            if (index > 0) append(sep)
-            appendName(name)
-        }
-    }
-
     fun write(v: Node) {
         visit(v, v)
     }
