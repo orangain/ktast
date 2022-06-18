@@ -89,13 +89,18 @@ sealed class Node {
     }
 
     /**
+     * Base class of Node.Decl and Node.Expr.
+     */
+    sealed class Statement : Node()
+
+    /**
      * AST node corresponds to KtClassBody.
      */
     data class Decls(
         override val elements: List<Decl>,
     ) : NodeList<Decl>("{", "}")
 
-    sealed class Decl : Node() {
+    sealed class Decl : Statement() {
         /**
          * AST node corresponds to KtClassOrObject.
          */
@@ -517,7 +522,7 @@ sealed class Node {
         val expr: Expr,
     ) : Node()
 
-    sealed class Expr : Node() {
+    sealed class Expr : Statement() {
         /**
          * AST node corresponds to KtIfExpression.
          */
@@ -712,7 +717,7 @@ sealed class Node {
              *
              * <Lambda> = { <Param>, <Param> -> <Body> }
              */
-            data class Body(val stmts: List<Stmt>) : Expr()
+            data class Body(val stmts: List<Statement>) : Expr()
         }
 
         data class This(
@@ -866,12 +871,7 @@ sealed class Node {
         /**
          * AST node corresponds to KtBlockExpression.
          */
-        data class Block(val stmts: List<Stmt>) : Expr()
-    }
-
-    sealed class Stmt : Node() {
-        data class Decl(val decl: Node.Decl) : Stmt()
-        data class Expr(val expr: Node.Expr) : Stmt()
+        data class Block(val stmts: List<Statement>) : Expr()
     }
 
     /**

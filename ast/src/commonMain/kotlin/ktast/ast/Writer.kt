@@ -485,11 +485,6 @@ open class Writer(
                     }
                     append("}")
                 }
-                is Node.Stmt.Decl -> {
-                    children(decl)
-                }
-                is Node.Stmt.Expr ->
-                    children(expr)
                 is Node.Modifier.AnnotationSet -> {
                     children(atSymbol)
                     if (target != null) append(target.name.lowercase()).append(':')

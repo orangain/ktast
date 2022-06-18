@@ -429,12 +429,6 @@ open class MutableVisitor {
                     is Node.Expr.Block -> copy(
                         stmts = visitChildren(stmts, newCh)
                     )
-                    is Node.Stmt.Decl -> copy(
-                        decl = visitChildren(decl, newCh)
-                    )
-                    is Node.Stmt.Expr -> copy(
-                        expr = visitChildren(expr, newCh)
-                    )
                     is Node.Modifiers -> copy(
                         elements = visitChildren(elements, newCh),
                     )

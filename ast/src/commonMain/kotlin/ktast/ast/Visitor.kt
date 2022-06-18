@@ -402,12 +402,6 @@ open class Visitor {
             is Node.Expr.Block -> {
                 visitChildren(stmts)
             }
-            is Node.Stmt.Decl -> {
-                visitChildren(decl)
-            }
-            is Node.Stmt.Expr -> {
-                visitChildren(expr)
-            }
             is Node.Modifier.AnnotationSet -> {
                 visitChildren(atSymbol)
                 visitChildren(lBracket)

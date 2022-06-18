@@ -710,7 +710,7 @@ open class Converter {
         ).map(v)
 
     open fun convertLambdaBody(v: KtBlockExpression) = Node.Expr.Lambda.Body(
-        stmts = v.statements.map(::convertStmtNo)
+        stmts = v.statements.map(::convertStatement)
     ).map(v)
 
     open fun convertThis(v: KtThisExpression) = Node.Expr.This(
@@ -855,11 +855,14 @@ open class Converter {
     ).map(v)
 
     open fun convertBlock(v: KtBlockExpression) = Node.Expr.Block(
-        stmts = v.statements.map(::convertStmtNo)
+        stmts = v.statements.map(::convertStatement)
     ).map(v)
 
-    open fun convertStmtNo(v: KtExpression) =
-        if (v is KtDeclaration) Node.Stmt.Decl(convertDecl(v)).map(v) else Node.Stmt.Expr(convertExpr(v)).map(v)
+    open fun convertStatement(v: KtExpression): Node.Statement =
+        if (v is KtDeclaration)
+            convertDecl(v)
+        else
+            convertExpr(v)
 
     open fun convertAnnotationSets(v: KtElement): List<Node.Modifier.AnnotationSet> = v.children.flatMap { elem ->
         // We go over the node children because we want to preserve order
