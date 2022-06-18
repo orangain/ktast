@@ -203,9 +203,9 @@ sealed class Node {
              * AST node corresponds to KtParameterList under KtNamedFunction.
              */
             data class Params(
-                val params: List<Param>,
-                val trailingComma: Keyword.Comma?,
-            ) : Node()
+                override val elements: List<Param>,
+                override val trailingComma: Keyword.Comma?,
+            ) : CommaSeparatedNodeList<Param>("(", ")")
 
             /**
              * AST node corresponds to KtParameter.

@@ -102,9 +102,6 @@ open class Writer(
                     children(postMods)
                     children(body)
                 }
-                is Node.Decl.Func.Params -> {
-                    children(params, ",", "(", ")", trailingComma, this)
-                }
                 is Node.Decl.Func.Param -> {
                     children(mods)
                     children(valOrVar)

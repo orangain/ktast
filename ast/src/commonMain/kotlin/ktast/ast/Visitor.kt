@@ -88,10 +88,6 @@ open class Visitor {
                 visitChildren(postMods)
                 visitChildren(body)
             }
-            is Node.Decl.Func.Params -> {
-                visitChildren(params)
-                visitChildren(trailingComma)
-            }
             is Node.Decl.Func.Param -> {
                 visitChildren(mods)
                 visitChildren(valOrVar)

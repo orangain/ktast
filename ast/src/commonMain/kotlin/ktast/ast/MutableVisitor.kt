@@ -92,7 +92,7 @@ open class MutableVisitor {
                         body = visitChildren(body, newCh),
                     )
                     is Node.Decl.Func.Params -> copy(
-                        params = visitChildren(params, newCh),
+                        elements = visitChildren(elements, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
                     is Node.Decl.Func.Param -> copy(
