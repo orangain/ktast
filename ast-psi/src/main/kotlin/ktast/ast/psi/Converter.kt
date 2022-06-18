@@ -450,7 +450,7 @@ open class Converter {
         ).map(v)
     }
 
-    open fun convertValueArg(v: KtValueArgument) = Node.ValueArgs.ValueArg(
+    open fun convertValueArg(v: KtValueArgument) = Node.ValueArg(
         name = v.getArgumentName()?.let(::convertValueArgName),
         asterisk = v.getSpreadElement() != null,
         expr = convertExpr(v.getArgumentExpression() ?: error("No expr for value arg"))

@@ -231,7 +231,7 @@ open class Visitor {
                 visitChildren(args)
                 visitChildren(trailingComma)
             }
-            is Node.ValueArgs.ValueArg -> {
+            is Node.ValueArg -> {
                 visitChildren(name)
                 visitChildren(expr)
             }

@@ -250,7 +250,7 @@ open class MutableVisitor {
                         args = visitChildren(args, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
-                    is Node.ValueArgs.ValueArg -> copy(
+                    is Node.ValueArg -> copy(
                         name = visitChildren(name, newCh),
                         expr = visitChildren(expr, newCh)
                     )

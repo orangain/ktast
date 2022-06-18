@@ -504,16 +504,16 @@ sealed class Node {
     data class ValueArgs(
         val args: List<ValueArg>,
         val trailingComma: Keyword.Comma?,
-    ) : Node() {
-        /**
-         * AST node corresponds to KtValueArgument.
-         */
-        data class ValueArg(
-            val name: Expr.Name?,
-            val asterisk: Boolean,
-            val expr: Expr
-        ) : Node()
-    }
+    ) : Node()
+
+    /**
+     * AST node corresponds to KtValueArgument.
+     */
+    data class ValueArg(
+        val name: Expr.Name?,
+        val asterisk: Boolean,
+        val expr: Expr
+    ) : Node()
 
     /**
      * AST node corresponds to KtContainerNode.
