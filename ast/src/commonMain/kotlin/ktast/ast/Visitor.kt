@@ -183,7 +183,6 @@ open class Visitor {
             }
             is Node.TypeRef -> {
                 visitChildren(lPar)
-                visitChildren(contextReceivers)
                 visitChildren(mods)
                 visitChildren(innerLPar)
                 visitChildren(innerMods)
@@ -192,8 +191,12 @@ open class Visitor {
                 visitChildren(rPar)
             }
             is Node.Type.Func -> {
+                visitChildren(contextReceivers)
                 visitChildren(receiver)
                 visitChildren(params)
+                visitChildren(typeRef)
+            }
+            is Node.Type.Func.ContextReceiver -> {
                 visitChildren(typeRef)
             }
             is Node.Type.Func.Receiver -> {
@@ -217,9 +220,6 @@ open class Visitor {
                 visitChildren(rPar)
             }
             is Node.Type.Dynamic -> {}
-            is Node.ContextReceiver -> {
-                visitChildren(typeRef)
-            }
             is Node.ConstructorCallee -> {
                 visitChildren(type)
             }

@@ -1,6 +1,7 @@
 package ktast.ast.psi
 
 import ktast.ast.Dumper
+import ktast.ast.MutableVisitor
 import ktast.ast.Writer
 import org.jetbrains.kotlin.com.intellij.openapi.util.text.StringUtilRt
 import org.junit.Assume
@@ -26,6 +27,9 @@ class CorpusTest(private val unit: Corpus.Unit) {
             val newCode = Writer.write(origFile, origExtrasConv)
 //            println("----NEW CODE----\n$newCode\n-----------")
             assertEquals(origCode, newCode)
+
+            val identityNode = MutableVisitor.preVisit(origFile) { v, _ -> v }
+            assertEquals(origFile, identityNode)
         } catch (e: Converter.Unsupported) {
             Assume.assumeNoException(e.message, e)
         } catch (e: Parser.ParseError) {

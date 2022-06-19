@@ -1,5 +1,8 @@
 package ktast.ast
 
+/**
+ * Base class of all AST nodes.
+ */
 sealed class Node {
     var tag: Any? = null
 
@@ -84,7 +87,7 @@ sealed class Node {
     }
 
     /**
-     * Base class of Node.Decl and Node.Expr.
+     * Base class of [Node.Decl] and [Node.Expr].
      */
     sealed class Statement : Node()
 
@@ -380,10 +383,26 @@ sealed class Node {
          * AST node corresponds to KtFunctionType.
          */
         data class Func(
+            val contextReceivers: ContextReceivers?,
             val receiver: Receiver?,
             val params: Params?,
             val typeRef: TypeRef
         ) : Type() {
+            /**
+             * AST node corresponds to KtContextReceiverList.
+             */
+            data class ContextReceivers(
+                override val elements: List<ContextReceiver>,
+                override val trailingComma: Keyword.Comma?,
+            ) : CommaSeparatedNodeList<ContextReceiver>("(", ")")
+
+            /**
+             * AST node corresponds to KtContextReceiver.
+             */
+            data class ContextReceiver(
+                val typeRef: TypeRef,
+            ) : Node()
+
             /**
              * AST node corresponds KtFunctionTypeReceiver.
              */
@@ -463,7 +482,6 @@ sealed class Node {
      */
     data class TypeRef(
         val lPar: Keyword.LPar?,
-        val contextReceivers: ContextReceivers?,
         override val mods: Modifiers?,
         val innerLPar: Keyword.LPar?,
         val innerMods: Modifiers?,
@@ -471,21 +489,6 @@ sealed class Node {
         val innerRPar: Keyword.RPar?,
         val rPar: Keyword.RPar?,
     ) : Node(), WithModifiers
-
-    /**
-     * AST node corresponds to KtContextReceiverList.
-     */
-    data class ContextReceivers(
-        override val elements: List<ContextReceiver>,
-        override val trailingComma: Keyword.Comma?,
-    ) : CommaSeparatedNodeList<ContextReceiver>("(", ")")
-
-    /**
-     * AST node corresponds to KtContextReceiver.
-     */
-    data class ContextReceiver(
-        val typeRef: TypeRef,
-    ) : Node()
 
     /**
      * AST node corresponds to KtConstructorCalleeExpression.

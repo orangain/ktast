@@ -196,10 +196,6 @@ open class Writer(
                 }
                 is Node.TypeRef -> {
                     children(lPar)
-                    if (contextReceivers != null) {
-                        append("context")
-                        children(contextReceivers)
-                    }
                     children(mods)
                     children(innerLPar)
                     children(innerMods)
@@ -208,6 +204,10 @@ open class Writer(
                     children(rPar)
                 }
                 is Node.Type.Func -> {
+                    if (contextReceivers != null) {
+                        append("context")
+                        children(contextReceivers)
+                    }
                     if (receiver != null) {
                         children(receiver)
                         if (receiver.typeRef.type != null) {
@@ -217,6 +217,9 @@ open class Writer(
                     if (params != null) {
                         children(params).append("->")
                     }
+                    children(typeRef)
+                }
+                is Node.Type.Func.ContextReceiver -> {
                     children(typeRef)
                 }
                 is Node.Type.Func.Receiver -> {
@@ -241,9 +244,6 @@ open class Writer(
                 }
                 is Node.Type.Dynamic ->
                     append("dynamic")
-                is Node.ContextReceiver -> {
-                    children(typeRef)
-                }
                 is Node.ConstructorCallee -> {
                     children(type)
                 }

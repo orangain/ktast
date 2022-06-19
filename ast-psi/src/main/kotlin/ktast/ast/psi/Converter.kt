@@ -348,7 +348,6 @@ open class Converter {
 
         return Node.TypeRef(
             lPar = lPar?.let { convertKeyword(it, Node.Keyword::LPar) },
-            contextReceivers = v.contextReceiverList?.let { convertContextReceivers(it) },
             mods = mods?.let { convertModifiers(it) },
             innerLPar = innerLPar?.let { convertKeyword(it, Node.Keyword::LPar) },
             innerMods = innerMods?.let { convertModifiers(it) },
@@ -376,6 +375,7 @@ open class Converter {
 
     open fun convertType(v: KtTypeElement): Node.Type = when (v) {
         is KtFunctionType -> Node.Type.Func(
+            contextReceivers = v.contextReceiverList?.let { convertContextReceivers(it) },
             receiver = v.receiver?.let(::convertTypeFuncReceiver),
             params = v.parameterList?.let(::convertTypeFuncParams),
             typeRef = convertTypeRef(v.returnTypeReference ?: error("No return type"))
@@ -412,12 +412,12 @@ open class Converter {
         typeRef = convertTypeRef(v.typeReference ?: error("No param type"))
     ).map(v)
 
-    open fun convertContextReceivers(v: KtContextReceiverList) = Node.ContextReceivers(
+    open fun convertContextReceivers(v: KtContextReceiverList) = Node.Type.Func.ContextReceivers(
         elements = v.contextReceivers().map(::convertContextReceiver),
         trailingComma = null,
     ).map(v)
 
-    open fun convertContextReceiver(v: KtContextReceiver) = Node.ContextReceiver(
+    open fun convertContextReceiver(v: KtContextReceiver) = Node.Type.Func.ContextReceiver(
         typeRef = convertTypeRef(v.typeReference() ?: error("Missing type reference for $v")),
     ).map(v)
 
