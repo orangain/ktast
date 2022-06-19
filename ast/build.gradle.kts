@@ -10,7 +10,7 @@ val kotlinVersion: String by rootProject.extra
 kotlin {
     jvm {
         tasks.withType<KotlinCompile> {
-            kotlinOptions.jvmTarget = "11"
+            kotlinOptions.jvmTarget = "1.8"
         }
     }
 }
