@@ -1,5 +1,8 @@
 package ktast.ast
 
+/**
+ * Base class of all AST nodes.
+ */
 sealed class Node {
     var tag: Any? = null
 
@@ -84,7 +87,7 @@ sealed class Node {
     }
 
     /**
-     * Base class of Node.Decl and Node.Expr.
+     * Base class of [Node.Decl] and [Node.Expr].
      */
     sealed class Statement : Node()
 
