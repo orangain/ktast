@@ -5,6 +5,7 @@ import ktast.ast.Node
 import org.jetbrains.kotlin.com.intellij.psi.PsiComment
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
+import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
 import org.jetbrains.kotlin.psi.psiUtil.siblings
 import java.util.*
@@ -69,7 +70,7 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
         if (!seenExtraPsiIdentities.add(elemId)) null else when {
             elem is PsiWhiteSpace -> Node.Extra.Whitespace(elem.text)
             elem is PsiComment -> Node.Extra.Comment(elem.text)
-            elem.text == ";" -> Node.Extra.Semicolon(elem.text)
+            elem.node.elementType == KtTokens.SEMICOLON -> Node.Extra.Semicolon(elem.text)
             else -> error("elems must contain only PsiWhiteSpace or PsiComment or SEMICOLON elements.")
         }
     }
