@@ -19,7 +19,7 @@ jobs:
         with:
           repository: JetBrains/kotlin
           path: kotlin
-          ref: v1.6.21
+          ref: v1.7.0
       - name: Build with Gradle
         uses: gradle/gradle-build-action@v2
         with:
