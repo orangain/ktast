@@ -49,16 +49,16 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
     open fun nodeExtraElems(elem: PsiElement): Triple<List<PsiElement>, List<PsiElement>, List<PsiElement>> {
         // Before starts with all directly above ws/comments (reversed to be top-down)
         val before = elem.siblings(forward = false, withItself = false).takeWhile {
-            it is PsiWhiteSpace || it is PsiComment || it.text == ";"
+            it is PsiWhiteSpace || it is PsiComment || it.node.elementType == KtTokens.SEMICOLON
         }.toList().reversed()
 
         // Go over every child...
         val within = elem.allChildren.filter {
-            it is PsiWhiteSpace || it is PsiComment || it.text == ";"
+            it is PsiWhiteSpace || it is PsiComment || it.node.elementType == KtTokens.SEMICOLON
         }.toList()
 
         val after = elem.siblings(forward = true, withItself = false).takeWhile {
-            it is PsiWhiteSpace || it is PsiComment || it.text == ";"
+            it is PsiWhiteSpace || it is PsiComment || it.node.elementType == KtTokens.SEMICOLON
         }.toList()
 
         return Triple(before, within, after)
