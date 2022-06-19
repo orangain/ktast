@@ -92,10 +92,10 @@ open class MutableVisitor {
                         body = visitChildren(body, newCh),
                     )
                     is Node.Decl.Func.Params -> copy(
-                        params = visitChildren(params, newCh),
+                        elements = visitChildren(elements, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
-                    is Node.Decl.Func.Params.Param -> copy(
+                    is Node.Decl.Func.Param -> copy(
                         mods = visitChildren(mods, newCh),
                         valOrVar = visitChildren(valOrVar, newCh),
                         name = visitChildren(name, newCh),
@@ -147,7 +147,7 @@ open class MutableVisitor {
                         body = visitChildren(body, newCh)
                     )
                     is Node.Decl.Property.Accessor.Params -> copy(
-                        params = visitChildren(params, newCh),
+                        elements = visitChildren(elements, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
                     is Node.Decl.TypeAlias -> copy(
@@ -247,10 +247,10 @@ open class MutableVisitor {
                         type = visitChildren(type, newCh),
                     )
                     is Node.ValueArgs -> copy(
-                        args = visitChildren(args, newCh),
+                        elements = visitChildren(elements, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
-                    is Node.ValueArgs.ValueArg -> copy(
+                    is Node.ValueArg -> copy(
                         name = visitChildren(name, newCh),
                         expr = visitChildren(expr, newCh)
                     )

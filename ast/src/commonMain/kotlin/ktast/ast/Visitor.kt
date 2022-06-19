@@ -88,11 +88,7 @@ open class Visitor {
                 visitChildren(postMods)
                 visitChildren(body)
             }
-            is Node.Decl.Func.Params -> {
-                visitChildren(params)
-                visitChildren(trailingComma)
-            }
-            is Node.Decl.Func.Params.Param -> {
+            is Node.Decl.Func.Param -> {
                 visitChildren(mods)
                 visitChildren(valOrVar)
                 visitChildren(name)
@@ -144,7 +140,7 @@ open class Visitor {
                 visitChildren(body)
             }
             is Node.Decl.Property.Accessor.Params -> {
-                visitChildren(params)
+                visitChildren(elements)
                 visitChildren(trailingComma)
             }
             is Node.Decl.TypeAlias -> {
@@ -227,11 +223,7 @@ open class Visitor {
             is Node.ConstructorCallee -> {
                 visitChildren(type)
             }
-            is Node.ValueArgs -> {
-                visitChildren(args)
-                visitChildren(trailingComma)
-            }
-            is Node.ValueArgs.ValueArg -> {
+            is Node.ValueArg -> {
                 visitChildren(name)
                 visitChildren(expr)
             }

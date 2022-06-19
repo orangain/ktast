@@ -147,11 +147,11 @@ open class Converter {
     }
 
     open fun convertFuncParams(v: KtParameterList) = Node.Decl.Func.Params(
-        params = v.parameters.map(::convertFuncParam),
+        elements = v.parameters.map(::convertFuncParam),
         trailingComma = v.trailingComma?.let(::convertComma),
     ).map(v)
 
-    open fun convertFuncParam(v: KtParameter) = Node.Decl.Func.Params.Param(
+    open fun convertFuncParam(v: KtParameter) = Node.Decl.Func.Param(
         mods = v.modifierList?.let(::convertModifiers),
         valOrVar = v.valOrVarKeyword?.let(::convertValOrVarKeyword),
         name = v.nameIdentifier?.let(::convertName) ?: error("No param name"),
@@ -232,13 +232,13 @@ open class Converter {
         ).map(v) else Node.Decl.Property.Accessor.Set(
             mods = v.modifierList?.let(::convertModifiers),
             setKeyword = convertKeyword(v.setKeyword, Node.Keyword::Set),
-            params = v.parameterList?.let { convertPropertyAccessorParams(it) },
+            params = v.parameterList?.let(::convertPropertyAccessorParams),
             postMods = convertPostModifiers(v),
             body = convertFuncBody(v),
         ).map(v)
 
     open fun convertPropertyAccessorParams(v: KtParameterList) = Node.Decl.Property.Accessor.Params(
-        params = v.parameters.map(::convertFuncParam),
+        elements = v.parameters.map(::convertFuncParam),
         trailingComma = v.trailingComma?.let(::convertComma),
     ).map(v)
 
@@ -437,20 +437,20 @@ open class Converter {
     ).map(v)
 
     open fun convertValueArgs(v: KtValueArgumentList) = Node.ValueArgs(
-        args = v.arguments.map(::convertValueArg),
+        elements = v.arguments.map(::convertValueArg),
         trailingComma = v.trailingComma?.let(::convertComma),
     ).map(v)
 
     open fun convertValueArgs(v: KtInitializerList): Node.ValueArgs {
         val valueArgumentList = (v.initializers.firstOrNull() as? KtSuperTypeCallEntry)?.valueArgumentList
+            ?: error("No value arguments for $v")
         return Node.ValueArgs(
-            args = (valueArgumentList?.arguments
-                ?: error("No value arguments for $v")).map(::convertValueArg),
+            elements = (valueArgumentList.arguments).map(::convertValueArg),
             trailingComma = valueArgumentList.trailingComma?.let(::convertComma),
         ).map(v)
     }
 
-    open fun convertValueArg(v: KtValueArgument) = Node.ValueArgs.ValueArg(
+    open fun convertValueArg(v: KtValueArgument) = Node.ValueArg(
         name = v.getArgumentName()?.let(::convertValueArgName),
         asterisk = v.getSpreadElement() != null,
         expr = convertExpr(v.getArgumentExpression() ?: error("No expr for value arg"))

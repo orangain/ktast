@@ -32,11 +32,6 @@ sealed class Node {
         val imports: Imports?
     }
 
-    interface WithOptionalParentheses {
-        val lPar: Keyword.LPar?
-        val rPar: Keyword.RPar?
-    }
-
     interface WithPostModifiers {
         val postMods: List<PostModifier>
     }
@@ -203,21 +198,21 @@ sealed class Node {
              * AST node corresponds to KtParameterList under KtNamedFunction.
              */
             data class Params(
-                val params: List<Param>,
-                val trailingComma: Keyword.Comma?,
-            ) : Node() {
-                /**
-                 * AST node corresponds to KtParameter.
-                 */
-                data class Param(
-                    override val mods: Modifiers?,
-                    val valOrVar: Keyword.ValOrVar?,
-                    val name: Expr.Name,
-                    // Type can be null for anon functions
-                    val typeRef: TypeRef?,
-                    val initializer: Initializer?
-                ) : Node(), WithModifiers
-            }
+                override val elements: List<Param>,
+                override val trailingComma: Keyword.Comma?,
+            ) : CommaSeparatedNodeList<Param>("(", ")")
+
+            /**
+             * AST node corresponds to KtParameter.
+             */
+            data class Param(
+                override val mods: Modifiers?,
+                val valOrVar: Keyword.ValOrVar?,
+                val name: Expr.Name,
+                // Type can be null for anon functions
+                val typeRef: TypeRef?,
+                val initializer: Initializer?
+            ) : Node(), WithModifiers
 
             /**
              * Virtual AST node corresponds to function body.
@@ -299,11 +294,12 @@ sealed class Node {
 
                 /**
                  * AST node corresponds to KtParameterList under KtPropertyAccessor.
+                 * Unlike [Func.Params], it does not contain parentheses.
                  */
                 data class Params(
-                    val params: List<Func.Params.Param>,
-                    val trailingComma: Keyword.Comma?,
-                ) : Node()
+                    override val elements: List<Func.Param>,
+                    override val trailingComma: Keyword.Comma?,
+                ) : CommaSeparatedNodeList<Func.Param>("", "")
             }
         }
 
@@ -428,11 +424,11 @@ sealed class Node {
          * AST node corresponds to KtNullableType.
          */
         data class Nullable(
-            override val lPar: Keyword.LPar?,
+            val lPar: Keyword.LPar?,
             override val mods: Modifiers?,
             val type: Type,
-            override val rPar: Keyword.RPar?,
-        ) : Type(), WithModifiers, WithOptionalParentheses
+            val rPar: Keyword.RPar?,
+        ) : Type(), WithModifiers
 
         /**
          * AST node corresponds to KtDynamicType.
@@ -466,15 +462,15 @@ sealed class Node {
      * AST node corresponds to KtTypeReference.
      */
     data class TypeRef(
-        override val lPar: Keyword.LPar?,
+        val lPar: Keyword.LPar?,
         val contextReceivers: ContextReceivers?,
         override val mods: Modifiers?,
         val innerLPar: Keyword.LPar?,
         val innerMods: Modifiers?,
         val type: Type?,
         val innerRPar: Keyword.RPar?,
-        override val rPar: Keyword.RPar?,
-    ) : Node(), WithModifiers, WithOptionalParentheses
+        val rPar: Keyword.RPar?,
+    ) : Node(), WithModifiers
 
     /**
      * AST node corresponds to KtContextReceiverList.
@@ -502,18 +498,18 @@ sealed class Node {
      * AST node corresponds to KtValueArgumentList or KtInitializerList.
      */
     data class ValueArgs(
-        val args: List<ValueArg>,
-        val trailingComma: Keyword.Comma?,
-    ) : Node() {
-        /**
-         * AST node corresponds to KtValueArgument.
-         */
-        data class ValueArg(
-            val name: Expr.Name?,
-            val asterisk: Boolean,
-            val expr: Expr
-        ) : Node()
-    }
+        override val elements: List<ValueArg>,
+        override val trailingComma: Keyword.Comma?,
+    ) : CommaSeparatedNodeList<ValueArg>("(", ")")
+
+    /**
+     * AST node corresponds to KtValueArgument.
+     */
+    data class ValueArg(
+        val name: Expr.Name?,
+        val asterisk: Boolean,
+        val expr: Expr
+    ) : Node()
 
     /**
      * AST node corresponds to KtContainerNode.
@@ -572,6 +568,9 @@ sealed class Node {
             val doWhile: Boolean
         ) : Expr()
 
+        /**
+         * AST node corresponds to KtBinaryExpression or KtQualifiedExpression.
+         */
         data class BinaryOp(
             val lhs: Expr,
             val oper: Oper,
@@ -593,6 +592,9 @@ sealed class Node {
             }
         }
 
+        /**
+         * AST node corresponds to KtUnaryExpression.
+         */
         data class UnaryOp(
             val expr: Expr,
             val oper: Oper,
@@ -604,6 +606,9 @@ sealed class Node {
             }
         }
 
+        /**
+         * AST node corresponds to KtBinaryExpressionWithTypeRHS or KtIsExpression.
+         */
         data class TypeOp(
             val lhs: Expr,
             val oper: Oper,
@@ -615,6 +620,9 @@ sealed class Node {
             }
         }
 
+        /**
+         * AST node corresponds to KtDoubleColonExpression.
+         */
         sealed class DoubleColonRef : Expr() {
             abstract val recv: Recv?
 
@@ -642,10 +650,16 @@ sealed class Node {
             }
         }
 
+        /**
+         * AST node corresponds to KtParenthesizedExpression.
+         */
         data class Paren(
             val expr: Expr
         ) : Expr()
 
+        /**
+         * AST node corresponds to KtStringTemplateExpression.
+         */
         data class StringTmpl(
             val elems: List<Elem>,
             val raw: Boolean
@@ -659,6 +673,9 @@ sealed class Node {
             }
         }
 
+        /**
+         * AST node corresponds to KtConstantExpression.
+         */
         data class Const(
             val value: String,
             val form: Form
@@ -720,10 +737,16 @@ sealed class Node {
             data class Body(val statements: List<Statement>) : Expr()
         }
 
+        /**
+         * AST node corresponds to KtThisExpression.
+         */
         data class This(
             val label: String?
         ) : Expr()
 
+        /**
+         * AST node corresponds to KtSuperExpression.
+         */
         data class Super(
             val typeArg: TypeRef?,
             val label: String?
@@ -788,19 +811,31 @@ sealed class Node {
             val decl: Decl.Structured,
         ) : Expr()
 
+        /**
+         * AST node corresponds to KtThrowExpression.
+         */
         data class Throw(
             val expr: Expr
         ) : Expr()
 
+        /**
+         * AST node corresponds to KtReturnExpression.
+         */
         data class Return(
             val label: String?,
             val expr: Expr?
         ) : Expr()
 
+        /**
+         * AST node corresponds to KtContinueExpression.
+         */
         data class Continue(
             val label: String?
         ) : Expr()
 
+        /**
+         * AST node corresponds to KtBreakExpression.
+         */
         data class Break(
             val label: String?
         ) : Expr()
@@ -813,15 +848,24 @@ sealed class Node {
             val trailingComma: Keyword.Comma?,
         ) : Expr()
 
+        /**
+         * AST node corresponds to KtValueArgumentName, KtSimpleNameExpression or PsiElement whose elementType is IDENTIFIER.
+         */
         data class Name(
             val name: String
         ) : Expr()
 
+        /**
+         * AST node corresponds to KtLabeledExpression.
+         */
         data class Labeled(
             val label: String,
             val expr: Expr
         ) : Expr()
 
+        /**
+         * AST node corresponds to KtAnnotatedExpression.
+         */
         data class Annotated(
             override val anns: List<Modifier.AnnotationSet>,
             val expr: Expr
@@ -856,6 +900,9 @@ sealed class Node {
             val trailingComma: Keyword.Comma?,
         ) : Expr()
 
+        /**
+         * Virtual AST node corresponds to KtNamedFunction in expression context.
+         */
         data class AnonFunc(
             val func: Decl.Func
         ) : Expr()
@@ -1040,14 +1087,23 @@ sealed class Node {
     sealed class Extra : Node() {
         abstract val text: String
 
+        /**
+         * AST node corresponds to PsiWhiteSpace.
+         */
         data class Whitespace(
             override val text: String,
         ) : Extra()
 
+        /**
+         * AST node corresponds to PsiComment.
+         */
         data class Comment(
             override val text: String,
         ) : Extra()
 
+        /**
+         * AST node corresponds to PsiElement whose elementType is SEMICOLON.
+         */
         data class Semicolon(
             override val text: String
         ) : Extra()

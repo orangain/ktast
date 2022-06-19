@@ -7,11 +7,8 @@ open class Writer(
     protected fun append(ch: Char) = also { app.append(ch) }
     protected fun append(str: String) = also { app.append(str) }
     protected fun appendName(name: String) = append(name)
-    protected fun appendNames(names: List<String>, sep: String) = also {
-        names.forEachIndexed { index, name ->
-            if (index > 0) append(sep)
-            appendName(name)
-        }
+    protected fun appendLabel(label: String?) {
+        if (label != null) append('@').append(label)
     }
 
     fun write(v: Node) {
@@ -102,10 +99,7 @@ open class Writer(
                     children(postMods)
                     children(body)
                 }
-                is Node.Decl.Func.Params -> {
-                    children(params, ",", "(", ")", trailingComma, this)
-                }
-                is Node.Decl.Func.Params.Param -> {
+                is Node.Decl.Func.Param -> {
                     children(mods)
                     children(valOrVar)
                     children(name)
@@ -158,10 +152,6 @@ open class Writer(
                         children(postMods)
                         children(body)
                     }
-                }
-                is Node.Decl.Property.Accessor.Params -> {
-                    children(params, ",")
-                    children(trailingComma)
                 }
                 is Node.Decl.TypeAlias -> {
                     children(mods).append("typealias")
@@ -260,10 +250,7 @@ open class Writer(
                 is Node.Container -> {
                     children(expr)
                 }
-                is Node.ValueArgs -> {
-                    children(args, ",", "(", ")", trailingComma, this)
-                }
-                is Node.ValueArgs.ValueArg -> {
+                is Node.ValueArg -> {
                     if (name != null) children(name).append("=")
                     if (asterisk) append('*')
                     children(expr)
@@ -397,12 +384,12 @@ open class Writer(
                 }
                 is Node.Expr.This -> {
                     append("this")
-                    if (label != null) append('@').appendName(label)
+                    appendLabel(label)
                 }
                 is Node.Expr.Super -> {
                     append("super")
                     if (typeArg != null) append('<').also { children(typeArg) }.append('>')
-                    if (label != null) append('@').appendName(label)
+                    appendLabel(label)
                 }
                 is Node.Expr.When -> {
                     append("when")
@@ -436,16 +423,16 @@ open class Writer(
                     append("throw").also { children(expr) }
                 is Node.Expr.Return -> {
                     append("return")
-                    if (label != null) append('@').appendName(label)
+                    appendLabel(label)
                     children(expr)
                 }
                 is Node.Expr.Continue -> {
                     append("continue")
-                    if (label != null) append('@').appendName(label)
+                    appendLabel(label)
                 }
                 is Node.Expr.Break -> {
                     append("break")
-                    if (label != null) append('@').appendName(label)
+                    appendLabel(label)
                 }
                 is Node.Expr.CollLit ->
                     children(exprs, ",", "[", "]", trailingComma)
