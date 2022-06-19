@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("multiplatform") version "1.6.21"
+    kotlin("multiplatform") version "1.7.0"
     `maven-publish`
 }
 

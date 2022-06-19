@@ -1,4 +1,4 @@
-val kotlinVersion by extra { "1.6.21" }
+val kotlinVersion by extra { "1.7.0" }
 
 allprojects {
     group = "com.github.orangain.ktast"
