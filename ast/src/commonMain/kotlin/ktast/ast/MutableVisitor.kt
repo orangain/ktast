@@ -198,7 +198,6 @@ open class MutableVisitor {
                     )
                     is Node.TypeRef -> copy(
                         lPar = visitChildren(lPar, newCh),
-                        contextReceivers = visitChildren(contextReceivers, newCh),
                         mods = visitChildren(mods, newCh),
                         innerLPar = visitChildren(innerLPar, newCh),
                         innerMods = visitChildren(innerMods, newCh),
@@ -207,8 +206,16 @@ open class MutableVisitor {
                         rPar = visitChildren(rPar, newCh),
                     )
                     is Node.Type.Func -> copy(
+                        contextReceivers = visitChildren(contextReceivers, newCh),
                         receiver = visitChildren(receiver, newCh),
                         params = visitChildren(params, newCh),
+                        typeRef = visitChildren(typeRef, newCh),
+                    )
+                    is Node.Type.Func.ContextReceivers -> copy(
+                        elements = visitChildren(elements, newCh),
+                        trailingComma = visitChildren(trailingComma, newCh),
+                    )
+                    is Node.Type.Func.ContextReceiver -> copy(
                         typeRef = visitChildren(typeRef, newCh),
                     )
                     is Node.Type.Func.Receiver -> copy(
@@ -236,13 +243,6 @@ open class MutableVisitor {
                         rPar = visitChildren(rPar, newCh),
                     )
                     is Node.Type.Dynamic -> this
-                    is Node.ContextReceivers -> copy(
-                        elements = visitChildren(elements, newCh),
-                        trailingComma = visitChildren(trailingComma, newCh),
-                    )
-                    is Node.ContextReceiver -> copy(
-                        typeRef = visitChildren(typeRef, newCh),
-                    )
                     is Node.ConstructorCallee -> copy(
                         type = visitChildren(type, newCh),
                     )
