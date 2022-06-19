@@ -32,11 +32,6 @@ sealed class Node {
         val imports: Imports?
     }
 
-    interface WithOptionalParentheses {
-        val lPar: Keyword.LPar?
-        val rPar: Keyword.RPar?
-    }
-
     interface WithPostModifiers {
         val postMods: List<PostModifier>
     }
@@ -429,11 +424,11 @@ sealed class Node {
          * AST node corresponds to KtNullableType.
          */
         data class Nullable(
-            override val lPar: Keyword.LPar?,
+            val lPar: Keyword.LPar?,
             override val mods: Modifiers?,
             val type: Type,
-            override val rPar: Keyword.RPar?,
-        ) : Type(), WithModifiers, WithOptionalParentheses
+            val rPar: Keyword.RPar?,
+        ) : Type(), WithModifiers
 
         /**
          * AST node corresponds to KtDynamicType.
@@ -467,15 +462,15 @@ sealed class Node {
      * AST node corresponds to KtTypeReference.
      */
     data class TypeRef(
-        override val lPar: Keyword.LPar?,
+        val lPar: Keyword.LPar?,
         val contextReceivers: ContextReceivers?,
         override val mods: Modifiers?,
         val innerLPar: Keyword.LPar?,
         val innerMods: Modifiers?,
         val type: Type?,
         val innerRPar: Keyword.RPar?,
-        override val rPar: Keyword.RPar?,
-    ) : Node(), WithModifiers, WithOptionalParentheses
+        val rPar: Keyword.RPar?,
+    ) : Node(), WithModifiers
 
     /**
      * AST node corresponds to KtContextReceiverList.
