@@ -1,6 +1,8 @@
 package ktast.ast
 
-open class MutableVisitor {
+open class MutableVisitor(
+    protected val extrasMap: MutableExtrasMap? = null
+) {
 
     open fun <T : Node?> preVisit(v: T, parent: Node): T = v
     open fun <T : Node?> postVisit(v: T, parent: Node): T = v
@@ -477,10 +479,15 @@ open class MutableVisitor {
         }
     }
 
-    protected fun <T : Node?> Node?.visitChildren(v: T, ch: ChangedRef): T = visit(v, this!!, ch)
+    protected fun <T : Node?> Node?.visitChildren(v: T, ch: ChangedRef): T =
+        visit(v, this!!, ch).also { new ->
+            if (v != null && new != null && ch.changed) {
+                extrasMap?.moveExtras(v, new)
+            }
+        }
 
     protected fun <T : Node?> Node?.visitChildren(v: List<T>, ch: ChangedRef): List<T> = ch.sub { newCh ->
-        val newList = v.map { orig -> visit(orig, this!!, newCh).also { newCh.markIf(it, orig) } }
+        val newList = v.map { orig -> visitChildren(orig, newCh).also { newCh.markIf(it, orig) } }
         newList.origOrChanged(v, newCh)
     }
 
@@ -497,12 +504,14 @@ open class MutableVisitor {
     }
 
     companion object {
-        fun <T : Node> preVisit(v: T, fn: (v: Node?, parent: Node) -> Node?) = object : MutableVisitor() {
-            override fun <T : Node?> preVisit(v: T, parent: Node): T = fn(v, parent) as T
-        }.visit(v, v)
+        fun <T : Node> preVisit(v: T, extrasMap: MutableExtrasMap? = null, fn: (v: Node?, parent: Node) -> Node?) =
+            object : MutableVisitor(extrasMap) {
+                override fun <T : Node?> preVisit(v: T, parent: Node): T = fn(v, parent) as T
+            }.visit(v, v)
 
-        fun <T : Node> postVisit(v: T, fn: (v: Node?, parent: Node) -> Node?) = object : MutableVisitor() {
-            override fun <T : Node?> postVisit(v: T, parent: Node): T = fn(v, parent) as T
-        }.visit(v, v)
+        fun <T : Node> postVisit(v: T, extrasMap: MutableExtrasMap? = null, fn: (v: Node?, parent: Node) -> Node?) =
+            object : MutableVisitor(extrasMap) {
+                override fun <T : Node?> postVisit(v: T, parent: Node): T = fn(v, parent) as T
+            }.visit(v, v)
     }
 }
