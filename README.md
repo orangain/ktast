@@ -17,11 +17,12 @@ Kotlin code generation beyond the string-based versions that exist.
 
 ## Related work
 
-Ktast is a fork of [Kastree](https://github.com/cretz/kastree). Unfortunately Kastree is currently not being actively developed.
-We are greatful to Chad Retz and contirbuters for the great work. Without their effort, we cannot build this library.
+Ktast is a fork of [Kastree](https://github.com/cretz/kastree). Unfortunately Kastree is currently not being actively
+developed.
+We are grateful to Chad Retz and contributors for the great work. Without their effort, we cannot build this library.
 
 Another kotlin AST parsing library is [kotlinx.ast](https://github.com/kotlinx/ast). It does not use the Kotlin
-Compiler, but uses ANTLR and official Kotlin Grammar. Currently it seems that the library's summary AST classes are
+Compiler, but uses ANTLR and official Kotlin Grammar. Currently, it seems that the library's summary AST classes are
 limited.
 
 ## Usage
@@ -36,7 +37,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.orangain.ktast:ast-psi:0.6.0")
+    implementation("com.github.orangain.ktast:ast-psi:0.7.0")
 }
 ```
 
@@ -47,7 +48,7 @@ multiplatform projects. If you need the AST only, instead use:
 
 ```kts
 dependencies {
-    implementation("com.github.orangain.ktast:ast:0.6.0")
+    implementation("com.github.orangain.ktast:ast:0.7.0")
 }
 ```
 
