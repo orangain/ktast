@@ -46,7 +46,7 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
         convertExtras(afterElems).also { if (it.isNotEmpty()) extrasAfter[node] = it }
     }
 
-    open fun nodeExtraElems(elem: PsiElement): Triple<List<PsiElement>, List<PsiElement>, List<PsiElement>> {
+    protected open fun nodeExtraElems(elem: PsiElement): Triple<List<PsiElement>, List<PsiElement>, List<PsiElement>> {
         // Before starts with all directly above ws/comments (reversed to be top-down)
         val before = elem.siblings(forward = false, withItself = false).takeWhile {
             it is PsiWhiteSpace || it is PsiComment || it.node.elementType == KtTokens.SEMICOLON
@@ -64,7 +64,7 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
         return Triple(before, within, after)
     }
 
-    open fun convertExtras(elems: List<PsiElement>): List<Node.Extra> = elems.mapNotNull { elem ->
+    protected open fun convertExtras(elems: List<PsiElement>): List<Node.Extra> = elems.mapNotNull { elem ->
         // Ignore elems we've done before
         val elemId = System.identityHashCode(elem)
         if (!seenExtraPsiIdentities.add(elemId)) null else when {
