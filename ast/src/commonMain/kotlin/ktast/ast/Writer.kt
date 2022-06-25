@@ -502,6 +502,7 @@ open class Writer(
                     children(expr)
                 }
                 is Node.Keyword -> append(value)
+                is Node.Symbol -> append(value)
                 else ->
                     error("Unrecognized node type: $this")
             }
