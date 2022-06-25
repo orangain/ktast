@@ -4,11 +4,26 @@ open class Writer(
     val app: Appendable = StringBuilder(),
     val extrasMap: ExtrasMap? = null
 ) : Visitor() {
-    protected fun append(ch: Char) = also { app.append(ch) }
-    protected fun append(str: String) = also { app.append(str) }
-    protected fun appendName(name: String) = append(name)
+    protected var lastKeywordOrIdentifier: String? = null
+    protected var extrasSinceLastKeywordOrIdentifier = mutableListOf<Node.Extra>()
+    protected fun append(ch: Char) = append(ch.toString())
+    protected fun append(str: String) = also {
+        app.append(str)
+        lastKeywordOrIdentifier = null
+    }
+
+    protected fun appendKeyword(keyword: String) = appendKeywordOrName(keyword)
+    protected fun appendName(name: String) = appendKeywordOrName(name)
     protected fun appendLabel(label: String?) {
-        if (label != null) append('@').append(label)
+        if (label != null) append('@').appendKeywordOrName(label)
+    }
+
+    protected fun appendKeywordOrName(str: String) = also {
+        if (lastKeywordOrIdentifier != null) {
+            append(" ") // Insert heuristic space between two non-symbols
+        }
+        app.append(str)
+        lastKeywordOrIdentifier = str
     }
 
     fun write(v: Node) {
@@ -169,7 +184,7 @@ open class Writer(
                     children(block)
                 }
                 is Node.Decl.SecondaryConstructor.DelegationCall ->
-                    append(target.name.lowercase()).also { children(args) }
+                    appendKeyword(target.name.lowercase()).also { children(args) }
                 is Node.Decl.EnumEntry -> {
                     children(mods)
                     children(name)
@@ -309,7 +324,7 @@ open class Writer(
                     children(listOf(lhs, oper, rhs))
                 }
                 is Node.Expr.BinaryOp.Oper.Infix ->
-                    append(str)
+                    appendKeyword(str)
                 is Node.Expr.BinaryOp.Oper.Token ->
                     append(token.str)
                 is Node.Expr.UnaryOp ->
@@ -473,7 +488,7 @@ open class Writer(
                 }
                 is Node.Modifier.AnnotationSet -> {
                     children(atSymbol)
-                    if (target != null) append(target.name.lowercase()).append(':')
+                    if (target != null) appendKeyword(target.name.lowercase()).append(':')
                     children(lBracket)
                     children(anns)
                     children(rBracket)
@@ -483,7 +498,7 @@ open class Writer(
                     children(args)
                 }
                 is Node.Modifier.Lit ->
-                    append(keyword.name.lowercase())
+                    appendKeyword(keyword.name.lowercase())
                 is Node.PostModifier.TypeConstraints -> {
                     children(whereKeyword)
                     children(constraints)
@@ -501,7 +516,7 @@ open class Writer(
                 is Node.PostModifier.Contract.ContractEffect -> {
                     children(expr)
                 }
-                is Node.Keyword -> append(value)
+                is Node.Keyword -> appendKeyword(value)
                 is Node.Symbol -> append(value)
                 else ->
                     error("Unrecognized node type: $this")
@@ -532,6 +547,7 @@ open class Writer(
         extras.forEach {
             append(it.text)
         }
+        extrasSinceLastKeywordOrIdentifier.addAll(extras)
     }
 
     protected fun Node.children(vararg v: Node?) = this@Writer.also { v.forEach { visitChildren(it) } }
