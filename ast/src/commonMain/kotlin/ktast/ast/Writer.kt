@@ -16,8 +16,9 @@ open class Writer(
     }
 
     override fun visit(v: Node?, parent: Node) {
-        v?.writeExtrasBefore()
-        v?.apply {
+        if (v == null) return
+        v.writeExtrasBefore()
+        v.apply {
             when (this) {
                 is Node.CommaSeparatedNodeList<*> -> {
                     children(elements, ",", prefix, suffix, trailingComma, parent = this)
@@ -505,7 +506,7 @@ open class Writer(
                     error("Unrecognized node type: $this")
             }
         }
-        v?.writeExtrasAfter()
+        v.writeExtrasAfter()
     }
 
     protected open fun Node.writeExtrasBefore() {
