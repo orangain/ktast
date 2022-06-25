@@ -4,26 +4,28 @@ open class Writer(
     val app: Appendable = StringBuilder(),
     val extrasMap: ExtrasMap? = null
 ) : Visitor() {
-    protected var lastKeywordOrIdentifier: String? = null
-    protected var extrasSinceLastKeywordOrIdentifier = mutableListOf<Node.Extra>()
+    protected var lastNonSymbol: String? = null
+    protected var extrasSinceLastNonSymbol = mutableListOf<Node.Extra>()
     protected fun append(ch: Char) = append(ch.toString())
     protected fun append(str: String) = also {
+        if (str == "") return@also
         app.append(str)
-        lastKeywordOrIdentifier = null
+        lastNonSymbol = null
     }
 
-    protected fun appendKeyword(keyword: String) = appendKeywordOrName(keyword)
-    protected fun appendName(name: String) = appendKeywordOrName(name)
+
+    protected fun appendKeyword(keyword: String) = appendNonSymbol(keyword)
+    protected fun appendName(name: String) = appendNonSymbol(name)
     protected fun appendLabel(label: String?) {
-        if (label != null) append('@').appendKeywordOrName(label)
+        if (label != null) append('@').appendNonSymbol(label)
     }
 
-    protected fun appendKeywordOrName(str: String) = also {
-        if (lastKeywordOrIdentifier != null) {
+    protected fun appendNonSymbol(str: String) = also {
+        if (lastNonSymbol != null) {
             append(" ") // Insert heuristic space between two non-symbols
         }
         app.append(str)
-        lastKeywordOrIdentifier = str
+        lastNonSymbol = str
     }
 
     fun write(v: Node) {
@@ -375,7 +377,7 @@ open class Writer(
                 is Node.Expr.StringTmpl.Elem.LongTmpl ->
                     append("\${").also { children(expr) }.append('}')
                 is Node.Expr.Const ->
-                    append(value)
+                    appendNonSymbol(value)
                 is Node.Expr.Lambda -> {
                     append("{")
                     if (params != null) {
@@ -547,7 +549,7 @@ open class Writer(
         extras.forEach {
             append(it.text)
         }
-        extrasSinceLastKeywordOrIdentifier.addAll(extras)
+        extrasSinceLastNonSymbol.addAll(extras)
     }
 
     protected fun Node.children(vararg v: Node?) = this@Writer.also { v.forEach { visitChildren(it) } }
