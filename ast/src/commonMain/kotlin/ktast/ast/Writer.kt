@@ -44,19 +44,23 @@ open class Writer(
         }
     }
 
+    protected open fun Node.writeHeuristicNewline(parent: Node) {
+        if (parent is Node.StatementsContainer && this is Node.Statement) {
+            if (parent.statements.first() !== this && !containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
+                append("\n")
+            }
+        }
+        if (parent is Node.DeclsContainer && this is Node.Decl) {
+            if (parent.decls.first() !== this && !containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
+                append("\n")
+            }
+        }
+    }
+
     override fun visit(v: Node?, parent: Node) {
         if (v == null) return
         v.writeExtrasBefore()
-        if (parent is Node.StatementsContainer && v is Node.Statement) {
-            if (parent.statements.first() !== v && !containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
-                append("\n")
-            }
-        }
-        if (parent is Node.DeclsContainer && v is Node.Decl) {
-            if (parent.decls.first() !== v && !containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
-                append("\n")
-            }
-        }
+        v.writeHeuristicNewline(parent)
         v.apply {
             when (this) {
                 is Node.CommaSeparatedNodeList<*> -> {
