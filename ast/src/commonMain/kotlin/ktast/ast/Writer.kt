@@ -50,7 +50,7 @@ open class Writer(
                 append("\n")
             }
         }
-        if (parent is Node.DeclsContainer && this is Node.Decl) {
+        if (parent is Node.DeclsContainer && this is Node.Decl && this !is Node.Decl.EnumEntry) {
             if (parent.decls.first() !== this && !containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
                 append("\n")
             }
@@ -124,7 +124,7 @@ open class Writer(
                     children(params)
                 }
                 is Node.Decl.Structured.Body -> {
-                    children(decls, prefix = "{", suffix = "}")
+                    children(decls, prefix = "{", suffix = "}", parent = this)
                 }
                 is Node.Decl.Init -> {
                     children(mods)

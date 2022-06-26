@@ -39,9 +39,6 @@ open class MutableVisitor(
                     is Node.Import.Alias -> copy(
                         name = visitChildren(name, newCh),
                     )
-                    is Node.Decls -> copy(
-                        elements = visitChildren(elements, newCh),
-                    )
                     is Node.Decl.Structured -> copy(
                         mods = visitChildren(mods, newCh),
                         declarationKeyword = visitChildren(declarationKeyword, newCh),

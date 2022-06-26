@@ -55,10 +55,6 @@ open class Converter {
         name = convertName(v.nameIdentifier ?: error("No name identifier for $v")),
     ).map(v)
 
-    open fun convertDecls(v: KtClassBody) = Node.Decls(
-        elements = v.declarations.map(::convertDecl),
-    ).map(v)
-
     open fun convertDecl(v: KtDeclaration): Node.Decl = when (v) {
         is KtEnumEntry -> convertEnumEntry(v)
         is KtClassOrObject -> convertStructured(v)
@@ -85,7 +81,7 @@ open class Converter {
                 constraints = convertTypeConstraints(typeConstraintList),
             ).mapNotCorrespondsPsiElement(v)
         },
-        body = v.body?.let { convertDecls(it) },
+        body = v.body?.let(::convertClassBody),
     ).map(v)
 
     open fun convertParents(v: KtSuperTypeList) = Node.Decl.Structured.Parents(

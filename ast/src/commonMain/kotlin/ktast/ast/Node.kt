@@ -99,13 +99,6 @@ sealed class Node {
      */
     sealed class Statement : Node()
 
-    /**
-     * AST node corresponds to KtClassBody.
-     */
-    data class Decls(
-        override val elements: List<Decl>,
-    ) : NodeList<Decl>("{", "}")
-
     sealed class Decl : Statement() {
         /**
          * AST node corresponds to KtClassOrObject.
@@ -118,7 +111,7 @@ sealed class Node {
             val primaryConstructor: PrimaryConstructor?,
             val parents: Parents?,
             val typeConstraints: PostModifier.TypeConstraints?,
-            val body: Decls?,
+            val body: Body?,
         ) : Decl(), WithModifiers {
 
             val isClass = declarationKeyword.token == Keyword.DeclarationToken.CLASS
