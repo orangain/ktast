@@ -50,8 +50,18 @@ open class Writer(
     }
 
     protected fun containsNewlineOrSemicolon(extras: List<Node.Extra>): Boolean {
+        return containsNewline(extras) || containsSemicolon(extras)
+    }
+
+    protected fun containsNewline(extras: List<Node.Extra>): Boolean {
         return extras.any {
-            it is Node.Extra.Semicolon || (it is Node.Extra.Whitespace && it.text.contains("\n"))
+            it is Node.Extra.Whitespace && it.text.contains("\n")
+        }
+    }
+
+    protected fun containsSemicolon(extras: List<Node.Extra>): Boolean {
+        return extras.any {
+            it is Node.Extra.Semicolon
         }
     }
 
@@ -259,10 +269,7 @@ open class Writer(
                     if (!isLastEntry || parent.hasTrailingCommaInEnumEntries) {
                         append(",")
                     }
-                    if (parent.decls.isNotEmpty() &&
-                        isLastEntry &&
-                        !extrasMap?.extrasAfter(body ?: args ?: name).orEmpty().any { it is Node.Extra.Semicolon }
-                    ) {
+                    if (parent.decls.isNotEmpty() && isLastEntry && !containsSemicolon(extrasSinceLastNonSymbol)) {
                         append(";") // Insert heuristic semicolon after the last enum entry
                     }
                     writeExtrasWithin()
