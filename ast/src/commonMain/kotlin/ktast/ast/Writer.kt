@@ -26,6 +26,7 @@ open class Writer(
         }
         app.append(str)
         lastNonSymbol = str
+        extrasSinceLastNonSymbol.clear()
     }
 
     fun write(v: Node) {
@@ -35,6 +36,15 @@ open class Writer(
     override fun visit(v: Node?, parent: Node) {
         if (v == null) return
         v.writeExtrasBefore()
+        if (parent is Node.StatementsContainer) {
+            if (parent.statements.first() !== v && !extrasSinceLastNonSymbol.any {
+                    it is Node.Extra.Semicolon || (it is Node.Extra.Whitespace && it.text.contains(
+                        "\n"
+                    ))
+                }) {
+                append("\n")
+            }
+        }
         v.apply {
             when (this) {
                 is Node.CommaSeparatedNodeList<*> -> {

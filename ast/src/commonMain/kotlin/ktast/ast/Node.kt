@@ -39,6 +39,10 @@ sealed class Node {
         val postMods: List<PostModifier>
     }
 
+    interface StatementsContainer {
+        val statements: List<Statement>
+    }
+
     data class File(
         override val anns: List<Modifier.AnnotationSet>,
         override val pkg: Package?,
@@ -737,7 +741,7 @@ sealed class Node {
              *
              * <Lambda> = { <Param>, <Param> -> <Body> }
              */
-            data class Body(val statements: List<Statement>) : Expr()
+            data class Body(override val statements: List<Statement>) : Expr(), StatementsContainer
         }
 
         /**
@@ -921,7 +925,7 @@ sealed class Node {
         /**
          * AST node corresponds to KtBlockExpression.
          */
-        data class Block(val statements: List<Statement>) : Expr()
+        data class Block(override val statements: List<Statement>) : Expr(), StatementsContainer
     }
 
     /**
