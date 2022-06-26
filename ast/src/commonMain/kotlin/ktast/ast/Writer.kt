@@ -352,8 +352,11 @@ open class Writer(
                     append(token.str)
                 is Node.Expr.TypeOp ->
                     children(listOf(lhs, oper, rhs), "")
-                is Node.Expr.TypeOp.Oper ->
-                    append(token.str)
+                is Node.Expr.TypeOp.Oper -> {
+                    // Using appendNonSymbol may cause insertion of unneeded spaces before or after symbols.
+                    // However, we ignore them as it is rare case for now.
+                    appendNonSymbol(token.str)
+                }
                 is Node.Expr.DoubleColonRef.Callable -> {
                     if (recv != null) children(recv)
                     append("::")
