@@ -81,6 +81,13 @@ open class Writer(
                 append("\n")
             }
         }
+        if (parent is Node.Expr.Annotated && (this is Node.Expr.BinaryOp || this is Node.Expr.TypeOp)) {
+            // Annotated expression requires newline between annotation and expression when expression is a binary operation.
+            // This is because, without newline, annotated expression of binary expression is ambiguous with binary expression of annotated expression.
+            if (!containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
+                append("\n")
+            }
+        }
     }
 
     override fun visit(v: Node?, parent: Node) {
