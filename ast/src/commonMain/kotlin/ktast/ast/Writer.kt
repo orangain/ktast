@@ -583,16 +583,14 @@ open class Writer(
                     if (target != null) appendKeyword(target.name.lowercase()).append(':')
                     children(lBracket)
                     children(anns)
-                    if (rBracket != null) {
-                        // Disable insertion of heuristic space after annotation if rBracket exists
-                        nextHeuristicWhitespace = ""
-                    }
                     children(rBracket)
                 }
                 is Node.Modifier.AnnotationSet.Annotation -> {
                     children(constructorCallee)
                     children(args)
-                    nextHeuristicWhitespace = " " // Insert heuristic space after annotation
+                    if (parent is Node.Modifier.AnnotationSet && parent.rBracket == null) {
+                        nextHeuristicWhitespace = " " // Insert heuristic space after annotation if single form
+                    }
                 }
                 is Node.Modifier.Lit ->
                     appendKeyword(keyword.name.lowercase())
