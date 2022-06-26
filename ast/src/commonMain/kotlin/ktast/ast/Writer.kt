@@ -130,7 +130,7 @@ open class Writer(
                     children(alias)
                 }
                 is Node.Import.Alias -> {
-                    children(Node.Keyword.As())
+                    appendKeyword("as")
                     children(name)
                 }
                 is Node.Decl.Structured -> {
@@ -174,7 +174,7 @@ open class Writer(
                 }
                 is Node.Decl.Init -> {
                     children(mods)
-                    children(Node.Keyword.Init())
+                    appendKeyword("init")
                     children(block)
                 }
                 is Node.Decl.Func -> {
@@ -245,7 +245,7 @@ open class Writer(
                 }
                 is Node.Decl.TypeAlias -> {
                     children(mods)
-                    children(Node.Keyword.Typealias())
+                    appendKeyword("typealias")
                     children(name)
                     children(typeParams).append("=")
                     children(typeRef)
@@ -301,7 +301,7 @@ open class Writer(
                 }
                 is Node.Type.Func -> {
                     if (contextReceivers != null) {
-                        children(Node.Keyword.Context())
+                        appendKeyword("context")
                         children(contextReceivers)
                     }
                     if (receiver != null) {
@@ -339,7 +339,7 @@ open class Writer(
                     append('?')
                 }
                 is Node.Type.Dynamic ->
-                    children(Node.Keyword.Dynamic())
+                    appendKeyword("dynamic")
                 is Node.ConstructorCallee -> {
                     children(type)
                 }
@@ -358,15 +358,15 @@ open class Writer(
                     append(")")
                     children(body)
                     if (elseBody != null) {
-                        children(Node.Keyword.Else())
+                        appendKeyword("else")
                         children(elseBody)
                     }
                 }
                 is Node.Expr.Try -> {
-                    children(Node.Keyword.Try())
+                    appendKeyword("try")
                     children(block)
                     if (catches.isNotEmpty()) children(catches)
-                    if (finallyBlock != null) children(Node.Keyword.Finally()).also { children(finallyBlock) }
+                    if (finallyBlock != null) appendKeyword("finally").also { children(finallyBlock) }
                 }
                 is Node.Expr.Try.Catch -> {
                     children(catchKeyword)
@@ -378,7 +378,7 @@ open class Writer(
                     append("(")
                     children(anns)
                     children(loopParam)
-                    children(Node.Keyword.In())
+                    appendKeyword("in")
                     children(loopRange)
                     append(")")
                     children(body)
@@ -391,7 +391,7 @@ open class Writer(
                         append(")")
                         children(body)
                     } else {
-                        children(Node.Keyword.Do())
+                        appendKeyword("do")
                         children(body)
                         children(whileKeyword)
                         append("(")
@@ -435,7 +435,7 @@ open class Writer(
                 is Node.Expr.DoubleColonRef.Class -> {
                     if (recv != null) children(recv)
                     append("::")
-                    children(Node.Keyword.Declaration.of("class"))
+                    appendKeyword("class")
                 }
                 is Node.Expr.DoubleColonRef.Recv.Expr ->
                     children(expr)
@@ -493,16 +493,16 @@ open class Writer(
                     writeExtrasWithin()
                 }
                 is Node.Expr.This -> {
-                    children(Node.Keyword.This())
+                    appendKeyword("this")
                     appendLabel(label)
                 }
                 is Node.Expr.Super -> {
-                    children(Node.Keyword.Super())
+                    appendKeyword("super")
                     if (typeArg != null) append('<').also { children(typeArg) }.append('>')
                     appendLabel(label)
                 }
                 is Node.Expr.When -> {
-                    children(Node.Keyword.When())
+                    appendKeyword("when")
                     children(lPar, expr, rPar)
                     append("{")
                     children(entries)
@@ -520,28 +520,28 @@ open class Writer(
                     children(expr)
                 is Node.Expr.When.Cond.In -> {
                     if (not) append('!')
-                    children(Node.Keyword.In()).also { children(expr) }
+                    appendKeyword("in").also { children(expr) }
                 }
                 is Node.Expr.When.Cond.Is -> {
                     if (not) append('!')
-                    children(Node.Keyword.Is()).also { children(typeRef) }
+                    appendKeyword("is").also { children(typeRef) }
                 }
                 is Node.Expr.Object -> {
                     children(decl)
                 }
                 is Node.Expr.Throw ->
-                    children(Node.Keyword.Throw()).also { children(expr) }
+                    appendKeyword("throw").also { children(expr) }
                 is Node.Expr.Return -> {
-                    children(Node.Keyword.Return())
+                    appendKeyword("return")
                     appendLabel(label)
                     children(expr)
                 }
                 is Node.Expr.Continue -> {
-                    children(Node.Keyword.Continue())
+                    appendKeyword("continue")
                     appendLabel(label)
                 }
                 is Node.Expr.Break -> {
-                    children(Node.Keyword.Break())
+                    appendKeyword("break")
                     appendLabel(label)
                 }
                 is Node.Expr.CollLit ->

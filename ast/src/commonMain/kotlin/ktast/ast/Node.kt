@@ -1079,23 +1079,6 @@ sealed class Node {
         class Where : Keyword("where")
         class Get : Keyword("get")
         class Set : Keyword("set")
-        class As : Keyword("as")
-        class Init : Keyword("init")
-        class Typealias : Keyword("typealias")
-        class Context : Keyword("context")
-        class Dynamic : Keyword("dynamic")
-        class Try : Keyword("try")
-        class Finally : Keyword("finally")
-        class In : Keyword("in")
-        class Do : Keyword("do")
-        class This : Keyword("this")
-        class Super : Keyword("super")
-        class When : Keyword("when")
-        class Is : Keyword("is")
-        class Throw : Keyword("throw")
-        class Return : Keyword("return")
-        class Continue : Keyword("continue")
-        class Break : Keyword("break")
     }
 
     sealed class Symbol(value: String) : KeywordOrSymbol(value) {
