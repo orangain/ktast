@@ -252,6 +252,13 @@ open class Writer(
                             append(",")
                         }
                     }
+                    if (parent is Node.Decl.Structured.Body &&
+                        parent.decls.isNotEmpty() &&
+                        parent.enumEntries.last() === this &&
+                        !extrasMap?.extrasAfter(body ?: args ?: name).orEmpty().any { it is Node.Extra.Semicolon }
+                    ) {
+                        append(";") // Insert heuristic semicolon after the last enum entry
+                    }
                     writeExtrasWithin()
                 }
                 is Node.Initializer -> {
