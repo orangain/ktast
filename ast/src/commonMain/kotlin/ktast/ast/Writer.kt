@@ -620,6 +620,17 @@ open class Writer(
         v.writeExtrasAfter()
     }
 
+    protected open fun writeHeuristicExtraAfterChild(v: Node, next: Node?, parent: Node?) {
+        if (v is Node.Expr.Name && next is Node.Decl && parent is Node.StatementsContainer) {
+            val upperCasedName = v.name.uppercase()
+            if (Node.Modifier.Keyword.values().any { it.name == upperCasedName } &&
+                !containsSemicolon(extrasSinceLastNonSymbol)
+            ) {
+                append(";")
+            }
+        }
+    }
+
     protected open fun Node.writeExtrasBefore() {
         if (extrasMap == null) return
         // Write everything before
@@ -648,7 +659,7 @@ open class Writer(
     protected fun Node.children(vararg v: Node?) = this@Writer.also { v.forEach { visitChildren(it) } }
 
     protected fun Node.children(
-        v: List<Node?>,
+        v: List<Node>,
         sep: String = "",
         prefix: String = "",
         suffix: String = "",
@@ -660,6 +671,7 @@ open class Writer(
             v.forEachIndexed { index, t ->
                 visit(t, this)
                 if (index < v.size - 1) append(sep)
+                writeHeuristicExtraAfterChild(t, v.getOrNull(index + 1), this)
             }
             children(trailingSeparator)
             parent?.writeExtrasWithin()
