@@ -4,12 +4,17 @@ open class Writer(
     val app: Appendable = StringBuilder(),
     val extrasMap: ExtrasMap? = null
 ) : Visitor() {
+    protected var lastSymbol: String? = null
     protected var lastNonSymbol: String? = null
     protected var extrasSinceLastNonSymbol = mutableListOf<Node.Extra>()
     protected fun append(ch: Char) = append(ch.toString())
     protected fun append(str: String) = also {
         if (str == "") return@also
+        if (lastSymbol != null && lastSymbol!!.endsWith(">") && str.startsWith("=")) {
+            app.append(" ") // Insert heuristic space between '>' and '=' not to be confused with '>='
+        }
         app.append(str)
+        lastSymbol = str
         lastNonSymbol = null
     }
 
