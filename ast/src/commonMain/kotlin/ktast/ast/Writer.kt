@@ -107,10 +107,10 @@ open class Writer(
         v.apply {
             when (this) {
                 is Node.CommaSeparatedNodeList<*> -> {
-                    children(elements, ",", prefix, suffix, trailingComma, parent = this)
+                    children(elements, ",", prefix, suffix, trailingComma)
                 }
                 is Node.NodeList<*> -> {
-                    children(elements, prefix = prefix, suffix = suffix, parent = this)
+                    children(elements, prefix = prefix, suffix = suffix)
                 }
                 is Node.File -> {
                     children(anns)
@@ -122,7 +122,6 @@ open class Writer(
                     children(mods)
                     children(packageKeyword)
                     children(names, ".")
-                    writeExtrasWithin()
                 }
                 is Node.Import -> {
                     children(importKeyword)
@@ -168,8 +167,8 @@ open class Writer(
                 }
                 is Node.Decl.Structured.Body -> {
                     append("{")
-                    children(enumEntries)
-                    children(decls, parent = this)
+                    children(enumEntries, skipWritingExtrasWithin = true)
+                    children(decls)
                     append("}")
                 }
                 is Node.Decl.Init -> {
@@ -490,7 +489,6 @@ open class Writer(
                 }
                 is Node.Expr.Lambda.Body -> {
                     children(statements)
-                    writeExtrasWithin()
                 }
                 is Node.Expr.This -> {
                     appendKeyword("this")
@@ -574,7 +572,6 @@ open class Writer(
                 is Node.Expr.Block -> {
                     append("{").run {
                         children(statements)
-                        writeExtrasWithin()
                     }
                     append("}")
                 }
@@ -664,7 +661,7 @@ open class Writer(
         prefix: String = "",
         suffix: String = "",
         trailingSeparator: Node? = null,
-        parent: Node? = null,
+        skipWritingExtrasWithin: Boolean = false,
     ) =
         this@Writer.also {
             append(prefix)
@@ -674,7 +671,9 @@ open class Writer(
                 writeHeuristicExtraAfterChild(t, v.getOrNull(index + 1), this)
             }
             children(trailingSeparator)
-            parent?.writeExtrasWithin()
+            if (!skipWritingExtrasWithin) {
+                writeExtrasWithin()
+            }
             append(suffix)
         }
 
