@@ -76,6 +76,11 @@ open class Writer(
                 }
             }
         }
+        if (parent is Node.Expr.When && this is Node.Expr.When.Entry) {
+            if (parent.entries.first() !== this && !containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
+                append("\n")
+            }
+        }
     }
 
     override fun visit(v: Node?, parent: Node) {
