@@ -169,7 +169,8 @@ sealed class Node {
              * AST node corresponds to KtClassBody.
              */
             data class Body(
-                override val decls: List<Decl>
+                val enumEntries: List<EnumEntry>,
+                override val decls: List<Decl>,
             ) : Node(), DeclsContainer
         }
 

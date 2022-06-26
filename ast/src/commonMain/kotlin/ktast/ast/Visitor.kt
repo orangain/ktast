@@ -70,6 +70,7 @@ open class Visitor {
                 visitChildren(params)
             }
             is Node.Decl.Structured.Body -> {
+                visitChildren(enumEntries)
                 visitChildren(decls)
             }
             is Node.Decl.Init -> {

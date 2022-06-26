@@ -72,6 +72,7 @@ open class MutableVisitor(
                         params = visitChildren(params, newCh)
                     )
                     is Node.Decl.Structured.Body -> copy(
+                        enumEntries = visitChildren(enumEntries, newCh),
                         decls = visitChildren(decls, newCh),
                     )
                     is Node.Decl.Init -> copy(

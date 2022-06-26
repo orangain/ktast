@@ -56,7 +56,7 @@ open class Converter {
     ).map(v)
 
     open fun convertDecl(v: KtDeclaration): Node.Decl = when (v) {
-        is KtEnumEntry -> convertEnumEntry(v)
+        is KtEnumEntry -> error("KtEnumEntry is handled in convertEnumEntry")
         is KtClassOrObject -> convertStructured(v)
         is KtAnonymousInitializer -> convertInit(v)
         is KtNamedFunction -> convertFunc(v)
@@ -262,7 +262,7 @@ open class Converter {
             args = v.valueArgumentList?.let(::convertValueArgs)
         ).map(v)
 
-    open fun convertEnumEntry(v: KtEnumEntry) = Node.Decl.EnumEntry(
+    open fun convertEnumEntry(v: KtEnumEntry): Node.Decl.EnumEntry = Node.Decl.EnumEntry(
         mods = v.modifierList?.let(::convertModifiers),
         name = v.nameIdentifier?.let(::convertName) ?: error("Unnamed enum"),
         args = v.initializerList?.let(::convertValueArgs),
@@ -271,7 +271,8 @@ open class Converter {
     ).map(v)
 
     open fun convertClassBody(v: KtClassBody) = Node.Decl.Structured.Body(
-        decls = v.declarations.map(::convertDecl),
+        enumEntries = v.declarations.filterIsInstance<KtEnumEntry>().map(::convertEnumEntry),
+        decls = v.declarations.filter { it !is KtEnumEntry }.map(::convertDecl),
     ).map(v)
 
     open fun convertInitializer(equalsToken: PsiElement, expr: KtExpression, parent: PsiElement) = Node.Initializer(

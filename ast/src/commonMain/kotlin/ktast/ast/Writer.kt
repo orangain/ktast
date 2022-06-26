@@ -150,7 +150,10 @@ open class Writer(
                     children(params)
                 }
                 is Node.Decl.Structured.Body -> {
-                    children(decls, prefix = "{", suffix = "}", parent = this)
+                    append("{")
+                    children(enumEntries)
+                    children(decls, parent = this)
+                    append("}")
                 }
                 is Node.Decl.Init -> {
                     children(mods)
