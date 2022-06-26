@@ -247,8 +247,10 @@ open class Writer(
                     children(name)
                     children(args)
                     children(body)
-                    if (hasComma) {
-                        append(",")
+                    if (parent is Node.Decl.Structured.Body) { // should always be true
+                        if (parent.enumEntries.lastOrNull() !== this || (parent.enumEntries.lastOrNull() === this && parent.hasTrailingCommaInEnumEntries)) {
+                            append(",")
+                        }
                     }
                     writeExtrasWithin()
                 }

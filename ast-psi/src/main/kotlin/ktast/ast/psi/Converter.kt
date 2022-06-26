@@ -267,13 +267,17 @@ open class Converter {
         name = v.nameIdentifier?.let(::convertName) ?: error("Unnamed enum"),
         args = v.initializerList?.let(::convertValueArgs),
         body = v.body?.let(::convertClassBody),
-        hasComma = v.comma != null,
     ).map(v)
 
-    open fun convertClassBody(v: KtClassBody) = Node.Decl.Structured.Body(
-        enumEntries = v.declarations.filterIsInstance<KtEnumEntry>().map(::convertEnumEntry),
-        decls = v.declarations.filter { it !is KtEnumEntry }.map(::convertDecl),
-    ).map(v)
+    open fun convertClassBody(v: KtClassBody): Node.Decl.Structured.Body {
+        val ktEnumEntries = v.declarations.filterIsInstance<KtEnumEntry>()
+        val declarationsExcludingKtEnumEntry = v.declarations.filter { it !is KtEnumEntry }
+        return Node.Decl.Structured.Body(
+            enumEntries = ktEnumEntries.map(::convertEnumEntry),
+            hasTrailingCommaInEnumEntries = ktEnumEntries.lastOrNull()?.comma != null,
+            decls = declarationsExcludingKtEnumEntry.map(::convertDecl),
+        ).map(v)
+    }
 
     open fun convertInitializer(equalsToken: PsiElement, expr: KtExpression, parent: PsiElement) = Node.Initializer(
         equals = convertSymbol(equalsToken, Node.Symbol::Equal),

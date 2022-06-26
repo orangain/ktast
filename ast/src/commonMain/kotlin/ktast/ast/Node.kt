@@ -170,6 +170,7 @@ sealed class Node {
              */
             data class Body(
                 val enumEntries: List<EnumEntry>,
+                val hasTrailingCommaInEnumEntries: Boolean,
                 override val decls: List<Decl>,
             ) : Node(), DeclsContainer
         }
@@ -349,11 +350,6 @@ sealed class Node {
             val name: Expr.Name,
             val args: ValueArgs?,
             val body: Structured.Body?,
-            /**
-             * Whether this enum entry has comma or not. All entries excluding the last one should have value true.
-             * The last entry can have both true or false.
-             */
-            val hasComma: Boolean,
         ) : Decl(), WithModifiers
     }
 
