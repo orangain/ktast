@@ -7,13 +7,24 @@ open class Writer(
     protected var lastSymbol: String? = null
     protected var lastNonSymbol: String? = null
     protected var extrasSinceLastNonSymbol = mutableListOf<Node.Extra>()
+    protected var nextHeuristicWhitespace = ""
+
+    protected fun doAppend(str: String) {
+        if (str == "") return
+        if (nextHeuristicWhitespace == " " && (!str.contains(" ") && !str.contains("\n"))) {
+            app.append(" ")
+        }
+        app.append(str)
+        nextHeuristicWhitespace = ""
+    }
+
     protected fun append(ch: Char) = append(ch.toString())
     protected fun append(str: String) = also {
         if (str == "") return@also
         if (lastSymbol != null && lastSymbol!!.endsWith(">") && str.startsWith("=")) {
-            app.append(" ") // Insert heuristic space between '>' and '=' not to be confused with '>='
+            doAppend(" ") // Insert heuristic space between '>' and '=' not to be confused with '>='
         }
-        app.append(str)
+        doAppend(str)
         lastSymbol = str
         lastNonSymbol = null
     }
@@ -29,7 +40,7 @@ open class Writer(
         if (lastNonSymbol != null) {
             append(" ") // Insert heuristic space between two non-symbols
         }
-        app.append(str)
+        doAppend(str)
         lastNonSymbol = str
         extrasSinceLastNonSymbol.clear()
     }
@@ -55,6 +66,11 @@ open class Writer(
                 append("\n")
             }
         }
+//        if (this is Node.Decl.Property.Accessor) {
+//            if (!containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
+//                append("\n")
+//            }
+//        }
     }
 
     override fun visit(v: Node?, parent: Node) {
@@ -522,11 +538,16 @@ open class Writer(
                     if (target != null) appendKeyword(target.name.lowercase()).append(':')
                     children(lBracket)
                     children(anns)
+                    if (rBracket != null) {
+                        // Disable insertion of heuristic space after annotation if rBracket exists
+                        nextHeuristicWhitespace = ""
+                    }
                     children(rBracket)
                 }
                 is Node.Modifier.AnnotationSet.Annotation -> {
                     children(constructorCallee)
                     children(args)
+                    nextHeuristicWhitespace = " " // Insert heuristic space after annotation
                 }
                 is Node.Modifier.Lit ->
                     appendKeyword(keyword.name.lowercase())
