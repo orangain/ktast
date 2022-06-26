@@ -66,11 +66,16 @@ open class Writer(
                 append("\n")
             }
         }
-//        if (this is Node.Decl.Property.Accessor) {
-//            if (!containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
-//                append("\n")
-//            }
-//        }
+        if (parent is Node.Decl.Property && this is Node.Decl.Property.Accessor) {
+            // Property accessors require newline when the previous element is expression
+            if ((parent.accessors.first() === this && (parent.delegate != null || parent.initializer != null)) ||
+                (parent.accessors.size == 2 && parent.accessors.last() === this && parent.accessors[0].body is Node.Decl.Func.Body.Expr)
+            ) {
+                if (!containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
+                    append("\n")
+                }
+            }
+        }
     }
 
     override fun visit(v: Node?, parent: Node) {

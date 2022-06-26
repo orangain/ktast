@@ -280,12 +280,14 @@ sealed class Node {
              * AST node corresponds to KtPropertyAccessor.
              */
             sealed class Accessor : Node(), WithModifiers, WithPostModifiers {
+                abstract val body: Func.Body?
+
                 data class Get(
                     override val mods: Modifiers?,
                     val getKeyword: Keyword.Get,
                     val typeRef: TypeRef?,
                     override val postMods: List<PostModifier>,
-                    val body: Func.Body?
+                    override val body: Func.Body?
                 ) : Accessor()
 
                 data class Set(
@@ -293,7 +295,7 @@ sealed class Node {
                     val setKeyword: Keyword.Set,
                     val params: Params?,
                     override val postMods: List<PostModifier>,
-                    val body: Func.Body?
+                    override val body: Func.Body?
                 ) : Accessor()
 
                 /**
