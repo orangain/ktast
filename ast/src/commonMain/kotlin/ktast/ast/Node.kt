@@ -43,12 +43,16 @@ sealed class Node {
         val statements: List<Statement>
     }
 
+    interface DeclsContainer {
+        val decls: List<Decl>
+    }
+
     data class File(
         override val anns: List<Modifier.AnnotationSet>,
         override val pkg: Package?,
         override val imports: Imports?,
-        val decls: List<Decl>
-    ) : Node(), Entry
+        override val decls: List<Decl>
+    ) : Node(), Entry, DeclsContainer
 
     data class Script(
         override val anns: List<Modifier.AnnotationSet>,
@@ -172,8 +176,8 @@ sealed class Node {
              * AST node corresponds to KtClassBody.
              */
             data class Body(
-                val decls: List<Decl>
-            ) : Node()
+                override val decls: List<Decl>
+            ) : Node(), DeclsContainer
         }
 
         /**

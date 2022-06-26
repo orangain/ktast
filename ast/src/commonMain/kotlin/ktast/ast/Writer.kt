@@ -33,15 +33,22 @@ open class Writer(
         visit(v, v)
     }
 
+    protected fun containsNewlineOrSemicolon(extras: List<Node.Extra>): Boolean {
+        return extras.any {
+            it is Node.Extra.Semicolon || (it is Node.Extra.Whitespace && it.text.contains("\n"))
+        }
+    }
+
     override fun visit(v: Node?, parent: Node) {
         if (v == null) return
         v.writeExtrasBefore()
-        if (parent is Node.StatementsContainer) {
-            if (parent.statements.first() !== v && !extrasSinceLastNonSymbol.any {
-                    it is Node.Extra.Semicolon || (it is Node.Extra.Whitespace && it.text.contains(
-                        "\n"
-                    ))
-                }) {
+        if (parent is Node.StatementsContainer && v is Node.Statement) {
+            if (parent.statements.first() !== v && !containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
+                append("\n")
+            }
+        }
+        if (parent is Node.DeclsContainer && v is Node.Decl) {
+            if (parent.decls.first() !== v && !containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
                 append("\n")
             }
         }
