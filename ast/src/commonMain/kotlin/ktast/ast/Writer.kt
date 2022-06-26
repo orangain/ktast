@@ -247,14 +247,13 @@ open class Writer(
                     children(name)
                     children(args)
                     children(body)
-                    if (parent is Node.Decl.Structured.Body) { // should always be true
-                        if (parent.enumEntries.lastOrNull() !== this || (parent.enumEntries.lastOrNull() === this && parent.hasTrailingCommaInEnumEntries)) {
-                            append(",")
-                        }
+                    check(parent is Node.Decl.Structured.Body) // condition should always be true
+                    val isLastEntry = parent.enumEntries.last() === this
+                    if (!isLastEntry || parent.hasTrailingCommaInEnumEntries) {
+                        append(",")
                     }
-                    if (parent is Node.Decl.Structured.Body &&
-                        parent.decls.isNotEmpty() &&
-                        parent.enumEntries.last() === this &&
+                    if (parent.decls.isNotEmpty() &&
+                        isLastEntry &&
                         !extrasMap?.extrasAfter(body ?: args ?: name).orEmpty().any { it is Node.Extra.Semicolon }
                     ) {
                         append(";") // Insert heuristic semicolon after the last enum entry
