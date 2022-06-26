@@ -391,7 +391,13 @@ open class Writer(
                 is Node.Expr.BinaryOp.Oper.Infix ->
                     appendKeyword(str)
                 is Node.Expr.BinaryOp.Oper.Token ->
-                    append(token.str)
+                    if (token == Node.Expr.BinaryOp.Token.IN || token == Node.Expr.BinaryOp.Token.NOT_IN) {
+                        // Using appendNonSymbol may cause insertion of unneeded space before !in.
+                        // However, we ignore them as it is rare case for now.
+                        appendNonSymbol(token.str)
+                    } else {
+                        append(token.str)
+                    }
                 is Node.Expr.UnaryOp ->
                     if (prefix) children(oper, expr) else children(expr, oper)
                 is Node.Expr.UnaryOp.Oper ->
@@ -399,9 +405,13 @@ open class Writer(
                 is Node.Expr.TypeOp ->
                     children(listOf(lhs, oper, rhs), "")
                 is Node.Expr.TypeOp.Oper -> {
-                    // Using appendNonSymbol may cause insertion of unneeded spaces before or after symbols.
-                    // However, we ignore them as it is rare case for now.
-                    appendNonSymbol(token.str)
+                    if (token == Node.Expr.TypeOp.Token.COL) {
+                        append(token.str)
+                    } else {
+                        // Using appendNonSymbol may cause insertion of unneeded spaces before or after symbols.
+                        // However, we ignore them as it is rare case for now.
+                        appendNonSymbol(token.str)
+                    }
                 }
                 is Node.Expr.DoubleColonRef.Callable -> {
                     if (recv != null) children(recv)
