@@ -21,6 +21,7 @@ class CorpusParseAndWriteHeuristicTest(private val unit: Corpus.Unit) {
             println("----ORIG CODE----\n$origCode\n------------")
             val origFile = Parser.parseFile(origCode)
             val origDump = Dumper.dump(origFile)
+            println("----ORIG AST----\n$origDump\n------------")
 
             val newCode = Writer.write(origFile)
             println("----NEW CODE----\n$newCode\n-----------")
