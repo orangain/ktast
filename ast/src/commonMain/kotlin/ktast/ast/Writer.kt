@@ -41,6 +41,7 @@ open class Writer(
             append(" ") // Insert heuristic space between two non-symbols
         }
         doAppend(str)
+        lastSymbol = null
         lastNonSymbol = str
         extrasSinceLastNonSymbol.clear()
     }
