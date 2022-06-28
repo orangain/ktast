@@ -626,6 +626,11 @@ open class Writer(
                 append(";")
             }
         }
+        if (v is Node.Expr.Call && v.lambdaArgs.isEmpty() && next is Node.Expr.Lambda) {
+            if (!containsSemicolon(extrasSinceLastNonSymbol)) {
+                append(";")
+            }
+        }
     }
 
     protected open fun Node.writeExtrasBefore() {
