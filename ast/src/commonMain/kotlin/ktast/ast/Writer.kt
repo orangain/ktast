@@ -4,9 +4,9 @@ open class Writer(
     val app: Appendable = StringBuilder(),
     val extrasMap: ExtrasMap? = null
 ) : Visitor() {
-    protected var extrasSinceLastNonSymbol = mutableListOf<Node.Extra>()
+    protected val extrasSinceLastNonSymbol = mutableListOf<Node.Extra>()
     protected var nextHeuristicWhitespace = ""
-    protected var lastAppendedToken: String = ""
+    protected var lastAppendedToken = ""
 
     protected val nonSymbolCategories = setOf(
         CharCategory.UPPERCASE_LETTER,
@@ -41,6 +41,9 @@ open class Writer(
     }
 
     fun write(v: Node) {
+        extrasSinceLastNonSymbol.clear()
+        nextHeuristicWhitespace = ""
+        lastAppendedToken = ""
         visit(v, v)
     }
 
