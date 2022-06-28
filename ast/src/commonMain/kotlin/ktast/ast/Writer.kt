@@ -36,14 +36,8 @@ open class Writer(
         lastAppendedToken = str
     }
 
-    protected fun appendKeyword(keyword: String) = appendNonSymbol(keyword)
-    protected fun appendName(name: String) = appendNonSymbol(name)
     protected fun appendLabel(label: String?) {
-        if (label != null) append('@').appendNonSymbol(label)
-    }
-
-    protected fun appendNonSymbol(str: String) = also {
-        append(str)
+        if (label != null) append('@').append(label)
     }
 
     fun write(v: Node) {
@@ -135,7 +129,7 @@ open class Writer(
                     children(alias)
                 }
                 is Node.Import.Alias -> {
-                    appendKeyword("as")
+                    append("as")
                     children(name)
                 }
                 is Node.Decl.Structured -> {
@@ -179,7 +173,7 @@ open class Writer(
                 }
                 is Node.Decl.Init -> {
                     children(mods)
-                    appendKeyword("init")
+                    append("init")
                     children(block)
                 }
                 is Node.Decl.Func -> {
@@ -250,7 +244,7 @@ open class Writer(
                 }
                 is Node.Decl.TypeAlias -> {
                     children(mods)
-                    appendKeyword("typealias")
+                    append("typealias")
                     children(name)
                     children(typeParams).append("=")
                     children(typeRef)
@@ -263,7 +257,7 @@ open class Writer(
                     children(block)
                 }
                 is Node.Decl.SecondaryConstructor.DelegationCall ->
-                    appendKeyword(target.name.lowercase()).also { children(args) }
+                    append(target.name.lowercase()).also { children(args) }
                 is Node.Decl.EnumEntry -> {
                     children(mods)
                     children(name)
@@ -306,7 +300,7 @@ open class Writer(
                 }
                 is Node.Type.Func -> {
                     if (contextReceivers != null) {
-                        appendKeyword("context")
+                        append("context")
                         children(contextReceivers)
                     }
                     if (receiver != null) {
@@ -344,7 +338,7 @@ open class Writer(
                     append('?')
                 }
                 is Node.Type.Dynamic ->
-                    appendKeyword("dynamic")
+                    append("dynamic")
                 is Node.ConstructorCallee -> {
                     children(type)
                 }
@@ -363,15 +357,15 @@ open class Writer(
                     append(")")
                     children(body)
                     if (elseBody != null) {
-                        appendKeyword("else")
+                        append("else")
                         children(elseBody)
                     }
                 }
                 is Node.Expr.Try -> {
-                    appendKeyword("try")
+                    append("try")
                     children(block)
                     if (catches.isNotEmpty()) children(catches)
-                    if (finallyBlock != null) appendKeyword("finally").also { children(finallyBlock) }
+                    if (finallyBlock != null) append("finally").also { children(finallyBlock) }
                 }
                 is Node.Expr.Try.Catch -> {
                     children(catchKeyword)
@@ -383,7 +377,7 @@ open class Writer(
                     append("(")
                     children(anns)
                     children(loopParam)
-                    appendKeyword("in")
+                    append("in")
                     children(loopRange)
                     append(")")
                     children(body)
@@ -396,7 +390,7 @@ open class Writer(
                         append(")")
                         children(body)
                     } else {
-                        appendKeyword("do")
+                        append("do")
                         children(body)
                         children(whileKeyword)
                         append("(")
@@ -408,12 +402,12 @@ open class Writer(
                     children(listOf(lhs, oper, rhs))
                 }
                 is Node.Expr.BinaryOp.Oper.Infix ->
-                    appendKeyword(str)
+                    append(str)
                 is Node.Expr.BinaryOp.Oper.Token ->
                     if (token == Node.Expr.BinaryOp.Token.IN || token == Node.Expr.BinaryOp.Token.NOT_IN) {
                         // Using appendNonSymbol may cause insertion of unneeded space before !in.
                         // However, we ignore them as it is rare case for now.
-                        appendNonSymbol(token.str)
+                        append(token.str)
                     } else {
                         append(token.str)
                     }
@@ -429,7 +423,7 @@ open class Writer(
                     } else {
                         // Using appendNonSymbol may cause insertion of unneeded spaces before or after symbols.
                         // However, we ignore them as it is rare case for now.
-                        appendNonSymbol(token.str)
+                        append(token.str)
                     }
                 }
                 is Node.Expr.DoubleColonRef.Callable -> {
@@ -440,7 +434,7 @@ open class Writer(
                 is Node.Expr.DoubleColonRef.Class -> {
                     if (recv != null) children(recv)
                     append("::")
-                    appendKeyword("class")
+                    append("class")
                 }
                 is Node.Expr.DoubleColonRef.Recv.Expr ->
                     children(expr)
@@ -456,7 +450,7 @@ open class Writer(
                 is Node.Expr.StringTmpl.Elem.Regular ->
                     append(str)
                 is Node.Expr.StringTmpl.Elem.ShortTmpl ->
-                    append('$').appendName(str)
+                    append('$').append(str)
                 is Node.Expr.StringTmpl.Elem.UnicodeEsc ->
                     append("\\u").append(digits)
                 is Node.Expr.StringTmpl.Elem.RegularEsc ->
@@ -472,7 +466,7 @@ open class Writer(
                 is Node.Expr.StringTmpl.Elem.LongTmpl ->
                     append("\${").also { children(expr) }.append('}')
                 is Node.Expr.Const ->
-                    appendNonSymbol(value)
+                    append(value)
                 is Node.Expr.Lambda -> {
                     append("{")
                     if (params != null) {
@@ -497,16 +491,16 @@ open class Writer(
                     children(statements)
                 }
                 is Node.Expr.This -> {
-                    appendKeyword("this")
+                    append("this")
                     appendLabel(label)
                 }
                 is Node.Expr.Super -> {
-                    appendKeyword("super")
+                    append("super")
                     if (typeArg != null) append('<').also { children(typeArg) }.append('>')
                     appendLabel(label)
                 }
                 is Node.Expr.When -> {
-                    appendKeyword("when")
+                    append("when")
                     children(lPar, expr, rPar)
                     append("{")
                     children(entries)
@@ -524,36 +518,36 @@ open class Writer(
                     children(expr)
                 is Node.Expr.When.Cond.In -> {
                     if (not) append('!')
-                    appendKeyword("in").also { children(expr) }
+                    append("in").also { children(expr) }
                 }
                 is Node.Expr.When.Cond.Is -> {
                     if (not) append('!')
-                    appendKeyword("is").also { children(typeRef) }
+                    append("is").also { children(typeRef) }
                 }
                 is Node.Expr.Object -> {
                     children(decl)
                 }
                 is Node.Expr.Throw ->
-                    appendKeyword("throw").also { children(expr) }
+                    append("throw").also { children(expr) }
                 is Node.Expr.Return -> {
-                    appendKeyword("return")
+                    append("return")
                     appendLabel(label)
                     children(expr)
                 }
                 is Node.Expr.Continue -> {
-                    appendKeyword("continue")
+                    append("continue")
                     appendLabel(label)
                 }
                 is Node.Expr.Break -> {
-                    appendKeyword("break")
+                    append("break")
                     appendLabel(label)
                 }
                 is Node.Expr.CollLit ->
                     children(exprs, ",", "[", "]", trailingComma)
                 is Node.Expr.Name ->
-                    appendName(name)
+                    append(name)
                 is Node.Expr.Labeled ->
-                    appendName(label).append("@").also { children(expr) }
+                    append(label).append("@").also { children(expr) }
                 is Node.Expr.Annotated ->
                     children(anns).also { children(expr) }
                 is Node.Expr.Call -> {
@@ -564,7 +558,7 @@ open class Writer(
                 }
                 is Node.Expr.Call.LambdaArg -> {
                     children(anns)
-                    if (label != null) appendName(label).append("@")
+                    if (label != null) append(label).append("@")
                     children(func)
                 }
                 is Node.Expr.ArrayAccess -> {
@@ -583,7 +577,7 @@ open class Writer(
                 }
                 is Node.Modifier.AnnotationSet -> {
                     children(atSymbol)
-                    if (target != null) appendKeyword(target.name.lowercase()).append(':')
+                    if (target != null) append(target.name.lowercase()).append(':')
                     children(lBracket)
                     children(anns)
                     children(rBracket)
@@ -596,7 +590,7 @@ open class Writer(
                     }
                 }
                 is Node.Modifier.Lit ->
-                    appendKeyword(keyword.name.lowercase())
+                    append(keyword.name.lowercase())
                 is Node.PostModifier.TypeConstraints -> {
                     children(whereKeyword)
                     children(constraints)
@@ -614,7 +608,7 @@ open class Writer(
                 is Node.PostModifier.Contract.ContractEffect -> {
                     children(expr)
                 }
-                is Node.Keyword -> appendKeyword(value)
+                is Node.Keyword -> append(value)
                 is Node.Symbol -> append(value)
                 else ->
                     error("Unrecognized node type: $this")
