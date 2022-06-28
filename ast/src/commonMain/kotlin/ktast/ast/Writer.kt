@@ -4,31 +4,41 @@ open class Writer(
     val app: Appendable = StringBuilder(),
     val extrasMap: ExtrasMap? = null
 ) : Visitor() {
-    protected var lastSymbol: String? = null
-    protected var lastNonSymbol: String? = null
     protected var extrasSinceLastNonSymbol = mutableListOf<Node.Extra>()
     protected var nextHeuristicWhitespace = ""
+    protected var lastAppendedToken: String = ""
+
+    protected val nonSymbolCategories = setOf(
+        CharCategory.UPPERCASE_LETTER,
+        CharCategory.LOWERCASE_LETTER,
+        CharCategory.TITLECASE_LETTER,
+        CharCategory.MODIFIER_LETTER,
+        CharCategory.OTHER_LETTER,
+        CharCategory.DECIMAL_DIGIT_NUMBER,
+    )
+
+    protected fun isNonSymbol(ch: Char) = ch == '_' || nonSymbolCategories.contains(ch.category)
 
     protected fun doAppend(str: String) {
-        if (str == "") return
-        if (nextHeuristicWhitespace == " " && (!str.contains(" ") && !str.contains("\n"))) {
-            app.append(" ")
-        }
         app.append(str)
-        nextHeuristicWhitespace = ""
     }
 
     protected fun append(ch: Char) = append(ch.toString())
     protected fun append(str: String) = also {
         if (str == "") return@also
-        if (lastSymbol != null && lastSymbol!!.endsWith(">") && str.startsWith("=")) {
+        if (lastAppendedToken.endsWith(">") && str.startsWith("=")) {
             doAppend(" ") // Insert heuristic space between '>' and '=' not to be confused with '>='
         }
+        if (lastAppendedToken != "" && isNonSymbol(lastAppendedToken.last()) && isNonSymbol(str.first())) {
+            doAppend(" ") // Insert heuristic space between two non-symbols
+        }
+        if (nextHeuristicWhitespace == " " && (!str.contains(" ") && !str.contains("\n"))) {
+            doAppend(" ")
+        }
         doAppend(str)
-        lastSymbol = str
-        lastNonSymbol = null
+        nextHeuristicWhitespace = ""
+        lastAppendedToken = str
     }
-
 
     protected fun appendKeyword(keyword: String) = appendNonSymbol(keyword)
     protected fun appendName(name: String) = appendNonSymbol(name)
@@ -37,12 +47,7 @@ open class Writer(
     }
 
     protected fun appendNonSymbol(str: String) = also {
-        if (lastNonSymbol != null) {
-            append(" ") // Insert heuristic space between two non-symbols
-        }
-        doAppend(str)
-        lastSymbol = null
-        lastNonSymbol = str
+        append(str)
     }
 
     fun write(v: Node) {
