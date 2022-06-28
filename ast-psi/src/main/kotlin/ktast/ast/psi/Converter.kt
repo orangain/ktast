@@ -30,9 +30,12 @@ open class Converter {
         names = v.packageNames.map(::convertName),
     ).map(v)
 
-    open fun convertImports(v: KtImportList) = Node.Imports(
-        elements = v.imports.map(::convertImport),
-    ).map(v)
+    open fun convertImports(v: KtImportList): Node.Imports? = if (v.imports.isEmpty())
+        null // Explicitly returns null here. This is because, unlike other PsiElements, KtImportList does exist even when there is no import statement.
+    else
+        Node.Imports(
+            elements = v.imports.map(::convertImport),
+        ).map(v)
 
     open fun convertImport(v: KtImportDirective) = Node.Import(
         importKeyword = convertKeyword(v.importKeyword, Node.Keyword::Import),

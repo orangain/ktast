@@ -6,6 +6,7 @@ import org.jetbrains.kotlin.com.intellij.psi.PsiComment
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
 import org.jetbrains.kotlin.lexer.KtTokens
+import org.jetbrains.kotlin.psi.KtImportList
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
 import org.jetbrains.kotlin.psi.psiUtil.siblings
 import java.util.*
@@ -48,21 +49,30 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
 
     protected open fun nodeExtraElems(elem: PsiElement): Triple<List<PsiElement>, List<PsiElement>, List<PsiElement>> {
         // Before starts with all directly above ws/comments (reversed to be top-down)
-        val before = elem.siblings(forward = false, withItself = false).takeWhile {
-            it is PsiWhiteSpace || it is PsiComment || it.node.elementType == KtTokens.SEMICOLON
-        }.toList().reversed()
+        val before = elem.siblings(forward = false, withItself = false)
+            .filterNot(::shouldSkip)
+            .takeWhile(::isExtra)
+            .toList().reversed()
 
         // Go over every child...
-        val within = elem.allChildren.filter {
-            it is PsiWhiteSpace || it is PsiComment || it.node.elementType == KtTokens.SEMICOLON
-        }.toList()
+        val within = elem.allChildren
+            .filterNot(::shouldSkip)
+            .filter(::isExtra)
+            .toList()
 
-        val after = elem.siblings(forward = true, withItself = false).takeWhile {
-            it is PsiWhiteSpace || it is PsiComment || it.node.elementType == KtTokens.SEMICOLON
-        }.toList()
+        val after = elem.siblings(forward = true, withItself = false)
+            .filterNot(::shouldSkip)
+            .takeWhile(::isExtra)
+            .toList()
 
         return Triple(before, within, after)
     }
+
+    protected open fun shouldSkip(e: PsiElement) =
+        e is KtImportList && e.imports.isEmpty()
+
+    protected open fun isExtra(e: PsiElement) =
+        e is PsiWhiteSpace || e is PsiComment || e.node.elementType == KtTokens.SEMICOLON
 
     protected open fun convertExtras(elems: List<PsiElement>): List<Node.Extra> = elems.mapNotNull { elem ->
         // Ignore elems we've done before

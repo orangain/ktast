@@ -32,11 +32,7 @@ open class Writer(
         if (lastAppendedToken != "" && isNonSymbol(lastAppendedToken.last()) && isNonSymbol(str.first())) {
             doAppend(" ") // Insert heuristic space between two non-symbols
         }
-        if (nextHeuristicWhitespace == " " && (!str.contains(" ") && !str.contains("\n"))) {
-            doAppend(" ")
-        }
         doAppend(str)
-        nextHeuristicWhitespace = ""
         lastAppendedToken = str
     }
 
@@ -109,6 +105,10 @@ open class Writer(
         if (v == null) return
         v.writeExtrasBefore()
         v.writeHeuristicNewline(parent)
+        if (nextHeuristicWhitespace == " " && extrasSinceLastNonSymbol.isEmpty()) {
+            append(" ")
+        }
+        nextHeuristicWhitespace = ""
         extrasSinceLastNonSymbol.clear()
         v.apply {
             when (this) {
@@ -119,7 +119,7 @@ open class Writer(
                     children(elements, prefix = prefix, suffix = suffix)
                 }
                 is Node.File -> {
-                    children(anns)
+                    children(anns, skipWritingExtrasWithin = true)
                     children(pkg)
                     children(imports)
                     children(decls)
