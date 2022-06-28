@@ -43,7 +43,6 @@ open class Writer(
         doAppend(str)
         lastSymbol = null
         lastNonSymbol = str
-        extrasSinceLastNonSymbol.clear()
     }
 
     fun write(v: Node) {
@@ -105,6 +104,7 @@ open class Writer(
         if (v == null) return
         v.writeExtrasBefore()
         v.writeHeuristicNewline(parent)
+        extrasSinceLastNonSymbol.clear()
         v.apply {
             when (this) {
                 is Node.CommaSeparatedNodeList<*> -> {
