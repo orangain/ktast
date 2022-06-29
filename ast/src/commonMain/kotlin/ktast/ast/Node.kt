@@ -17,7 +17,7 @@ sealed class Node {
         prefix: String,
         suffix: String,
     ) : NodeList<E>(prefix, suffix) {
-        abstract val trailingComma: Symbol.Comma?
+        abstract val trailingComma: Keyword.Comma?
     }
 
     interface WithAnnotations {
@@ -205,7 +205,7 @@ sealed class Node {
              */
             data class Params(
                 override val elements: List<Param>,
-                override val trailingComma: Symbol.Comma?,
+                override val trailingComma: Keyword.Comma?,
             ) : CommaSeparatedNodeList<Param>("(", ")")
 
             /**
@@ -226,7 +226,7 @@ sealed class Node {
             sealed class Body : Node() {
                 data class Block(val block: Node.Expr.Block) : Func.Body()
                 data class Expr(
-                    val equals: Symbol.Equal,
+                    val equals: Keyword.Equal,
                     val expr: Node.Expr,
                 ) : Func.Body()
             }
@@ -266,7 +266,7 @@ sealed class Node {
                  */
                 data class Multi(
                     val vars: List<Single>,
-                    val trailingComma: Symbol.Comma?,
+                    val trailingComma: Keyword.Comma?,
                 ) : Variable()
             }
 
@@ -306,7 +306,7 @@ sealed class Node {
                  */
                 data class Params(
                     override val elements: List<Func.Param>,
-                    override val trailingComma: Symbol.Comma?,
+                    override val trailingComma: Keyword.Comma?,
                 ) : CommaSeparatedNodeList<Func.Param>("", "")
             }
         }
@@ -357,7 +357,7 @@ sealed class Node {
      * Virtual AST node corresponds to a pair of equals and expression.
      */
     data class Initializer(
-        val equals: Symbol.Equal,
+        val equals: Keyword.Equal,
         val expr: Expr,
     ) : Node()
 
@@ -366,7 +366,7 @@ sealed class Node {
      */
     data class TypeParams(
         override val elements: List<TypeParam>,
-        override val trailingComma: Symbol.Comma?,
+        override val trailingComma: Keyword.Comma?,
     ) : CommaSeparatedNodeList<TypeParam>("<", ">")
 
     /**
@@ -393,7 +393,7 @@ sealed class Node {
              */
             data class ContextReceivers(
                 override val elements: List<ContextReceiver>,
-                override val trailingComma: Symbol.Comma?,
+                override val trailingComma: Keyword.Comma?,
             ) : CommaSeparatedNodeList<ContextReceiver>("(", ")")
 
             /**
@@ -415,7 +415,7 @@ sealed class Node {
              */
             data class Params(
                 override val elements: List<Param>,
-                override val trailingComma: Symbol.Comma?,
+                override val trailingComma: Keyword.Comma?,
             ) : CommaSeparatedNodeList<Param>("(", ")")
 
             /**
@@ -443,10 +443,10 @@ sealed class Node {
          * AST node corresponds to KtNullableType.
          */
         data class Nullable(
-            val lPar: Symbol.LPar?,
+            val lPar: Keyword.LPar?,
             override val mods: Modifiers?,
             val type: Type,
-            val rPar: Symbol.RPar?,
+            val rPar: Keyword.RPar?,
         ) : Type(), WithModifiers
 
         /**
@@ -460,7 +460,7 @@ sealed class Node {
      */
     data class TypeArgs(
         override val elements: List<TypeArg>,
-        override val trailingComma: Symbol.Comma?,
+        override val trailingComma: Keyword.Comma?,
     ) : CommaSeparatedNodeList<TypeArg>("<", ">")
 
     /**
@@ -468,7 +468,7 @@ sealed class Node {
      */
     sealed class TypeArg : Node() {
         data class Asterisk(
-            val asterisk: Symbol.Asterisk,
+            val asterisk: Keyword.Asterisk,
         ) : TypeArg()
 
         data class Type(
@@ -481,13 +481,13 @@ sealed class Node {
      * AST node corresponds to KtTypeReference.
      */
     data class TypeRef(
-        val lPar: Symbol.LPar?,
+        val lPar: Keyword.LPar?,
         override val mods: Modifiers?,
-        val innerLPar: Symbol.LPar?,
+        val innerLPar: Keyword.LPar?,
         val innerMods: Modifiers?,
         val type: Type?,
-        val innerRPar: Symbol.RPar?,
-        val rPar: Symbol.RPar?,
+        val innerRPar: Keyword.RPar?,
+        val rPar: Keyword.RPar?,
     ) : Node(), WithModifiers
 
     /**
@@ -502,7 +502,7 @@ sealed class Node {
      */
     data class ValueArgs(
         override val elements: List<ValueArg>,
-        override val trailingComma: Symbol.Comma?,
+        override val trailingComma: Keyword.Comma?,
     ) : CommaSeparatedNodeList<ValueArg>("(", ")")
 
     /**
@@ -648,7 +648,7 @@ sealed class Node {
                 data class Expr(val expr: Node.Expr) : Recv()
                 data class Type(
                     val type: Node.Type.Simple,
-                    val questionMarks: List<Symbol.Question>,
+                    val questionMarks: List<Keyword.Question>,
                 ) : Recv()
             }
         }
@@ -698,7 +698,7 @@ sealed class Node {
              */
             data class Params(
                 override val elements: List<Param>,
-                override val trailingComma: Symbol.Comma?,
+                override val trailingComma: Keyword.Comma?,
             ) : CommaSeparatedNodeList<Param>("", "")
 
             /**
@@ -725,7 +725,7 @@ sealed class Node {
                      */
                     data class Variables(
                         override val elements: List<Single>,
-                        override val trailingComma: Symbol.Comma?,
+                        override val trailingComma: Keyword.Comma?,
                     ) : CommaSeparatedNodeList<Single>("(", ")")
                 }
             }
@@ -759,9 +759,9 @@ sealed class Node {
          * AST node corresponds to KtWhenExpression.
          */
         data class When(
-            val lPar: Symbol.LPar,
+            val lPar: Keyword.LPar,
             val expr: Expr?,
-            val rPar: Symbol.RPar,
+            val rPar: Keyword.RPar,
             val entries: List<Entry>
         ) : Expr() {
             /**
@@ -770,7 +770,7 @@ sealed class Node {
             sealed class Entry : Node() {
                 data class Conds(
                     val conds: List<Cond>,
-                    val trailingComma: Symbol.Comma?,
+                    val trailingComma: Keyword.Comma?,
                     val body: Expr,
                 ) : When.Entry()
 
@@ -848,7 +848,7 @@ sealed class Node {
          */
         data class CollLit(
             val exprs: List<Expr>,
-            val trailingComma: Symbol.Comma?,
+            val trailingComma: Keyword.Comma?,
         ) : Expr()
 
         /**
@@ -900,7 +900,7 @@ sealed class Node {
         data class ArrayAccess(
             val expr: Expr,
             val indices: List<Expr>,
-            val trailingComma: Symbol.Comma?,
+            val trailingComma: Keyword.Comma?,
         ) : Expr()
 
         /**
@@ -936,11 +936,11 @@ sealed class Node {
          * AST node corresponds to KtAnnotation or single KtAnnotationEntry.
          */
         data class AnnotationSet(
-            val atSymbol: Symbol.At?,
+            val atSymbol: Node.Keyword.At?,
             val target: Target?,
-            val lBracket: Symbol.LBracket?,
+            val lBracket: Node.Keyword.LBracket?,
             val anns: List<Annotation>,
-            val rBracket: Symbol.RBracket?,
+            val rBracket: Node.Keyword.RBracket?,
         ) : Modifier() {
             enum class Target {
                 FIELD, FILE, PROPERTY, GET, SET, RECEIVER, PARAM, SETPARAM, DELEGATE
@@ -979,7 +979,7 @@ sealed class Node {
             data class TypeConstraintList(
                 override val elements: List<TypeConstraint>,
             ) : CommaSeparatedNodeList<TypeConstraint>("", "") {
-                override val trailingComma: Symbol.Comma? = null // Trailing comma is not allowed.
+                override val trailingComma: Keyword.Comma? = null // Trailing comma is not allowed.
             }
 
             /**
@@ -1004,7 +1004,7 @@ sealed class Node {
              */
             data class ContractEffects(
                 override val elements: List<ContractEffect>,
-                override val trailingComma: Symbol.Comma?,
+                override val trailingComma: Keyword.Comma?,
             ) : CommaSeparatedNodeList<ContractEffect>("[", "]")
 
             /**
@@ -1016,7 +1016,7 @@ sealed class Node {
         }
     }
 
-    sealed class KeywordOrSymbol(val value: String) : Node() {
+    sealed class Keyword(val value: String) : Node() {
         override fun toString(): String {
             return javaClass.simpleName
         }
@@ -1025,7 +1025,7 @@ sealed class Node {
             if (this === other) return true
             if (javaClass != other?.javaClass) return false
 
-            other as KeywordOrSymbol
+            other as Keyword
 
             if (value != other.value) return false
 
@@ -1035,9 +1035,6 @@ sealed class Node {
         override fun hashCode(): Int {
             return value.hashCode()
         }
-    }
-
-    sealed class Keyword(value: String) : KeywordOrSymbol(value) {
 
         data class ValOrVar(val token: ValOrVarToken) : Keyword(token.name.lowercase()) {
             companion object {
@@ -1079,18 +1076,15 @@ sealed class Node {
         class Where : Keyword("where")
         class Get : Keyword("get")
         class Set : Keyword("set")
-    }
-
-    sealed class Symbol(value: String) : KeywordOrSymbol(value) {
-        class Equal : Symbol("=")
-        class Comma : Symbol(",")
-        class Question : Symbol("?")
-        class Asterisk : Symbol("*")
-        class LPar : Symbol("(")
-        class RPar : Symbol(")")
-        class LBracket : Symbol("[")
-        class RBracket : Symbol("]")
-        class At : Symbol("@")
+        class Equal : Keyword("=")
+        class Comma : Keyword(",")
+        class Question : Keyword("?")
+        class Asterisk : Keyword("*")
+        class LPar : Keyword("(")
+        class RPar : Keyword(")")
+        class LBracket : Keyword("[")
+        class RBracket : Keyword("]")
+        class At : Keyword("@")
     }
 
     sealed class Extra : Node() {

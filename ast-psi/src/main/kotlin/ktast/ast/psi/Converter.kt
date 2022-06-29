@@ -169,7 +169,7 @@ open class Converter {
                 ).mapNotCorrespondsPsiElement(v)
             else ->
                 Node.Decl.Func.Body.Expr(
-                    equals = convertSymbol(v.equalsToken ?: error("No equals token before $v"), Node.Symbol::Equal),
+                    equals = convertKeyword(v.equalsToken ?: error("No equals token before $v"), Node.Keyword::Equal),
                     expr = convertExpr(bodyExpression),
                 ).mapNotCorrespondsPsiElement(v)
         }
@@ -283,7 +283,7 @@ open class Converter {
     }
 
     open fun convertInitializer(equalsToken: PsiElement, expr: KtExpression, parent: PsiElement) = Node.Initializer(
-        equals = convertSymbol(equalsToken, Node.Symbol::Equal),
+        equals = convertKeyword(equalsToken, Node.Keyword::Equal),
         expr = convertExpr(expr),
     ).mapNotCorrespondsPsiElement(parent)
 
@@ -306,9 +306,9 @@ open class Converter {
     open fun convertTypeArg(v: KtTypeProjection): Node.TypeArg =
         if (v.projectionKind == KtProjectionKind.STAR) {
             Node.TypeArg.Asterisk(
-                asterisk = convertSymbol(
+                asterisk = convertKeyword(
                     v.projectionToken ?: error("No projection token for $v"),
-                    Node.Symbol::Asterisk
+                    Node.Keyword::Asterisk
                 ),
             ).map(v)
         } else {
@@ -351,13 +351,13 @@ open class Converter {
         }
 
         return Node.TypeRef(
-            lPar = lPar?.let { convertSymbol(it, Node.Symbol::LPar) },
+            lPar = lPar?.let { convertKeyword(it, Node.Keyword::LPar) },
             mods = mods?.let { convertModifiers(it) },
-            innerLPar = innerLPar?.let { convertSymbol(it, Node.Symbol::LPar) },
+            innerLPar = innerLPar?.let { convertKeyword(it, Node.Keyword::LPar) },
             innerMods = innerMods?.let { convertModifiers(it) },
             type = v.typeElement?.let { convertType(it) }, // v.typeElement is null when the type reference has only context receivers.
-            innerRPar = innerRPar?.let { convertSymbol(it, Node.Symbol::RPar) },
-            rPar = rPar?.let { convertSymbol(it, Node.Symbol::RPar) },
+            innerRPar = innerRPar?.let { convertKeyword(it, Node.Keyword::RPar) },
+            rPar = rPar?.let { convertKeyword(it, Node.Keyword::RPar) },
         ).map(v)
     }
 
@@ -393,10 +393,10 @@ open class Converter {
             }
         ).map(v)
         is KtNullableType -> Node.Type.Nullable(
-            lPar = v.leftParenthesis?.let { convertSymbol(it, Node.Symbol::LPar) },
+            lPar = v.leftParenthesis?.let { convertKeyword(it, Node.Keyword::LPar) },
             mods = v.modifierList?.let(::convertModifiers),
             type = convertType(v.innerType ?: error("No inner type for nullable")),
-            rPar = v.rightParenthesis?.let { convertSymbol(it, Node.Symbol::RPar) },
+            rPar = v.rightParenthesis?.let { convertKeyword(it, Node.Keyword::RPar) },
         ).map(v)
         is KtDynamicType -> Node.Type.Dynamic().map(v)
         else -> error("Unrecognized type of $v")
@@ -584,7 +584,7 @@ open class Converter {
         recv = v.receiverExpression?.let { expr ->
             convertDoubleColonRefRecv(
                 expr,
-                v.questionMarks.map { convertSymbol(it, Node.Symbol::Question) }
+                v.questionMarks.map { convertKeyword(it, Node.Keyword::Question) }
             )
         },
         name = convertName(v.callableReference)
@@ -594,14 +594,14 @@ open class Converter {
         recv = v.receiverExpression?.let { expr ->
             convertDoubleColonRefRecv(
                 expr,
-                v.questionMarks.map { convertSymbol(it, Node.Symbol::Question) }
+                v.questionMarks.map { convertKeyword(it, Node.Keyword::Question) }
             )
         }
     ).map(v)
 
     open fun convertDoubleColonRefRecv(
         v: KtExpression,
-        questionMarks: List<Node.Symbol.Question>
+        questionMarks: List<Node.Keyword.Question>
     ): Node.Expr.DoubleColonRef.Recv = when (v) {
         is KtSimpleNameExpression -> Node.Expr.DoubleColonRef.Recv.Type(
             type = Node.Type.Simple(
@@ -727,9 +727,9 @@ open class Converter {
     ).map(v)
 
     open fun convertWhen(v: KtWhenExpression) = Node.Expr.When(
-        lPar = convertSymbol(v.leftParenthesis ?: error("No left parenthesis for $v"), Node.Symbol::LPar),
+        lPar = convertKeyword(v.leftParenthesis ?: error("No left parenthesis for $v"), Node.Keyword::LPar),
         expr = v.subjectExpression?.let(::convertExpr),
-        rPar = convertSymbol(v.rightParenthesis ?: error("No right parenthesis for $v"), Node.Symbol::RPar),
+        rPar = convertKeyword(v.rightParenthesis ?: error("No right parenthesis for $v"), Node.Keyword::RPar),
         entries = v.entries.map(::convertWhenEntry),
     ).map(v)
 
@@ -883,15 +883,15 @@ open class Converter {
     }
 
     open fun convertAnnotationSet(v: KtAnnotation) = Node.Modifier.AnnotationSet(
-        atSymbol = v.node.findChildByType(KtTokens.AT)?.let { convertSymbol(it.psi, Node.Symbol::At) },
+        atSymbol = v.node.findChildByType(KtTokens.AT)?.let { convertKeyword(it.psi, Node.Keyword::At) },
         target = v.useSiteTarget?.let(::convertAnnotationSetTarget),
-        lBracket = v.node.findChildByType(KtTokens.LBRACKET)?.let { convertSymbol(it.psi, Node.Symbol::LBracket) },
+        lBracket = v.node.findChildByType(KtTokens.LBRACKET)?.let { convertKeyword(it.psi, Node.Keyword::LBracket) },
         anns = v.entries.map(::convertAnnotation),
-        rBracket = v.node.findChildByType(KtTokens.RBRACKET)?.let { convertSymbol(it.psi, Node.Symbol::RBracket) },
+        rBracket = v.node.findChildByType(KtTokens.RBRACKET)?.let { convertKeyword(it.psi, Node.Keyword::RBracket) },
     ).map(v)
 
     open fun convertAnnotationSet(v: KtAnnotationEntry) = Node.Modifier.AnnotationSet(
-        atSymbol = v.atSymbol?.let { convertSymbol(it, Node.Symbol::At) },
+        atSymbol = v.atSymbol?.let { convertKeyword(it, Node.Keyword::At) },
         target = v.useSiteTarget?.let(::convertAnnotationSetTarget),
         lBracket = null,
         anns = listOf(convertAnnotation(v)),
@@ -962,16 +962,11 @@ open class Converter {
     open fun convertDeclarationKeyword(v: PsiElement) = Node.Keyword.Declaration.of(v.text)
         .map(v)
 
-    open fun convertComma(v: PsiElement): Node.Symbol.Comma = convertSymbol(v, Node.Symbol::Comma)
+    open fun convertComma(v: PsiElement): Node.Keyword.Comma = convertKeyword(v, Node.Keyword::Comma)
 
     open fun <T : Node.Keyword> convertKeyword(v: PsiElement, factory: () -> T): T =
         factory().also {
             check(v.text == it.value) { "Unexpected keyword: ${v.text}" }
-        }.map(v)
-
-    open fun <T : Node.Symbol> convertSymbol(v: PsiElement, factory: () -> T): T =
-        factory().also {
-            check(v.text == it.value) { "Unexpected symbol: ${v.text}" }
         }.map(v)
 
     protected open fun <T : Node> T.map(v: PsiElement) = also { onNode(it, v) }

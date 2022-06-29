@@ -423,7 +423,6 @@ open class Visitor {
                 visitChildren(expr)
             }
             is Node.Keyword -> {}
-            is Node.Symbol -> {}
             is Node.Extra -> {}
             null -> {}
         }

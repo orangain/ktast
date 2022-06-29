@@ -22,7 +22,7 @@ class ConverterTest {
                       Node.Expr.Name
                       AFTER: Node.Extra.Whitespace
                     Node.Initializer
-                      Node.Symbol.Equal
+                      Node.Keyword.Equal
                       AFTER: Node.Extra.Whitespace
                       Node.Expr.StringTmpl
             """.trimIndent()
@@ -44,7 +44,7 @@ class ConverterTest {
                       Node.Expr.Name
                       AFTER: Node.Extra.Whitespace
                     Node.Initializer
-                      Node.Symbol.Equal
+                      Node.Keyword.Equal
                       AFTER: Node.Extra.Whitespace
                       Node.Expr.StringTmpl
                       AFTER: Node.Extra.Whitespace

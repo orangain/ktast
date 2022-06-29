@@ -467,7 +467,6 @@ open class MutableVisitor(
                         expr = visitChildren(expr, newCh),
                     )
                     is Node.Keyword -> this
-                    is Node.Symbol -> this
                     is Node.Extra -> this
                     // Currently, else branch is required even when sealed classes are exhaustive.
                     // See: https://youtrack.jetbrains.com/issue/KT-21908
