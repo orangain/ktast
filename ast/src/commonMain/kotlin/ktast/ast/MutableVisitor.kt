@@ -166,7 +166,7 @@ open class MutableVisitor(
                     is Node.Decl.SecondaryConstructor.DelegationCall -> copy(
                         args = visitChildren(args, newCh)
                     )
-                    is Node.Decl.EnumEntry -> copy(
+                    is Node.EnumEntry -> copy(
                         mods = visitChildren(mods, newCh),
                         name = visitChildren(name, newCh),
                         args = visitChildren(args, newCh),

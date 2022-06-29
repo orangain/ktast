@@ -160,7 +160,7 @@ open class Visitor {
             is Node.Decl.SecondaryConstructor.DelegationCall -> {
                 visitChildren(args)
             }
-            is Node.Decl.EnumEntry -> {
+            is Node.EnumEntry -> {
                 visitChildren(mods)
                 visitChildren(name)
                 visitChildren(args)

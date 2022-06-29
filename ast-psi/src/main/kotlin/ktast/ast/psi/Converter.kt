@@ -265,7 +265,7 @@ open class Converter {
             args = v.valueArgumentList?.let(::convertValueArgs)
         ).map(v)
 
-    open fun convertEnumEntry(v: KtEnumEntry): Node.Decl.EnumEntry = Node.Decl.EnumEntry(
+    open fun convertEnumEntry(v: KtEnumEntry): Node.EnumEntry = Node.EnumEntry(
         mods = v.modifierList?.let(::convertModifiers),
         name = v.nameIdentifier?.let(::convertName) ?: error("Unnamed enum"),
         args = v.initializerList?.let(::convertValueArgs),

@@ -206,7 +206,7 @@ open class Writer(
                 }
                 is Node.Decl.SecondaryConstructor.DelegationCall ->
                     append(target.name.lowercase()).also { children(args) }
-                is Node.Decl.EnumEntry -> {
+                is Node.EnumEntry -> {
                     children(mods)
                     children(name)
                     children(args)
@@ -594,7 +594,7 @@ open class Writer(
                 append("\n")
             }
         }
-        if (parent is Node.DeclsContainer && this is Node.Decl && this !is Node.Decl.EnumEntry) {
+        if (parent is Node.DeclsContainer && this is Node.Decl) {
             if (parent.decls.first() !== this && !containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
                 append("\n")
             }

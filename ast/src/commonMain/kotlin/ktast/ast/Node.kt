@@ -342,16 +342,17 @@ sealed class Node {
             enum class DelegationTarget { THIS, SUPER }
         }
 
-        /**
-         * AST node corresponds to KtEnumEntry.
-         */
-        data class EnumEntry(
-            override val mods: Modifiers?,
-            val name: Expr.Name,
-            val args: ValueArgs?,
-            val body: Structured.Body?,
-        ) : Decl(), WithModifiers
     }
+
+    /**
+     * AST node corresponds to KtEnumEntry.
+     */
+    data class EnumEntry(
+        override val mods: Modifiers?,
+        val name: Expr.Name,
+        val args: ValueArgs?,
+        val body: Decl.Structured.Body?,
+    ) : Node(), WithModifiers
 
     /**
      * Virtual AST node corresponds to a pair of equals and expression.
