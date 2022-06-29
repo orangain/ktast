@@ -216,10 +216,10 @@ open class Writer(
                     if (!isLastEntry || parent.hasTrailingCommaInEnumEntries) {
                         append(",")
                     }
+                    writeExtrasWithin() // Semicolon after trailing comma is avaialbe as extrasWithin
                     if (parent.decls.isNotEmpty() && isLastEntry && !containsSemicolon(extrasSinceLastNonSymbol)) {
                         append(";") // Insert heuristic semicolon after the last enum entry
                     }
-                    writeExtrasWithin()
                 }
                 is Node.Initializer -> {
                     children(equals)
