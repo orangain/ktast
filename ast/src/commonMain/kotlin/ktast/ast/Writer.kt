@@ -17,10 +17,8 @@ open class Writer(
         CharCategory.DECIMAL_DIGIT_NUMBER,
     )
 
-    protected fun isNonSymbol(ch: Char) = ch == '_' || nonSymbolCategories.contains(ch.category)
-
-    protected fun doAppend(str: String) {
-        app.append(str)
+    protected fun appendLabel(label: String?) {
+        if (label != null) append('@').append(label)
     }
 
     protected fun append(ch: Char) = append(ch.toString())
@@ -36,8 +34,10 @@ open class Writer(
         lastAppendedToken = str
     }
 
-    protected fun appendLabel(label: String?) {
-        if (label != null) append('@').append(label)
+    protected fun isNonSymbol(ch: Char) = ch == '_' || nonSymbolCategories.contains(ch.category)
+
+    protected fun doAppend(str: String) {
+        app.append(str)
     }
 
     fun write(v: Node) {
@@ -47,66 +47,11 @@ open class Writer(
         visit(v, v)
     }
 
-    protected fun containsNewlineOrSemicolon(extras: List<Node.Extra>): Boolean {
-        return containsNewline(extras) || containsSemicolon(extras)
-    }
-
-    protected fun containsNewline(extras: List<Node.Extra>): Boolean {
-        return extras.any {
-            it is Node.Extra.Whitespace && it.text.contains("\n")
-        }
-    }
-
-    protected fun containsSemicolon(extras: List<Node.Extra>): Boolean {
-        return extras.any {
-            it is Node.Extra.Semicolon
-        }
-    }
-
-    protected open fun Node.writeHeuristicNewline(parent: Node) {
-        if (parent is Node.StatementsContainer && this is Node.Statement) {
-            if (parent.statements.first() !== this && !containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
-                append("\n")
-            }
-        }
-        if (parent is Node.DeclsContainer && this is Node.Decl && this !is Node.Decl.EnumEntry) {
-            if (parent.decls.first() !== this && !containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
-                append("\n")
-            }
-        }
-        if (parent is Node.Decl.Property && this is Node.Decl.Property.Accessor) {
-            // Property accessors require newline when the previous element is expression
-            if ((parent.accessors.first() === this && (parent.delegate != null || parent.initializer != null)) ||
-                (parent.accessors.size == 2 && parent.accessors.last() === this && parent.accessors[0].body is Node.Decl.Func.Body.Expr)
-            ) {
-                if (!containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
-                    append("\n")
-                }
-            }
-        }
-        if (parent is Node.Expr.When && this is Node.Expr.When.Entry) {
-            if (parent.entries.first() !== this && !containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
-                append("\n")
-            }
-        }
-        if (parent is Node.Expr.Annotated && (this is Node.Expr.BinaryOp || this is Node.Expr.TypeOp)) {
-            // Annotated expression requires newline between annotation and expression when expression is a binary operation.
-            // This is because, without newline, annotated expression of binary expression is ambiguous with binary expression of annotated expression.
-            if (!containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
-                append("\n")
-            }
-        }
-    }
-
     override fun visit(v: Node?, parent: Node) {
         if (v == null) return
         v.writeExtrasBefore()
         v.writeHeuristicNewline(parent)
-        if (nextHeuristicWhitespace == " " && extrasSinceLastNonSymbol.isEmpty()) {
-            append(" ")
-        }
-        nextHeuristicWhitespace = ""
-        extrasSinceLastNonSymbol.clear()
+        writeHeuristicSpace()
         v.apply {
             when (this) {
                 is Node.CommaSeparatedNodeList<*> -> {
@@ -620,6 +565,73 @@ open class Writer(
         v.writeExtrasAfter()
     }
 
+    protected fun Node.children(vararg v: Node?) = this@Writer.also { v.forEach { visitChildren(it) } }
+
+    protected fun Node.children(
+        v: List<Node>,
+        sep: String = "",
+        prefix: String = "",
+        suffix: String = "",
+        trailingSeparator: Node? = null,
+        skipWritingExtrasWithin: Boolean = false,
+    ) =
+        this@Writer.also {
+            append(prefix)
+            v.forEachIndexed { index, t ->
+                visit(t, this)
+                if (index < v.size - 1) append(sep)
+                writeHeuristicExtraAfterChild(t, v.getOrNull(index + 1), this)
+            }
+            children(trailingSeparator)
+            if (!skipWritingExtrasWithin) {
+                writeExtrasWithin()
+            }
+            append(suffix)
+        }
+
+    protected open fun Node.writeHeuristicNewline(parent: Node) {
+        if (parent is Node.StatementsContainer && this is Node.Statement) {
+            if (parent.statements.first() !== this && !containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
+                append("\n")
+            }
+        }
+        if (parent is Node.DeclsContainer && this is Node.Decl && this !is Node.Decl.EnumEntry) {
+            if (parent.decls.first() !== this && !containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
+                append("\n")
+            }
+        }
+        if (parent is Node.Decl.Property && this is Node.Decl.Property.Accessor) {
+            // Property accessors require newline when the previous element is expression
+            if ((parent.accessors.first() === this && (parent.delegate != null || parent.initializer != null)) ||
+                (parent.accessors.size == 2 && parent.accessors.last() === this && parent.accessors[0].body is Node.Decl.Func.Body.Expr)
+            ) {
+                if (!containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
+                    append("\n")
+                }
+            }
+        }
+        if (parent is Node.Expr.When && this is Node.Expr.When.Entry) {
+            if (parent.entries.first() !== this && !containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
+                append("\n")
+            }
+        }
+        if (parent is Node.Expr.Annotated && (this is Node.Expr.BinaryOp || this is Node.Expr.TypeOp)) {
+            // Annotated expression requires newline between annotation and expression when expression is a binary operation.
+            // This is because, without newline, annotated expression of binary expression is ambiguous with binary expression of annotated expression.
+            if (!containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
+                append("\n")
+            }
+        }
+    }
+
+    protected fun writeHeuristicSpace() {
+        if (nextHeuristicWhitespace == " " && extrasSinceLastNonSymbol.isEmpty()) {
+            append(" ")
+        }
+        nextHeuristicWhitespace = ""
+        extrasSinceLastNonSymbol.clear()
+    }
+
     protected open fun writeHeuristicExtraAfterChild(v: Node, next: Node?, parent: Node?) {
         if (v is Node.Expr.Name && next is Node.Decl && parent is Node.StatementsContainer) {
             val upperCasedName = v.name.uppercase()
@@ -633,6 +645,22 @@ open class Writer(
             if (!containsSemicolon(extrasSinceLastNonSymbol)) {
                 append(";")
             }
+        }
+    }
+
+    protected fun containsNewlineOrSemicolon(extras: List<Node.Extra>): Boolean {
+        return containsNewline(extras) || containsSemicolon(extras)
+    }
+
+    protected fun containsNewline(extras: List<Node.Extra>): Boolean {
+        return extras.any {
+            it is Node.Extra.Whitespace && it.text.contains("\n")
+        }
+    }
+
+    protected fun containsSemicolon(extras: List<Node.Extra>): Boolean {
+        return extras.any {
+            it is Node.Extra.Semicolon
         }
     }
 
@@ -660,30 +688,6 @@ open class Writer(
         }
         extrasSinceLastNonSymbol.addAll(extras)
     }
-
-    protected fun Node.children(vararg v: Node?) = this@Writer.also { v.forEach { visitChildren(it) } }
-
-    protected fun Node.children(
-        v: List<Node>,
-        sep: String = "",
-        prefix: String = "",
-        suffix: String = "",
-        trailingSeparator: Node? = null,
-        skipWritingExtrasWithin: Boolean = false,
-    ) =
-        this@Writer.also {
-            append(prefix)
-            v.forEachIndexed { index, t ->
-                visit(t, this)
-                if (index < v.size - 1) append(sep)
-                writeHeuristicExtraAfterChild(t, v.getOrNull(index + 1), this)
-            }
-            children(trailingSeparator)
-            if (!skipWritingExtrasWithin) {
-                writeExtrasWithin()
-            }
-            append(suffix)
-        }
 
     companion object {
         fun write(v: Node, extrasMap: ExtrasMap? = null) =
