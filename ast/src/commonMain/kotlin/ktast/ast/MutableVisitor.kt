@@ -39,9 +39,6 @@ open class MutableVisitor(
                     is Node.Import.Alias -> copy(
                         name = visitChildren(name, newCh),
                     )
-                    is Node.Decls -> copy(
-                        elements = visitChildren(elements, newCh),
-                    )
                     is Node.Decl.Structured -> copy(
                         mods = visitChildren(mods, newCh),
                         declarationKeyword = visitChildren(declarationKeyword, newCh),
@@ -75,6 +72,7 @@ open class MutableVisitor(
                         params = visitChildren(params, newCh)
                     )
                     is Node.Decl.Structured.Body -> copy(
+                        enumEntries = visitChildren(enumEntries, newCh),
                         decls = visitChildren(decls, newCh),
                     )
                     is Node.Decl.Init -> copy(
@@ -168,7 +166,7 @@ open class MutableVisitor(
                     is Node.Decl.SecondaryConstructor.DelegationCall -> copy(
                         args = visitChildren(args, newCh)
                     )
-                    is Node.Decl.EnumEntry -> copy(
+                    is Node.EnumEntry -> copy(
                         mods = visitChildren(mods, newCh),
                         name = visitChildren(name, newCh),
                         args = visitChildren(args, newCh),

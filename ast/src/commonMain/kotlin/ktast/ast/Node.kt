@@ -39,12 +39,20 @@ sealed class Node {
         val postMods: List<PostModifier>
     }
 
+    interface StatementsContainer {
+        val statements: List<Statement>
+    }
+
+    interface DeclsContainer {
+        val decls: List<Decl>
+    }
+
     data class File(
         override val anns: List<Modifier.AnnotationSet>,
         override val pkg: Package?,
         override val imports: Imports?,
-        val decls: List<Decl>
-    ) : Node(), Entry
+        override val decls: List<Decl>
+    ) : Node(), Entry, DeclsContainer
 
     data class Script(
         override val anns: List<Modifier.AnnotationSet>,
@@ -91,13 +99,6 @@ sealed class Node {
      */
     sealed class Statement : Node()
 
-    /**
-     * AST node corresponds to KtClassBody.
-     */
-    data class Decls(
-        override val elements: List<Decl>,
-    ) : NodeList<Decl>("{", "}")
-
     sealed class Decl : Statement() {
         /**
          * AST node corresponds to KtClassOrObject.
@@ -110,7 +111,7 @@ sealed class Node {
             val primaryConstructor: PrimaryConstructor?,
             val parents: Parents?,
             val typeConstraints: PostModifier.TypeConstraints?,
-            val body: Decls?,
+            val body: Body?,
         ) : Decl(), WithModifiers {
 
             val isClass = declarationKeyword.token == Keyword.DeclarationToken.CLASS
@@ -168,8 +169,10 @@ sealed class Node {
              * AST node corresponds to KtClassBody.
              */
             data class Body(
-                val decls: List<Decl>
-            ) : Node()
+                val enumEntries: List<EnumEntry>,
+                val hasTrailingCommaInEnumEntries: Boolean,
+                override val decls: List<Decl>,
+            ) : Node(), DeclsContainer
         }
 
         /**
@@ -279,12 +282,14 @@ sealed class Node {
              * AST node corresponds to KtPropertyAccessor.
              */
             sealed class Accessor : Node(), WithModifiers, WithPostModifiers {
+                abstract val body: Func.Body?
+
                 data class Get(
                     override val mods: Modifiers?,
                     val getKeyword: Keyword.Get,
                     val typeRef: TypeRef?,
                     override val postMods: List<PostModifier>,
-                    val body: Func.Body?
+                    override val body: Func.Body?
                 ) : Accessor()
 
                 data class Set(
@@ -292,7 +297,7 @@ sealed class Node {
                     val setKeyword: Keyword.Set,
                     val params: Params?,
                     override val postMods: List<PostModifier>,
-                    val body: Func.Body?
+                    override val body: Func.Body?
                 ) : Accessor()
 
                 /**
@@ -337,21 +342,17 @@ sealed class Node {
             enum class DelegationTarget { THIS, SUPER }
         }
 
-        /**
-         * AST node corresponds to KtEnumEntry.
-         */
-        data class EnumEntry(
-            override val mods: Modifiers?,
-            val name: Expr.Name,
-            val args: ValueArgs?,
-            val body: Structured.Body?,
-            /**
-             * Whether this enum entry has comma or not. All entries excluding the last one should have value true.
-             * The last entry can have both true or false.
-             */
-            val hasComma: Boolean,
-        ) : Decl(), WithModifiers
     }
+
+    /**
+     * AST node corresponds to KtEnumEntry.
+     */
+    data class EnumEntry(
+        override val mods: Modifiers?,
+        val name: Expr.Name,
+        val args: ValueArgs?,
+        val body: Decl.Structured.Body?,
+    ) : Node(), WithModifiers
 
     /**
      * Virtual AST node corresponds to a pair of equals and expression.
@@ -737,7 +738,7 @@ sealed class Node {
              *
              * <Lambda> = { <Param>, <Param> -> <Body> }
              */
-            data class Body(val statements: List<Statement>) : Expr()
+            data class Body(override val statements: List<Statement>) : Expr(), StatementsContainer
         }
 
         /**
@@ -921,7 +922,7 @@ sealed class Node {
         /**
          * AST node corresponds to KtBlockExpression.
          */
-        data class Block(val statements: List<Statement>) : Expr()
+        data class Block(override val statements: List<Statement>) : Expr(), StatementsContainer
     }
 
     /**

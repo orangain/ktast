@@ -11,12 +11,12 @@ import org.junit.runners.Parameterized
 import kotlin.test.assertEquals
 
 @RunWith(Parameterized::class)
-class CorpusTest(private val unit: Corpus.Unit) {
+class CorpusParseAndWriteWithExtrasTest(private val unit: Corpus.Unit) {
 
     @Test
-    fun testParseAndConvert() {
+    fun testParseAndWriteWithExtras() {
         // In order to test, we parse the test code (failing and validating errors if present),
-        // convert to our AST, write out our AST, re-parse what we wrote, re-convert, and compare
+        // convert to our AST, write out our AST, and compare
         try {
             val origExtrasConv = ConverterWithExtras()
             val origCode = StringUtilRt.convertLineSeparators(unit.read())

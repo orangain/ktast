@@ -30,9 +30,12 @@ open class Converter {
         names = v.packageNames.map(::convertName),
     ).map(v)
 
-    open fun convertImports(v: KtImportList) = Node.Imports(
-        elements = v.imports.map(::convertImport),
-    ).map(v)
+    open fun convertImports(v: KtImportList): Node.Imports? = if (v.imports.isEmpty())
+        null // Explicitly returns null here. This is because, unlike other PsiElements, KtImportList does exist even when there is no import statement.
+    else
+        Node.Imports(
+            elements = v.imports.map(::convertImport),
+        ).map(v)
 
     open fun convertImport(v: KtImportDirective) = Node.Import(
         importKeyword = convertKeyword(v.importKeyword, Node.Keyword::Import),
@@ -55,12 +58,8 @@ open class Converter {
         name = convertName(v.nameIdentifier ?: error("No name identifier for $v")),
     ).map(v)
 
-    open fun convertDecls(v: KtClassBody) = Node.Decls(
-        elements = v.declarations.map(::convertDecl),
-    ).map(v)
-
     open fun convertDecl(v: KtDeclaration): Node.Decl = when (v) {
-        is KtEnumEntry -> convertEnumEntry(v)
+        is KtEnumEntry -> error("KtEnumEntry is handled in convertEnumEntry")
         is KtClassOrObject -> convertStructured(v)
         is KtAnonymousInitializer -> convertInit(v)
         is KtNamedFunction -> convertFunc(v)
@@ -85,7 +84,7 @@ open class Converter {
                 constraints = convertTypeConstraints(typeConstraintList),
             ).mapNotCorrespondsPsiElement(v)
         },
-        body = v.body?.let { convertDecls(it) },
+        body = v.body?.let(::convertClassBody),
     ).map(v)
 
     open fun convertParents(v: KtSuperTypeList) = Node.Decl.Structured.Parents(
@@ -266,17 +265,22 @@ open class Converter {
             args = v.valueArgumentList?.let(::convertValueArgs)
         ).map(v)
 
-    open fun convertEnumEntry(v: KtEnumEntry) = Node.Decl.EnumEntry(
+    open fun convertEnumEntry(v: KtEnumEntry): Node.EnumEntry = Node.EnumEntry(
         mods = v.modifierList?.let(::convertModifiers),
         name = v.nameIdentifier?.let(::convertName) ?: error("Unnamed enum"),
         args = v.initializerList?.let(::convertValueArgs),
         body = v.body?.let(::convertClassBody),
-        hasComma = v.comma != null,
     ).map(v)
 
-    open fun convertClassBody(v: KtClassBody) = Node.Decl.Structured.Body(
-        decls = v.declarations.map(::convertDecl),
-    ).map(v)
+    open fun convertClassBody(v: KtClassBody): Node.Decl.Structured.Body {
+        val ktEnumEntries = v.declarations.filterIsInstance<KtEnumEntry>()
+        val declarationsExcludingKtEnumEntry = v.declarations.filter { it !is KtEnumEntry }
+        return Node.Decl.Structured.Body(
+            enumEntries = ktEnumEntries.map(::convertEnumEntry),
+            hasTrailingCommaInEnumEntries = ktEnumEntries.lastOrNull()?.comma != null,
+            decls = declarationsExcludingKtEnumEntry.map(::convertDecl),
+        ).map(v)
+    }
 
     open fun convertInitializer(equalsToken: PsiElement, expr: KtExpression, parent: PsiElement) = Node.Initializer(
         equals = convertKeyword(equalsToken, Node.Keyword::Equal),

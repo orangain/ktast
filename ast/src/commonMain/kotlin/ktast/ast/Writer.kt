@@ -4,29 +4,64 @@ open class Writer(
     val app: Appendable = StringBuilder(),
     val extrasMap: ExtrasMap? = null
 ) : Visitor() {
-    protected fun append(ch: Char) = also { app.append(ch) }
-    protected fun append(str: String) = also { app.append(str) }
-    protected fun appendName(name: String) = append(name)
+    protected val extrasSinceLastNonSymbol = mutableListOf<Node.Extra>()
+    protected var nextHeuristicWhitespace = ""
+    protected var lastAppendedToken = ""
+
+    protected val nonSymbolCategories = setOf(
+        CharCategory.UPPERCASE_LETTER,
+        CharCategory.LOWERCASE_LETTER,
+        CharCategory.TITLECASE_LETTER,
+        CharCategory.MODIFIER_LETTER,
+        CharCategory.OTHER_LETTER,
+        CharCategory.DECIMAL_DIGIT_NUMBER,
+    )
+
     protected fun appendLabel(label: String?) {
         if (label != null) append('@').append(label)
     }
 
+    protected fun append(ch: Char) = append(ch.toString())
+    protected fun append(str: String) = also {
+        if (str == "") return@also
+        if (lastAppendedToken.endsWith(">") && str.startsWith("=")) {
+            doAppend(" ") // Insert heuristic space between '>' and '=' not to be confused with '>='
+        }
+        if (lastAppendedToken != "" && isNonSymbol(lastAppendedToken.last()) && isNonSymbol(str.first())) {
+            doAppend(" ") // Insert heuristic space between two non-symbols
+        }
+        doAppend(str)
+        lastAppendedToken = str
+    }
+
+    protected fun isNonSymbol(ch: Char) = ch == '_' || nonSymbolCategories.contains(ch.category)
+
+    protected fun doAppend(str: String) {
+        app.append(str)
+    }
+
     fun write(v: Node) {
+        extrasSinceLastNonSymbol.clear()
+        nextHeuristicWhitespace = ""
+        lastAppendedToken = ""
         visit(v, v)
     }
 
     override fun visit(v: Node?, parent: Node) {
-        v?.writeExtrasBefore()
-        v?.apply {
+        if (v == null) return
+        v.writeExtrasBefore()
+        v.writeHeuristicNewline(parent)
+        writeHeuristicSpace()
+        v.apply {
             when (this) {
                 is Node.CommaSeparatedNodeList<*> -> {
-                    children(elements, ",", prefix, suffix, trailingComma, parent = this)
+                    children(elements, ",", prefix, suffix, trailingComma)
                 }
                 is Node.NodeList<*> -> {
-                    children(elements, prefix = prefix, suffix = suffix, parent = this)
+                    children(elements, prefix = prefix, suffix = suffix)
                 }
                 is Node.File -> {
-                    children(anns)
+                    children(anns, skipWritingExtrasWithin = true)
                     children(pkg)
                     children(imports)
                     children(decls)
@@ -35,7 +70,6 @@ open class Writer(
                     children(mods)
                     children(packageKeyword)
                     children(names, ".")
-                    writeExtrasWithin()
                 }
                 is Node.Import -> {
                     children(importKeyword)
@@ -80,7 +114,10 @@ open class Writer(
                     children(params)
                 }
                 is Node.Decl.Structured.Body -> {
-                    children(decls, prefix = "{", suffix = "}")
+                    append("{")
+                    children(enumEntries, skipWritingExtrasWithin = true)
+                    children(decls)
+                    append("}")
                 }
                 is Node.Decl.Init -> {
                     children(mods)
@@ -154,7 +191,8 @@ open class Writer(
                     }
                 }
                 is Node.Decl.TypeAlias -> {
-                    children(mods).append("typealias")
+                    children(mods)
+                    append("typealias")
                     children(name)
                     children(typeParams).append("=")
                     children(typeRef)
@@ -168,15 +206,20 @@ open class Writer(
                 }
                 is Node.Decl.SecondaryConstructor.DelegationCall ->
                     append(target.name.lowercase()).also { children(args) }
-                is Node.Decl.EnumEntry -> {
+                is Node.EnumEntry -> {
                     children(mods)
                     children(name)
                     children(args)
                     children(body)
-                    if (hasComma) {
+                    check(parent is Node.Decl.Structured.Body) // condition should always be true
+                    val isLastEntry = parent.enumEntries.last() === this
+                    if (!isLastEntry || parent.hasTrailingCommaInEnumEntries) {
                         append(",")
                     }
-                    writeExtrasWithin()
+                    writeExtrasWithin() // Semicolon after trailing comma is avaialbe as extrasWithin
+                    if (parent.decls.isNotEmpty() && isLastEntry && !containsSemicolon(extrasSinceLastNonSymbol)) {
+                        append(";") // Insert heuristic semicolon after the last enum entry
+                    }
                 }
                 is Node.Initializer -> {
                     children(equals)
@@ -309,15 +352,28 @@ open class Writer(
                 is Node.Expr.BinaryOp.Oper.Infix ->
                     append(str)
                 is Node.Expr.BinaryOp.Oper.Token ->
-                    append(token.str)
+                    if (token == Node.Expr.BinaryOp.Token.IN || token == Node.Expr.BinaryOp.Token.NOT_IN) {
+                        // Using appendNonSymbol may cause insertion of unneeded space before !in.
+                        // However, we ignore them as it is rare case for now.
+                        append(token.str)
+                    } else {
+                        append(token.str)
+                    }
                 is Node.Expr.UnaryOp ->
                     if (prefix) children(oper, expr) else children(expr, oper)
                 is Node.Expr.UnaryOp.Oper ->
                     append(token.str)
                 is Node.Expr.TypeOp ->
                     children(listOf(lhs, oper, rhs), "")
-                is Node.Expr.TypeOp.Oper ->
-                    append(token.str)
+                is Node.Expr.TypeOp.Oper -> {
+                    if (token == Node.Expr.TypeOp.Token.COL) {
+                        append(token.str)
+                    } else {
+                        // Using appendNonSymbol may cause insertion of unneeded spaces before or after symbols.
+                        // However, we ignore them as it is rare case for now.
+                        append(token.str)
+                    }
+                }
                 is Node.Expr.DoubleColonRef.Callable -> {
                     if (recv != null) children(recv)
                     append("::")
@@ -325,7 +381,8 @@ open class Writer(
                 }
                 is Node.Expr.DoubleColonRef.Class -> {
                     if (recv != null) children(recv)
-                    append("::class")
+                    append("::")
+                    append("class")
                 }
                 is Node.Expr.DoubleColonRef.Recv.Expr ->
                     children(expr)
@@ -341,7 +398,7 @@ open class Writer(
                 is Node.Expr.StringTmpl.Elem.Regular ->
                     append(str)
                 is Node.Expr.StringTmpl.Elem.ShortTmpl ->
-                    append('$').appendName(str)
+                    append('$').append(str)
                 is Node.Expr.StringTmpl.Elem.UnicodeEsc ->
                     append("\\u").append(digits)
                 is Node.Expr.StringTmpl.Elem.RegularEsc ->
@@ -380,7 +437,6 @@ open class Writer(
                 }
                 is Node.Expr.Lambda.Body -> {
                     children(statements)
-                    writeExtrasWithin()
                 }
                 is Node.Expr.This -> {
                     append("this")
@@ -437,9 +493,9 @@ open class Writer(
                 is Node.Expr.CollLit ->
                     children(exprs, ",", "[", "]", trailingComma)
                 is Node.Expr.Name ->
-                    appendName(name)
+                    append(name)
                 is Node.Expr.Labeled ->
-                    appendName(label).append("@").also { children(expr) }
+                    append(label).append("@").also { children(expr) }
                 is Node.Expr.Annotated ->
                     children(anns).also { children(expr) }
                 is Node.Expr.Call -> {
@@ -450,7 +506,7 @@ open class Writer(
                 }
                 is Node.Expr.Call.LambdaArg -> {
                     children(anns)
-                    if (label != null) appendName(label).append("@")
+                    if (label != null) append(label).append("@")
                     children(func)
                 }
                 is Node.Expr.ArrayAccess -> {
@@ -464,7 +520,6 @@ open class Writer(
                 is Node.Expr.Block -> {
                     append("{").run {
                         children(statements)
-                        writeExtrasWithin()
                     }
                     append("}")
                 }
@@ -478,6 +533,9 @@ open class Writer(
                 is Node.Modifier.AnnotationSet.Annotation -> {
                     children(constructorCallee)
                     children(args)
+                    if (parent is Node.Modifier.AnnotationSet && parent.rBracket == null) {
+                        nextHeuristicWhitespace = " " // Insert heuristic space after annotation if single form
+                    }
                 }
                 is Node.Modifier.Lit ->
                     append(keyword.name.lowercase())
@@ -503,7 +561,106 @@ open class Writer(
                     error("Unrecognized node type: $this")
             }
         }
-        v?.writeExtrasAfter()
+        v.writeExtrasAfter()
+    }
+
+    protected fun Node.children(vararg v: Node?) = this@Writer.also { v.forEach { visitChildren(it) } }
+
+    protected fun Node.children(
+        v: List<Node>,
+        sep: String = "",
+        prefix: String = "",
+        suffix: String = "",
+        trailingSeparator: Node? = null,
+        skipWritingExtrasWithin: Boolean = false,
+    ) =
+        this@Writer.also {
+            append(prefix)
+            v.forEachIndexed { index, t ->
+                visit(t, this)
+                if (index < v.size - 1) append(sep)
+                writeHeuristicExtraAfterChild(t, v.getOrNull(index + 1), this)
+            }
+            children(trailingSeparator)
+            if (!skipWritingExtrasWithin) {
+                writeExtrasWithin()
+            }
+            append(suffix)
+        }
+
+    protected open fun Node.writeHeuristicNewline(parent: Node) {
+        if (parent is Node.StatementsContainer && this is Node.Statement) {
+            if (parent.statements.first() !== this && !containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
+                append("\n")
+            }
+        }
+        if (parent is Node.DeclsContainer && this is Node.Decl) {
+            if (parent.decls.first() !== this && !containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
+                append("\n")
+            }
+        }
+        if (parent is Node.Decl.Property && this is Node.Decl.Property.Accessor) {
+            // Property accessors require newline when the previous element is expression
+            if ((parent.accessors.first() === this && (parent.delegate != null || parent.initializer != null)) ||
+                (parent.accessors.size == 2 && parent.accessors.last() === this && parent.accessors[0].body is Node.Decl.Func.Body.Expr)
+            ) {
+                if (!containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
+                    append("\n")
+                }
+            }
+        }
+        if (parent is Node.Expr.When && this is Node.Expr.When.Entry) {
+            if (parent.entries.first() !== this && !containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
+                append("\n")
+            }
+        }
+        if (parent is Node.Expr.Annotated && (this is Node.Expr.BinaryOp || this is Node.Expr.TypeOp)) {
+            // Annotated expression requires newline between annotation and expression when expression is a binary operation.
+            // This is because, without newline, annotated expression of binary expression is ambiguous with binary expression of annotated expression.
+            if (!containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
+                append("\n")
+            }
+        }
+    }
+
+    protected fun writeHeuristicSpace() {
+        if (nextHeuristicWhitespace == " " && extrasSinceLastNonSymbol.isEmpty()) {
+            append(" ")
+        }
+        nextHeuristicWhitespace = ""
+        extrasSinceLastNonSymbol.clear()
+    }
+
+    protected open fun writeHeuristicExtraAfterChild(v: Node, next: Node?, parent: Node?) {
+        if (v is Node.Expr.Name && next is Node.Decl && parent is Node.StatementsContainer) {
+            val upperCasedName = v.name.uppercase()
+            if (Node.Modifier.Keyword.values().any { it.name == upperCasedName } &&
+                !containsSemicolon(extrasSinceLastNonSymbol)
+            ) {
+                append(";")
+            }
+        }
+        if (v is Node.Expr.Call && v.lambdaArgs.isEmpty() && next is Node.Expr.Lambda) {
+            if (!containsSemicolon(extrasSinceLastNonSymbol)) {
+                append(";")
+            }
+        }
+    }
+
+    protected fun containsNewlineOrSemicolon(extras: List<Node.Extra>): Boolean {
+        return containsNewline(extras) || containsSemicolon(extras)
+    }
+
+    protected fun containsNewline(extras: List<Node.Extra>): Boolean {
+        return extras.any {
+            it is Node.Extra.Whitespace && it.text.contains("\n")
+        }
+    }
+
+    protected fun containsSemicolon(extras: List<Node.Extra>): Boolean {
+        return extras.any {
+            it is Node.Extra.Semicolon
+        }
     }
 
     protected open fun Node.writeExtrasBefore() {
@@ -528,28 +685,8 @@ open class Writer(
         extras.forEach {
             append(it.text)
         }
+        extrasSinceLastNonSymbol.addAll(extras)
     }
-
-    protected fun Node.children(vararg v: Node?) = this@Writer.also { v.forEach { visitChildren(it) } }
-
-    protected fun Node.children(
-        v: List<Node?>,
-        sep: String = "",
-        prefix: String = "",
-        suffix: String = "",
-        trailingSeparator: Node? = null,
-        parent: Node? = null,
-    ) =
-        this@Writer.also {
-            append(prefix)
-            v.forEachIndexed { index, t ->
-                visit(t, this)
-                if (index < v.size - 1) append(sep)
-            }
-            children(trailingSeparator)
-            parent?.writeExtrasWithin()
-            append(suffix)
-        }
 
     companion object {
         fun write(v: Node, extrasMap: ExtrasMap? = null) =

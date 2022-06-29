@@ -70,6 +70,7 @@ open class Visitor {
                 visitChildren(params)
             }
             is Node.Decl.Structured.Body -> {
+                visitChildren(enumEntries)
                 visitChildren(decls)
             }
             is Node.Decl.Init -> {
@@ -159,7 +160,7 @@ open class Visitor {
             is Node.Decl.SecondaryConstructor.DelegationCall -> {
                 visitChildren(args)
             }
-            is Node.Decl.EnumEntry -> {
+            is Node.EnumEntry -> {
                 visitChildren(mods)
                 visitChildren(name)
                 visitChildren(args)
