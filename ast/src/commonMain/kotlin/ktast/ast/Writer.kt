@@ -132,7 +132,7 @@ open class Writer(
                     children(postTypeParams)
                     children(params)
                     if (typeRef != null) append(":").also { children(typeRef) }
-                    children(postMods)
+                    children(postModifiers)
                     children(body)
                 }
                 is Node.Declaration.Func.Param -> {
@@ -174,7 +174,7 @@ open class Writer(
                     if (body != null) {
                         append("()")
                         if (typeRef != null) append(":").also { children(typeRef) }
-                        children(postMods)
+                        children(postModifiers)
                         children(body)
                     }
                 }
@@ -185,7 +185,7 @@ open class Writer(
                         append("(")
                         children(params)
                         append(")")
-                        children(postMods)
+                        children(postModifiers)
                         children(body)
                     }
                 }

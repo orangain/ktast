@@ -36,7 +36,7 @@ sealed class Node {
     }
 
     interface WithPostModifiers {
-        val postMods: List<PostModifier>
+        val postModifiers: List<PostModifier>
     }
 
     interface StatementsContainer {
@@ -197,7 +197,7 @@ sealed class Node {
             val postTypeParams: TypeParams?,
             val params: Params?,
             val typeRef: TypeRef?,
-            override val postMods: List<PostModifier>,
+            override val postModifiers: List<PostModifier>,
             val body: Body?
         ) : Declaration(), WithModifiers, WithPostModifiers {
             /**
@@ -288,7 +288,7 @@ sealed class Node {
                     override val modifiers: Modifiers?,
                     val getKeyword: Keyword.Get,
                     val typeRef: TypeRef?,
-                    override val postMods: List<PostModifier>,
+                    override val postModifiers: List<PostModifier>,
                     override val body: Func.Body?
                 ) : Accessor()
 
@@ -296,7 +296,7 @@ sealed class Node {
                     override val modifiers: Modifiers?,
                     val setKeyword: Keyword.Set,
                     val params: Params?,
-                    override val postMods: List<PostModifier>,
+                    override val postModifiers: List<PostModifier>,
                     override val body: Func.Body?
                 ) : Accessor()
 

@@ -86,7 +86,7 @@ open class Visitor {
                 visitChildren(postTypeParams)
                 visitChildren(params)
                 visitChildren(typeRef)
-                visitChildren(postMods)
+                visitChildren(postModifiers)
                 visitChildren(body)
             }
             is Node.Declaration.Func.Param -> {
@@ -130,14 +130,14 @@ open class Visitor {
                 visitChildren(modifiers)
                 visitChildren(getKeyword)
                 visitChildren(typeRef)
-                visitChildren(postMods)
+                visitChildren(postModifiers)
                 visitChildren(body)
             }
             is Node.Declaration.Property.Accessor.Set -> {
                 visitChildren(modifiers)
                 visitChildren(setKeyword)
                 visitChildren(params)
-                visitChildren(postMods)
+                visitChildren(postModifiers)
                 visitChildren(body)
             }
             is Node.Declaration.Property.Accessor.Params -> {

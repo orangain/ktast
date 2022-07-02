@@ -89,7 +89,7 @@ open class MutableVisitor(
                         postTypeParams = visitChildren(postTypeParams, newCh),
                         params = visitChildren(params, newCh),
                         typeRef = visitChildren(typeRef, newCh),
-                        postMods = visitChildren(postMods, newCh),
+                        postModifiers = visitChildren(postModifiers, newCh),
                         body = visitChildren(body, newCh),
                     )
                     is Node.Declaration.Func.Params -> copy(
@@ -137,14 +137,14 @@ open class MutableVisitor(
                         modifiers = visitChildren(modifiers, newCh),
                         getKeyword = visitChildren(getKeyword, newCh),
                         typeRef = visitChildren(typeRef, newCh),
-                        postMods = visitChildren(postMods, newCh),
+                        postModifiers = visitChildren(postModifiers, newCh),
                         body = visitChildren(body, newCh)
                     )
                     is Node.Declaration.Property.Accessor.Set -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         setKeyword = visitChildren(setKeyword, newCh),
                         params = visitChildren(params, newCh),
-                        postMods = visitChildren(postMods, newCh),
+                        postModifiers = visitChildren(postModifiers, newCh),
                         body = visitChildren(body, newCh)
                     )
                     is Node.Declaration.Property.Accessor.Params -> copy(

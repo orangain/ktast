@@ -140,7 +140,7 @@ open class Converter {
             if (!hasTypeParameterListBeforeFunctionName) v.typeParameterList?.let(::convertTypeParams) else null,
             params = v.valueParameterList?.let(::convertFuncParams),
             typeRef = v.typeReference?.let(::convertTypeRef),
-            postMods = convertPostModifiers(v),
+            postModifiers = convertPostModifiers(v),
             body = convertFuncBody(v),
         ).map(v)
     }
@@ -226,13 +226,13 @@ open class Converter {
             modifiers = v.modifierList?.let(::convertModifiers),
             getKeyword = convertKeyword(v.getKeyword, Node.Keyword::Get),
             typeRef = v.returnTypeReference?.let(::convertTypeRef),
-            postMods = convertPostModifiers(v),
+            postModifiers = convertPostModifiers(v),
             body = convertFuncBody(v),
         ).map(v) else Node.Declaration.Property.Accessor.Set(
             modifiers = v.modifierList?.let(::convertModifiers),
             setKeyword = convertKeyword(v.setKeyword, Node.Keyword::Set),
             params = v.parameterList?.let(::convertPropertyAccessorParams),
-            postMods = convertPostModifiers(v),
+            postModifiers = convertPostModifiers(v),
             body = convertFuncBody(v),
         ).map(v)
 
