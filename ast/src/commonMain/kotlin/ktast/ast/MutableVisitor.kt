@@ -25,7 +25,7 @@ open class MutableVisitor(
                         exprs = visitChildren(exprs, newCh)
                     )
                     is Node.Package -> copy(
-                        mods = visitChildren(mods, newCh),
+                        modifiers = visitChildren(modifiers, newCh),
                         packageKeyword = visitChildren(packageKeyword, newCh),
                         names = visitChildren(names, newCh),
                     )
@@ -41,7 +41,7 @@ open class MutableVisitor(
                         name = visitChildren(name, newCh),
                     )
                     is Node.Decl.Structured -> copy(
-                        mods = visitChildren(mods, newCh),
+                        modifiers = visitChildren(modifiers, newCh),
                         declarationKeyword = visitChildren(declarationKeyword, newCh),
                         name = visitChildren(name, newCh),
                         typeParams = visitChildren(typeParams, newCh),
@@ -68,7 +68,7 @@ open class MutableVisitor(
                         type = visitChildren(type, newCh),
                     )
                     is Node.Decl.Structured.PrimaryConstructor -> copy(
-                        mods = visitChildren(mods, newCh),
+                        modifiers = visitChildren(modifiers, newCh),
                         constructorKeyword = visitChildren(constructorKeyword, newCh),
                         params = visitChildren(params, newCh)
                     )
@@ -77,11 +77,11 @@ open class MutableVisitor(
                         decls = visitChildren(decls, newCh),
                     )
                     is Node.Decl.Init -> copy(
-                        mods = visitChildren(mods, newCh),
+                        modifiers = visitChildren(modifiers, newCh),
                         block = visitChildren(block, newCh),
                     )
                     is Node.Decl.Func -> copy(
-                        mods = visitChildren(mods, newCh),
+                        modifiers = visitChildren(modifiers, newCh),
                         funKeyword = visitChildren(funKeyword, newCh),
                         typeParams = visitChildren(typeParams, newCh),
                         receiverTypeRef = visitChildren(receiverTypeRef, newCh),
@@ -97,7 +97,7 @@ open class MutableVisitor(
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
                     is Node.Decl.Func.Param -> copy(
-                        mods = visitChildren(mods, newCh),
+                        modifiers = visitChildren(modifiers, newCh),
                         valOrVar = visitChildren(valOrVar, newCh),
                         name = visitChildren(name, newCh),
                         typeRef = visitChildren(typeRef, newCh),
@@ -111,7 +111,7 @@ open class MutableVisitor(
                         expr = visitChildren(expr, newCh),
                     )
                     is Node.Decl.Property -> copy(
-                        mods = visitChildren(mods, newCh),
+                        modifiers = visitChildren(modifiers, newCh),
                         valOrVar = visitChildren(valOrVar, newCh),
                         typeParams = visitChildren(typeParams, newCh),
                         receiverTypeRef = visitChildren(receiverTypeRef, newCh),
@@ -134,14 +134,14 @@ open class MutableVisitor(
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
                     is Node.Decl.Property.Accessor.Get -> copy(
-                        mods = visitChildren(mods, newCh),
+                        modifiers = visitChildren(modifiers, newCh),
                         getKeyword = visitChildren(getKeyword, newCh),
                         typeRef = visitChildren(typeRef, newCh),
                         postMods = visitChildren(postMods, newCh),
                         body = visitChildren(body, newCh)
                     )
                     is Node.Decl.Property.Accessor.Set -> copy(
-                        mods = visitChildren(mods, newCh),
+                        modifiers = visitChildren(modifiers, newCh),
                         setKeyword = visitChildren(setKeyword, newCh),
                         params = visitChildren(params, newCh),
                         postMods = visitChildren(postMods, newCh),
@@ -152,13 +152,13 @@ open class MutableVisitor(
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
                     is Node.Decl.TypeAlias -> copy(
-                        mods = visitChildren(mods, newCh),
+                        modifiers = visitChildren(modifiers, newCh),
                         name = visitChildren(name, newCh),
                         typeParams = visitChildren(typeParams, newCh),
                         typeRef = visitChildren(typeRef, newCh)
                     )
                     is Node.Decl.SecondaryConstructor -> copy(
-                        mods = visitChildren(mods, newCh),
+                        modifiers = visitChildren(modifiers, newCh),
                         constructorKeyword = visitChildren(constructorKeyword, newCh),
                         params = visitChildren(params, newCh),
                         delegationCall = visitChildren(delegationCall, newCh),
@@ -168,7 +168,7 @@ open class MutableVisitor(
                         args = visitChildren(args, newCh)
                     )
                     is Node.EnumEntry -> copy(
-                        mods = visitChildren(mods, newCh),
+                        modifiers = visitChildren(modifiers, newCh),
                         name = visitChildren(name, newCh),
                         args = visitChildren(args, newCh),
                         body = visitChildren(body, newCh)
@@ -182,7 +182,7 @@ open class MutableVisitor(
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
                     is Node.TypeParam -> copy(
-                        mods = visitChildren(mods, newCh),
+                        modifiers = visitChildren(modifiers, newCh),
                         name = visitChildren(name, newCh),
                         typeRef = visitChildren(typeRef, newCh)
                     )
@@ -194,12 +194,12 @@ open class MutableVisitor(
                         asterisk = visitChildren(asterisk, newCh),
                     )
                     is Node.TypeArg.Type -> copy(
-                        mods = visitChildren(mods, newCh),
+                        modifiers = visitChildren(modifiers, newCh),
                         typeRef = visitChildren(typeRef, newCh),
                     )
                     is Node.TypeRef -> copy(
                         lPar = visitChildren(lPar, newCh),
-                        mods = visitChildren(mods, newCh),
+                        modifiers = visitChildren(modifiers, newCh),
                         innerLPar = visitChildren(innerLPar, newCh),
                         innerMods = visitChildren(innerMods, newCh),
                         type = visitChildren(type, newCh),
@@ -239,7 +239,7 @@ open class MutableVisitor(
                     )
                     is Node.Type.Nullable -> copy(
                         lPar = visitChildren(lPar, newCh),
-                        mods = visitChildren(mods, newCh),
+                        modifiers = visitChildren(modifiers, newCh),
                         type = visitChildren(type, newCh),
                         rPar = visitChildren(rPar, newCh),
                     )
