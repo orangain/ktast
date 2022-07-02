@@ -474,8 +474,8 @@ open class Converter {
         is KtUnaryExpression -> convertUnary(v)
         is KtBinaryExpressionWithTypeRHS -> convertBinaryType(v)
         is KtIsExpression -> convertBinaryType(v)
-        is KtCallableReferenceExpression -> convertDoubleColonRefCallable(v)
-        is KtClassLiteralExpression -> convertDoubleColonRefClass(v)
+        is KtCallableReferenceExpression -> convertDoubleColonCallable(v)
+        is KtClassLiteralExpression -> convertDoubleColonClass(v)
         is KtParenthesizedExpression -> convertParenthesized(v)
         is KtStringTemplateExpression -> convertStringTemplate(v)
         is KtConstantExpression -> convertConst(v)
@@ -582,9 +582,9 @@ open class Converter {
         rhs = convertTypeRef(v.typeReference ?: error("No type op rhs for $v"))
     ).map(v)
 
-    open fun convertDoubleColonRefCallable(v: KtCallableReferenceExpression) = Node.Expression.DoubleColonRef.Callable(
+    open fun convertDoubleColonCallable(v: KtCallableReferenceExpression) = Node.Expression.DoubleColon.Callable(
         receiver = v.receiverExpression?.let { expr ->
-            convertDoubleColonRefReceiver(
+            convertDoubleColonReceiver(
                 expr,
                 v.questionMarks.map { convertKeyword(it, Node.Keyword::Question) }
             )
@@ -592,20 +592,20 @@ open class Converter {
         name = convertName(v.callableReference)
     ).map(v)
 
-    open fun convertDoubleColonRefClass(v: KtClassLiteralExpression) = Node.Expression.DoubleColonRef.Class(
+    open fun convertDoubleColonClass(v: KtClassLiteralExpression) = Node.Expression.DoubleColon.Class(
         receiver = v.receiverExpression?.let { expr ->
-            convertDoubleColonRefReceiver(
+            convertDoubleColonReceiver(
                 expr,
                 v.questionMarks.map { convertKeyword(it, Node.Keyword::Question) }
             )
         }
     ).map(v)
 
-    open fun convertDoubleColonRefReceiver(
+    open fun convertDoubleColonReceiver(
         v: KtExpression,
         questionMarks: List<Node.Keyword.Question>
-    ): Node.Expression.DoubleColonRef.Receiver = when (v) {
-        is KtSimpleNameExpression -> Node.Expression.DoubleColonRef.Receiver.Type(
+    ): Node.Expression.DoubleColon.Receiver = when (v) {
+        is KtSimpleNameExpression -> Node.Expression.DoubleColon.Receiver.Type(
             type = Node.Type.Simple(
                 listOf(
                     Node.Type.Simple.Piece(
@@ -618,7 +618,7 @@ open class Converter {
         ).map(v)
         is KtCallExpression ->
             if (v.valueArgumentList == null && v.lambdaArguments.isEmpty())
-                Node.Expression.DoubleColonRef.Receiver.Type(
+                Node.Expression.DoubleColon.Receiver.Type(
                     type = Node.Type.Simple(listOf(
                         Node.Type.Simple.Piece(
                             name = v.calleeExpression?.let { (it as? KtSimpleNameExpression)?.let(::convertName) }
@@ -628,18 +628,18 @@ open class Converter {
                     )).mapNotCorrespondsPsiElement(v),
                     questionMarks = questionMarks,
                 ).map(v)
-            else Node.Expression.DoubleColonRef.Receiver.Expression(convertExpression(v)).map(v)
+            else Node.Expression.DoubleColon.Receiver.Expression(convertExpression(v)).map(v)
         is KtDotQualifiedExpression -> {
-            val lhs = convertDoubleColonRefReceiver(v.receiverExpression, questionMarks)
-            val rhs = v.selectorExpression?.let { convertDoubleColonRefReceiver(it, questionMarks) }
-            if (lhs is Node.Expression.DoubleColonRef.Receiver.Type && rhs is Node.Expression.DoubleColonRef.Receiver.Type)
-                Node.Expression.DoubleColonRef.Receiver.Type(
+            val lhs = convertDoubleColonReceiver(v.receiverExpression, questionMarks)
+            val rhs = v.selectorExpression?.let { convertDoubleColonReceiver(it, questionMarks) }
+            if (lhs is Node.Expression.DoubleColon.Receiver.Type && rhs is Node.Expression.DoubleColon.Receiver.Type)
+                Node.Expression.DoubleColon.Receiver.Type(
                     type = Node.Type.Simple(lhs.type.pieces + rhs.type.pieces).map(v),
                     questionMarks = listOf(),
                 ).map(v)
-            else Node.Expression.DoubleColonRef.Receiver.Expression(convertExpression(v)).map(v)
+            else Node.Expression.DoubleColon.Receiver.Expression(convertExpression(v)).map(v)
         }
-        else -> Node.Expression.DoubleColonRef.Receiver.Expression(convertExpression(v)).map(v)
+        else -> Node.Expression.DoubleColon.Receiver.Expression(convertExpression(v)).map(v)
     }
 
     open fun convertParenthesized(v: KtParenthesizedExpression) = Node.Expression.Parenthesized(

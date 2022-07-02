@@ -630,7 +630,7 @@ sealed class Node {
         /**
          * AST node corresponds to KtDoubleColonExpression.
          */
-        sealed class DoubleColonRef : Expression() {
+        sealed class DoubleColon : Expression() {
             abstract val receiver: Receiver?
 
             /**
@@ -639,14 +639,14 @@ sealed class Node {
             data class Callable(
                 override val receiver: Receiver?,
                 val name: Name
-            ) : DoubleColonRef()
+            ) : DoubleColon()
 
             /**
              * AST node corresponds to KtClassLiteralExpression.
              */
             data class Class(
                 override val receiver: Receiver?
-            ) : DoubleColonRef()
+            ) : DoubleColon()
 
             sealed class Receiver : Node() {
                 data class Expression(val expression: Node.Expression) : Receiver()

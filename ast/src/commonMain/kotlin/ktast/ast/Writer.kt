@@ -373,19 +373,19 @@ open class Writer(
                         append(token.str)
                     }
                 }
-                is Node.Expression.DoubleColonRef.Callable -> {
+                is Node.Expression.DoubleColon.Callable -> {
                     if (receiver != null) children(receiver)
                     append("::")
                     children(name)
                 }
-                is Node.Expression.DoubleColonRef.Class -> {
+                is Node.Expression.DoubleColon.Class -> {
                     if (receiver != null) children(receiver)
                     append("::")
                     append("class")
                 }
-                is Node.Expression.DoubleColonRef.Receiver.Expression ->
+                is Node.Expression.DoubleColon.Receiver.Expression ->
                     children(expression)
-                is Node.Expression.DoubleColonRef.Receiver.Type -> {
+                is Node.Expression.DoubleColon.Receiver.Type -> {
                     children(type)
                     children(questionMarks)
                 }

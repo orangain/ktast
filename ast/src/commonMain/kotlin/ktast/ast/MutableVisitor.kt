@@ -304,17 +304,17 @@ open class MutableVisitor(
                         rhs = visitChildren(rhs, newCh)
                     )
                     is Node.Expression.BinaryType.Operator -> this
-                    is Node.Expression.DoubleColonRef.Callable -> copy(
+                    is Node.Expression.DoubleColon.Callable -> copy(
                         receiver = visitChildren(receiver, newCh),
                         name = visitChildren(name, newCh),
                     )
-                    is Node.Expression.DoubleColonRef.Class -> copy(
+                    is Node.Expression.DoubleColon.Class -> copy(
                         receiver = visitChildren(receiver, newCh)
                     )
-                    is Node.Expression.DoubleColonRef.Receiver.Expression -> copy(
+                    is Node.Expression.DoubleColon.Receiver.Expression -> copy(
                         expression = visitChildren(expression, newCh)
                     )
-                    is Node.Expression.DoubleColonRef.Receiver.Type -> copy(
+                    is Node.Expression.DoubleColon.Receiver.Type -> copy(
                         type = visitChildren(type, newCh),
                         questionMarks = visitChildren(questionMarks, newCh),
                     )
