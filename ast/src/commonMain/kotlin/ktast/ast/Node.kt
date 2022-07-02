@@ -58,7 +58,7 @@ sealed class Node {
         override val annotationSets: List<Modifier.AnnotationSet>,
         override val packageDirective: PackageDirective?,
         override val importDirectives: ImportDirectives?,
-        val exprs: List<Expr>
+        val expressions: List<Expression>
     ) : Node(), Entry
 
     /**
@@ -67,7 +67,7 @@ sealed class Node {
     data class PackageDirective(
         override val modifiers: Modifiers?,
         val packageKeyword: Keyword.Package,
-        val names: List<Expr.Name>,
+        val names: List<Expression.Name>,
     ) : Node(), WithModifiers
 
     /**
@@ -82,7 +82,7 @@ sealed class Node {
      */
     data class ImportDirective(
         val importKeyword: Keyword.Import,
-        val names: List<Expr.Name>,
+        val names: List<Expression.Name>,
         val alias: Alias?
     ) : Node() {
 
@@ -90,12 +90,12 @@ sealed class Node {
          * AST node corresponds to KtImportAlias.
          */
         data class Alias(
-            val name: Expr.Name,
+            val name: Expression.Name,
         ) : Node()
     }
 
     /**
-     * Base class of [Node.Declaration] and [Node.Expr].
+     * Base class of [Node.Declaration] and [Node.Expression].
      */
     sealed class Statement : Node()
 
@@ -106,7 +106,7 @@ sealed class Node {
         data class Structured(
             override val modifiers: Modifiers?,
             val declarationKeyword: Keyword.Declaration,
-            val name: Expr.Name?,
+            val name: Expression.Name?,
             val typeParams: TypeParams?,
             val primaryConstructor: PrimaryConstructor?,
             val parents: Parents?,
@@ -136,7 +136,7 @@ sealed class Node {
                     val type: Node.Type.Simple,
                     val typeArgs: TypeArgs?,
                     val args: ValueArgs?,
-                    val lambda: Expr.Call.LambdaArg?
+                    val lambda: Expression.Call.LambdaArg?
                 ) : Parent()
 
                 /**
@@ -145,7 +145,7 @@ sealed class Node {
                 data class DelegatedType(
                     val type: Node.Type.Simple,
                     val byKeyword: Keyword.By,
-                    val expr: Expr
+                    val expression: Expression
                 ) : Parent()
 
                 /**
@@ -180,7 +180,7 @@ sealed class Node {
          */
         data class Init(
             override val modifiers: Modifiers?,
-            val block: Expr.Block,
+            val block: Expression.Block,
         ) : Declaration(), WithModifiers
 
         /**
@@ -192,7 +192,7 @@ sealed class Node {
             val typeParams: TypeParams?,
             val receiverTypeRef: TypeRef?,
             // Name not present on anonymous functions
-            val name: Expr.Name?,
+            val name: Expression.Name?,
             // According to the Kotlin syntax, type parameters are not allowed here. However, Kotlin compiler can parse them.
             val postTypeParams: TypeParams?,
             val params: Params?,
@@ -214,7 +214,7 @@ sealed class Node {
             data class Param(
                 override val modifiers: Modifiers?,
                 val valOrVar: Keyword.ValOrVar?,
-                val name: Expr.Name,
+                val name: Expression.Name,
                 // Type can be null for anon functions
                 val typeRef: TypeRef?,
                 val initializer: Initializer?
@@ -224,10 +224,10 @@ sealed class Node {
              * Virtual AST node corresponds to function body.
              */
             sealed class Body : Node() {
-                data class Block(val block: Node.Expr.Block) : Func.Body()
+                data class Block(val block: Node.Expression.Block) : Func.Body()
                 data class Expr(
                     val equals: Keyword.Equal,
-                    val expr: Node.Expr,
+                    val expression: Node.Expression,
                 ) : Func.Body()
             }
         }
@@ -257,7 +257,7 @@ sealed class Node {
                  * Virtual AST node corresponds a part of KtProperty or AST node corresponds to KtDestructuringDeclarationEntry.
                  */
                 data class Single(
-                    val name: Expr.Name,
+                    val name: Expression.Name,
                     val typeRef: TypeRef?
                 ) : Variable()
 
@@ -275,7 +275,7 @@ sealed class Node {
              */
             data class Delegate(
                 val byKeyword: Keyword.By,
-                val expr: Expr,
+                val expression: Expression,
             ) : Node()
 
             /**
@@ -316,7 +316,7 @@ sealed class Node {
          */
         data class TypeAlias(
             override val modifiers: Modifiers?,
-            val name: Expr.Name,
+            val name: Expression.Name,
             val typeParams: TypeParams?,
             val typeRef: TypeRef
         ) : Declaration(), WithModifiers
@@ -329,7 +329,7 @@ sealed class Node {
             val constructorKeyword: Keyword.Constructor,
             val params: Func.Params?,
             val delegationCall: DelegationCall?,
-            val block: Expr.Block?
+            val block: Expression.Block?
         ) : Declaration(), WithModifiers {
             /**
              * AST node corresponds to KtConstructorDelegationCall.
@@ -349,7 +349,7 @@ sealed class Node {
      */
     data class EnumEntry(
         override val modifiers: Modifiers?,
-        val name: Expr.Name,
+        val name: Expression.Name,
         val args: ValueArgs?,
         val body: Declaration.Structured.Body?,
     ) : Node(), WithModifiers
@@ -359,7 +359,7 @@ sealed class Node {
      */
     data class Initializer(
         val equals: Keyword.Equal,
-        val expr: Expr,
+        val expression: Expression,
     ) : Node()
 
     /**
@@ -375,7 +375,7 @@ sealed class Node {
      */
     data class TypeParam(
         override val modifiers: Modifiers?,
-        val name: Expr.Name,
+        val name: Expression.Name,
         val typeRef: TypeRef?
     ) : Node(), WithModifiers
 
@@ -423,7 +423,7 @@ sealed class Node {
              * AST node corresponds to KtParameter.
              */
             data class Param(
-                val name: Expr.Name?,
+                val name: Expression.Name?,
                 val typeRef: TypeRef
             ) : Node()
         }
@@ -435,7 +435,7 @@ sealed class Node {
             val pieces: List<Piece>
         ) : Type() {
             data class Piece(
-                val name: Expr.Name,
+                val name: Expression.Name,
                 val typeArgs: TypeArgs?
             ) : Node()
         }
@@ -510,28 +510,28 @@ sealed class Node {
      * AST node corresponds to KtValueArgument.
      */
     data class ValueArg(
-        val name: Expr.Name?,
+        val name: Expression.Name?,
         val asterisk: Boolean,
-        val expr: Expr
+        val expression: Expression
     ) : Node()
 
     /**
      * AST node corresponds to KtContainerNode.
      */
     data class Container(
-        val expr: Expr,
+        val expression: Expression,
     ) : Node()
 
-    sealed class Expr : Statement() {
+    sealed class Expression : Statement() {
         /**
          * AST node corresponds to KtIfExpression.
          */
         data class If(
             val ifKeyword: Keyword.If,
-            val condition: Expr,
+            val condition: Expression,
             val body: Container,
             val elseBody: Container?
-        ) : Expr()
+        ) : Expression()
 
         /**
          * AST node corresponds to KtTryExpression.
@@ -540,7 +540,7 @@ sealed class Node {
             val block: Block,
             val catches: List<Catch>,
             val finallyBlock: Block?
-        ) : Expr() {
+        ) : Expression() {
             /**
              * AST node corresponds to KtCatchClause.
              */
@@ -560,7 +560,7 @@ sealed class Node {
             val loopParam: Lambda.Param,
             val loopRange: Container,
             val body: Container,
-        ) : Expr(), WithAnnotationSets
+        ) : Expression(), WithAnnotationSets
 
         /**
          * AST node corresponds to KtWhileExpressionBase.
@@ -570,16 +570,16 @@ sealed class Node {
             val condition: Container,
             val body: Container,
             val doWhile: Boolean
-        ) : Expr()
+        ) : Expression()
 
         /**
          * AST node corresponds to KtBinaryExpression or KtQualifiedExpression.
          */
         data class BinaryOp(
-            val lhs: Expr,
+            val lhs: Expression,
             val oper: Oper,
-            val rhs: Expr
-        ) : Expr() {
+            val rhs: Expression
+        ) : Expression() {
             sealed class Oper : Node() {
                 data class Infix(val str: String) : Oper()
                 data class Token(val token: BinaryOp.Token) : Oper()
@@ -600,10 +600,10 @@ sealed class Node {
          * AST node corresponds to KtUnaryExpression.
          */
         data class UnaryOp(
-            val expr: Expr,
+            val expression: Expression,
             val oper: Oper,
             val prefix: Boolean
-        ) : Expr() {
+        ) : Expression() {
             data class Oper(val token: Token) : Node()
             enum class Token(val str: String) {
                 NEG("-"), POS("+"), INC("++"), DEC("--"), NOT("!"), NULL_DEREF("!!")
@@ -614,10 +614,10 @@ sealed class Node {
          * AST node corresponds to KtBinaryExpressionWithTypeRHS or KtIsExpression.
          */
         data class TypeOp(
-            val lhs: Expr,
+            val lhs: Expression,
             val oper: Oper,
             val rhs: TypeRef
-        ) : Expr() {
+        ) : Expression() {
             data class Oper(val token: Token) : Node()
             enum class Token(val str: String) {
                 AS("as"), AS_SAFE("as?"), COL(":"), IS("is"), NOT_IS("!is")
@@ -627,7 +627,7 @@ sealed class Node {
         /**
          * AST node corresponds to KtDoubleColonExpression.
          */
-        sealed class DoubleColonRef : Expr() {
+        sealed class DoubleColonRef : Expression() {
             abstract val recv: Recv?
 
             /**
@@ -646,7 +646,7 @@ sealed class Node {
             ) : DoubleColonRef()
 
             sealed class Recv : Node() {
-                data class Expr(val expr: Node.Expr) : Recv()
+                data class Expr(val expression: Node.Expression) : Recv()
                 data class Type(
                     val type: Node.Type.Simple,
                     val questionMarks: List<Keyword.Question>,
@@ -658,8 +658,8 @@ sealed class Node {
          * AST node corresponds to KtParenthesizedExpression.
          */
         data class Paren(
-            val expr: Expr
-        ) : Expr()
+            val expression: Expression
+        ) : Expression()
 
         /**
          * AST node corresponds to KtStringTemplateExpression.
@@ -667,13 +667,13 @@ sealed class Node {
         data class StringTmpl(
             val elems: List<Elem>,
             val raw: Boolean
-        ) : Expr() {
+        ) : Expression() {
             sealed class Elem : Node() {
                 data class Regular(val str: String) : Elem()
                 data class ShortTmpl(val str: String) : Elem()
                 data class UnicodeEsc(val digits: String) : Elem()
                 data class RegularEsc(val char: Char) : Elem()
-                data class LongTmpl(val expr: Expr) : Elem()
+                data class LongTmpl(val expression: Expression) : Elem()
             }
         }
 
@@ -683,7 +683,7 @@ sealed class Node {
         data class Const(
             val value: String,
             val form: Form
-        ) : Expr() {
+        ) : Expression() {
             enum class Form { BOOLEAN, CHAR, INT, FLOAT, NULL }
         }
 
@@ -693,7 +693,7 @@ sealed class Node {
         data class Lambda(
             val params: Params?,
             val body: Body?
-        ) : Expr() {
+        ) : Expression() {
             /**
              * AST node corresponds to KtParameterList under KtLambdaExpression.
              */
@@ -738,7 +738,7 @@ sealed class Node {
              *
              * <Lambda> = { <Param>, <Param> -> <Body> }
              */
-            data class Body(override val statements: List<Statement>) : Expr(), StatementsContainer
+            data class Body(override val statements: List<Statement>) : Expression(), StatementsContainer
         }
 
         /**
@@ -746,7 +746,7 @@ sealed class Node {
          */
         data class This(
             val label: String?
-        ) : Expr()
+        ) : Expression()
 
         /**
          * AST node corresponds to KtSuperExpression.
@@ -754,17 +754,17 @@ sealed class Node {
         data class Super(
             val typeArg: TypeRef?,
             val label: String?
-        ) : Expr()
+        ) : Expression()
 
         /**
          * AST node corresponds to KtWhenExpression.
          */
         data class When(
             val lPar: Keyword.LPar,
-            val expr: Expr?,
+            val expression: Expression?,
             val rPar: Keyword.RPar,
             val entries: List<Entry>
-        ) : Expr() {
+        ) : Expression() {
             /**
              * AST node corresponds to KtWhenEntry.
              */
@@ -772,12 +772,12 @@ sealed class Node {
                 data class Conds(
                     val conds: List<Cond>,
                     val trailingComma: Keyword.Comma?,
-                    val body: Expr,
+                    val body: Expression,
                 ) : When.Entry()
 
                 data class Else(
                     val elseKeyword: Keyword.Else,
-                    val body: Expr,
+                    val body: Expression,
                 ) : When.Entry()
             }
 
@@ -788,13 +788,13 @@ sealed class Node {
                 /**
                  * AST node corresponds to KtWhenConditionWithExpression.
                  */
-                data class Expr(val expr: Node.Expr) : Cond()
+                data class Expr(val expression: Node.Expression) : Cond()
 
                 /**
                  * AST node corresponds to KtWhenConditionInRange.
                  */
                 data class In(
-                    val expr: Node.Expr,
+                    val expression: Node.Expression,
                     val not: Boolean
                 ) : Cond()
 
@@ -813,78 +813,78 @@ sealed class Node {
          */
         data class Object(
             val declaration: Declaration.Structured,
-        ) : Expr()
+        ) : Expression()
 
         /**
          * AST node corresponds to KtThrowExpression.
          */
         data class Throw(
-            val expr: Expr
-        ) : Expr()
+            val expression: Expression
+        ) : Expression()
 
         /**
          * AST node corresponds to KtReturnExpression.
          */
         data class Return(
             val label: String?,
-            val expr: Expr?
-        ) : Expr()
+            val expression: Expression?
+        ) : Expression()
 
         /**
          * AST node corresponds to KtContinueExpression.
          */
         data class Continue(
             val label: String?
-        ) : Expr()
+        ) : Expression()
 
         /**
          * AST node corresponds to KtBreakExpression.
          */
         data class Break(
             val label: String?
-        ) : Expr()
+        ) : Expression()
 
         /**
          * AST node corresponds to KtCollectionLiteralExpression.
          */
         data class CollLit(
-            val exprs: List<Expr>,
+            val expressions: List<Expression>,
             val trailingComma: Keyword.Comma?,
-        ) : Expr()
+        ) : Expression()
 
         /**
          * AST node corresponds to KtValueArgumentName, KtSimpleNameExpression or PsiElement whose elementType is IDENTIFIER.
          */
         data class Name(
             val name: String
-        ) : Expr()
+        ) : Expression()
 
         /**
          * AST node corresponds to KtLabeledExpression.
          */
         data class Labeled(
             val label: String,
-            val expr: Expr
-        ) : Expr()
+            val expression: Expression
+        ) : Expression()
 
         /**
          * AST node corresponds to KtAnnotatedExpression.
          */
         data class Annotated(
             override val annotationSets: List<Modifier.AnnotationSet>,
-            val expr: Expr
-        ) : Expr(), WithAnnotationSets
+            val expression: Expression
+        ) : Expression(), WithAnnotationSets
 
         /**
          * AST node corresponds to KtCallExpression.
          */
         data class Call(
-            val expr: Expr,
+            val expression: Expression,
             val typeArgs: TypeArgs?,
             val args: ValueArgs?,
             // According to the Kotlin syntax, at most one lambda argument is allowed. However, Kotlin compiler can parse multiple lambda arguments.
             val lambdaArgs: List<LambdaArg>
-        ) : Expr() {
+        ) : Expression() {
             /**
              * AST node corresponds to KtLambdaArgument.
              */
@@ -899,17 +899,17 @@ sealed class Node {
          * AST node corresponds to KtArrayAccessExpression.
          */
         data class ArrayAccess(
-            val expr: Expr,
-            val indices: List<Expr>,
+            val expression: Expression,
+            val indices: List<Expression>,
             val trailingComma: Keyword.Comma?,
-        ) : Expr()
+        ) : Expression()
 
         /**
          * Virtual AST node corresponds to KtNamedFunction in expression context.
          */
         data class AnonFunc(
             val func: Declaration.Func
-        ) : Expr()
+        ) : Expression()
 
         /**
          * AST node corresponds to KtProperty or KtDestructuringDeclaration.
@@ -917,12 +917,12 @@ sealed class Node {
          */
         data class Property(
             val declaration: Declaration.Property
-        ) : Expr()
+        ) : Expression()
 
         /**
          * AST node corresponds to KtBlockExpression.
          */
-        data class Block(override val statements: List<Statement>) : Expr(), StatementsContainer
+        data class Block(override val statements: List<Statement>) : Expression(), StatementsContainer
     }
 
     /**
@@ -988,7 +988,7 @@ sealed class Node {
              */
             data class TypeConstraint(
                 override val annotationSets: List<Modifier.AnnotationSet>,
-                val name: Expr.Name,
+                val name: Expression.Name,
                 val typeRef: TypeRef
             ) : Node(), WithAnnotationSets
         }
@@ -1012,7 +1012,7 @@ sealed class Node {
              * AST node corresponds to KtContractEffect.
              */
             data class ContractEffect(
-                val expr: Expr,
+                val expression: Expression,
             ) : Node()
         }
     }

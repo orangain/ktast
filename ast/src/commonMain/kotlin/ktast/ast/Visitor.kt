@@ -22,7 +22,7 @@ open class Visitor {
                 visitChildren(annotationSets)
                 visitChildren(packageDirective)
                 visitChildren(importDirectives)
-                visitChildren(exprs)
+                visitChildren(expressions)
             }
             is Node.PackageDirective -> {
                 visitChildren(modifiers)
@@ -59,7 +59,7 @@ open class Visitor {
             is Node.Declaration.Structured.Parent.DelegatedType -> {
                 visitChildren(type)
                 visitChildren(byKeyword)
-                visitChildren(expr)
+                visitChildren(expression)
             }
             is Node.Declaration.Structured.Parent.Type -> {
                 visitChildren(type)
@@ -101,7 +101,7 @@ open class Visitor {
             }
             is Node.Declaration.Func.Body.Expr -> {
                 visitChildren(equals)
-                visitChildren(expr)
+                visitChildren(expression)
             }
             is Node.Declaration.Property -> {
                 visitChildren(modifiers)
@@ -116,7 +116,7 @@ open class Visitor {
             }
             is Node.Declaration.Property.Delegate -> {
                 visitChildren(byKeyword)
-                visitChildren(expr)
+                visitChildren(expression)
             }
             is Node.Declaration.Property.Variable.Single -> {
                 visitChildren(name)
@@ -168,7 +168,7 @@ open class Visitor {
             }
             is Node.Initializer -> {
                 visitChildren(equals)
-                visitChildren(expr)
+                visitChildren(expression)
             }
             is Node.TypeParam -> {
                 visitChildren(modifiers)
@@ -226,173 +226,173 @@ open class Visitor {
             }
             is Node.ValueArg -> {
                 visitChildren(name)
-                visitChildren(expr)
+                visitChildren(expression)
             }
             is Node.Container -> {
-                visitChildren(expr)
+                visitChildren(expression)
             }
-            is Node.Expr.If -> {
+            is Node.Expression.If -> {
                 visitChildren(ifKeyword)
                 visitChildren(condition)
                 visitChildren(body)
                 visitChildren(elseBody)
             }
-            is Node.Expr.Try -> {
+            is Node.Expression.Try -> {
                 visitChildren(block)
                 visitChildren(catches)
                 visitChildren(finallyBlock)
             }
-            is Node.Expr.Try.Catch -> {
+            is Node.Expression.Try.Catch -> {
                 visitChildren(catchKeyword)
                 visitChildren(params)
                 visitChildren(block)
             }
-            is Node.Expr.For -> {
+            is Node.Expression.For -> {
                 visitChildren(forKeyword)
                 visitChildren(annotationSets)
                 visitChildren(loopParam)
                 visitChildren(loopRange)
                 visitChildren(body)
             }
-            is Node.Expr.While -> {
+            is Node.Expression.While -> {
                 visitChildren(whileKeyword)
                 visitChildren(condition)
                 visitChildren(body)
             }
-            is Node.Expr.BinaryOp -> {
+            is Node.Expression.BinaryOp -> {
                 visitChildren(lhs)
                 visitChildren(oper)
                 visitChildren(rhs)
             }
-            is Node.Expr.BinaryOp.Oper.Infix -> {}
-            is Node.Expr.BinaryOp.Oper.Token -> {}
-            is Node.Expr.UnaryOp -> {
-                visitChildren(expr)
+            is Node.Expression.BinaryOp.Oper.Infix -> {}
+            is Node.Expression.BinaryOp.Oper.Token -> {}
+            is Node.Expression.UnaryOp -> {
+                visitChildren(expression)
                 visitChildren(oper)
             }
-            is Node.Expr.UnaryOp.Oper -> {}
-            is Node.Expr.TypeOp -> {
+            is Node.Expression.UnaryOp.Oper -> {}
+            is Node.Expression.TypeOp -> {
                 visitChildren(lhs)
                 visitChildren(oper)
                 visitChildren(rhs)
             }
-            is Node.Expr.TypeOp.Oper -> {}
-            is Node.Expr.DoubleColonRef.Callable -> {
+            is Node.Expression.TypeOp.Oper -> {}
+            is Node.Expression.DoubleColonRef.Callable -> {
                 visitChildren(recv)
                 visitChildren(name)
             }
-            is Node.Expr.DoubleColonRef.Class -> {
+            is Node.Expression.DoubleColonRef.Class -> {
                 visitChildren(recv)
             }
-            is Node.Expr.DoubleColonRef.Recv.Expr -> {
-                visitChildren(expr)
+            is Node.Expression.DoubleColonRef.Recv.Expr -> {
+                visitChildren(expression)
             }
-            is Node.Expr.DoubleColonRef.Recv.Type -> {
+            is Node.Expression.DoubleColonRef.Recv.Type -> {
                 visitChildren(type)
                 visitChildren(questionMarks)
             }
-            is Node.Expr.Paren -> {
-                visitChildren(expr)
+            is Node.Expression.Paren -> {
+                visitChildren(expression)
             }
-            is Node.Expr.StringTmpl -> {
+            is Node.Expression.StringTmpl -> {
                 visitChildren(elems)
             }
-            is Node.Expr.StringTmpl.Elem.Regular -> {}
-            is Node.Expr.StringTmpl.Elem.ShortTmpl -> {}
-            is Node.Expr.StringTmpl.Elem.UnicodeEsc -> {}
-            is Node.Expr.StringTmpl.Elem.RegularEsc -> {}
-            is Node.Expr.StringTmpl.Elem.LongTmpl -> {
-                visitChildren(expr)
+            is Node.Expression.StringTmpl.Elem.Regular -> {}
+            is Node.Expression.StringTmpl.Elem.ShortTmpl -> {}
+            is Node.Expression.StringTmpl.Elem.UnicodeEsc -> {}
+            is Node.Expression.StringTmpl.Elem.RegularEsc -> {}
+            is Node.Expression.StringTmpl.Elem.LongTmpl -> {
+                visitChildren(expression)
             }
-            is Node.Expr.Const -> {}
-            is Node.Expr.Lambda -> {
+            is Node.Expression.Const -> {}
+            is Node.Expression.Lambda -> {
                 visitChildren(params)
                 visitChildren(body)
             }
-            is Node.Expr.Lambda.Param.Single -> {
+            is Node.Expression.Lambda.Param.Single -> {
                 visitChildren(name)
                 visitChildren(typeRef)
             }
-            is Node.Expr.Lambda.Param.Multi -> {
+            is Node.Expression.Lambda.Param.Multi -> {
                 visitChildren(vars)
                 visitChildren(destructTypeRef)
             }
-            is Node.Expr.Lambda.Body -> {
+            is Node.Expression.Lambda.Body -> {
                 visitChildren(statements)
             }
-            is Node.Expr.This -> {}
-            is Node.Expr.Super -> {
+            is Node.Expression.This -> {}
+            is Node.Expression.Super -> {
                 visitChildren(typeArg)
             }
-            is Node.Expr.When -> {
+            is Node.Expression.When -> {
                 visitChildren(lPar)
-                visitChildren(expr)
+                visitChildren(expression)
                 visitChildren(rPar)
                 visitChildren(entries)
             }
-            is Node.Expr.When.Entry.Conds -> {
+            is Node.Expression.When.Entry.Conds -> {
                 visitChildren(conds)
                 visitChildren(trailingComma)
                 visitChildren(body)
             }
-            is Node.Expr.When.Entry.Else -> {
+            is Node.Expression.When.Entry.Else -> {
                 visitChildren(elseKeyword)
                 visitChildren(body)
             }
-            is Node.Expr.When.Cond.Expr -> {
-                visitChildren(expr)
+            is Node.Expression.When.Cond.Expr -> {
+                visitChildren(expression)
             }
-            is Node.Expr.When.Cond.In -> {
-                visitChildren(expr)
+            is Node.Expression.When.Cond.In -> {
+                visitChildren(expression)
             }
-            is Node.Expr.When.Cond.Is -> {
+            is Node.Expression.When.Cond.Is -> {
                 visitChildren(typeRef)
             }
-            is Node.Expr.Object -> {
+            is Node.Expression.Object -> {
                 visitChildren(declaration)
             }
-            is Node.Expr.Throw -> {
-                visitChildren(expr)
+            is Node.Expression.Throw -> {
+                visitChildren(expression)
             }
-            is Node.Expr.Return -> {
-                visitChildren(expr)
+            is Node.Expression.Return -> {
+                visitChildren(expression)
             }
-            is Node.Expr.Continue -> {}
-            is Node.Expr.Break -> {}
-            is Node.Expr.CollLit -> {
-                visitChildren(exprs)
+            is Node.Expression.Continue -> {}
+            is Node.Expression.Break -> {}
+            is Node.Expression.CollLit -> {
+                visitChildren(expressions)
                 visitChildren(trailingComma)
             }
-            is Node.Expr.Name -> {}
-            is Node.Expr.Labeled -> {
-                visitChildren(expr)
+            is Node.Expression.Name -> {}
+            is Node.Expression.Labeled -> {
+                visitChildren(expression)
             }
-            is Node.Expr.Annotated -> {
+            is Node.Expression.Annotated -> {
                 visitChildren(annotationSets)
-                visitChildren(expr)
+                visitChildren(expression)
             }
-            is Node.Expr.Call -> {
-                visitChildren(expr)
+            is Node.Expression.Call -> {
+                visitChildren(expression)
                 visitChildren(typeArgs)
                 visitChildren(args)
                 visitChildren(lambdaArgs)
             }
-            is Node.Expr.Call.LambdaArg -> {
+            is Node.Expression.Call.LambdaArg -> {
                 visitChildren(annotationSets)
                 visitChildren(func)
             }
-            is Node.Expr.ArrayAccess -> {
-                visitChildren(expr)
+            is Node.Expression.ArrayAccess -> {
+                visitChildren(expression)
                 visitChildren(indices)
                 visitChildren(trailingComma)
             }
-            is Node.Expr.AnonFunc -> {
+            is Node.Expression.AnonFunc -> {
                 visitChildren(func)
             }
-            is Node.Expr.Property -> {
+            is Node.Expression.Property -> {
                 visitChildren(declaration)
             }
-            is Node.Expr.Block -> {
+            is Node.Expression.Block -> {
                 visitChildren(statements)
             }
             is Node.Modifier.AnnotationSet -> {
@@ -420,7 +420,7 @@ open class Visitor {
                 visitChildren(contractEffects)
             }
             is Node.PostModifier.Contract.ContractEffect -> {
-                visitChildren(expr)
+                visitChildren(expression)
             }
             is Node.Keyword -> {}
             is Node.Extra -> {}

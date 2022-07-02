@@ -22,7 +22,7 @@ open class MutableVisitor(
                         annotationSets = visitChildren(annotationSets, newCh),
                         packageDirective = visitChildren(packageDirective, newCh),
                         importDirectives = visitChildren(importDirectives, newCh),
-                        exprs = visitChildren(exprs, newCh)
+                        expressions = visitChildren(expressions, newCh)
                     )
                     is Node.PackageDirective -> copy(
                         modifiers = visitChildren(modifiers, newCh),
@@ -62,7 +62,7 @@ open class MutableVisitor(
                     is Node.Declaration.Structured.Parent.DelegatedType -> copy(
                         type = visitChildren(type, newCh),
                         byKeyword = visitChildren(byKeyword, newCh),
-                        expr = visitChildren(expr, newCh),
+                        expression = visitChildren(expression, newCh),
                     )
                     is Node.Declaration.Structured.Parent.Type -> copy(
                         type = visitChildren(type, newCh),
@@ -108,7 +108,7 @@ open class MutableVisitor(
                     )
                     is Node.Declaration.Func.Body.Expr -> copy(
                         equals = visitChildren(equals, newCh),
-                        expr = visitChildren(expr, newCh),
+                        expression = visitChildren(expression, newCh),
                     )
                     is Node.Declaration.Property -> copy(
                         modifiers = visitChildren(modifiers, newCh),
@@ -123,7 +123,7 @@ open class MutableVisitor(
                     )
                     is Node.Declaration.Property.Delegate -> copy(
                         byKeyword = visitChildren(byKeyword, newCh),
-                        expr = visitChildren(expr, newCh),
+                        expression = visitChildren(expression, newCh),
                     )
                     is Node.Declaration.Property.Variable.Single -> copy(
                         name = visitChildren(name, newCh),
@@ -175,7 +175,7 @@ open class MutableVisitor(
                     )
                     is Node.Initializer -> copy(
                         equals = visitChildren(equals, newCh),
-                        expr = visitChildren(expr, newCh),
+                        expression = visitChildren(expression, newCh),
                     )
                     is Node.TypeParams -> copy(
                         elements = visitChildren(elements, newCh),
@@ -253,181 +253,181 @@ open class MutableVisitor(
                     )
                     is Node.ValueArg -> copy(
                         name = visitChildren(name, newCh),
-                        expr = visitChildren(expr, newCh)
+                        expression = visitChildren(expression, newCh)
                     )
                     is Node.Container -> copy(
-                        expr = visitChildren(expr, newCh),
+                        expression = visitChildren(expression, newCh),
                     )
-                    is Node.Expr.If -> copy(
+                    is Node.Expression.If -> copy(
                         ifKeyword = visitChildren(ifKeyword, newCh),
                         condition = visitChildren(condition, newCh),
                         body = visitChildren(body, newCh),
                         elseBody = visitChildren(elseBody, newCh)
                     )
-                    is Node.Expr.Try -> copy(
+                    is Node.Expression.Try -> copy(
                         block = visitChildren(block, newCh),
                         catches = visitChildren(catches, newCh),
                         finallyBlock = visitChildren(finallyBlock, newCh)
                     )
-                    is Node.Expr.Try.Catch -> copy(
+                    is Node.Expression.Try.Catch -> copy(
                         catchKeyword = visitChildren(catchKeyword, newCh),
                         params = visitChildren(params, newCh),
                         block = visitChildren(block, newCh),
                     )
-                    is Node.Expr.For -> copy(
+                    is Node.Expression.For -> copy(
                         forKeyword = visitChildren(forKeyword, newCh),
                         annotationSets = visitChildren(annotationSets, newCh),
                         loopParam = visitChildren(loopParam, newCh),
                         loopRange = visitChildren(loopRange, newCh),
                         body = visitChildren(body, newCh)
                     )
-                    is Node.Expr.While -> copy(
+                    is Node.Expression.While -> copy(
                         whileKeyword = visitChildren(whileKeyword, newCh),
                         condition = visitChildren(condition, newCh),
                         body = visitChildren(body, newCh),
                     )
-                    is Node.Expr.BinaryOp -> copy(
+                    is Node.Expression.BinaryOp -> copy(
                         lhs = visitChildren(lhs, newCh),
                         oper = visitChildren(oper, newCh),
                         rhs = visitChildren(rhs, newCh)
                     )
-                    is Node.Expr.BinaryOp.Oper.Infix -> this
-                    is Node.Expr.BinaryOp.Oper.Token -> this
-                    is Node.Expr.UnaryOp -> copy(
-                        expr = visitChildren(expr, newCh),
+                    is Node.Expression.BinaryOp.Oper.Infix -> this
+                    is Node.Expression.BinaryOp.Oper.Token -> this
+                    is Node.Expression.UnaryOp -> copy(
+                        expression = visitChildren(expression, newCh),
                         oper = visitChildren(oper, newCh)
                     )
-                    is Node.Expr.UnaryOp.Oper -> this
-                    is Node.Expr.TypeOp -> copy(
+                    is Node.Expression.UnaryOp.Oper -> this
+                    is Node.Expression.TypeOp -> copy(
                         lhs = visitChildren(lhs, newCh),
                         oper = visitChildren(oper, newCh),
                         rhs = visitChildren(rhs, newCh)
                     )
-                    is Node.Expr.TypeOp.Oper -> this
-                    is Node.Expr.DoubleColonRef.Callable -> copy(
+                    is Node.Expression.TypeOp.Oper -> this
+                    is Node.Expression.DoubleColonRef.Callable -> copy(
                         recv = visitChildren(recv, newCh),
                         name = visitChildren(name, newCh),
                     )
-                    is Node.Expr.DoubleColonRef.Class -> copy(
+                    is Node.Expression.DoubleColonRef.Class -> copy(
                         recv = visitChildren(recv, newCh)
                     )
-                    is Node.Expr.DoubleColonRef.Recv.Expr -> copy(
-                        expr = visitChildren(expr, newCh)
+                    is Node.Expression.DoubleColonRef.Recv.Expr -> copy(
+                        expression = visitChildren(expression, newCh)
                     )
-                    is Node.Expr.DoubleColonRef.Recv.Type -> copy(
+                    is Node.Expression.DoubleColonRef.Recv.Type -> copy(
                         type = visitChildren(type, newCh),
                         questionMarks = visitChildren(questionMarks, newCh),
                     )
-                    is Node.Expr.Paren -> copy(
-                        expr = visitChildren(expr, newCh)
+                    is Node.Expression.Paren -> copy(
+                        expression = visitChildren(expression, newCh)
                     )
-                    is Node.Expr.StringTmpl -> copy(
+                    is Node.Expression.StringTmpl -> copy(
                         elems = visitChildren(elems, newCh)
                     )
-                    is Node.Expr.StringTmpl.Elem.Regular -> this
-                    is Node.Expr.StringTmpl.Elem.ShortTmpl -> this
-                    is Node.Expr.StringTmpl.Elem.UnicodeEsc -> this
-                    is Node.Expr.StringTmpl.Elem.RegularEsc -> this
-                    is Node.Expr.StringTmpl.Elem.LongTmpl -> copy(
-                        expr = visitChildren(expr, newCh)
+                    is Node.Expression.StringTmpl.Elem.Regular -> this
+                    is Node.Expression.StringTmpl.Elem.ShortTmpl -> this
+                    is Node.Expression.StringTmpl.Elem.UnicodeEsc -> this
+                    is Node.Expression.StringTmpl.Elem.RegularEsc -> this
+                    is Node.Expression.StringTmpl.Elem.LongTmpl -> copy(
+                        expression = visitChildren(expression, newCh)
                     )
-                    is Node.Expr.Const -> this
-                    is Node.Expr.Lambda -> copy(
+                    is Node.Expression.Const -> this
+                    is Node.Expression.Lambda -> copy(
                         params = visitChildren(params, newCh),
                         body = visitChildren(body, newCh)
                     )
-                    is Node.Expr.Lambda.Params -> copy(
+                    is Node.Expression.Lambda.Params -> copy(
                         elements = visitChildren(elements, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
-                    is Node.Expr.Lambda.Param.Single -> copy(
+                    is Node.Expression.Lambda.Param.Single -> copy(
                         name = visitChildren(name, newCh),
                         typeRef = visitChildren(typeRef, newCh),
                     )
-                    is Node.Expr.Lambda.Param.Multi -> copy(
+                    is Node.Expression.Lambda.Param.Multi -> copy(
                         vars = visitChildren(vars, newCh),
                         destructTypeRef = visitChildren(destructTypeRef, newCh)
                     )
-                    is Node.Expr.Lambda.Param.Multi.Variables -> copy(
+                    is Node.Expression.Lambda.Param.Multi.Variables -> copy(
                         elements = visitChildren(elements, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
-                    is Node.Expr.Lambda.Body -> copy(
+                    is Node.Expression.Lambda.Body -> copy(
                         statements = visitChildren(statements, newCh)
                     )
-                    is Node.Expr.This -> this
-                    is Node.Expr.Super -> copy(
+                    is Node.Expression.This -> this
+                    is Node.Expression.Super -> copy(
                         typeArg = visitChildren(typeArg, newCh)
                     )
-                    is Node.Expr.When -> copy(
+                    is Node.Expression.When -> copy(
                         lPar = visitChildren(lPar, newCh),
-                        expr = visitChildren(expr, newCh),
+                        expression = visitChildren(expression, newCh),
                         rPar = visitChildren(rPar, newCh),
                         entries = visitChildren(entries, newCh),
                     )
-                    is Node.Expr.When.Entry.Conds -> copy(
+                    is Node.Expression.When.Entry.Conds -> copy(
                         conds = visitChildren(conds, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
                         body = visitChildren(body, newCh),
                     )
-                    is Node.Expr.When.Entry.Else -> copy(
+                    is Node.Expression.When.Entry.Else -> copy(
                         elseKeyword = visitChildren(elseKeyword, newCh),
                         body = visitChildren(body, newCh),
                     )
-                    is Node.Expr.When.Cond.Expr -> copy(
-                        expr = visitChildren(expr, newCh)
+                    is Node.Expression.When.Cond.Expr -> copy(
+                        expression = visitChildren(expression, newCh)
                     )
-                    is Node.Expr.When.Cond.In -> copy(
-                        expr = visitChildren(expr, newCh)
+                    is Node.Expression.When.Cond.In -> copy(
+                        expression = visitChildren(expression, newCh)
                     )
-                    is Node.Expr.When.Cond.Is -> copy(
+                    is Node.Expression.When.Cond.Is -> copy(
                         typeRef = visitChildren(typeRef, newCh)
                     )
-                    is Node.Expr.Object -> copy(
+                    is Node.Expression.Object -> copy(
                         declaration = visitChildren(declaration, newCh),
                     )
-                    is Node.Expr.Throw -> copy(
-                        expr = visitChildren(expr, newCh)
+                    is Node.Expression.Throw -> copy(
+                        expression = visitChildren(expression, newCh)
                     )
-                    is Node.Expr.Return -> copy(
-                        expr = visitChildren(expr, newCh)
+                    is Node.Expression.Return -> copy(
+                        expression = visitChildren(expression, newCh)
                     )
-                    is Node.Expr.Continue -> this
-                    is Node.Expr.Break -> this
-                    is Node.Expr.CollLit -> copy(
-                        exprs = visitChildren(exprs, newCh),
+                    is Node.Expression.Continue -> this
+                    is Node.Expression.Break -> this
+                    is Node.Expression.CollLit -> copy(
+                        expressions = visitChildren(expressions, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
-                    is Node.Expr.Name -> this
-                    is Node.Expr.Labeled -> copy(
-                        expr = visitChildren(expr, newCh)
+                    is Node.Expression.Name -> this
+                    is Node.Expression.Labeled -> copy(
+                        expression = visitChildren(expression, newCh)
                     )
-                    is Node.Expr.Annotated -> copy(
+                    is Node.Expression.Annotated -> copy(
                         annotationSets = visitChildren(annotationSets, newCh),
-                        expr = visitChildren(expr, newCh)
+                        expression = visitChildren(expression, newCh)
                     )
-                    is Node.Expr.Call -> copy(
-                        expr = visitChildren(expr, newCh),
+                    is Node.Expression.Call -> copy(
+                        expression = visitChildren(expression, newCh),
                         typeArgs = visitChildren(typeArgs, newCh),
                         args = visitChildren(args, newCh),
                         lambdaArgs = visitChildren(lambdaArgs, newCh)
                     )
-                    is Node.Expr.Call.LambdaArg -> copy(
+                    is Node.Expression.Call.LambdaArg -> copy(
                         annotationSets = visitChildren(annotationSets, newCh),
                         func = visitChildren(func, newCh)
                     )
-                    is Node.Expr.ArrayAccess -> copy(
-                        expr = visitChildren(expr, newCh),
+                    is Node.Expression.ArrayAccess -> copy(
+                        expression = visitChildren(expression, newCh),
                         indices = visitChildren(indices, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
-                    is Node.Expr.AnonFunc -> copy(
+                    is Node.Expression.AnonFunc -> copy(
                         func = visitChildren(func, newCh)
                     )
-                    is Node.Expr.Property -> copy(
+                    is Node.Expression.Property -> copy(
                         declaration = visitChildren(declaration, newCh)
                     )
-                    is Node.Expr.Block -> copy(
+                    is Node.Expression.Block -> copy(
                         statements = visitChildren(statements, newCh)
                     )
                     is Node.Modifiers -> copy(
@@ -465,7 +465,7 @@ open class MutableVisitor(
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
                     is Node.PostModifier.Contract.ContractEffect -> copy(
-                        expr = visitChildren(expr, newCh),
+                        expression = visitChildren(expression, newCh),
                     )
                     is Node.Keyword -> this
                     is Node.Extra -> this
