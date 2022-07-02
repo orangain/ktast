@@ -16,7 +16,7 @@ open class Visitor {
                 visitChildren(annotationSets)
                 visitChildren(packageDirective)
                 visitChildren(importDirectives)
-                visitChildren(decls)
+                visitChildren(declarations)
             }
             is Node.Script -> {
                 visitChildren(annotationSets)
@@ -37,7 +37,7 @@ open class Visitor {
             is Node.ImportDirective.Alias -> {
                 visitChildren(name)
             }
-            is Node.Decl.Structured -> {
+            is Node.Declaration.Structured -> {
                 visitChildren(modifiers)
                 visitChildren(declarationKeyword)
                 visitChildren(name)
@@ -47,37 +47,37 @@ open class Visitor {
                 visitChildren(typeConstraints)
                 visitChildren(body)
             }
-            is Node.Decl.Structured.Parents -> {
+            is Node.Declaration.Structured.Parents -> {
                 visitChildren(items)
             }
-            is Node.Decl.Structured.Parent.CallConstructor -> {
+            is Node.Declaration.Structured.Parent.CallConstructor -> {
                 visitChildren(type)
                 visitChildren(typeArgs)
                 visitChildren(args)
                 visitChildren(lambda)
             }
-            is Node.Decl.Structured.Parent.DelegatedType -> {
+            is Node.Declaration.Structured.Parent.DelegatedType -> {
                 visitChildren(type)
                 visitChildren(byKeyword)
                 visitChildren(expr)
             }
-            is Node.Decl.Structured.Parent.Type -> {
+            is Node.Declaration.Structured.Parent.Type -> {
                 visitChildren(type)
             }
-            is Node.Decl.Structured.PrimaryConstructor -> {
+            is Node.Declaration.Structured.PrimaryConstructor -> {
                 visitChildren(modifiers)
                 visitChildren(constructorKeyword)
                 visitChildren(params)
             }
-            is Node.Decl.Structured.Body -> {
+            is Node.Declaration.Structured.Body -> {
                 visitChildren(enumEntries)
-                visitChildren(decls)
+                visitChildren(declarations)
             }
-            is Node.Decl.Init -> {
+            is Node.Declaration.Init -> {
                 visitChildren(modifiers)
                 visitChildren(block)
             }
-            is Node.Decl.Func -> {
+            is Node.Declaration.Func -> {
                 visitChildren(modifiers)
                 visitChildren(funKeyword)
                 visitChildren(typeParams)
@@ -89,21 +89,21 @@ open class Visitor {
                 visitChildren(postMods)
                 visitChildren(body)
             }
-            is Node.Decl.Func.Param -> {
+            is Node.Declaration.Func.Param -> {
                 visitChildren(modifiers)
                 visitChildren(valOrVar)
                 visitChildren(name)
                 visitChildren(typeRef)
                 visitChildren(initializer)
             }
-            is Node.Decl.Func.Body.Block -> {
+            is Node.Declaration.Func.Body.Block -> {
                 visitChildren(block)
             }
-            is Node.Decl.Func.Body.Expr -> {
+            is Node.Declaration.Func.Body.Expr -> {
                 visitChildren(equals)
                 visitChildren(expr)
             }
-            is Node.Decl.Property -> {
+            is Node.Declaration.Property -> {
                 visitChildren(modifiers)
                 visitChildren(valOrVar)
                 visitChildren(typeParams)
@@ -114,50 +114,50 @@ open class Visitor {
                 visitChildren(delegate)
                 visitChildren(accessors)
             }
-            is Node.Decl.Property.Delegate -> {
+            is Node.Declaration.Property.Delegate -> {
                 visitChildren(byKeyword)
                 visitChildren(expr)
             }
-            is Node.Decl.Property.Variable.Single -> {
+            is Node.Declaration.Property.Variable.Single -> {
                 visitChildren(name)
                 visitChildren(typeRef)
             }
-            is Node.Decl.Property.Variable.Multi -> {
+            is Node.Declaration.Property.Variable.Multi -> {
                 visitChildren(vars)
                 visitChildren(trailingComma)
             }
-            is Node.Decl.Property.Accessor.Get -> {
+            is Node.Declaration.Property.Accessor.Get -> {
                 visitChildren(modifiers)
                 visitChildren(getKeyword)
                 visitChildren(typeRef)
                 visitChildren(postMods)
                 visitChildren(body)
             }
-            is Node.Decl.Property.Accessor.Set -> {
+            is Node.Declaration.Property.Accessor.Set -> {
                 visitChildren(modifiers)
                 visitChildren(setKeyword)
                 visitChildren(params)
                 visitChildren(postMods)
                 visitChildren(body)
             }
-            is Node.Decl.Property.Accessor.Params -> {
+            is Node.Declaration.Property.Accessor.Params -> {
                 visitChildren(elements)
                 visitChildren(trailingComma)
             }
-            is Node.Decl.TypeAlias -> {
+            is Node.Declaration.TypeAlias -> {
                 visitChildren(modifiers)
                 visitChildren(name)
                 visitChildren(typeParams)
                 visitChildren(typeRef)
             }
-            is Node.Decl.SecondaryConstructor -> {
+            is Node.Declaration.SecondaryConstructor -> {
                 visitChildren(modifiers)
                 visitChildren(constructorKeyword)
                 visitChildren(params)
                 visitChildren(delegationCall)
                 visitChildren(block)
             }
-            is Node.Decl.SecondaryConstructor.DelegationCall -> {
+            is Node.Declaration.SecondaryConstructor.DelegationCall -> {
                 visitChildren(args)
             }
             is Node.EnumEntry -> {
@@ -349,7 +349,7 @@ open class Visitor {
                 visitChildren(typeRef)
             }
             is Node.Expr.Object -> {
-                visitChildren(decl)
+                visitChildren(declaration)
             }
             is Node.Expr.Throw -> {
                 visitChildren(expr)
@@ -390,7 +390,7 @@ open class Visitor {
                 visitChildren(func)
             }
             is Node.Expr.Property -> {
-                visitChildren(decl)
+                visitChildren(declaration)
             }
             is Node.Expr.Block -> {
                 visitChildren(statements)

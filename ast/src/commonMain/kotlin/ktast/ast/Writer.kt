@@ -63,7 +63,7 @@ open class Writer(
                     children(annotationSets, skipWritingExtrasWithin = true)
                     children(packageDirective)
                     children(importDirectives)
-                    children(decls)
+                    children(declarations)
                 }
                 is Node.PackageDirective -> {
                     children(modifiers)
@@ -79,7 +79,7 @@ open class Writer(
                     append("as")
                     children(name)
                 }
-                is Node.Decl.Structured -> {
+                is Node.Declaration.Structured -> {
                     children(modifiers)
                     children(declarationKeyword)
                     children(name)
@@ -92,38 +92,38 @@ open class Writer(
                     children(typeConstraints)
                     children(body)
                 }
-                is Node.Decl.Structured.Parents -> {
+                is Node.Declaration.Structured.Parents -> {
                     children(items, ",")
                 }
-                is Node.Decl.Structured.Parent.CallConstructor -> {
+                is Node.Declaration.Structured.Parent.CallConstructor -> {
                     children(type)
                     children(args)
                 }
-                is Node.Decl.Structured.Parent.DelegatedType -> {
+                is Node.Declaration.Structured.Parent.DelegatedType -> {
                     children(type)
                     children(byKeyword)
                     children(expr)
                 }
-                is Node.Decl.Structured.Parent.Type -> {
+                is Node.Declaration.Structured.Parent.Type -> {
                     children(type)
                 }
-                is Node.Decl.Structured.PrimaryConstructor -> {
+                is Node.Declaration.Structured.PrimaryConstructor -> {
                     children(modifiers)
                     children(constructorKeyword)
                     children(params)
                 }
-                is Node.Decl.Structured.Body -> {
+                is Node.Declaration.Structured.Body -> {
                     append("{")
                     children(enumEntries, skipWritingExtrasWithin = true)
-                    children(decls)
+                    children(declarations)
                     append("}")
                 }
-                is Node.Decl.Init -> {
+                is Node.Declaration.Init -> {
                     children(modifiers)
                     append("init")
                     children(block)
                 }
-                is Node.Decl.Func -> {
+                is Node.Declaration.Func -> {
                     children(modifiers)
                     children(funKeyword)
                     children(typeParams)
@@ -135,18 +135,18 @@ open class Writer(
                     children(postMods)
                     children(body)
                 }
-                is Node.Decl.Func.Param -> {
+                is Node.Declaration.Func.Param -> {
                     children(modifiers)
                     children(valOrVar)
                     children(name)
                     if (typeRef != null) append(":").also { children(typeRef) }
                     children(initializer)
                 }
-                is Node.Decl.Func.Body.Block ->
+                is Node.Declaration.Func.Body.Block ->
                     children(block)
-                is Node.Decl.Func.Body.Expr ->
+                is Node.Declaration.Func.Body.Expr ->
                     children(equals, expr)
-                is Node.Decl.Property -> {
+                is Node.Declaration.Property -> {
                     children(modifiers)
                     children(valOrVar)
                     children(typeParams)
@@ -157,18 +157,18 @@ open class Writer(
                     children(delegate)
                     children(accessors)
                 }
-                is Node.Decl.Property.Delegate -> {
+                is Node.Declaration.Property.Delegate -> {
                     children(byKeyword)
                     children(expr)
                 }
-                is Node.Decl.Property.Variable.Single -> {
+                is Node.Declaration.Property.Variable.Single -> {
                     children(name)
                     if (typeRef != null) append(":").also { children(typeRef) }
                 }
-                is Node.Decl.Property.Variable.Multi -> {
+                is Node.Declaration.Property.Variable.Multi -> {
                     children(vars, ",", "(", ")", trailingComma)
                 }
-                is Node.Decl.Property.Accessor.Get -> {
+                is Node.Declaration.Property.Accessor.Get -> {
                     children(modifiers)
                     children(getKeyword)
                     if (body != null) {
@@ -178,7 +178,7 @@ open class Writer(
                         children(body)
                     }
                 }
-                is Node.Decl.Property.Accessor.Set -> {
+                is Node.Declaration.Property.Accessor.Set -> {
                     children(modifiers)
                     children(setKeyword)
                     if (body != null) {
@@ -189,34 +189,34 @@ open class Writer(
                         children(body)
                     }
                 }
-                is Node.Decl.TypeAlias -> {
+                is Node.Declaration.TypeAlias -> {
                     children(modifiers)
                     append("typealias")
                     children(name)
                     children(typeParams).append("=")
                     children(typeRef)
                 }
-                is Node.Decl.SecondaryConstructor -> {
+                is Node.Declaration.SecondaryConstructor -> {
                     children(modifiers)
                     children(constructorKeyword)
                     children(params)
                     if (delegationCall != null) append(":").also { children(delegationCall) }
                     children(block)
                 }
-                is Node.Decl.SecondaryConstructor.DelegationCall ->
+                is Node.Declaration.SecondaryConstructor.DelegationCall ->
                     append(target.name.lowercase()).also { children(args) }
                 is Node.EnumEntry -> {
                     children(modifiers)
                     children(name)
                     children(args)
                     children(body)
-                    check(parent is Node.Decl.Structured.Body) // condition should always be true
+                    check(parent is Node.Declaration.Structured.Body) // condition should always be true
                     val isLastEntry = parent.enumEntries.last() === this
                     if (!isLastEntry || parent.hasTrailingCommaInEnumEntries) {
                         append(",")
                     }
                     writeExtrasWithin() // Semicolon after trailing comma is avaialbe as extrasWithin
-                    if (parent.decls.isNotEmpty() && isLastEntry && !containsSemicolon(extrasSinceLastNonSymbol)) {
+                    if (parent.declarations.isNotEmpty() && isLastEntry && !containsSemicolon(extrasSinceLastNonSymbol)) {
                         append(";") // Insert heuristic semicolon after the last enum entry
                     }
                 }
@@ -472,7 +472,7 @@ open class Writer(
                     append("is").also { children(typeRef) }
                 }
                 is Node.Expr.Object -> {
-                    children(decl)
+                    children(declaration)
                 }
                 is Node.Expr.Throw ->
                     append("throw").also { children(expr) }
@@ -515,7 +515,7 @@ open class Writer(
                 is Node.Expr.AnonFunc ->
                     children(func)
                 is Node.Expr.Property ->
-                    children(decl)
+                    children(declaration)
                 is Node.Expr.Block -> {
                     append("{").run {
                         children(statements)
@@ -593,15 +593,15 @@ open class Writer(
                 append("\n")
             }
         }
-        if (parent is Node.DeclsContainer && this is Node.Decl) {
-            if (parent.decls.first() !== this && !containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
+        if (parent is Node.DeclarationsContainer && this is Node.Declaration) {
+            if (parent.declarations.first() !== this && !containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
                 append("\n")
             }
         }
-        if (parent is Node.Decl.Property && this is Node.Decl.Property.Accessor) {
+        if (parent is Node.Declaration.Property && this is Node.Declaration.Property.Accessor) {
             // Property accessors require newline when the previous element is expression
             if ((parent.accessors.first() === this && (parent.delegate != null || parent.initializer != null)) ||
-                (parent.accessors.size == 2 && parent.accessors.last() === this && parent.accessors[0].body is Node.Decl.Func.Body.Expr)
+                (parent.accessors.size == 2 && parent.accessors.last() === this && parent.accessors[0].body is Node.Declaration.Func.Body.Expr)
             ) {
                 if (!containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
                     append("\n")
@@ -631,7 +631,7 @@ open class Writer(
     }
 
     protected open fun writeHeuristicExtraAfterChild(v: Node, next: Node?, parent: Node?) {
-        if (v is Node.Expr.Name && next is Node.Decl && parent is Node.StatementsContainer) {
+        if (v is Node.Expr.Name && next is Node.Declaration && parent is Node.StatementsContainer) {
             val upperCasedName = v.name.uppercase()
             if (Node.Modifier.Keyword.values().any { it.name == upperCasedName } &&
                 !containsSemicolon(extrasSinceLastNonSymbol)

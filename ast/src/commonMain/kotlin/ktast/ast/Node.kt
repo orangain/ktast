@@ -43,16 +43,16 @@ sealed class Node {
         val statements: List<Statement>
     }
 
-    interface DeclsContainer {
-        val decls: List<Decl>
+    interface DeclarationsContainer {
+        val declarations: List<Declaration>
     }
 
     data class File(
         override val annotationSets: List<Modifier.AnnotationSet>,
         override val packageDirective: PackageDirective?,
         override val importDirectives: ImportDirectives?,
-        override val decls: List<Decl>
-    ) : Node(), Entry, DeclsContainer
+        override val declarations: List<Declaration>
+    ) : Node(), Entry, DeclarationsContainer
 
     data class Script(
         override val annotationSets: List<Modifier.AnnotationSet>,
@@ -95,11 +95,11 @@ sealed class Node {
     }
 
     /**
-     * Base class of [Node.Decl] and [Node.Expr].
+     * Base class of [Node.Declaration] and [Node.Expr].
      */
     sealed class Statement : Node()
 
-    sealed class Decl : Statement() {
+    sealed class Declaration : Statement() {
         /**
          * AST node corresponds to KtClassOrObject.
          */
@@ -112,7 +112,7 @@ sealed class Node {
             val parents: Parents?,
             val typeConstraints: PostModifier.TypeConstraints?,
             val body: Body?,
-        ) : Decl(), WithModifiers {
+        ) : Declaration(), WithModifiers {
 
             val isClass = declarationKeyword.token == Keyword.DeclarationToken.CLASS
             val isObject = declarationKeyword.token == Keyword.DeclarationToken.OBJECT
@@ -171,8 +171,8 @@ sealed class Node {
             data class Body(
                 val enumEntries: List<EnumEntry>,
                 val hasTrailingCommaInEnumEntries: Boolean,
-                override val decls: List<Decl>,
-            ) : Node(), DeclsContainer
+                override val declarations: List<Declaration>,
+            ) : Node(), DeclarationsContainer
         }
 
         /**
@@ -181,7 +181,7 @@ sealed class Node {
         data class Init(
             override val modifiers: Modifiers?,
             val block: Expr.Block,
-        ) : Decl(), WithModifiers
+        ) : Declaration(), WithModifiers
 
         /**
          * AST node corresponds to KtNamedFunction.
@@ -199,7 +199,7 @@ sealed class Node {
             val typeRef: TypeRef?,
             override val postMods: List<PostModifier>,
             val body: Body?
-        ) : Decl(), WithModifiers, WithPostModifiers {
+        ) : Declaration(), WithModifiers, WithPostModifiers {
             /**
              * AST node corresponds to KtParameterList under KtNamedFunction.
              */
@@ -246,7 +246,7 @@ sealed class Node {
             val initializer: Initializer?,
             val delegate: Delegate?,
             val accessors: List<Accessor>
-        ) : Decl(), WithModifiers {
+        ) : Declaration(), WithModifiers {
             /**
              * Virtual AST node corresponds a part of KtProperty,
              * virtual AST node corresponds to a list of KtDestructuringDeclarationEntry or
@@ -319,7 +319,7 @@ sealed class Node {
             val name: Expr.Name,
             val typeParams: TypeParams?,
             val typeRef: TypeRef
-        ) : Decl(), WithModifiers
+        ) : Declaration(), WithModifiers
 
         /**
          * AST node corresponds to KtSecondaryConstructor.
@@ -330,7 +330,7 @@ sealed class Node {
             val params: Func.Params?,
             val delegationCall: DelegationCall?,
             val block: Expr.Block?
-        ) : Decl(), WithModifiers {
+        ) : Declaration(), WithModifiers {
             /**
              * AST node corresponds to KtConstructorDelegationCall.
              */
@@ -351,7 +351,7 @@ sealed class Node {
         override val modifiers: Modifiers?,
         val name: Expr.Name,
         val args: ValueArgs?,
-        val body: Decl.Structured.Body?,
+        val body: Declaration.Structured.Body?,
     ) : Node(), WithModifiers
 
     /**
@@ -546,7 +546,7 @@ sealed class Node {
              */
             data class Catch(
                 val catchKeyword: Keyword.Catch,
-                val params: Decl.Func.Params,
+                val params: Declaration.Func.Params,
                 val block: Block
             ) : Node()
         }
@@ -812,7 +812,7 @@ sealed class Node {
          * AST node corresponds to KtObjectLiteralExpression.
          */
         data class Object(
-            val decl: Decl.Structured,
+            val declaration: Declaration.Structured,
         ) : Expr()
 
         /**
@@ -908,7 +908,7 @@ sealed class Node {
          * Virtual AST node corresponds to KtNamedFunction in expression context.
          */
         data class AnonFunc(
-            val func: Decl.Func
+            val func: Declaration.Func
         ) : Expr()
 
         /**
@@ -916,7 +916,7 @@ sealed class Node {
          * This is only present for when expressions and labeled expressions.
          */
         data class Property(
-            val decl: Decl.Property
+            val declaration: Declaration.Property
         ) : Expr()
 
         /**

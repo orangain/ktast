@@ -16,7 +16,7 @@ open class MutableVisitor(
                         annotationSets = visitChildren(annotationSets, newCh),
                         packageDirective = visitChildren(packageDirective, newCh),
                         importDirectives = visitChildren(importDirectives, newCh),
-                        decls = visitChildren(decls, newCh)
+                        declarations = visitChildren(declarations, newCh)
                     )
                     is Node.Script -> copy(
                         annotationSets = visitChildren(annotationSets, newCh),
@@ -40,7 +40,7 @@ open class MutableVisitor(
                     is Node.ImportDirective.Alias -> copy(
                         name = visitChildren(name, newCh),
                     )
-                    is Node.Decl.Structured -> copy(
+                    is Node.Declaration.Structured -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         declarationKeyword = visitChildren(declarationKeyword, newCh),
                         name = visitChildren(name, newCh),
@@ -50,37 +50,37 @@ open class MutableVisitor(
                         typeConstraints = visitChildren(typeConstraints, newCh),
                         body = visitChildren(body, newCh)
                     )
-                    is Node.Decl.Structured.Parents -> copy(
+                    is Node.Declaration.Structured.Parents -> copy(
                         items = visitChildren(items, newCh),
                     )
-                    is Node.Decl.Structured.Parent.CallConstructor -> copy(
+                    is Node.Declaration.Structured.Parent.CallConstructor -> copy(
                         type = visitChildren(type, newCh),
                         typeArgs = visitChildren(typeArgs, newCh),
                         args = visitChildren(args, newCh),
                         lambda = visitChildren(lambda, newCh)
                     )
-                    is Node.Decl.Structured.Parent.DelegatedType -> copy(
+                    is Node.Declaration.Structured.Parent.DelegatedType -> copy(
                         type = visitChildren(type, newCh),
                         byKeyword = visitChildren(byKeyword, newCh),
                         expr = visitChildren(expr, newCh),
                     )
-                    is Node.Decl.Structured.Parent.Type -> copy(
+                    is Node.Declaration.Structured.Parent.Type -> copy(
                         type = visitChildren(type, newCh),
                     )
-                    is Node.Decl.Structured.PrimaryConstructor -> copy(
+                    is Node.Declaration.Structured.PrimaryConstructor -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         constructorKeyword = visitChildren(constructorKeyword, newCh),
                         params = visitChildren(params, newCh)
                     )
-                    is Node.Decl.Structured.Body -> copy(
+                    is Node.Declaration.Structured.Body -> copy(
                         enumEntries = visitChildren(enumEntries, newCh),
-                        decls = visitChildren(decls, newCh),
+                        declarations = visitChildren(declarations, newCh),
                     )
-                    is Node.Decl.Init -> copy(
+                    is Node.Declaration.Init -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         block = visitChildren(block, newCh),
                     )
-                    is Node.Decl.Func -> copy(
+                    is Node.Declaration.Func -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         funKeyword = visitChildren(funKeyword, newCh),
                         typeParams = visitChildren(typeParams, newCh),
@@ -92,25 +92,25 @@ open class MutableVisitor(
                         postMods = visitChildren(postMods, newCh),
                         body = visitChildren(body, newCh),
                     )
-                    is Node.Decl.Func.Params -> copy(
+                    is Node.Declaration.Func.Params -> copy(
                         elements = visitChildren(elements, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
-                    is Node.Decl.Func.Param -> copy(
+                    is Node.Declaration.Func.Param -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         valOrVar = visitChildren(valOrVar, newCh),
                         name = visitChildren(name, newCh),
                         typeRef = visitChildren(typeRef, newCh),
                         initializer = visitChildren(initializer, newCh)
                     )
-                    is Node.Decl.Func.Body.Block -> copy(
+                    is Node.Declaration.Func.Body.Block -> copy(
                         block = visitChildren(block, newCh)
                     )
-                    is Node.Decl.Func.Body.Expr -> copy(
+                    is Node.Declaration.Func.Body.Expr -> copy(
                         equals = visitChildren(equals, newCh),
                         expr = visitChildren(expr, newCh),
                     )
-                    is Node.Decl.Property -> copy(
+                    is Node.Declaration.Property -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         valOrVar = visitChildren(valOrVar, newCh),
                         typeParams = visitChildren(typeParams, newCh),
@@ -121,50 +121,50 @@ open class MutableVisitor(
                         delegate = visitChildren(delegate, newCh),
                         accessors = visitChildren(accessors, newCh)
                     )
-                    is Node.Decl.Property.Delegate -> copy(
+                    is Node.Declaration.Property.Delegate -> copy(
                         byKeyword = visitChildren(byKeyword, newCh),
                         expr = visitChildren(expr, newCh),
                     )
-                    is Node.Decl.Property.Variable.Single -> copy(
+                    is Node.Declaration.Property.Variable.Single -> copy(
                         name = visitChildren(name, newCh),
                         typeRef = visitChildren(typeRef, newCh)
                     )
-                    is Node.Decl.Property.Variable.Multi -> copy(
+                    is Node.Declaration.Property.Variable.Multi -> copy(
                         vars = visitChildren(vars, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
-                    is Node.Decl.Property.Accessor.Get -> copy(
+                    is Node.Declaration.Property.Accessor.Get -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         getKeyword = visitChildren(getKeyword, newCh),
                         typeRef = visitChildren(typeRef, newCh),
                         postMods = visitChildren(postMods, newCh),
                         body = visitChildren(body, newCh)
                     )
-                    is Node.Decl.Property.Accessor.Set -> copy(
+                    is Node.Declaration.Property.Accessor.Set -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         setKeyword = visitChildren(setKeyword, newCh),
                         params = visitChildren(params, newCh),
                         postMods = visitChildren(postMods, newCh),
                         body = visitChildren(body, newCh)
                     )
-                    is Node.Decl.Property.Accessor.Params -> copy(
+                    is Node.Declaration.Property.Accessor.Params -> copy(
                         elements = visitChildren(elements, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
-                    is Node.Decl.TypeAlias -> copy(
+                    is Node.Declaration.TypeAlias -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         name = visitChildren(name, newCh),
                         typeParams = visitChildren(typeParams, newCh),
                         typeRef = visitChildren(typeRef, newCh)
                     )
-                    is Node.Decl.SecondaryConstructor -> copy(
+                    is Node.Declaration.SecondaryConstructor -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         constructorKeyword = visitChildren(constructorKeyword, newCh),
                         params = visitChildren(params, newCh),
                         delegationCall = visitChildren(delegationCall, newCh),
                         block = visitChildren(block, newCh)
                     )
-                    is Node.Decl.SecondaryConstructor.DelegationCall -> copy(
+                    is Node.Declaration.SecondaryConstructor.DelegationCall -> copy(
                         args = visitChildren(args, newCh)
                     )
                     is Node.EnumEntry -> copy(
@@ -384,7 +384,7 @@ open class MutableVisitor(
                         typeRef = visitChildren(typeRef, newCh)
                     )
                     is Node.Expr.Object -> copy(
-                        decl = visitChildren(decl, newCh),
+                        declaration = visitChildren(declaration, newCh),
                     )
                     is Node.Expr.Throw -> copy(
                         expr = visitChildren(expr, newCh)
@@ -425,7 +425,7 @@ open class MutableVisitor(
                         func = visitChildren(func, newCh)
                     )
                     is Node.Expr.Property -> copy(
-                        decl = visitChildren(decl, newCh)
+                        declaration = visitChildren(declaration, newCh)
                     )
                     is Node.Expr.Block -> copy(
                         statements = visitChildren(statements, newCh)
