@@ -117,8 +117,8 @@ sealed class Node {
             val isClass = declarationKeyword.token == Keyword.DeclarationToken.CLASS
             val isObject = declarationKeyword.token == Keyword.DeclarationToken.OBJECT
             val isInterface = declarationKeyword.token == Keyword.DeclarationToken.INTERFACE
-            val isCompanion = modifiers?.elements.orEmpty().contains(Modifier.Lit(Modifier.Keyword.COMPANION))
-            val isEnum = modifiers?.elements.orEmpty().contains(Modifier.Lit(Modifier.Keyword.ENUM))
+            val isCompanion = modifiers?.elements.orEmpty().contains(Modifier.Literal(Modifier.Keyword.COMPANION))
+            val isEnum = modifiers?.elements.orEmpty().contains(Modifier.Literal(Modifier.Keyword.ENUM))
 
             /**
              * AST node corresponds to KtSuperTypeList.
@@ -959,7 +959,7 @@ sealed class Node {
             ) : Node()
         }
 
-        data class Lit(val keyword: Keyword) : Modifier()
+        data class Literal(val keyword: Keyword) : Modifier()
         enum class Keyword {
             ABSTRACT, FINAL, OPEN, ANNOTATION, SEALED, DATA, OVERRIDE, LATEINIT, INNER, ENUM, COMPANION,
             PRIVATE, PROTECTED, PUBLIC, INTERNAL,

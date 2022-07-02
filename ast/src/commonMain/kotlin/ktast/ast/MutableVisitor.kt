@@ -443,7 +443,7 @@ open class MutableVisitor(
                         constructorCallee = visitChildren(constructorCallee, newCh),
                         args = visitChildren(args, newCh),
                     )
-                    is Node.Modifier.Lit -> this
+                    is Node.Modifier.Literal -> this
                     is Node.PostModifier.TypeConstraints -> copy(
                         whereKeyword = visitChildren(whereKeyword, newCh),
                         constraints = visitChildren(constraints, newCh),

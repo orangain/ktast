@@ -928,7 +928,7 @@ open class Converter {
                     is PsiWhiteSpace -> null
                     else -> (
                             modifiersByText[node.text]?.let { keyword ->
-                                Node.Modifier.Lit(keyword)
+                                Node.Modifier.Literal(keyword)
                             } ?: error("Unrecognized modifier: ${node.text}")
                             ).map(psi)
                 }

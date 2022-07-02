@@ -76,7 +76,7 @@ class Dumper(
                 is Node.Expression.Unary.Operator -> mapOf("token" to token)
                 is Node.Expression.BinaryType.Operator -> mapOf("token" to token)
                 is Node.Modifier.AnnotationSet -> mapOf("target" to target)
-                is Node.Modifier.Lit -> mapOf("keyword" to keyword)
+                is Node.Modifier.Literal -> mapOf("keyword" to keyword)
                 is Node.Expression.Name -> mapOf("name" to name)
                 is Node.Expression.Constant -> mapOf("value" to value, "form" to form)
                 is Node.Keyword.ValOrVar -> mapOf("token" to token)

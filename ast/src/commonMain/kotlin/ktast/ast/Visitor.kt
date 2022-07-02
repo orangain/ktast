@@ -405,7 +405,7 @@ open class Visitor {
                 visitChildren(constructorCallee)
                 visitChildren(args)
             }
-            is Node.Modifier.Lit -> {}
+            is Node.Modifier.Literal -> {}
             is Node.PostModifier.TypeConstraints -> {
                 visitChildren(whereKeyword)
                 visitChildren(constraints)
