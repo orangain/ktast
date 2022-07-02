@@ -15,13 +15,13 @@ open class MutableVisitor(
                     is Node.File -> copy(
                         annotationSets = visitChildren(annotationSets, newCh),
                         packageDirective = visitChildren(packageDirective, newCh),
-                        imports = visitChildren(imports, newCh),
+                        importDirectives = visitChildren(importDirectives, newCh),
                         decls = visitChildren(decls, newCh)
                     )
                     is Node.Script -> copy(
                         annotationSets = visitChildren(annotationSets, newCh),
                         packageDirective = visitChildren(packageDirective, newCh),
-                        imports = visitChildren(imports, newCh),
+                        importDirectives = visitChildren(importDirectives, newCh),
                         exprs = visitChildren(exprs, newCh)
                     )
                     is Node.PackageDirective -> copy(
@@ -29,15 +29,15 @@ open class MutableVisitor(
                         packageKeyword = visitChildren(packageKeyword, newCh),
                         names = visitChildren(names, newCh),
                     )
-                    is Node.Imports -> copy(
+                    is Node.ImportDirectives -> copy(
                         elements = visitChildren(elements, newCh),
                     )
-                    is Node.Import -> copy(
+                    is Node.ImportDirective -> copy(
                         importKeyword = visitChildren(importKeyword, newCh),
                         names = visitChildren(names, newCh),
                         alias = visitChildren(alias, newCh),
                     )
-                    is Node.Import.Alias -> copy(
+                    is Node.ImportDirective.Alias -> copy(
                         name = visitChildren(name, newCh),
                     )
                     is Node.Decl.Structured -> copy(

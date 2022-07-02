@@ -62,7 +62,7 @@ open class Writer(
                 is Node.File -> {
                     children(annotationSets, skipWritingExtrasWithin = true)
                     children(packageDirective)
-                    children(imports)
+                    children(importDirectives)
                     children(decls)
                 }
                 is Node.PackageDirective -> {
@@ -70,12 +70,12 @@ open class Writer(
                     children(packageKeyword)
                     children(names, ".")
                 }
-                is Node.Import -> {
+                is Node.ImportDirective -> {
                     children(importKeyword)
                     children(names, ".")
                     children(alias)
                 }
-                is Node.Import.Alias -> {
+                is Node.ImportDirective.Alias -> {
                     append("as")
                     children(name)
                 }

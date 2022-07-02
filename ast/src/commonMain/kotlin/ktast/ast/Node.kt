@@ -32,7 +32,7 @@ sealed class Node {
 
     interface Entry : WithAnnotationSets {
         val packageDirective: PackageDirective?
-        val imports: Imports?
+        val importDirectives: ImportDirectives?
     }
 
     interface WithPostModifiers {
@@ -50,14 +50,14 @@ sealed class Node {
     data class File(
         override val annotationSets: List<Modifier.AnnotationSet>,
         override val packageDirective: PackageDirective?,
-        override val imports: Imports?,
+        override val importDirectives: ImportDirectives?,
         override val decls: List<Decl>
     ) : Node(), Entry, DeclsContainer
 
     data class Script(
         override val annotationSets: List<Modifier.AnnotationSet>,
         override val packageDirective: PackageDirective?,
-        override val imports: Imports?,
+        override val importDirectives: ImportDirectives?,
         val exprs: List<Expr>
     ) : Node(), Entry
 
@@ -73,14 +73,14 @@ sealed class Node {
     /**
      * AST node corresponds to KtImportList.
      */
-    data class Imports(
-        override val elements: List<Import>,
-    ) : NodeList<Import>()
+    data class ImportDirectives(
+        override val elements: List<ImportDirective>,
+    ) : NodeList<ImportDirective>()
 
     /**
      * AST node corresponds to KtImportDirective.
      */
-    data class Import(
+    data class ImportDirective(
         val importKeyword: Keyword.Import,
         val names: List<Expr.Name>,
         val alias: Alias?

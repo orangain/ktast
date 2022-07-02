@@ -15,13 +15,13 @@ open class Visitor {
             is Node.File -> {
                 visitChildren(annotationSets)
                 visitChildren(packageDirective)
-                visitChildren(imports)
+                visitChildren(importDirectives)
                 visitChildren(decls)
             }
             is Node.Script -> {
                 visitChildren(annotationSets)
                 visitChildren(packageDirective)
-                visitChildren(imports)
+                visitChildren(importDirectives)
                 visitChildren(exprs)
             }
             is Node.PackageDirective -> {
@@ -29,12 +29,12 @@ open class Visitor {
                 visitChildren(packageKeyword)
                 visitChildren(names)
             }
-            is Node.Import -> {
+            is Node.ImportDirective -> {
                 visitChildren(importKeyword)
                 visitChildren(names)
                 visitChildren(alias)
             }
-            is Node.Import.Alias -> {
+            is Node.ImportDirective.Alias -> {
                 visitChildren(name)
             }
             is Node.Decl.Structured -> {

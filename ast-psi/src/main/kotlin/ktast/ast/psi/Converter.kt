@@ -20,7 +20,7 @@ open class Converter {
     open fun convertFile(v: KtFile) = Node.File(
         annotationSets = convertAnnotationSets(v),
         packageDirective = v.packageDirective?.takeIf { it.packageNames.isNotEmpty() }?.let(::convertPackageDirective),
-        imports = v.importList?.let(::convertImports),
+        importDirectives = v.importList?.let(::convertImportDirectives),
         decls = v.declarations.map(::convertDecl)
     ).map(v)
 
@@ -30,14 +30,14 @@ open class Converter {
         names = v.packageNames.map(::convertName),
     ).map(v)
 
-    open fun convertImports(v: KtImportList): Node.Imports? = if (v.imports.isEmpty())
+    open fun convertImportDirectives(v: KtImportList): Node.ImportDirectives? = if (v.imports.isEmpty())
         null // Explicitly returns null here. This is because, unlike other PsiElements, KtImportList does exist even when there is no import statement.
     else
-        Node.Imports(
-            elements = v.imports.map(::convertImport),
+        Node.ImportDirectives(
+            elements = v.imports.map(::convertImportDirective),
         ).map(v)
 
-    open fun convertImport(v: KtImportDirective) = Node.Import(
+    open fun convertImportDirective(v: KtImportDirective) = Node.ImportDirective(
         importKeyword = convertKeyword(v.importKeyword, Node.Keyword::Import),
         names = convertImportNames(v.importedReference ?: error("No imported reference for $v"))
                 + listOfNotNull(v.asterisk?.let(::convertName)),
@@ -54,7 +54,7 @@ open class Converter {
         else -> error("Unexpected type $v")
     }
 
-    open fun convertImportAlias(v: KtImportAlias) = Node.Import.Alias(
+    open fun convertImportAlias(v: KtImportAlias) = Node.ImportDirective.Alias(
         name = convertName(v.nameIdentifier ?: error("No name identifier for $v")),
     ).map(v)
 
