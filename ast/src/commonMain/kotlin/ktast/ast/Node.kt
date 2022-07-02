@@ -162,7 +162,7 @@ sealed class Node {
             data class PrimaryConstructor(
                 override val modifiers: Modifiers?,
                 val constructorKeyword: Keyword.Constructor?,
-                val params: Func.Params?
+                val params: Declaration.Function.Params?
             ) : Node(), WithModifiers
 
             /**
@@ -186,7 +186,7 @@ sealed class Node {
         /**
          * AST node corresponds to KtNamedFunction.
          */
-        data class Func(
+        data class Function(
             override val modifiers: Modifiers?,
             val funKeyword: Keyword.Fun,
             val typeParams: TypeParams?,
@@ -224,11 +224,11 @@ sealed class Node {
              * Virtual AST node corresponds to function body.
              */
             sealed class Body : Node() {
-                data class Block(val block: Expression.Block) : Func.Body()
+                data class Block(val block: Expression.Block) : Declaration.Function.Body()
                 data class Expr(
                     val equals: Keyword.Equal,
                     val expression: Expression,
-                ) : Func.Body()
+                ) : Declaration.Function.Body()
             }
         }
 
@@ -282,14 +282,14 @@ sealed class Node {
              * AST node corresponds to KtPropertyAccessor.
              */
             sealed class Accessor : Node(), WithModifiers, WithPostModifiers {
-                abstract val body: Func.Body?
+                abstract val body: Declaration.Function.Body?
 
                 data class Get(
                     override val modifiers: Modifiers?,
                     val getKeyword: Keyword.Get,
                     val typeRef: TypeRef?,
                     override val postModifiers: List<PostModifier>,
-                    override val body: Func.Body?
+                    override val body: Declaration.Function.Body?
                 ) : Accessor()
 
                 data class Set(
@@ -297,17 +297,17 @@ sealed class Node {
                     val setKeyword: Keyword.Set,
                     val params: Params?,
                     override val postModifiers: List<PostModifier>,
-                    override val body: Func.Body?
+                    override val body: Declaration.Function.Body?
                 ) : Accessor()
 
                 /**
                  * AST node corresponds to KtParameterList under KtPropertyAccessor.
-                 * Unlike [Func.Params], it does not contain parentheses.
+                 * Unlike [Function.Params], it does not contain parentheses.
                  */
                 data class Params(
-                    override val elements: List<Func.Param>,
+                    override val elements: List<Declaration.Function.Param>,
                     override val trailingComma: Keyword.Comma?,
-                ) : CommaSeparatedNodeList<Func.Param>("", "")
+                ) : CommaSeparatedNodeList<Declaration.Function.Param>("", "")
             }
         }
 
@@ -327,7 +327,7 @@ sealed class Node {
         data class SecondaryConstructor(
             override val modifiers: Modifiers?,
             val constructorKeyword: Keyword.Constructor,
-            val params: Func.Params?,
+            val params: Declaration.Function.Params?,
             val delegationCall: DelegationCall?,
             val block: Expression.Block?
         ) : Declaration(), WithModifiers {
@@ -546,7 +546,7 @@ sealed class Node {
              */
             data class Catch(
                 val catchKeyword: Keyword.Catch,
-                val params: Declaration.Func.Params,
+                val params: Declaration.Function.Params,
                 val block: Block
             ) : Node()
         }
@@ -911,7 +911,7 @@ sealed class Node {
          * Virtual AST node corresponds to KtNamedFunction in expression context.
          */
         data class AnonymousFunction(
-            val func: Declaration.Func
+            val function: Declaration.Function
         ) : Expression()
 
         /**

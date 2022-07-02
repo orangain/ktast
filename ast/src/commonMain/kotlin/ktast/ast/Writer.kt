@@ -123,7 +123,7 @@ open class Writer(
                     append("init")
                     children(block)
                 }
-                is Node.Declaration.Func -> {
+                is Node.Declaration.Function -> {
                     children(modifiers)
                     children(funKeyword)
                     children(typeParams)
@@ -135,16 +135,16 @@ open class Writer(
                     children(postModifiers)
                     children(body)
                 }
-                is Node.Declaration.Func.Param -> {
+                is Node.Declaration.Function.Param -> {
                     children(modifiers)
                     children(valOrVar)
                     children(name)
                     if (typeRef != null) append(":").also { children(typeRef) }
                     children(initializer)
                 }
-                is Node.Declaration.Func.Body.Block ->
+                is Node.Declaration.Function.Body.Block ->
                     children(block)
-                is Node.Declaration.Func.Body.Expr ->
+                is Node.Declaration.Function.Body.Expr ->
                     children(equals, expression)
                 is Node.Declaration.Property -> {
                     children(modifiers)
@@ -513,7 +513,7 @@ open class Writer(
                     children(indices, ",", "[", "]", trailingComma)
                 }
                 is Node.Expression.AnonymousFunction ->
-                    children(func)
+                    children(function)
                 is Node.Expression.Property ->
                     children(declaration)
                 is Node.Expression.Block -> {
@@ -601,7 +601,7 @@ open class Writer(
         if (parent is Node.Declaration.Property && this is Node.Declaration.Property.Accessor) {
             // Property accessors require newline when the previous element is expression
             if ((parent.accessors.first() === this && (parent.delegate != null || parent.initializer != null)) ||
-                (parent.accessors.size == 2 && parent.accessors.last() === this && parent.accessors[0].body is Node.Declaration.Func.Body.Expr)
+                (parent.accessors.size == 2 && parent.accessors.last() === this && parent.accessors[0].body is Node.Declaration.Function.Body.Expr)
             ) {
                 if (!containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
                     append("\n")

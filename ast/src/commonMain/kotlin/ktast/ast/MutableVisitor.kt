@@ -80,7 +80,7 @@ open class MutableVisitor(
                         modifiers = visitChildren(modifiers, newCh),
                         block = visitChildren(block, newCh),
                     )
-                    is Node.Declaration.Func -> copy(
+                    is Node.Declaration.Function -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         funKeyword = visitChildren(funKeyword, newCh),
                         typeParams = visitChildren(typeParams, newCh),
@@ -92,21 +92,21 @@ open class MutableVisitor(
                         postModifiers = visitChildren(postModifiers, newCh),
                         body = visitChildren(body, newCh),
                     )
-                    is Node.Declaration.Func.Params -> copy(
+                    is Node.Declaration.Function.Params -> copy(
                         elements = visitChildren(elements, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
-                    is Node.Declaration.Func.Param -> copy(
+                    is Node.Declaration.Function.Param -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         valOrVar = visitChildren(valOrVar, newCh),
                         name = visitChildren(name, newCh),
                         typeRef = visitChildren(typeRef, newCh),
                         initializer = visitChildren(initializer, newCh)
                     )
-                    is Node.Declaration.Func.Body.Block -> copy(
+                    is Node.Declaration.Function.Body.Block -> copy(
                         block = visitChildren(block, newCh)
                     )
-                    is Node.Declaration.Func.Body.Expr -> copy(
+                    is Node.Declaration.Function.Body.Expr -> copy(
                         equals = visitChildren(equals, newCh),
                         expression = visitChildren(expression, newCh),
                     )
@@ -422,7 +422,7 @@ open class MutableVisitor(
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
                     is Node.Expression.AnonymousFunction -> copy(
-                        func = visitChildren(func, newCh)
+                        function = visitChildren(function, newCh)
                     )
                     is Node.Expression.Property -> copy(
                         declaration = visitChildren(declaration, newCh)

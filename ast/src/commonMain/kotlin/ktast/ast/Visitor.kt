@@ -77,7 +77,7 @@ open class Visitor {
                 visitChildren(modifiers)
                 visitChildren(block)
             }
-            is Node.Declaration.Func -> {
+            is Node.Declaration.Function -> {
                 visitChildren(modifiers)
                 visitChildren(funKeyword)
                 visitChildren(typeParams)
@@ -89,17 +89,17 @@ open class Visitor {
                 visitChildren(postModifiers)
                 visitChildren(body)
             }
-            is Node.Declaration.Func.Param -> {
+            is Node.Declaration.Function.Param -> {
                 visitChildren(modifiers)
                 visitChildren(valOrVar)
                 visitChildren(name)
                 visitChildren(typeRef)
                 visitChildren(initializer)
             }
-            is Node.Declaration.Func.Body.Block -> {
+            is Node.Declaration.Function.Body.Block -> {
                 visitChildren(block)
             }
-            is Node.Declaration.Func.Body.Expr -> {
+            is Node.Declaration.Function.Body.Expr -> {
                 visitChildren(equals)
                 visitChildren(expression)
             }
@@ -387,7 +387,7 @@ open class Visitor {
                 visitChildren(trailingComma)
             }
             is Node.Expression.AnonymousFunction -> {
-                visitChildren(func)
+                visitChildren(function)
             }
             is Node.Expression.Property -> {
                 visitChildren(declaration)

@@ -62,7 +62,7 @@ open class Converter {
         is KtEnumEntry -> error("KtEnumEntry is handled in convertEnumEntry")
         is KtClassOrObject -> convertClass(v)
         is KtAnonymousInitializer -> convertInit(v)
-        is KtNamedFunction -> convertFunc(v)
+        is KtNamedFunction -> convertFunction(v)
         is KtDestructuringDeclaration -> convertProperty(v)
         is KtProperty -> convertProperty(v)
         is KtTypeAlias -> convertTypeAlias(v)
@@ -124,12 +124,12 @@ open class Converter {
         block = convertBlock(v.body as? KtBlockExpression ?: error("No init block for $v")),
     ).map(v)
 
-    open fun convertFunc(v: KtNamedFunction): Node.Declaration.Func {
+    open fun convertFunction(v: KtNamedFunction): Node.Declaration.Function {
         val hasTypeParameterListBeforeFunctionName = v.allChildren.find {
             it is KtTypeParameterList || it is KtTypeReference || it.node.elementType == KtTokens.IDENTIFIER
         } is KtTypeParameterList
 
-        return Node.Declaration.Func(
+        return Node.Declaration.Function(
             modifiers = v.modifierList?.let(::convertModifiers),
             funKeyword = v.funKeyword?.let { convertKeyword(it, Node.Keyword::Fun) } ?: error("No fun keyword for $v"),
             typeParams =
@@ -145,12 +145,12 @@ open class Converter {
         ).map(v)
     }
 
-    open fun convertFuncParams(v: KtParameterList) = Node.Declaration.Func.Params(
+    open fun convertFuncParams(v: KtParameterList) = Node.Declaration.Function.Params(
         elements = v.parameters.map(::convertFuncParam),
         trailingComma = v.trailingComma?.let(::convertComma),
     ).map(v)
 
-    open fun convertFuncParam(v: KtParameter) = Node.Declaration.Func.Param(
+    open fun convertFuncParam(v: KtParameter) = Node.Declaration.Function.Param(
         modifiers = v.modifierList?.let(::convertModifiers),
         valOrVar = v.valOrVarKeyword?.let(::convertValOrVarKeyword),
         name = v.nameIdentifier?.let(::convertName) ?: error("No param name"),
@@ -160,15 +160,15 @@ open class Converter {
         },
     ).map(v)
 
-    open fun convertFuncBody(v: KtDeclarationWithBody): Node.Declaration.Func.Body? =
+    open fun convertFuncBody(v: KtDeclarationWithBody): Node.Declaration.Function.Body? =
         when (val bodyExpression = v.bodyExpression) {
             null -> null
             is KtBlockExpression ->
-                Node.Declaration.Func.Body.Block(
+                Node.Declaration.Function.Body.Block(
                     block = convertBlock(bodyExpression),
                 ).mapNotCorrespondsPsiElement(v)
             else ->
-                Node.Declaration.Func.Body.Expr(
+                Node.Declaration.Function.Body.Expr(
                     equals = convertKeyword(v.equalsToken ?: error("No equals token before $v"), Node.Keyword::Equal),
                     expression = convertExpression(bodyExpression),
                 ).mapNotCorrespondsPsiElement(v)
@@ -851,7 +851,7 @@ open class Converter {
         trailingComma = v.trailingComma?.let(::convertComma),
     ).map(v)
 
-    open fun convertAnonymousFunction(v: KtNamedFunction) = Node.Expression.AnonymousFunction(convertFunc(v))
+    open fun convertAnonymousFunction(v: KtNamedFunction) = Node.Expression.AnonymousFunction(convertFunction(v))
 
     open fun convertPropertyExpr(v: KtProperty) = Node.Expression.Property(
         declaration = convertProperty(v)
