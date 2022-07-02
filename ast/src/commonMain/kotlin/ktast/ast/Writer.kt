@@ -489,7 +489,7 @@ open class Writer(
                     append("break")
                     appendLabel(label)
                 }
-                is Node.Expression.CollLit ->
+                is Node.Expression.CollectionLiteral ->
                     children(expressions, ",", "[", "]", trailingComma)
                 is Node.Expression.Name ->
                     append(name)

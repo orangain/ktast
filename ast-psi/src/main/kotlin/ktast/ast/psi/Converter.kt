@@ -788,7 +788,7 @@ open class Converter {
         label = v.getLabelName()
     ).map(v)
 
-    open fun convertCollLit(v: KtCollectionLiteralExpression) = Node.Expression.CollLit(
+    open fun convertCollLit(v: KtCollectionLiteralExpression) = Node.Expression.CollectionLiteral(
         expressions = v.getInnerExpressions().map(::convertExpression),
         trailingComma = v.trailingComma?.let(::convertComma),
     ).map(v)

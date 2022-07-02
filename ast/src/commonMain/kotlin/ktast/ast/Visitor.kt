@@ -359,7 +359,7 @@ open class Visitor {
             }
             is Node.Expression.Continue -> {}
             is Node.Expression.Break -> {}
-            is Node.Expression.CollLit -> {
+            is Node.Expression.CollectionLiteral -> {
                 visitChildren(expressions)
                 visitChildren(trailingComma)
             }

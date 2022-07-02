@@ -850,7 +850,7 @@ sealed class Node {
         /**
          * AST node corresponds to KtCollectionLiteralExpression.
          */
-        data class CollLit(
+        data class CollectionLiteral(
             val expressions: List<Expression>,
             val trailingComma: Keyword.Comma?,
         ) : Expression()

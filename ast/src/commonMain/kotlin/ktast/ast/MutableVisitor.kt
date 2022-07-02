@@ -394,7 +394,7 @@ open class MutableVisitor(
                     )
                     is Node.Expression.Continue -> this
                     is Node.Expression.Break -> this
-                    is Node.Expression.CollLit -> copy(
+                    is Node.Expression.CollectionLiteral -> copy(
                         expressions = visitChildren(expressions, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
