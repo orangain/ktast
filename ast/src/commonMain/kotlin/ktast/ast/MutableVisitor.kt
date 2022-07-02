@@ -318,7 +318,7 @@ open class MutableVisitor(
                         type = visitChildren(type, newCh),
                         questionMarks = visitChildren(questionMarks, newCh),
                     )
-                    is Node.Expression.Paren -> copy(
+                    is Node.Expression.Parenthesized -> copy(
                         expression = visitChildren(expression, newCh)
                     )
                     is Node.Expression.StringTmpl -> copy(

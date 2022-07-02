@@ -476,7 +476,7 @@ open class Converter {
         is KtIsExpression -> convertBinaryType(v)
         is KtCallableReferenceExpression -> convertDoubleColonRefCallable(v)
         is KtClassLiteralExpression -> convertDoubleColonRefClass(v)
-        is KtParenthesizedExpression -> convertParen(v)
+        is KtParenthesizedExpression -> convertParenthesized(v)
         is KtStringTemplateExpression -> convertStringTmpl(v)
         is KtConstantExpression -> convertConst(v)
         is KtBlockExpression -> convertBlock(v)
@@ -642,8 +642,8 @@ open class Converter {
         else -> Node.Expression.DoubleColonRef.Recv.Expr(convertExpression(v)).map(v)
     }
 
-    open fun convertParen(v: KtParenthesizedExpression) = Node.Expression.Paren(
-        expression = convertExpression(v.expression ?: error("No paren expr for $v"))
+    open fun convertParenthesized(v: KtParenthesizedExpression) = Node.Expression.Parenthesized(
+        expression = convertExpression(v.expression ?: error("No expression for $v"))
     ).map(v)
 
     open fun convertStringTmpl(v: KtStringTemplateExpression) = Node.Expression.StringTmpl(

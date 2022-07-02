@@ -657,7 +657,7 @@ sealed class Node {
         /**
          * AST node corresponds to KtParenthesizedExpression.
          */
-        data class Paren(
+        data class Parenthesized(
             val expression: Expression
         ) : Expression()
 

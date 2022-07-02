@@ -291,7 +291,7 @@ open class Visitor {
                 visitChildren(type)
                 visitChildren(questionMarks)
             }
-            is Node.Expression.Paren -> {
+            is Node.Expression.Parenthesized -> {
                 visitChildren(expression)
             }
             is Node.Expression.StringTmpl -> {

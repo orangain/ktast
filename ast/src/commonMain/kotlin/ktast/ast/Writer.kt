@@ -389,7 +389,7 @@ open class Writer(
                     children(type)
                     children(questionMarks)
                 }
-                is Node.Expression.Paren ->
+                is Node.Expression.Parenthesized ->
                     append('(').also { children(expression) }.append(')')
                 is Node.Expression.StringTmpl ->
                     if (raw) append("\"\"\"").also { children(elems) }.append("\"\"\"")
