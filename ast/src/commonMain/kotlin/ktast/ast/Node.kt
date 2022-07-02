@@ -47,14 +47,17 @@ sealed class Node {
         val declarations: List<Declaration>
     }
 
-    data class File(
+    /**
+     * AST node corresponds to KtFile.
+     */
+    data class KotlinFile(
         override val annotationSets: List<Modifier.AnnotationSet>,
         override val packageDirective: PackageDirective?,
         override val importDirectives: ImportDirectives?,
         override val declarations: List<Declaration>
     ) : Node(), KotlinEntry, DeclarationsContainer
 
-    data class Script(
+    data class KotlinScript(
         override val annotationSets: List<Modifier.AnnotationSet>,
         override val packageDirective: PackageDirective?,
         override val importDirectives: ImportDirectives?,

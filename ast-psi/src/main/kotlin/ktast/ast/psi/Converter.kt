@@ -17,7 +17,7 @@ import org.jetbrains.kotlin.psi.stubs.elements.KtStubElementTypes
 open class Converter {
     protected open fun onNode(node: Node, elem: PsiElement?) {}
 
-    open fun convertFile(v: KtFile) = Node.File(
+    open fun convertKotlinFile(v: KtFile) = Node.KotlinFile(
         annotationSets = convertAnnotationSets(v),
         packageDirective = v.packageDirective?.takeIf { it.packageNames.isNotEmpty() }?.let(::convertPackageDirective),
         importDirectives = v.importList?.let(::convertImportDirectives),

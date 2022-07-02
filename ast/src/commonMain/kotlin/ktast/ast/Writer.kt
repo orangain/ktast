@@ -59,7 +59,7 @@ open class Writer(
                 is Node.NodeList<*> -> {
                     children(elements, prefix = prefix, suffix = suffix)
                 }
-                is Node.File -> {
+                is Node.KotlinFile -> {
                     children(annotationSets, skipWritingExtrasWithin = true)
                     children(packageDirective)
                     children(importDirectives)

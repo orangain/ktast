@@ -12,13 +12,13 @@ open class Visitor {
             is Node.NodeList<*> -> {
                 visitChildren(elements)
             }
-            is Node.File -> {
+            is Node.KotlinFile -> {
                 visitChildren(annotationSets)
                 visitChildren(packageDirective)
                 visitChildren(importDirectives)
                 visitChildren(declarations)
             }
-            is Node.Script -> {
+            is Node.KotlinScript -> {
                 visitChildren(annotationSets)
                 visitChildren(packageDirective)
                 visitChildren(importDirectives)

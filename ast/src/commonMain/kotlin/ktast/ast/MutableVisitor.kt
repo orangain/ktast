@@ -12,13 +12,13 @@ open class MutableVisitor(
         ch.sub { newCh ->
             preVisit(this, parent).run {
                 val new: Node = when (this) {
-                    is Node.File -> copy(
+                    is Node.KotlinFile -> copy(
                         annotationSets = visitChildren(annotationSets, newCh),
                         packageDirective = visitChildren(packageDirective, newCh),
                         importDirectives = visitChildren(importDirectives, newCh),
                         declarations = visitChildren(declarations, newCh)
                     )
-                    is Node.Script -> copy(
+                    is Node.KotlinScript -> copy(
                         annotationSets = visitChildren(annotationSets, newCh),
                         packageDirective = visitChildren(packageDirective, newCh),
                         importDirectives = visitChildren(importDirectives, newCh),
