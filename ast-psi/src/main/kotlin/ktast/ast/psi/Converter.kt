@@ -628,7 +628,7 @@ open class Converter {
                     )).mapNotCorrespondsPsiElement(v),
                     questionMarks = questionMarks,
                 ).map(v)
-            else Node.Expression.DoubleColonRef.Receiver.Expr(convertExpression(v)).map(v)
+            else Node.Expression.DoubleColonRef.Receiver.Expression(convertExpression(v)).map(v)
         is KtDotQualifiedExpression -> {
             val lhs = convertDoubleColonRefReceiver(v.receiverExpression, questionMarks)
             val rhs = v.selectorExpression?.let { convertDoubleColonRefReceiver(it, questionMarks) }
@@ -637,9 +637,9 @@ open class Converter {
                     type = Node.Type.Simple(lhs.type.pieces + rhs.type.pieces).map(v),
                     questionMarks = listOf(),
                 ).map(v)
-            else Node.Expression.DoubleColonRef.Receiver.Expr(convertExpression(v)).map(v)
+            else Node.Expression.DoubleColonRef.Receiver.Expression(convertExpression(v)).map(v)
         }
-        else -> Node.Expression.DoubleColonRef.Receiver.Expr(convertExpression(v)).map(v)
+        else -> Node.Expression.DoubleColonRef.Receiver.Expression(convertExpression(v)).map(v)
     }
 
     open fun convertParenthesized(v: KtParenthesizedExpression) = Node.Expression.Parenthesized(

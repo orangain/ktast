@@ -646,7 +646,7 @@ sealed class Node {
             ) : DoubleColonRef()
 
             sealed class Receiver : Node() {
-                data class Expr(val expression: Expression) : Receiver()
+                data class Expression(val expression: Node.Expression) : Receiver()
                 data class Type(
                     val type: Node.Type.Simple,
                     val questionMarks: List<Keyword.Question>,

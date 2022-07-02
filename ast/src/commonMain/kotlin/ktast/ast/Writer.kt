@@ -383,7 +383,7 @@ open class Writer(
                     append("::")
                     append("class")
                 }
-                is Node.Expression.DoubleColonRef.Receiver.Expr ->
+                is Node.Expression.DoubleColonRef.Receiver.Expression ->
                     children(expression)
                 is Node.Expression.DoubleColonRef.Receiver.Type -> {
                     children(type)

@@ -311,7 +311,7 @@ open class MutableVisitor(
                     is Node.Expression.DoubleColonRef.Class -> copy(
                         receiver = visitChildren(receiver, newCh)
                     )
-                    is Node.Expression.DoubleColonRef.Receiver.Expr -> copy(
+                    is Node.Expression.DoubleColonRef.Receiver.Expression -> copy(
                         expression = visitChildren(expression, newCh)
                     )
                     is Node.Expression.DoubleColonRef.Receiver.Type -> copy(

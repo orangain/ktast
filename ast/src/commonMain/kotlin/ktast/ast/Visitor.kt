@@ -284,7 +284,7 @@ open class Visitor {
             is Node.Expression.DoubleColonRef.Class -> {
                 visitChildren(receiver)
             }
-            is Node.Expression.DoubleColonRef.Receiver.Expr -> {
+            is Node.Expression.DoubleColonRef.Receiver.Expression -> {
                 visitChildren(expression)
             }
             is Node.Expression.DoubleColonRef.Receiver.Type -> {
