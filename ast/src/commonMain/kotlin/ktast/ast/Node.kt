@@ -628,13 +628,13 @@ sealed class Node {
          * AST node corresponds to KtDoubleColonExpression.
          */
         sealed class DoubleColonRef : Expression() {
-            abstract val recv: Recv?
+            abstract val receiver: Receiver?
 
             /**
              * AST node corresponds to KtCallableReferenceExpression.
              */
             data class Callable(
-                override val recv: Recv?,
+                override val receiver: Receiver?,
                 val name: Name
             ) : DoubleColonRef()
 
@@ -642,15 +642,15 @@ sealed class Node {
              * AST node corresponds to KtClassLiteralExpression.
              */
             data class Class(
-                override val recv: Recv?
+                override val receiver: Receiver?
             ) : DoubleColonRef()
 
-            sealed class Recv : Node() {
-                data class Expr(val expression: Expression) : Recv()
+            sealed class Receiver : Node() {
+                data class Expr(val expression: Expression) : Receiver()
                 data class Type(
                     val type: Node.Type.Simple,
                     val questionMarks: List<Keyword.Question>,
-                ) : Recv()
+                ) : Receiver()
             }
         }
 

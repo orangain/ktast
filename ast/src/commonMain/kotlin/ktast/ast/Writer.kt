@@ -374,18 +374,18 @@ open class Writer(
                     }
                 }
                 is Node.Expression.DoubleColonRef.Callable -> {
-                    if (recv != null) children(recv)
+                    if (receiver != null) children(receiver)
                     append("::")
                     children(name)
                 }
                 is Node.Expression.DoubleColonRef.Class -> {
-                    if (recv != null) children(recv)
+                    if (receiver != null) children(receiver)
                     append("::")
                     append("class")
                 }
-                is Node.Expression.DoubleColonRef.Recv.Expr ->
+                is Node.Expression.DoubleColonRef.Receiver.Expr ->
                     children(expression)
-                is Node.Expression.DoubleColonRef.Recv.Type -> {
+                is Node.Expression.DoubleColonRef.Receiver.Type -> {
                     children(type)
                     children(questionMarks)
                 }

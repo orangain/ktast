@@ -278,16 +278,16 @@ open class Visitor {
             }
             is Node.Expression.BinaryType.Operator -> {}
             is Node.Expression.DoubleColonRef.Callable -> {
-                visitChildren(recv)
+                visitChildren(receiver)
                 visitChildren(name)
             }
             is Node.Expression.DoubleColonRef.Class -> {
-                visitChildren(recv)
+                visitChildren(receiver)
             }
-            is Node.Expression.DoubleColonRef.Recv.Expr -> {
+            is Node.Expression.DoubleColonRef.Receiver.Expr -> {
                 visitChildren(expression)
             }
-            is Node.Expression.DoubleColonRef.Recv.Type -> {
+            is Node.Expression.DoubleColonRef.Receiver.Type -> {
                 visitChildren(type)
                 visitChildren(questionMarks)
             }
