@@ -665,15 +665,18 @@ sealed class Node {
          * AST node corresponds to KtStringTemplateExpression.
          */
         data class StringTemplate(
-            val elems: List<Elem>,
+            val entries: List<Entry>,
             val raw: Boolean
         ) : Expression() {
-            sealed class Elem : Node() {
-                data class Regular(val str: String) : Elem()
-                data class ShortTmpl(val str: String) : Elem()
-                data class UnicodeEsc(val digits: String) : Elem()
-                data class RegularEsc(val char: Char) : Elem()
-                data class LongTmpl(val expression: Expression) : Elem()
+            /**
+             * AST node corresponds to KtStringTemplateEntry.
+             */
+            sealed class Entry : Node() {
+                data class Regular(val str: String) : Entry()
+                data class ShortTmpl(val str: String) : Entry()
+                data class UnicodeEsc(val digits: String) : Entry()
+                data class RegularEsc(val char: Char) : Entry()
+                data class LongTmpl(val expression: Expression) : Entry()
             }
         }
 

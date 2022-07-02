@@ -295,13 +295,13 @@ open class Visitor {
                 visitChildren(expression)
             }
             is Node.Expression.StringTemplate -> {
-                visitChildren(elems)
+                visitChildren(entries)
             }
-            is Node.Expression.StringTemplate.Elem.Regular -> {}
-            is Node.Expression.StringTemplate.Elem.ShortTmpl -> {}
-            is Node.Expression.StringTemplate.Elem.UnicodeEsc -> {}
-            is Node.Expression.StringTemplate.Elem.RegularEsc -> {}
-            is Node.Expression.StringTemplate.Elem.LongTmpl -> {
+            is Node.Expression.StringTemplate.Entry.Regular -> {}
+            is Node.Expression.StringTemplate.Entry.ShortTmpl -> {}
+            is Node.Expression.StringTemplate.Entry.UnicodeEsc -> {}
+            is Node.Expression.StringTemplate.Entry.RegularEsc -> {}
+            is Node.Expression.StringTemplate.Entry.LongTmpl -> {
                 visitChildren(expression)
             }
             is Node.Expression.Const -> {}
