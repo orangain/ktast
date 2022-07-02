@@ -497,7 +497,7 @@ open class Converter {
         is KtCallExpression -> convertCall(v)
         is KtConstructorCalleeExpression -> error("Supposed to be unreachable here. KtConstructorCalleeExpression is expected to be inside of KtSuperTypeCallEntry or KtAnnotationEntry.")
         is KtArrayAccessExpression -> convertArrayAccess(v)
-        is KtNamedFunction -> convertAnonFunc(v)
+        is KtNamedFunction -> convertAnonymousFunction(v)
         is KtProperty -> convertPropertyExpr(v)
         is KtDestructuringDeclaration -> convertPropertyExpr(v)
         // TODO: this is present in a recovery test where an interface decl is on rhs of a gt expr
@@ -851,7 +851,7 @@ open class Converter {
         trailingComma = v.trailingComma?.let(::convertComma),
     ).map(v)
 
-    open fun convertAnonFunc(v: KtNamedFunction) = Node.Expression.AnonFunc(convertFunc(v))
+    open fun convertAnonymousFunction(v: KtNamedFunction) = Node.Expression.AnonymousFunction(convertFunc(v))
 
     open fun convertPropertyExpr(v: KtProperty) = Node.Expression.Property(
         declaration = convertProperty(v)

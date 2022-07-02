@@ -421,7 +421,7 @@ open class MutableVisitor(
                         indices = visitChildren(indices, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
-                    is Node.Expression.AnonFunc -> copy(
+                    is Node.Expression.AnonymousFunction -> copy(
                         func = visitChildren(func, newCh)
                     )
                     is Node.Expression.Property -> copy(

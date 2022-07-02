@@ -910,7 +910,7 @@ sealed class Node {
         /**
          * Virtual AST node corresponds to KtNamedFunction in expression context.
          */
-        data class AnonFunc(
+        data class AnonymousFunction(
             val func: Declaration.Func
         ) : Expression()
 

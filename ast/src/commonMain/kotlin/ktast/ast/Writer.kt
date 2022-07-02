@@ -512,7 +512,7 @@ open class Writer(
                     children(expression)
                     children(indices, ",", "[", "]", trailingComma)
                 }
-                is Node.Expression.AnonFunc ->
+                is Node.Expression.AnonymousFunction ->
                     children(func)
                 is Node.Expression.Property ->
                     children(declaration)

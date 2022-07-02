@@ -386,7 +386,7 @@ open class Visitor {
                 visitChildren(indices)
                 visitChildren(trailingComma)
             }
-            is Node.Expression.AnonFunc -> {
+            is Node.Expression.AnonymousFunction -> {
                 visitChildren(func)
             }
             is Node.Expression.Property -> {
