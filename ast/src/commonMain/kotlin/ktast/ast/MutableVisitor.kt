@@ -255,7 +255,7 @@ open class MutableVisitor(
                         name = visitChildren(name, newCh),
                         expression = visitChildren(expression, newCh)
                     )
-                    is Node.Container -> copy(
+                    is Node.ExpressionContainer -> copy(
                         expression = visitChildren(expression, newCh),
                     )
                     is Node.Expression.If -> copy(

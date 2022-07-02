@@ -228,7 +228,7 @@ open class Visitor {
                 visitChildren(name)
                 visitChildren(expression)
             }
-            is Node.Container -> {
+            is Node.ExpressionContainer -> {
                 visitChildren(expression)
             }
             is Node.Expression.If -> {

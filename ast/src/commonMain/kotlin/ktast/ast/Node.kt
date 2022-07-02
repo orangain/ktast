@@ -518,7 +518,7 @@ sealed class Node {
     /**
      * AST node corresponds to KtContainerNode.
      */
-    data class Container(
+    data class ExpressionContainer(
         val expression: Expression,
     ) : Node()
 
@@ -529,8 +529,8 @@ sealed class Node {
         data class If(
             val ifKeyword: Keyword.If,
             val condition: Expression,
-            val body: Container,
-            val elseBody: Container?
+            val body: ExpressionContainer,
+            val elseBody: ExpressionContainer?
         ) : Expression()
 
         /**
@@ -558,8 +558,8 @@ sealed class Node {
             val forKeyword: Keyword.For,
             override val annotationSets: List<Modifier.AnnotationSet>,
             val loopParam: Lambda.Param,
-            val loopRange: Container,
-            val body: Container,
+            val loopRange: ExpressionContainer,
+            val body: ExpressionContainer,
         ) : Expression(), WithAnnotationSets
 
         /**
@@ -567,8 +567,8 @@ sealed class Node {
          */
         data class While(
             val whileKeyword: Keyword.While,
-            val condition: Container,
-            val body: Container,
+            val condition: ExpressionContainer,
+            val body: ExpressionContainer,
             val doWhile: Boolean
         ) : Expression()
 

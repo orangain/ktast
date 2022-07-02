@@ -460,7 +460,7 @@ open class Converter {
         expression = convertExpression(v.getArgumentExpression() ?: error("No expr for value arg"))
     ).map(v)
 
-    open fun convertContainer(v: KtContainerNode) = Node.Container(
+    open fun convertExpressionContainer(v: KtContainerNode) = Node.ExpressionContainer(
         expression = convertExpression(v.expression),
     ).map(v)
 
@@ -508,8 +508,8 @@ open class Converter {
     open fun convertIf(v: KtIfExpression) = Node.Expression.If(
         ifKeyword = convertKeyword(v.ifKeyword, Node.Keyword::If),
         condition = convertExpression(v.condition ?: error("No cond on if for $v")),
-        body = convertContainer(v.thenContainer),
-        elseBody = v.elseContainer?.let(::convertContainer),
+        body = convertExpressionContainer(v.thenContainer),
+        elseBody = v.elseContainer?.let(::convertExpressionContainer),
     ).map(v)
 
     open fun convertTry(v: KtTryExpression) = Node.Expression.Try(
@@ -528,14 +528,14 @@ open class Converter {
         forKeyword = convertKeyword(v.forKeyword, Node.Keyword::For),
         annotationSets = v.loopParameter?.annotations?.map(::convertAnnotationSet) ?: emptyList(),
         loopParam = convertLambdaParam(v.loopParameter ?: error("No param on for $v")),
-        loopRange = convertContainer(v.loopRangeContainer),
-        body = convertContainer(v.bodyContainer),
+        loopRange = convertExpressionContainer(v.loopRangeContainer),
+        body = convertExpressionContainer(v.bodyContainer),
     ).map(v)
 
     open fun convertWhile(v: KtWhileExpressionBase) = Node.Expression.While(
         whileKeyword = convertKeyword(v.whileKeyword, Node.Keyword::While),
-        condition = convertContainer(v.conditionContainer),
-        body = convertContainer(v.bodyContainer),
+        condition = convertExpressionContainer(v.conditionContainer),
+        body = convertExpressionContainer(v.bodyContainer),
         doWhile = v is KtDoWhileExpression
     ).map(v)
 

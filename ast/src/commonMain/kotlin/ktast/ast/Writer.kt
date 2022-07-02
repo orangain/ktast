@@ -289,7 +289,7 @@ open class Writer(
                 is Node.ConstructorCallee -> {
                     children(type)
                 }
-                is Node.Container -> {
+                is Node.ExpressionContainer -> {
                     children(expression)
                 }
                 is Node.ValueArg -> {
