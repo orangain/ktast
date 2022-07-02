@@ -475,7 +475,7 @@ open class Converter {
         is KtBinaryExpressionWithTypeRHS -> convertBinaryType(v)
         is KtIsExpression -> convertBinaryType(v)
         is KtCallableReferenceExpression -> convertDoubleColonCallable(v)
-        is KtClassLiteralExpression -> convertDoubleColonClass(v)
+        is KtClassLiteralExpression -> convertDoubleColonClassLiteral(v)
         is KtParenthesizedExpression -> convertParenthesized(v)
         is KtStringTemplateExpression -> convertStringTemplate(v)
         is KtConstantExpression -> convertConst(v)
@@ -592,7 +592,7 @@ open class Converter {
         name = convertName(v.callableReference)
     ).map(v)
 
-    open fun convertDoubleColonClass(v: KtClassLiteralExpression) = Node.Expression.DoubleColon.Class(
+    open fun convertDoubleColonClassLiteral(v: KtClassLiteralExpression) = Node.Expression.DoubleColon.ClassLiteral(
         receiver = v.receiverExpression?.let { expr ->
             convertDoubleColonReceiver(
                 expr,

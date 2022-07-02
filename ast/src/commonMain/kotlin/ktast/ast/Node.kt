@@ -644,7 +644,7 @@ sealed class Node {
             /**
              * AST node corresponds to KtClassLiteralExpression.
              */
-            data class Class(
+            data class ClassLiteral(
                 override val receiver: Receiver?
             ) : DoubleColon()
 

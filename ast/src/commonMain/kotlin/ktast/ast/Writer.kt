@@ -378,7 +378,7 @@ open class Writer(
                     append("::")
                     children(name)
                 }
-                is Node.Expression.DoubleColon.Class -> {
+                is Node.Expression.DoubleColon.ClassLiteral -> {
                     if (receiver != null) children(receiver)
                     append("::")
                     append("class")

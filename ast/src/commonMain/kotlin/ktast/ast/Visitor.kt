@@ -281,7 +281,7 @@ open class Visitor {
                 visitChildren(receiver)
                 visitChildren(name)
             }
-            is Node.Expression.DoubleColon.Class -> {
+            is Node.Expression.DoubleColon.ClassLiteral -> {
                 visitChildren(receiver)
             }
             is Node.Expression.DoubleColon.Receiver.Expression -> {

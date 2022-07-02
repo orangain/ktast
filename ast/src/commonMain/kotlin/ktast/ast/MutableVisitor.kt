@@ -308,7 +308,7 @@ open class MutableVisitor(
                         receiver = visitChildren(receiver, newCh),
                         name = visitChildren(name, newCh),
                     )
-                    is Node.Expression.DoubleColon.Class -> copy(
+                    is Node.Expression.DoubleColon.ClassLiteral -> copy(
                         receiver = visitChildren(receiver, newCh)
                     )
                     is Node.Expression.DoubleColon.Receiver.Expression -> copy(
