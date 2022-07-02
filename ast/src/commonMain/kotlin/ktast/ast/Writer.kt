@@ -396,11 +396,11 @@ open class Writer(
                     else append('"').also { children(entries) }.append('"')
                 is Node.Expression.StringTemplate.Entry.Regular ->
                     append(str)
-                is Node.Expression.StringTemplate.Entry.ShortTmpl ->
+                is Node.Expression.StringTemplate.Entry.ShortTemplate ->
                     append('$').append(str)
-                is Node.Expression.StringTemplate.Entry.UnicodeEsc ->
+                is Node.Expression.StringTemplate.Entry.UnicodeEscape ->
                     append("\\u").append(digits)
-                is Node.Expression.StringTemplate.Entry.RegularEsc ->
+                is Node.Expression.StringTemplate.Entry.RegularEscape ->
                     append('\\').append(
                         when (char) {
                             '\b' -> 'b'
@@ -410,7 +410,7 @@ open class Writer(
                             else -> char
                         }
                     )
-                is Node.Expression.StringTemplate.Entry.LongTmpl ->
+                is Node.Expression.StringTemplate.Entry.LongTemplate ->
                     append("\${").also { children(expression) }.append('}')
                 is Node.Expression.Const ->
                     append(value)

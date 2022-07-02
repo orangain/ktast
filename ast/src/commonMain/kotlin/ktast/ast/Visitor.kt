@@ -298,10 +298,10 @@ open class Visitor {
                 visitChildren(entries)
             }
             is Node.Expression.StringTemplate.Entry.Regular -> {}
-            is Node.Expression.StringTemplate.Entry.ShortTmpl -> {}
-            is Node.Expression.StringTemplate.Entry.UnicodeEsc -> {}
-            is Node.Expression.StringTemplate.Entry.RegularEsc -> {}
-            is Node.Expression.StringTemplate.Entry.LongTmpl -> {
+            is Node.Expression.StringTemplate.Entry.ShortTemplate -> {}
+            is Node.Expression.StringTemplate.Entry.UnicodeEscape -> {}
+            is Node.Expression.StringTemplate.Entry.RegularEscape -> {}
+            is Node.Expression.StringTemplate.Entry.LongTemplate -> {
                 visitChildren(expression)
             }
             is Node.Expression.Const -> {}

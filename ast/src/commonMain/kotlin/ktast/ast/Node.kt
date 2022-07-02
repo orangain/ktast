@@ -673,10 +673,10 @@ sealed class Node {
              */
             sealed class Entry : Node() {
                 data class Regular(val str: String) : Entry()
-                data class ShortTmpl(val str: String) : Entry()
-                data class UnicodeEsc(val digits: String) : Entry()
-                data class RegularEsc(val char: Char) : Entry()
-                data class LongTmpl(val expression: Expression) : Entry()
+                data class ShortTemplate(val str: String) : Entry()
+                data class UnicodeEscape(val digits: String) : Entry()
+                data class RegularEscape(val char: Char) : Entry()
+                data class LongTemplate(val expression: Expression) : Entry()
             }
         }
 

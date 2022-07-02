@@ -655,15 +655,15 @@ open class Converter {
         is KtLiteralStringTemplateEntry ->
             Node.Expression.StringTemplate.Entry.Regular(v.text).map(v)
         is KtSimpleNameStringTemplateEntry ->
-            Node.Expression.StringTemplate.Entry.ShortTmpl(v.expression?.text ?: error("No short tmpl text")).map(v)
+            Node.Expression.StringTemplate.Entry.ShortTemplate(v.expression?.text ?: error("No short tmpl text")).map(v)
         is KtBlockStringTemplateEntry ->
-            Node.Expression.StringTemplate.Entry.LongTmpl(convertExpression(v.expression ?: error("No expr tmpl")))
+            Node.Expression.StringTemplate.Entry.LongTemplate(convertExpression(v.expression ?: error("No expr tmpl")))
                 .map(v)
         is KtEscapeStringTemplateEntry ->
             if (v.text.startsWith("\\u"))
-                Node.Expression.StringTemplate.Entry.UnicodeEsc(v.text.substring(2)).map(v)
+                Node.Expression.StringTemplate.Entry.UnicodeEscape(v.text.substring(2)).map(v)
             else
-                Node.Expression.StringTemplate.Entry.RegularEsc(v.unescapedValue.first()).map(v)
+                Node.Expression.StringTemplate.Entry.RegularEscape(v.unescapedValue.first()).map(v)
         else ->
             error("Unrecognized string template type for $v")
     }
