@@ -224,10 +224,10 @@ sealed class Node {
              * Virtual AST node corresponds to function body.
              */
             sealed class Body : Node() {
-                data class Block(val block: Node.Expression.Block) : Func.Body()
+                data class Block(val block: Expression.Block) : Func.Body()
                 data class Expr(
                     val equals: Keyword.Equal,
-                    val expression: Node.Expression,
+                    val expression: Expression,
                 ) : Func.Body()
             }
         }
@@ -646,7 +646,7 @@ sealed class Node {
             ) : DoubleColonRef()
 
             sealed class Recv : Node() {
-                data class Expr(val expression: Node.Expression) : Recv()
+                data class Expr(val expression: Expression) : Recv()
                 data class Type(
                     val type: Node.Type.Simple,
                     val questionMarks: List<Keyword.Question>,
@@ -772,26 +772,26 @@ sealed class Node {
              * AST node corresponds to KtWhenEntry.
              */
             sealed class Entry : Node() {
-                data class Conds(
-                    val conds: List<Cond>,
+                data class Conditions(
+                    val conditions: List<Condition>,
                     val trailingComma: Keyword.Comma?,
                     val body: Expression,
-                ) : When.Entry()
+                ) : Entry()
 
                 data class Else(
                     val elseKeyword: Keyword.Else,
                     val body: Expression,
-                ) : When.Entry()
+                ) : Entry()
             }
 
             /**
              * AST node corresponds to KtWhenCondition.
              */
-            sealed class Cond : Node() {
+            sealed class Condition : Node() {
                 /**
                  * AST node corresponds to KtWhenConditionWithExpression.
                  */
-                data class Expr(val expression: Node.Expression) : Cond()
+                data class Expression(val expression: Node.Expression) : Condition()
 
                 /**
                  * AST node corresponds to KtWhenConditionInRange.
@@ -799,7 +799,7 @@ sealed class Node {
                 data class In(
                     val expression: Node.Expression,
                     val not: Boolean
-                ) : Cond()
+                ) : Condition()
 
                 /**
                  * AST node corresponds to KtWhenConditionIsPattern.
@@ -807,7 +807,7 @@ sealed class Node {
                 data class Is(
                     val typeRef: TypeRef,
                     val not: Boolean
-                ) : Cond()
+                ) : Condition()
             }
         }
 

@@ -365,8 +365,8 @@ open class MutableVisitor(
                         rPar = visitChildren(rPar, newCh),
                         entries = visitChildren(entries, newCh),
                     )
-                    is Node.Expression.When.Entry.Conds -> copy(
-                        conds = visitChildren(conds, newCh),
+                    is Node.Expression.When.Entry.Conditions -> copy(
+                        conditions = visitChildren(conditions, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
                         body = visitChildren(body, newCh),
                     )
@@ -374,13 +374,13 @@ open class MutableVisitor(
                         elseKeyword = visitChildren(elseKeyword, newCh),
                         body = visitChildren(body, newCh),
                     )
-                    is Node.Expression.When.Cond.Expr -> copy(
+                    is Node.Expression.When.Condition.Expression -> copy(
                         expression = visitChildren(expression, newCh)
                     )
-                    is Node.Expression.When.Cond.In -> copy(
+                    is Node.Expression.When.Condition.In -> copy(
                         expression = visitChildren(expression, newCh)
                     )
-                    is Node.Expression.When.Cond.Is -> copy(
+                    is Node.Expression.When.Condition.Is -> copy(
                         typeRef = visitChildren(typeRef, newCh)
                     )
                     is Node.Expression.Object -> copy(

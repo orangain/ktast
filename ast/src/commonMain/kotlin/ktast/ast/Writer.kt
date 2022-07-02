@@ -453,21 +453,21 @@ open class Writer(
                     children(entries)
                     append("}")
                 }
-                is Node.Expression.When.Entry.Conds -> {
-                    children(conds, ",", trailingSeparator = trailingComma)
+                is Node.Expression.When.Entry.Conditions -> {
+                    children(conditions, ",", trailingSeparator = trailingComma)
                     append("->").also { children(body) }
                 }
                 is Node.Expression.When.Entry.Else -> {
                     children(elseKeyword)
                     append("->").also { children(body) }
                 }
-                is Node.Expression.When.Cond.Expr ->
+                is Node.Expression.When.Condition.Expression ->
                     children(expression)
-                is Node.Expression.When.Cond.In -> {
+                is Node.Expression.When.Condition.In -> {
                     if (not) append('!')
                     append("in").also { children(expression) }
                 }
-                is Node.Expression.When.Cond.Is -> {
+                is Node.Expression.When.Condition.Is -> {
                     if (not) append('!')
                     append("is").also { children(typeRef) }
                 }

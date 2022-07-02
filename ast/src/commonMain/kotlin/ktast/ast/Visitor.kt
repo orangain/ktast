@@ -330,8 +330,8 @@ open class Visitor {
                 visitChildren(rPar)
                 visitChildren(entries)
             }
-            is Node.Expression.When.Entry.Conds -> {
-                visitChildren(conds)
+            is Node.Expression.When.Entry.Conditions -> {
+                visitChildren(conditions)
                 visitChildren(trailingComma)
                 visitChildren(body)
             }
@@ -339,13 +339,13 @@ open class Visitor {
                 visitChildren(elseKeyword)
                 visitChildren(body)
             }
-            is Node.Expression.When.Cond.Expr -> {
+            is Node.Expression.When.Condition.Expression -> {
                 visitChildren(expression)
             }
-            is Node.Expression.When.Cond.In -> {
+            is Node.Expression.When.Condition.In -> {
                 visitChildren(expression)
             }
-            is Node.Expression.When.Cond.Is -> {
+            is Node.Expression.When.Condition.Is -> {
                 visitChildren(typeRef)
             }
             is Node.Expression.Object -> {

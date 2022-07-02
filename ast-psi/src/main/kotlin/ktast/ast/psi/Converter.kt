@@ -739,8 +739,8 @@ open class Converter {
     open fun convertWhenEntry(v: KtWhenEntry): Node.Expression.When.Entry {
         val elseKeyword = v.elseKeyword
         return if (elseKeyword == null) {
-            Node.Expression.When.Entry.Conds(
-                conds = v.conditions.map(::convertWhenCond),
+            Node.Expression.When.Entry.Conditions(
+                conditions = v.conditions.map(::convertWhenCondition),
                 trailingComma = v.trailingComma?.let(::convertComma),
                 body = convertExpression(v.expression ?: error("No when entry body for $v"))
             ).map(v)
@@ -752,15 +752,15 @@ open class Converter {
         }
     }
 
-    open fun convertWhenCond(v: KtWhenCondition) = when (v) {
-        is KtWhenConditionWithExpression -> Node.Expression.When.Cond.Expr(
+    open fun convertWhenCondition(v: KtWhenCondition) = when (v) {
+        is KtWhenConditionWithExpression -> Node.Expression.When.Condition.Expression(
             expression = convertExpression(v.expression ?: error("No when cond expr for $v"))
         ).map(v)
-        is KtWhenConditionInRange -> Node.Expression.When.Cond.In(
+        is KtWhenConditionInRange -> Node.Expression.When.Condition.In(
             expression = convertExpression(v.rangeExpression ?: error("No when in expr for $v")),
             not = v.isNegated
         ).map(v)
-        is KtWhenConditionIsPattern -> Node.Expression.When.Cond.Is(
+        is KtWhenConditionIsPattern -> Node.Expression.When.Condition.Is(
             typeRef = convertTypeRef(v.typeReference ?: error("No when is type for $v")),
             not = v.isNegated
         ).map(v)
