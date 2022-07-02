@@ -398,7 +398,7 @@ open class Visitor {
             is Node.Modifier.AnnotationSet -> {
                 visitChildren(atSymbol)
                 visitChildren(lBracket)
-                visitChildren(anns)
+                visitChildren(annotations)
                 visitChildren(rBracket)
             }
             is Node.Modifier.AnnotationSet.Annotation -> {

@@ -889,7 +889,7 @@ open class Converter {
         atSymbol = v.node.findChildByType(KtTokens.AT)?.let { convertKeyword(it.psi, Node.Keyword::At) },
         target = v.useSiteTarget?.let(::convertAnnotationSetTarget),
         lBracket = v.node.findChildByType(KtTokens.LBRACKET)?.let { convertKeyword(it.psi, Node.Keyword::LBracket) },
-        anns = v.entries.map(::convertAnnotation),
+        annotations = v.entries.map(::convertAnnotation),
         rBracket = v.node.findChildByType(KtTokens.RBRACKET)?.let { convertKeyword(it.psi, Node.Keyword::RBracket) },
     ).map(v)
 
@@ -897,7 +897,7 @@ open class Converter {
         atSymbol = v.atSymbol?.let { convertKeyword(it, Node.Keyword::At) },
         target = v.useSiteTarget?.let(::convertAnnotationSetTarget),
         lBracket = null,
-        anns = listOf(convertAnnotation(v)),
+        annotations = listOf(convertAnnotation(v)),
         rBracket = null,
     ).map(v)
 

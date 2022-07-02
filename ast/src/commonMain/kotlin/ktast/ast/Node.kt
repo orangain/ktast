@@ -943,7 +943,7 @@ sealed class Node {
             val atSymbol: Node.Keyword.At?,
             val target: Target?,
             val lBracket: Node.Keyword.LBracket?,
-            val anns: List<Annotation>,
+            val annotations: List<Annotation>,
             val rBracket: Node.Keyword.RBracket?,
         ) : Modifier() {
             enum class Target {

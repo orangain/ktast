@@ -436,7 +436,7 @@ open class MutableVisitor(
                     is Node.Modifier.AnnotationSet -> copy(
                         atSymbol = visitChildren(atSymbol, newCh),
                         lBracket = visitChildren(lBracket, newCh),
-                        anns = visitChildren(anns, newCh),
+                        annotations = visitChildren(annotations, newCh),
                         rBracket = visitChildren(rBracket, newCh),
                     )
                     is Node.Modifier.AnnotationSet.Annotation -> copy(

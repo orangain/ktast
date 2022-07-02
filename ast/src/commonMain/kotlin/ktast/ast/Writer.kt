@@ -526,7 +526,7 @@ open class Writer(
                     children(atSymbol)
                     if (target != null) append(target.name.lowercase()).append(':')
                     children(lBracket)
-                    children(anns)
+                    children(annotations)
                     children(rBracket)
                 }
                 is Node.Modifier.AnnotationSet.Annotation -> {
