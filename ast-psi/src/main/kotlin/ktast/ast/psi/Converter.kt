@@ -477,7 +477,7 @@ open class Converter {
         is KtCallableReferenceExpression -> convertDoubleColonRefCallable(v)
         is KtClassLiteralExpression -> convertDoubleColonRefClass(v)
         is KtParenthesizedExpression -> convertParenthesized(v)
-        is KtStringTemplateExpression -> convertStringTmpl(v)
+        is KtStringTemplateExpression -> convertStringTemplate(v)
         is KtConstantExpression -> convertConst(v)
         is KtBlockExpression -> convertBlock(v)
         is KtFunctionLiteral -> error("Supposed to be unreachable here. KtFunctionLiteral is expected to be inside of KtLambdaExpression.")
@@ -646,23 +646,24 @@ open class Converter {
         expression = convertExpression(v.expression ?: error("No expression for $v"))
     ).map(v)
 
-    open fun convertStringTmpl(v: KtStringTemplateExpression) = Node.Expression.StringTmpl(
+    open fun convertStringTemplate(v: KtStringTemplateExpression) = Node.Expression.StringTemplate(
         elems = v.entries.map(::convertStringTmplElem),
         raw = v.text.startsWith("\"\"\"")
     ).map(v)
 
     open fun convertStringTmplElem(v: KtStringTemplateEntry) = when (v) {
         is KtLiteralStringTemplateEntry ->
-            Node.Expression.StringTmpl.Elem.Regular(v.text).map(v)
+            Node.Expression.StringTemplate.Elem.Regular(v.text).map(v)
         is KtSimpleNameStringTemplateEntry ->
-            Node.Expression.StringTmpl.Elem.ShortTmpl(v.expression?.text ?: error("No short tmpl text")).map(v)
+            Node.Expression.StringTemplate.Elem.ShortTmpl(v.expression?.text ?: error("No short tmpl text")).map(v)
         is KtBlockStringTemplateEntry ->
-            Node.Expression.StringTmpl.Elem.LongTmpl(convertExpression(v.expression ?: error("No expr tmpl"))).map(v)
+            Node.Expression.StringTemplate.Elem.LongTmpl(convertExpression(v.expression ?: error("No expr tmpl")))
+                .map(v)
         is KtEscapeStringTemplateEntry ->
             if (v.text.startsWith("\\u"))
-                Node.Expression.StringTmpl.Elem.UnicodeEsc(v.text.substring(2)).map(v)
+                Node.Expression.StringTemplate.Elem.UnicodeEsc(v.text.substring(2)).map(v)
             else
-                Node.Expression.StringTmpl.Elem.RegularEsc(v.unescapedValue.first()).map(v)
+                Node.Expression.StringTemplate.Elem.RegularEsc(v.unescapedValue.first()).map(v)
         else ->
             error("Unrecognized string template type for $v")
     }

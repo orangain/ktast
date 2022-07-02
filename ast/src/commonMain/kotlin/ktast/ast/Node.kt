@@ -664,7 +664,7 @@ sealed class Node {
         /**
          * AST node corresponds to KtStringTemplateExpression.
          */
-        data class StringTmpl(
+        data class StringTemplate(
             val elems: List<Elem>,
             val raw: Boolean
         ) : Expression() {
