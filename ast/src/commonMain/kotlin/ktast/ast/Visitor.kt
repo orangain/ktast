@@ -37,7 +37,7 @@ open class Visitor {
             is Node.ImportDirective.Alias -> {
                 visitChildren(name)
             }
-            is Node.Declaration.Structured -> {
+            is Node.Declaration.Class -> {
                 visitChildren(modifiers)
                 visitChildren(declarationKeyword)
                 visitChildren(name)
@@ -47,29 +47,29 @@ open class Visitor {
                 visitChildren(typeConstraints)
                 visitChildren(body)
             }
-            is Node.Declaration.Structured.Parents -> {
+            is Node.Declaration.Class.Parents -> {
                 visitChildren(items)
             }
-            is Node.Declaration.Structured.Parent.CallConstructor -> {
+            is Node.Declaration.Class.Parent.CallConstructor -> {
                 visitChildren(type)
                 visitChildren(typeArgs)
                 visitChildren(args)
                 visitChildren(lambda)
             }
-            is Node.Declaration.Structured.Parent.DelegatedType -> {
+            is Node.Declaration.Class.Parent.DelegatedType -> {
                 visitChildren(type)
                 visitChildren(byKeyword)
                 visitChildren(expression)
             }
-            is Node.Declaration.Structured.Parent.Type -> {
+            is Node.Declaration.Class.Parent.Type -> {
                 visitChildren(type)
             }
-            is Node.Declaration.Structured.PrimaryConstructor -> {
+            is Node.Declaration.Class.PrimaryConstructor -> {
                 visitChildren(modifiers)
                 visitChildren(constructorKeyword)
                 visitChildren(params)
             }
-            is Node.Declaration.Structured.Body -> {
+            is Node.Declaration.Class.Body -> {
                 visitChildren(enumEntries)
                 visitChildren(declarations)
             }

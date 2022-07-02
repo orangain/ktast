@@ -103,7 +103,7 @@ sealed class Node {
         /**
          * AST node corresponds to KtClassOrObject.
          */
-        data class Structured(
+        data class Class(
             override val modifiers: Modifiers?,
             val declarationKeyword: Keyword.Declaration,
             val name: Expression.Name?,
@@ -351,7 +351,7 @@ sealed class Node {
         override val modifiers: Modifiers?,
         val name: Expression.Name,
         val args: ValueArgs?,
-        val body: Declaration.Structured.Body?,
+        val body: Declaration.Class.Body?,
     ) : Node(), WithModifiers
 
     /**
@@ -812,7 +812,7 @@ sealed class Node {
          * AST node corresponds to KtObjectLiteralExpression.
          */
         data class Object(
-            val declaration: Declaration.Structured,
+            val declaration: Declaration.Class,
         ) : Expression()
 
         /**

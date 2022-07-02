@@ -79,7 +79,7 @@ open class Writer(
                     append("as")
                     children(name)
                 }
-                is Node.Declaration.Structured -> {
+                is Node.Declaration.Class -> {
                     children(modifiers)
                     children(declarationKeyword)
                     children(name)
@@ -92,27 +92,27 @@ open class Writer(
                     children(typeConstraints)
                     children(body)
                 }
-                is Node.Declaration.Structured.Parents -> {
+                is Node.Declaration.Class.Parents -> {
                     children(items, ",")
                 }
-                is Node.Declaration.Structured.Parent.CallConstructor -> {
+                is Node.Declaration.Class.Parent.CallConstructor -> {
                     children(type)
                     children(args)
                 }
-                is Node.Declaration.Structured.Parent.DelegatedType -> {
+                is Node.Declaration.Class.Parent.DelegatedType -> {
                     children(type)
                     children(byKeyword)
                     children(expression)
                 }
-                is Node.Declaration.Structured.Parent.Type -> {
+                is Node.Declaration.Class.Parent.Type -> {
                     children(type)
                 }
-                is Node.Declaration.Structured.PrimaryConstructor -> {
+                is Node.Declaration.Class.PrimaryConstructor -> {
                     children(modifiers)
                     children(constructorKeyword)
                     children(params)
                 }
-                is Node.Declaration.Structured.Body -> {
+                is Node.Declaration.Class.Body -> {
                     append("{")
                     children(enumEntries, skipWritingExtrasWithin = true)
                     children(declarations)
@@ -210,7 +210,7 @@ open class Writer(
                     children(name)
                     children(args)
                     children(body)
-                    check(parent is Node.Declaration.Structured.Body) // condition should always be true
+                    check(parent is Node.Declaration.Class.Body) // condition should always be true
                     val isLastEntry = parent.enumEntries.last() === this
                     if (!isLastEntry || parent.hasTrailingCommaInEnumEntries) {
                         append(",")

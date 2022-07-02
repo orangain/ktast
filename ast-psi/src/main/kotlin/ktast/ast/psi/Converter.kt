@@ -60,7 +60,7 @@ open class Converter {
 
     open fun convertDeclaration(v: KtDeclaration): Node.Declaration = when (v) {
         is KtEnumEntry -> error("KtEnumEntry is handled in convertEnumEntry")
-        is KtClassOrObject -> convertStructured(v)
+        is KtClassOrObject -> convertClass(v)
         is KtAnonymousInitializer -> convertInit(v)
         is KtNamedFunction -> convertFunc(v)
         is KtDestructuringDeclaration -> convertProperty(v)
@@ -70,7 +70,7 @@ open class Converter {
         else -> error("Unrecognized declaration type for $v")
     }
 
-    open fun convertStructured(v: KtClassOrObject) = Node.Declaration.Structured(
+    open fun convertClass(v: KtClassOrObject) = Node.Declaration.Class(
         modifiers = v.modifierList?.let(::convertModifiers),
         declarationKeyword = v.getDeclarationKeyword()?.let(::convertDeclarationKeyword)
             ?: error("declarationKeyword not found"),
@@ -87,12 +87,12 @@ open class Converter {
         body = v.body?.let(::convertClassBody),
     ).map(v)
 
-    open fun convertParents(v: KtSuperTypeList) = Node.Declaration.Structured.Parents(
+    open fun convertParents(v: KtSuperTypeList) = Node.Declaration.Class.Parents(
         items = v.entries.map(::convertParent),
     ).map(v)
 
     open fun convertParent(v: KtSuperTypeListEntry) = when (v) {
-        is KtSuperTypeCallEntry -> Node.Declaration.Structured.Parent.CallConstructor(
+        is KtSuperTypeCallEntry -> Node.Declaration.Class.Parent.CallConstructor(
             type = v.typeReference?.typeElement?.let(::convertType) as? Node.Type.Simple
                 ?: error("Bad type on super call $v"),
             typeArgs = v.typeArgumentList?.let(::convertTypeArgs),
@@ -100,20 +100,20 @@ open class Converter {
             // TODO
             lambda = null
         ).map(v)
-        is KtDelegatedSuperTypeEntry -> Node.Declaration.Structured.Parent.DelegatedType(
+        is KtDelegatedSuperTypeEntry -> Node.Declaration.Class.Parent.DelegatedType(
             type = v.typeReference?.typeElement?.let(::convertType) as? Node.Type.Simple
                 ?: error("Bad type on super call $v"),
             byKeyword = convertKeyword(v.byKeywordNode.psi, Node.Keyword::By),
             expression = convertExpression(v.delegateExpression ?: error("Missing delegateExpression for $v")),
         ).map(v)
-        is KtSuperTypeEntry -> Node.Declaration.Structured.Parent.Type(
+        is KtSuperTypeEntry -> Node.Declaration.Class.Parent.Type(
             type = v.typeReference?.typeElement?.let(::convertType) as? Node.Type.Simple
                 ?: error("Bad type on super call $v"),
         ).map(v)
         else -> error("Unknown super type entry $v")
     }
 
-    open fun convertPrimaryConstructor(v: KtPrimaryConstructor) = Node.Declaration.Structured.PrimaryConstructor(
+    open fun convertPrimaryConstructor(v: KtPrimaryConstructor) = Node.Declaration.Class.PrimaryConstructor(
         modifiers = v.modifierList?.let(::convertModifiers),
         constructorKeyword = v.getConstructorKeyword()?.let { convertKeyword(it, Node.Keyword::Constructor) },
         params = v.valueParameterList?.let(::convertFuncParams)
@@ -272,10 +272,10 @@ open class Converter {
         body = v.body?.let(::convertClassBody),
     ).map(v)
 
-    open fun convertClassBody(v: KtClassBody): Node.Declaration.Structured.Body {
+    open fun convertClassBody(v: KtClassBody): Node.Declaration.Class.Body {
         val ktEnumEntries = v.declarations.filterIsInstance<KtEnumEntry>()
         val declarationsExcludingKtEnumEntry = v.declarations.filter { it !is KtEnumEntry }
-        return Node.Declaration.Structured.Body(
+        return Node.Declaration.Class.Body(
             enumEntries = ktEnumEntries.map(::convertEnumEntry),
             hasTrailingCommaInEnumEntries = ktEnumEntries.lastOrNull()?.comma != null,
             declarations = declarationsExcludingKtEnumEntry.map(::convertDeclaration),
@@ -765,7 +765,7 @@ open class Converter {
     }
 
     open fun convertObject(v: KtObjectLiteralExpression) = Node.Expression.Object(
-        declaration = convertStructured(v.objectDeclaration),
+        declaration = convertClass(v.objectDeclaration),
     ).map(v)
 
     open fun convertThrow(v: KtThrowExpression) = Node.Expression.Throw(

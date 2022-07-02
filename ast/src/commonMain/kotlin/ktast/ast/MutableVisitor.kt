@@ -40,7 +40,7 @@ open class MutableVisitor(
                     is Node.ImportDirective.Alias -> copy(
                         name = visitChildren(name, newCh),
                     )
-                    is Node.Declaration.Structured -> copy(
+                    is Node.Declaration.Class -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         declarationKeyword = visitChildren(declarationKeyword, newCh),
                         name = visitChildren(name, newCh),
@@ -50,29 +50,29 @@ open class MutableVisitor(
                         typeConstraints = visitChildren(typeConstraints, newCh),
                         body = visitChildren(body, newCh)
                     )
-                    is Node.Declaration.Structured.Parents -> copy(
+                    is Node.Declaration.Class.Parents -> copy(
                         items = visitChildren(items, newCh),
                     )
-                    is Node.Declaration.Structured.Parent.CallConstructor -> copy(
+                    is Node.Declaration.Class.Parent.CallConstructor -> copy(
                         type = visitChildren(type, newCh),
                         typeArgs = visitChildren(typeArgs, newCh),
                         args = visitChildren(args, newCh),
                         lambda = visitChildren(lambda, newCh)
                     )
-                    is Node.Declaration.Structured.Parent.DelegatedType -> copy(
+                    is Node.Declaration.Class.Parent.DelegatedType -> copy(
                         type = visitChildren(type, newCh),
                         byKeyword = visitChildren(byKeyword, newCh),
                         expression = visitChildren(expression, newCh),
                     )
-                    is Node.Declaration.Structured.Parent.Type -> copy(
+                    is Node.Declaration.Class.Parent.Type -> copy(
                         type = visitChildren(type, newCh),
                     )
-                    is Node.Declaration.Structured.PrimaryConstructor -> copy(
+                    is Node.Declaration.Class.PrimaryConstructor -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         constructorKeyword = visitChildren(constructorKeyword, newCh),
                         params = visitChildren(params, newCh)
                     )
-                    is Node.Declaration.Structured.Body -> copy(
+                    is Node.Declaration.Class.Body -> copy(
                         enumEntries = visitChildren(enumEntries, newCh),
                         declarations = visitChildren(declarations, newCh),
                     )
