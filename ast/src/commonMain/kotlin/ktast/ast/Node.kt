@@ -383,7 +383,7 @@ sealed class Node {
         /**
          * AST node corresponds to KtFunctionType.
          */
-        data class Func(
+        data class Function(
             val contextReceivers: ContextReceivers?,
             val receiver: Receiver?,
             val params: Params?,

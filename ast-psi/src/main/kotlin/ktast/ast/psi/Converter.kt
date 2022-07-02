@@ -378,10 +378,10 @@ open class Converter {
     ).map(v)
 
     open fun convertType(v: KtTypeElement): Node.Type = when (v) {
-        is KtFunctionType -> Node.Type.Func(
+        is KtFunctionType -> Node.Type.Function(
             contextReceivers = v.contextReceiverList?.let { convertContextReceivers(it) },
-            receiver = v.receiver?.let(::convertTypeFuncReceiver),
-            params = v.parameterList?.let(::convertTypeFuncParams),
+            receiver = v.receiver?.let(::convertTypeFunctionReceiver),
+            params = v.parameterList?.let(::convertTypeFunctionParams),
             typeRef = convertTypeRef(v.returnTypeReference ?: error("No return type"))
         ).map(v)
         is KtUserType -> Node.Type.Simple(
@@ -402,26 +402,26 @@ open class Converter {
         else -> error("Unrecognized type of $v")
     }
 
-    open fun convertTypeFuncReceiver(v: KtFunctionTypeReceiver) = Node.Type.Func.Receiver(
+    open fun convertTypeFunctionReceiver(v: KtFunctionTypeReceiver) = Node.Type.Function.Receiver(
         typeRef = convertTypeRef(v.typeReference),
     ).map(v)
 
-    open fun convertTypeFuncParams(v: KtParameterList) = Node.Type.Func.Params(
-        elements = v.parameters.map(::convertTypeFuncParam),
+    open fun convertTypeFunctionParams(v: KtParameterList) = Node.Type.Function.Params(
+        elements = v.parameters.map(::convertTypeFunctionParam),
         trailingComma = v.trailingComma?.let(::convertComma)
     ).map(v)
 
-    open fun convertTypeFuncParam(v: KtParameter) = Node.Type.Func.Param(
+    open fun convertTypeFunctionParam(v: KtParameter) = Node.Type.Function.Param(
         name = v.nameIdentifier?.let(::convertName),
         typeRef = convertTypeRef(v.typeReference ?: error("No param type"))
     ).map(v)
 
-    open fun convertContextReceivers(v: KtContextReceiverList) = Node.Type.Func.ContextReceivers(
+    open fun convertContextReceivers(v: KtContextReceiverList) = Node.Type.Function.ContextReceivers(
         elements = v.contextReceivers().map(::convertContextReceiver),
         trailingComma = null,
     ).map(v)
 
-    open fun convertContextReceiver(v: KtContextReceiver) = Node.Type.Func.ContextReceiver(
+    open fun convertContextReceiver(v: KtContextReceiver) = Node.Type.Function.ContextReceiver(
         typeRef = convertTypeRef(v.typeReference() ?: error("Missing type reference for $v")),
     ).map(v)
 

@@ -245,7 +245,7 @@ open class Writer(
                     children(innerRPar)
                     children(rPar)
                 }
-                is Node.Type.Func -> {
+                is Node.Type.Function -> {
                     if (contextReceivers != null) {
                         append("context")
                         children(contextReceivers)
@@ -261,13 +261,13 @@ open class Writer(
                     }
                     children(typeRef)
                 }
-                is Node.Type.Func.ContextReceiver -> {
+                is Node.Type.Function.ContextReceiver -> {
                     children(typeRef)
                 }
-                is Node.Type.Func.Receiver -> {
+                is Node.Type.Function.Receiver -> {
                     children(typeRef)
                 }
-                is Node.Type.Func.Param -> {
+                is Node.Type.Function.Param -> {
                     if (name != null) children(name).append(":")
                     children(typeRef)
                 }

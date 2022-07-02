@@ -191,19 +191,19 @@ open class Visitor {
                 visitChildren(innerRPar)
                 visitChildren(rPar)
             }
-            is Node.Type.Func -> {
+            is Node.Type.Function -> {
                 visitChildren(contextReceivers)
                 visitChildren(receiver)
                 visitChildren(params)
                 visitChildren(typeRef)
             }
-            is Node.Type.Func.ContextReceiver -> {
+            is Node.Type.Function.ContextReceiver -> {
                 visitChildren(typeRef)
             }
-            is Node.Type.Func.Receiver -> {
+            is Node.Type.Function.Receiver -> {
                 visitChildren(typeRef)
             }
-            is Node.Type.Func.Param -> {
+            is Node.Type.Function.Param -> {
                 visitChildren(name)
                 visitChildren(typeRef)
             }
