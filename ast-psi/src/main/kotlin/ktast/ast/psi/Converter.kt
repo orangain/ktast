@@ -19,12 +19,12 @@ open class Converter {
 
     open fun convertFile(v: KtFile) = Node.File(
         annotationSets = convertAnnotationSets(v),
-        pkg = v.packageDirective?.takeIf { it.packageNames.isNotEmpty() }?.let(::convertPackage),
+        packageDirective = v.packageDirective?.takeIf { it.packageNames.isNotEmpty() }?.let(::convertPackageDirective),
         imports = v.importList?.let(::convertImports),
         decls = v.declarations.map(::convertDecl)
     ).map(v)
 
-    open fun convertPackage(v: KtPackageDirective) = Node.Package(
+    open fun convertPackageDirective(v: KtPackageDirective) = Node.PackageDirective(
         packageKeyword = convertKeyword(v.packageKeyword ?: error("No package keyword $v"), Node.Keyword::Package),
         modifiers = v.modifierList?.let(::convertModifiers),
         names = v.packageNames.map(::convertName),

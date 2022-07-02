@@ -31,7 +31,7 @@ sealed class Node {
     }
 
     interface Entry : WithAnnotationSets {
-        val pkg: Package?
+        val packageDirective: PackageDirective?
         val imports: Imports?
     }
 
@@ -49,14 +49,14 @@ sealed class Node {
 
     data class File(
         override val annotationSets: List<Modifier.AnnotationSet>,
-        override val pkg: Package?,
+        override val packageDirective: PackageDirective?,
         override val imports: Imports?,
         override val decls: List<Decl>
     ) : Node(), Entry, DeclsContainer
 
     data class Script(
         override val annotationSets: List<Modifier.AnnotationSet>,
-        override val pkg: Package?,
+        override val packageDirective: PackageDirective?,
         override val imports: Imports?,
         val exprs: List<Expr>
     ) : Node(), Entry
@@ -64,7 +64,7 @@ sealed class Node {
     /**
      * AST node corresponds to KtPackageDirective.
      */
-    data class Package(
+    data class PackageDirective(
         override val modifiers: Modifiers?,
         val packageKeyword: Keyword.Package,
         val names: List<Expr.Name>,

@@ -14,17 +14,17 @@ open class MutableVisitor(
                 val new: Node = when (this) {
                     is Node.File -> copy(
                         annotationSets = visitChildren(annotationSets, newCh),
-                        pkg = visitChildren(pkg, newCh),
+                        packageDirective = visitChildren(packageDirective, newCh),
                         imports = visitChildren(imports, newCh),
                         decls = visitChildren(decls, newCh)
                     )
                     is Node.Script -> copy(
                         annotationSets = visitChildren(annotationSets, newCh),
-                        pkg = visitChildren(pkg, newCh),
+                        packageDirective = visitChildren(packageDirective, newCh),
                         imports = visitChildren(imports, newCh),
                         exprs = visitChildren(exprs, newCh)
                     )
-                    is Node.Package -> copy(
+                    is Node.PackageDirective -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         packageKeyword = visitChildren(packageKeyword, newCh),
                         names = visitChildren(names, newCh),

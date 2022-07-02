@@ -61,11 +61,11 @@ open class Writer(
                 }
                 is Node.File -> {
                     children(annotationSets, skipWritingExtrasWithin = true)
-                    children(pkg)
+                    children(packageDirective)
                     children(imports)
                     children(decls)
                 }
-                is Node.Package -> {
+                is Node.PackageDirective -> {
                     children(modifiers)
                     children(packageKeyword)
                     children(names, ".")

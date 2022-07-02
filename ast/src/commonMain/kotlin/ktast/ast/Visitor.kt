@@ -14,17 +14,17 @@ open class Visitor {
             }
             is Node.File -> {
                 visitChildren(annotationSets)
-                visitChildren(pkg)
+                visitChildren(packageDirective)
                 visitChildren(imports)
                 visitChildren(decls)
             }
             is Node.Script -> {
                 visitChildren(annotationSets)
-                visitChildren(pkg)
+                visitChildren(packageDirective)
                 visitChildren(imports)
                 visitChildren(exprs)
             }
-            is Node.Package -> {
+            is Node.PackageDirective -> {
                 visitChildren(modifiers)
                 visitChildren(packageKeyword)
                 visitChildren(names)
