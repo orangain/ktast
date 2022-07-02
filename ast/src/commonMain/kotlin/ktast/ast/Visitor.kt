@@ -261,22 +261,22 @@ open class Visitor {
             }
             is Node.Expression.Binary -> {
                 visitChildren(lhs)
-                visitChildren(oper)
+                visitChildren(operator)
                 visitChildren(rhs)
             }
-            is Node.Expression.Binary.Oper.Infix -> {}
-            is Node.Expression.Binary.Oper.Token -> {}
+            is Node.Expression.Binary.Operator.Infix -> {}
+            is Node.Expression.Binary.Operator.Token -> {}
             is Node.Expression.Unary -> {
                 visitChildren(expression)
-                visitChildren(oper)
+                visitChildren(operator)
             }
-            is Node.Expression.Unary.Oper -> {}
+            is Node.Expression.Unary.Operator -> {}
             is Node.Expression.BinaryType -> {
                 visitChildren(lhs)
-                visitChildren(oper)
+                visitChildren(operator)
                 visitChildren(rhs)
             }
-            is Node.Expression.BinaryType.Oper -> {}
+            is Node.Expression.BinaryType.Operator -> {}
             is Node.Expression.DoubleColonRef.Callable -> {
                 visitChildren(recv)
                 visitChildren(name)

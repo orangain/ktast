@@ -577,12 +577,12 @@ sealed class Node {
          */
         data class Binary(
             val lhs: Expression,
-            val oper: Oper,
+            val operator: Operator,
             val rhs: Expression
         ) : Expression() {
-            sealed class Oper : Node() {
-                data class Infix(val str: String) : Oper()
-                data class Token(val token: Binary.Token) : Oper()
+            sealed class Operator : Node() {
+                data class Infix(val str: String) : Operator()
+                data class Token(val token: Binary.Token) : Operator()
             }
 
             enum class Token(val str: String) {
@@ -601,10 +601,10 @@ sealed class Node {
          */
         data class Unary(
             val expression: Expression,
-            val oper: Oper,
+            val operator: Operator,
             val prefix: Boolean
         ) : Expression() {
-            data class Oper(val token: Token) : Node()
+            data class Operator(val token: Token) : Node()
             enum class Token(val str: String) {
                 NEG("-"), POS("+"), INC("++"), DEC("--"), NOT("!"), NULL_DEREF("!!")
             }
@@ -615,10 +615,10 @@ sealed class Node {
          */
         data class BinaryType(
             val lhs: Expression,
-            val oper: Oper,
+            val operator: Operator,
             val rhs: TypeRef
         ) : Expression() {
-            data class Oper(val token: Token) : Node()
+            data class Operator(val token: Token) : Node()
             enum class Token(val str: String) {
                 AS("as"), AS_SAFE("as?"), COL(":"), IS("is"), NOT_IS("!is")
             }

@@ -70,11 +70,11 @@ class Dumper(
         if (verbose) {
             when (this) {
                 is Node.Declaration.SecondaryConstructor.DelegationCall -> mapOf("target" to target)
-                is Node.Expression.Binary.Oper.Infix -> mapOf("str" to str)
-                is Node.Expression.Binary.Oper.Token -> mapOf("token" to token)
+                is Node.Expression.Binary.Operator.Infix -> mapOf("str" to str)
+                is Node.Expression.Binary.Operator.Token -> mapOf("token" to token)
                 is Node.Expression.Unary -> mapOf("prefix" to prefix)
-                is Node.Expression.Unary.Oper -> mapOf("token" to token)
-                is Node.Expression.BinaryType.Oper -> mapOf("token" to token)
+                is Node.Expression.Unary.Operator -> mapOf("token" to token)
+                is Node.Expression.BinaryType.Operator -> mapOf("token" to token)
                 is Node.Modifier.AnnotationSet -> mapOf("target" to target)
                 is Node.Modifier.Lit -> mapOf("keyword" to keyword)
                 is Node.Expression.Name -> mapOf("name" to name)

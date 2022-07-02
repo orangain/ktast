@@ -288,22 +288,22 @@ open class MutableVisitor(
                     )
                     is Node.Expression.Binary -> copy(
                         lhs = visitChildren(lhs, newCh),
-                        oper = visitChildren(oper, newCh),
+                        operator = visitChildren(operator, newCh),
                         rhs = visitChildren(rhs, newCh)
                     )
-                    is Node.Expression.Binary.Oper.Infix -> this
-                    is Node.Expression.Binary.Oper.Token -> this
+                    is Node.Expression.Binary.Operator.Infix -> this
+                    is Node.Expression.Binary.Operator.Token -> this
                     is Node.Expression.Unary -> copy(
                         expression = visitChildren(expression, newCh),
-                        oper = visitChildren(oper, newCh)
+                        operator = visitChildren(operator, newCh)
                     )
-                    is Node.Expression.Unary.Oper -> this
+                    is Node.Expression.Unary.Operator -> this
                     is Node.Expression.BinaryType -> copy(
                         lhs = visitChildren(lhs, newCh),
-                        oper = visitChildren(oper, newCh),
+                        operator = visitChildren(operator, newCh),
                         rhs = visitChildren(rhs, newCh)
                     )
-                    is Node.Expression.BinaryType.Oper -> this
+                    is Node.Expression.BinaryType.Operator -> this
                     is Node.Expression.DoubleColonRef.Callable -> copy(
                         recv = visitChildren(recv, newCh),
                         name = visitChildren(name, newCh),
