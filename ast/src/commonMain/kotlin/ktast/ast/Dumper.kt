@@ -15,24 +15,20 @@ class Dumper(
     }
 
     fun dump(v: Node) {
-        visit(v, v)
+        visit(v)
     }
 
     private val levelMap = mutableMapOf<Int, Int>()
 
-    private fun levelOf(v: Node): Int {
-        return (levelMap[System.identityHashCode(v)] ?: -1)
+    private fun levelOf(v: Node?): Int {
+        return if (v == null) -1 else levelMap[System.identityHashCode(v)] ?: error("$v is not found in levelMap")
     }
 
-    private fun setLevel(v: Node, parent: Node) {
+    private fun setLevel(v: Node, parent: Node?) {
         levelMap[System.identityHashCode(v)] = levelOf(parent) + 1
     }
 
-    override fun visit(v: Node?, parent: Node) {
-        if (v == null) {
-            return
-        }
-
+    override fun visit(v: Node, parent: Node?) {
         setLevel(v, parent)
 
         v.writeExtrasBefore()

@@ -49,7 +49,7 @@ class MutableVisitorTest {
 
 private fun assertMutateAndWriteExact(
     origCode: String,
-    fn: (v: Node?, parent: Node) -> Node?,
+    fn: (v: Node, parent: Node?) -> Node,
     expectedCode: String
 ) {
     val origExtrasConv = ConverterWithMutableExtras()

@@ -1,9 +1,9 @@
 package ktast.ast
 
 open class Visitor {
-    fun visit(v: Node) = visit(v, v)
+    fun visit(v: Node) = visit(v, null)
 
-    protected open fun visit(v: Node?, parent: Node) = v.run {
+    protected open fun visit(v: Node, parent: Node?) = v.run {
         when (this) {
             is Node.CommaSeparatedNodeList<*> -> {
                 visitChildren(elements)
@@ -424,21 +424,22 @@ open class Visitor {
             }
             is Node.Keyword -> {}
             is Node.Extra -> {}
-            null -> {}
         }
     }
 
-    protected fun <T : Node?> Node?.visitChildren(v: T) {
-        visit(v, this!!)
+    protected fun <T : Node> Node.visitChildren(v: T?) {
+        if (v != null) {
+            visit(v, this)
+        }
     }
 
-    protected fun <T : Node?> Node?.visitChildren(v: List<T>) {
-        v.forEach { orig -> visit(orig, this!!) }
+    protected fun <T : Node> Node.visitChildren(v: List<T>) {
+        v.forEach { orig -> visit(orig, this) }
     }
 
     companion object {
-        fun visit(v: Node, fn: (v: Node?, parent: Node) -> Unit) = object : Visitor() {
-            override fun visit(v: Node?, parent: Node) {
+        fun visit(v: Node, fn: (v: Node, parent: Node?) -> Unit) = object : Visitor() {
+            override fun visit(v: Node, parent: Node?) {
                 fn(v, parent)
                 super.visit(v, parent)
             }

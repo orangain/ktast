@@ -44,11 +44,10 @@ open class Writer(
         extrasSinceLastNonSymbol.clear()
         nextHeuristicWhitespace = ""
         lastAppendedToken = ""
-        visit(v, v)
+        visit(v)
     }
 
-    override fun visit(v: Node?, parent: Node) {
-        if (v == null) return
+    override fun visit(v: Node, parent: Node?) {
         v.writeExtrasBefore()
         v.writeHeuristicNewline(parent)
         writeHeuristicSpace()
@@ -588,7 +587,7 @@ open class Writer(
             append(suffix)
         }
 
-    protected open fun Node.writeHeuristicNewline(parent: Node) {
+    protected open fun Node.writeHeuristicNewline(parent: Node?) {
         if (parent is Node.StatementsContainer && this is Node.Statement) {
             if (parent.statements.first() !== this && !containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
                 append("\n")

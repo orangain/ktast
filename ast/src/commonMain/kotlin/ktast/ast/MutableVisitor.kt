@@ -4,12 +4,13 @@ open class MutableVisitor(
     protected val extrasMap: MutableExtrasMap? = null
 ) {
 
-    open fun <T : Node?> preVisit(v: T, parent: Node): T = v
-    open fun <T : Node?> postVisit(v: T, parent: Node): T = v
+    open fun <T : Node> preVisit(v: T, parent: Node?): T = v
+    open fun <T : Node> postVisit(v: T, parent: Node?): T = v
 
-    open fun <T : Node?> visit(v: T, parent: Node, ch: ChangedRef = ChangedRef(false)): T = v.run {
+    fun visit(v: Node) = visit(v, null)
+    open fun <T : Node> visit(v: T, parent: Node?, ch: ChangedRef = ChangedRef(false)): T = v.run {
         ch.sub { newCh ->
-            preVisit(this, parent)?.run {
+            preVisit(this, parent).run {
                 val new: Node = when (this) {
                     is Node.File -> copy(
                         anns = visitChildren(anns, newCh),
@@ -477,14 +478,18 @@ open class MutableVisitor(
         }
     }
 
-    protected fun <T : Node?> Node?.visitChildren(v: T, ch: ChangedRef): T =
-        visit(v, this!!, ch).also { new ->
-            if (v != null && new != null && ch.changed) {
-                extrasMap?.moveExtras(v, new)
+    protected fun <T : Node?> Node.visitChildren(v: T, ch: ChangedRef): T =
+        if (v != null) {
+            visit(v, this, ch).also { new ->
+                if (ch.changed) {
+                    extrasMap?.moveExtras(v, new)
+                }
             }
+        } else {
+            v
         }
 
-    protected fun <T : Node?> Node?.visitChildren(v: List<T>, ch: ChangedRef): List<T> = ch.sub { newCh ->
+    protected fun <T : Node> Node.visitChildren(v: List<T>, ch: ChangedRef): List<T> = ch.sub { newCh ->
         val newList = v.map { orig -> visitChildren(orig, newCh).also { newCh.markIf(it, orig) } }
         newList.origOrChanged(v, newCh)
     }
@@ -502,14 +507,14 @@ open class MutableVisitor(
     }
 
     companion object {
-        fun <T : Node> preVisit(v: T, extrasMap: MutableExtrasMap? = null, fn: (v: Node?, parent: Node) -> Node?) =
+        fun <T : Node> preVisit(v: T, extrasMap: MutableExtrasMap? = null, fn: (v: Node, parent: Node?) -> Node?) =
             object : MutableVisitor(extrasMap) {
-                override fun <T : Node?> preVisit(v: T, parent: Node): T = fn(v, parent) as T
-            }.visit(v, v)
+                override fun <T : Node> preVisit(v: T, parent: Node?): T = fn(v, parent) as T
+            }.visit(v)
 
-        fun <T : Node> postVisit(v: T, extrasMap: MutableExtrasMap? = null, fn: (v: Node?, parent: Node) -> Node?) =
+        fun <T : Node> postVisit(v: T, extrasMap: MutableExtrasMap? = null, fn: (v: Node, parent: Node?) -> Node?) =
             object : MutableVisitor(extrasMap) {
-                override fun <T : Node?> postVisit(v: T, parent: Node): T = fn(v, parent) as T
-            }.visit(v, v)
+                override fun <T : Node> postVisit(v: T, parent: Node?): T = fn(v, parent) as T
+            }.visit(v)
     }
 }
