@@ -18,7 +18,7 @@ open class Converter {
     protected open fun onNode(node: Node, elem: PsiElement?) {}
 
     open fun convertFile(v: KtFile) = Node.File(
-        anns = convertAnnotationSets(v),
+        annotationSets = convertAnnotationSets(v),
         pkg = v.packageDirective?.takeIf { it.packageNames.isNotEmpty() }?.let(::convertPackage),
         imports = v.importList?.let(::convertImports),
         decls = v.declarations.map(::convertDecl)
@@ -366,7 +366,7 @@ open class Converter {
     ).map(v)
 
     open fun convertTypeConstraint(v: KtTypeConstraint) = Node.PostModifier.TypeConstraints.TypeConstraint(
-        anns = v.children.mapNotNull {
+        annotationSets = v.children.mapNotNull {
             when (it) {
                 is KtAnnotationEntry -> convertAnnotationSet(it)
                 is KtAnnotation -> convertAnnotationSet(it)
@@ -526,7 +526,7 @@ open class Converter {
 
     open fun convertFor(v: KtForExpression) = Node.Expr.For(
         forKeyword = convertKeyword(v.forKeyword, Node.Keyword::For),
-        anns = v.loopParameter?.annotations?.map(::convertAnnotationSet) ?: emptyList(),
+        annotationSets = v.loopParameter?.annotations?.map(::convertAnnotationSet) ?: emptyList(),
         loopParam = convertLambdaParam(v.loopParameter ?: error("No param on for $v")),
         loopRange = convertContainer(v.loopRangeContainer),
         body = convertContainer(v.bodyContainer),
@@ -808,7 +808,7 @@ open class Converter {
     ).map(v)
 
     open fun convertAnnotated(v: KtAnnotatedExpression) = Node.Expr.Annotated(
-        anns = convertAnnotationSets(v),
+        annotationSets = convertAnnotationSets(v),
         expr = convertExpr(v.baseExpression ?: error("No annotated expr for $v"))
     ).map(v)
 
@@ -836,7 +836,7 @@ open class Converter {
 
         val expr = v.getArgumentExpression()?.extractLambda() ?: error("No lambda for $v")
         return Node.Expr.Call.LambdaArg(
-            anns = anns,
+            annotationSets = anns,
             label = label,
             func = convertLambda(expr)
         ).map(v)

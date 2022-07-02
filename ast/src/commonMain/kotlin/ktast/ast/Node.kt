@@ -20,17 +20,17 @@ sealed class Node {
         abstract val trailingComma: Keyword.Comma?
     }
 
-    interface WithAnnotations {
-        val anns: List<Modifier.AnnotationSet>
+    interface WithAnnotationSets {
+        val annotationSets: List<Modifier.AnnotationSet>
     }
 
-    interface WithModifiers : WithAnnotations {
+    interface WithModifiers : WithAnnotationSets {
         val mods: Modifiers?
-        override val anns: List<Modifier.AnnotationSet>
+        override val annotationSets: List<Modifier.AnnotationSet>
             get() = mods?.elements.orEmpty().mapNotNull { it as? Modifier.AnnotationSet }
     }
 
-    interface Entry : WithAnnotations {
+    interface Entry : WithAnnotationSets {
         val pkg: Package?
         val imports: Imports?
     }
@@ -48,14 +48,14 @@ sealed class Node {
     }
 
     data class File(
-        override val anns: List<Modifier.AnnotationSet>,
+        override val annotationSets: List<Modifier.AnnotationSet>,
         override val pkg: Package?,
         override val imports: Imports?,
         override val decls: List<Decl>
     ) : Node(), Entry, DeclsContainer
 
     data class Script(
-        override val anns: List<Modifier.AnnotationSet>,
+        override val annotationSets: List<Modifier.AnnotationSet>,
         override val pkg: Package?,
         override val imports: Imports?,
         val exprs: List<Expr>
@@ -556,11 +556,11 @@ sealed class Node {
          */
         data class For(
             val forKeyword: Keyword.For,
-            override val anns: List<Modifier.AnnotationSet>,
+            override val annotationSets: List<Modifier.AnnotationSet>,
             val loopParam: Lambda.Param,
             val loopRange: Container,
             val body: Container,
-        ) : Expr(), WithAnnotations
+        ) : Expr(), WithAnnotationSets
 
         /**
          * AST node corresponds to KtWhileExpressionBase.
@@ -871,9 +871,9 @@ sealed class Node {
          * AST node corresponds to KtAnnotatedExpression.
          */
         data class Annotated(
-            override val anns: List<Modifier.AnnotationSet>,
+            override val annotationSets: List<Modifier.AnnotationSet>,
             val expr: Expr
-        ) : Expr(), WithAnnotations
+        ) : Expr(), WithAnnotationSets
 
         /**
          * AST node corresponds to KtCallExpression.
@@ -889,10 +889,10 @@ sealed class Node {
              * AST node corresponds to KtLambdaArgument.
              */
             data class LambdaArg(
-                override val anns: List<Modifier.AnnotationSet>,
+                override val annotationSets: List<Modifier.AnnotationSet>,
                 val label: String?,
                 val func: Lambda
-            ) : Node(), WithAnnotations
+            ) : Node(), WithAnnotationSets
         }
 
         /**
@@ -987,10 +987,10 @@ sealed class Node {
              * AST node corresponds to KtTypeConstraint.
              */
             data class TypeConstraint(
-                override val anns: List<Modifier.AnnotationSet>,
+                override val annotationSets: List<Modifier.AnnotationSet>,
                 val name: Expr.Name,
                 val typeRef: TypeRef
-            ) : Node(), WithAnnotations
+            ) : Node(), WithAnnotationSets
         }
 
         /**

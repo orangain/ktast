@@ -13,13 +13,13 @@ open class MutableVisitor(
             preVisit(this, parent).run {
                 val new: Node = when (this) {
                     is Node.File -> copy(
-                        anns = visitChildren(anns, newCh),
+                        annotationSets = visitChildren(annotationSets, newCh),
                         pkg = visitChildren(pkg, newCh),
                         imports = visitChildren(imports, newCh),
                         decls = visitChildren(decls, newCh)
                     )
                     is Node.Script -> copy(
-                        anns = visitChildren(anns, newCh),
+                        annotationSets = visitChildren(annotationSets, newCh),
                         pkg = visitChildren(pkg, newCh),
                         imports = visitChildren(imports, newCh),
                         exprs = visitChildren(exprs, newCh)
@@ -276,7 +276,7 @@ open class MutableVisitor(
                     )
                     is Node.Expr.For -> copy(
                         forKeyword = visitChildren(forKeyword, newCh),
-                        anns = visitChildren(anns, newCh),
+                        annotationSets = visitChildren(annotationSets, newCh),
                         loopParam = visitChildren(loopParam, newCh),
                         loopRange = visitChildren(loopRange, newCh),
                         body = visitChildren(body, newCh)
@@ -403,7 +403,7 @@ open class MutableVisitor(
                         expr = visitChildren(expr, newCh)
                     )
                     is Node.Expr.Annotated -> copy(
-                        anns = visitChildren(anns, newCh),
+                        annotationSets = visitChildren(annotationSets, newCh),
                         expr = visitChildren(expr, newCh)
                     )
                     is Node.Expr.Call -> copy(
@@ -413,7 +413,7 @@ open class MutableVisitor(
                         lambdaArgs = visitChildren(lambdaArgs, newCh)
                     )
                     is Node.Expr.Call.LambdaArg -> copy(
-                        anns = visitChildren(anns, newCh),
+                        annotationSets = visitChildren(annotationSets, newCh),
                         func = visitChildren(func, newCh)
                     )
                     is Node.Expr.ArrayAccess -> copy(
@@ -452,7 +452,7 @@ open class MutableVisitor(
                         elements = visitChildren(elements, newCh),
                     )
                     is Node.PostModifier.TypeConstraints.TypeConstraint -> copy(
-                        anns = visitChildren(anns, newCh),
+                        annotationSets = visitChildren(annotationSets, newCh),
                         name = visitChildren(name, newCh),
                         typeRef = visitChildren(typeRef, newCh)
                     )

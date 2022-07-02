@@ -13,13 +13,13 @@ open class Visitor {
                 visitChildren(elements)
             }
             is Node.File -> {
-                visitChildren(anns)
+                visitChildren(annotationSets)
                 visitChildren(pkg)
                 visitChildren(imports)
                 visitChildren(decls)
             }
             is Node.Script -> {
-                visitChildren(anns)
+                visitChildren(annotationSets)
                 visitChildren(pkg)
                 visitChildren(imports)
                 visitChildren(exprs)
@@ -249,7 +249,7 @@ open class Visitor {
             }
             is Node.Expr.For -> {
                 visitChildren(forKeyword)
-                visitChildren(anns)
+                visitChildren(annotationSets)
                 visitChildren(loopParam)
                 visitChildren(loopRange)
                 visitChildren(body)
@@ -368,7 +368,7 @@ open class Visitor {
                 visitChildren(expr)
             }
             is Node.Expr.Annotated -> {
-                visitChildren(anns)
+                visitChildren(annotationSets)
                 visitChildren(expr)
             }
             is Node.Expr.Call -> {
@@ -378,7 +378,7 @@ open class Visitor {
                 visitChildren(lambdaArgs)
             }
             is Node.Expr.Call.LambdaArg -> {
-                visitChildren(anns)
+                visitChildren(annotationSets)
                 visitChildren(func)
             }
             is Node.Expr.ArrayAccess -> {
@@ -411,7 +411,7 @@ open class Visitor {
                 visitChildren(constraints)
             }
             is Node.PostModifier.TypeConstraints.TypeConstraint -> {
-                visitChildren(anns)
+                visitChildren(annotationSets)
                 visitChildren(name)
                 visitChildren(typeRef)
             }

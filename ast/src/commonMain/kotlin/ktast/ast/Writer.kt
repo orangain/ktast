@@ -60,7 +60,7 @@ open class Writer(
                     children(elements, prefix = prefix, suffix = suffix)
                 }
                 is Node.File -> {
-                    children(anns, skipWritingExtrasWithin = true)
+                    children(annotationSets, skipWritingExtrasWithin = true)
                     children(pkg)
                     children(imports)
                     children(decls)
@@ -322,7 +322,7 @@ open class Writer(
                 is Node.Expr.For -> {
                     children(forKeyword)
                     append("(")
-                    children(anns)
+                    children(annotationSets)
                     children(loopParam)
                     append("in")
                     children(loopRange)
@@ -496,7 +496,7 @@ open class Writer(
                 is Node.Expr.Labeled ->
                     append(label).append("@").also { children(expr) }
                 is Node.Expr.Annotated ->
-                    children(anns).also { children(expr) }
+                    children(annotationSets).also { children(expr) }
                 is Node.Expr.Call -> {
                     children(expr)
                     children(typeArgs)
@@ -504,7 +504,7 @@ open class Writer(
                     children(lambdaArgs)
                 }
                 is Node.Expr.Call.LambdaArg -> {
-                    children(anns)
+                    children(annotationSets)
                     if (label != null) append(label).append("@")
                     children(func)
                 }
@@ -543,7 +543,7 @@ open class Writer(
                     children(constraints)
                 }
                 is Node.PostModifier.TypeConstraints.TypeConstraint -> {
-                    children(anns)
+                    children(annotationSets)
                     children(name)
                     append(":")
                     children(typeRef)
