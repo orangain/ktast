@@ -304,7 +304,7 @@ open class Visitor {
             is Node.Expression.StringTemplate.Entry.LongTemplate -> {
                 visitChildren(expression)
             }
-            is Node.Expression.Const -> {}
+            is Node.Expression.Constant -> {}
             is Node.Expression.Lambda -> {
                 visitChildren(params)
                 visitChildren(body)
