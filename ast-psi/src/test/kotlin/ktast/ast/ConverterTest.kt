@@ -14,17 +14,17 @@ class ConverterTest {
                 val x = ""
             """.trimIndent(),
             """
-                Node.File
-                  Node.Decl.Property
+                Node.KotlinFile
+                  Node.Declaration.Property
                     Node.Keyword.ValOrVar
                     AFTER: Node.Extra.Whitespace
-                    Node.Decl.Property.Variable.Single
-                      Node.Expr.Name
+                    Node.Declaration.Property.Variable.Single
+                      Node.Expression.Name
                       AFTER: Node.Extra.Whitespace
                     Node.Initializer
                       Node.Keyword.Equal
                       AFTER: Node.Extra.Whitespace
-                      Node.Expr.StringTmpl
+                      Node.Expression.StringTemplate
             """.trimIndent()
         )
     }
@@ -36,17 +36,17 @@ class ConverterTest {
                 val x = "" // x is empty
             """.trimIndent(),
             """
-                Node.File
-                  Node.Decl.Property
+                Node.KotlinFile
+                  Node.Declaration.Property
                     Node.Keyword.ValOrVar
                     AFTER: Node.Extra.Whitespace
-                    Node.Decl.Property.Variable.Single
-                      Node.Expr.Name
+                    Node.Declaration.Property.Variable.Single
+                      Node.Expression.Name
                       AFTER: Node.Extra.Whitespace
                     Node.Initializer
                       Node.Keyword.Equal
                       AFTER: Node.Extra.Whitespace
-                      Node.Expr.StringTmpl
+                      Node.Expression.StringTemplate
                       AFTER: Node.Extra.Whitespace
                       AFTER: Node.Extra.Comment
             """.trimIndent()
