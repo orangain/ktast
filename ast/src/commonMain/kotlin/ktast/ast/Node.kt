@@ -30,7 +30,7 @@ sealed class Node {
             get() = modifiers?.elements.orEmpty().mapNotNull { it as? Modifier.AnnotationSet }
     }
 
-    interface Entry : WithAnnotationSets {
+    interface KotlinEntry : WithAnnotationSets {
         val packageDirective: PackageDirective?
         val importDirectives: ImportDirectives?
     }
@@ -52,14 +52,14 @@ sealed class Node {
         override val packageDirective: PackageDirective?,
         override val importDirectives: ImportDirectives?,
         override val declarations: List<Declaration>
-    ) : Node(), Entry, DeclarationsContainer
+    ) : Node(), KotlinEntry, DeclarationsContainer
 
     data class Script(
         override val annotationSets: List<Modifier.AnnotationSet>,
         override val packageDirective: PackageDirective?,
         override val importDirectives: ImportDirectives?,
         val expressions: List<Expression>
-    ) : Node(), Entry
+    ) : Node(), KotlinEntry
 
     /**
      * AST node corresponds to KtPackageDirective.
