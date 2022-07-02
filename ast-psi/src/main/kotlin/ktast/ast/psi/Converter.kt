@@ -469,11 +469,11 @@ open class Converter {
         is KtTryExpression -> convertTry(v)
         is KtForExpression -> convertFor(v)
         is KtWhileExpressionBase -> convertWhile(v)
-        is KtBinaryExpression -> convertBinaryOp(v)
-        is KtQualifiedExpression -> convertBinaryOp(v)
-        is KtUnaryExpression -> convertUnaryOp(v)
-        is KtBinaryExpressionWithTypeRHS -> convertTypeOp(v)
-        is KtIsExpression -> convertTypeOp(v)
+        is KtBinaryExpression -> convertBinary(v)
+        is KtQualifiedExpression -> convertBinary(v)
+        is KtUnaryExpression -> convertUnary(v)
+        is KtBinaryExpressionWithTypeRHS -> convertBinaryType(v)
+        is KtIsExpression -> convertBinaryType(v)
         is KtCallableReferenceExpression -> convertDoubleColonRefCallable(v)
         is KtClassLiteralExpression -> convertDoubleColonRefClass(v)
         is KtParenthesizedExpression -> convertParen(v)
@@ -539,43 +539,43 @@ open class Converter {
         doWhile = v is KtDoWhileExpression
     ).map(v)
 
-    open fun convertBinaryOp(v: KtBinaryExpression) = Node.Expression.BinaryOp(
+    open fun convertBinary(v: KtBinaryExpression) = Node.Expression.Binary(
         lhs = convertExpression(v.left ?: error("No binary lhs for $v")),
         oper = binaryTokensByText[v.operationReference.text].let {
-            if (it != null) Node.Expression.BinaryOp.Oper.Token(it).map(v.operationReference)
-            else Node.Expression.BinaryOp.Oper.Infix(v.operationReference.text).map(v.operationReference)
+            if (it != null) Node.Expression.Binary.Oper.Token(it).map(v.operationReference)
+            else Node.Expression.Binary.Oper.Infix(v.operationReference.text).map(v.operationReference)
         },
         rhs = convertExpression(v.right ?: error("No binary rhs for $v"))
     ).map(v)
 
-    open fun convertBinaryOp(v: KtQualifiedExpression) = Node.Expression.BinaryOp(
+    open fun convertBinary(v: KtQualifiedExpression) = Node.Expression.Binary(
         lhs = convertExpression(v.receiverExpression),
-        oper = Node.Expression.BinaryOp.Oper.Token(
-            if (v is KtDotQualifiedExpression) Node.Expression.BinaryOp.Token.DOT else Node.Expression.BinaryOp.Token.DOT_SAFE
+        oper = Node.Expression.Binary.Oper.Token(
+            if (v is KtDotQualifiedExpression) Node.Expression.Binary.Token.DOT else Node.Expression.Binary.Token.DOT_SAFE
         ),
         rhs = convertExpression(v.selectorExpression ?: error("No qualified rhs for $v"))
     ).map(v)
 
-    open fun convertUnaryOp(v: KtUnaryExpression) = Node.Expression.UnaryOp(
+    open fun convertUnary(v: KtUnaryExpression) = Node.Expression.Unary(
         expression = convertExpression(v.baseExpression ?: error("No unary expr for $v")),
         oper = v.operationReference.let {
-            Node.Expression.UnaryOp.Oper(unaryTokensByText[it.text] ?: error("Unable to find op ref $it")).map(it)
+            Node.Expression.Unary.Oper(unaryTokensByText[it.text] ?: error("Unable to find op ref $it")).map(it)
         },
         prefix = v is KtPrefixExpression
     ).map(v)
 
-    open fun convertTypeOp(v: KtBinaryExpressionWithTypeRHS) = Node.Expression.TypeOp(
+    open fun convertBinaryType(v: KtBinaryExpressionWithTypeRHS) = Node.Expression.BinaryType(
         lhs = convertExpression(v.left),
         oper = v.operationReference.let {
-            Node.Expression.TypeOp.Oper(typeTokensByText[it.text] ?: error("Unable to find op ref $it")).map(it)
+            Node.Expression.BinaryType.Oper(typeTokensByText[it.text] ?: error("Unable to find op ref $it")).map(it)
         },
         rhs = convertTypeRef(v.right ?: error("No type op rhs for $v"))
     ).map(v)
 
-    open fun convertTypeOp(v: KtIsExpression) = Node.Expression.TypeOp(
+    open fun convertBinaryType(v: KtIsExpression) = Node.Expression.BinaryType(
         lhs = convertExpression(v.leftHandSide),
         oper = v.operationReference.let {
-            Node.Expression.TypeOp.Oper(typeTokensByText[it.text] ?: error("Unable to find op ref $it")).map(it)
+            Node.Expression.BinaryType.Oper(typeTokensByText[it.text] ?: error("Unable to find op ref $it")).map(it)
         },
         rhs = convertTypeRef(v.typeReference ?: error("No type op rhs for $v"))
     ).map(v)
@@ -976,9 +976,9 @@ open class Converter {
 
     companion object : Converter() {
         internal val modifiersByText = Node.Modifier.Keyword.values().associateBy { it.name.lowercase() }
-        internal val binaryTokensByText = Node.Expression.BinaryOp.Token.values().associateBy { it.str }
-        internal val unaryTokensByText = Node.Expression.UnaryOp.Token.values().associateBy { it.str }
-        internal val typeTokensByText = Node.Expression.TypeOp.Token.values().associateBy { it.str }
+        internal val binaryTokensByText = Node.Expression.Binary.Token.values().associateBy { it.str }
+        internal val unaryTokensByText = Node.Expression.Unary.Token.values().associateBy { it.str }
+        internal val typeTokensByText = Node.Expression.BinaryType.Token.values().associateBy { it.str }
 
         internal val KtImportDirective.importKeyword: PsiElement
             get() = findChildByType(this, KtTokens.IMPORT_KEYWORD) ?: error("Missing import keyword for $this")

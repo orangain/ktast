@@ -345,27 +345,27 @@ open class Writer(
                         append(")")
                     }
                 }
-                is Node.Expression.BinaryOp -> {
+                is Node.Expression.Binary -> {
                     children(listOf(lhs, oper, rhs))
                 }
-                is Node.Expression.BinaryOp.Oper.Infix ->
+                is Node.Expression.Binary.Oper.Infix ->
                     append(str)
-                is Node.Expression.BinaryOp.Oper.Token ->
-                    if (token == Node.Expression.BinaryOp.Token.IN || token == Node.Expression.BinaryOp.Token.NOT_IN) {
+                is Node.Expression.Binary.Oper.Token ->
+                    if (token == Node.Expression.Binary.Token.IN || token == Node.Expression.Binary.Token.NOT_IN) {
                         // Using appendNonSymbol may cause insertion of unneeded space before !in.
                         // However, we ignore them as it is rare case for now.
                         append(token.str)
                     } else {
                         append(token.str)
                     }
-                is Node.Expression.UnaryOp ->
+                is Node.Expression.Unary ->
                     if (prefix) children(oper, expression) else children(expression, oper)
-                is Node.Expression.UnaryOp.Oper ->
+                is Node.Expression.Unary.Oper ->
                     append(token.str)
-                is Node.Expression.TypeOp ->
+                is Node.Expression.BinaryType ->
                     children(listOf(lhs, oper, rhs), "")
-                is Node.Expression.TypeOp.Oper -> {
-                    if (token == Node.Expression.TypeOp.Token.COL) {
+                is Node.Expression.BinaryType.Oper -> {
+                    if (token == Node.Expression.BinaryType.Token.COL) {
                         append(token.str)
                     } else {
                         // Using appendNonSymbol may cause insertion of unneeded spaces before or after symbols.
@@ -613,7 +613,7 @@ open class Writer(
                 append("\n")
             }
         }
-        if (parent is Node.Expression.Annotated && (this is Node.Expression.BinaryOp || this is Node.Expression.TypeOp)) {
+        if (parent is Node.Expression.Annotated && (this is Node.Expression.Binary || this is Node.Expression.BinaryType)) {
             // Annotated expression requires newline between annotation and expression when expression is a binary operation.
             // This is because, without newline, annotated expression of binary expression is ambiguous with binary expression of annotated expression.
             if (!containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {

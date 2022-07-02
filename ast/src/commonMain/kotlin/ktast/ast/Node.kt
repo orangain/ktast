@@ -575,14 +575,14 @@ sealed class Node {
         /**
          * AST node corresponds to KtBinaryExpression or KtQualifiedExpression.
          */
-        data class BinaryOp(
+        data class Binary(
             val lhs: Expression,
             val oper: Oper,
             val rhs: Expression
         ) : Expression() {
             sealed class Oper : Node() {
                 data class Infix(val str: String) : Oper()
-                data class Token(val token: BinaryOp.Token) : Oper()
+                data class Token(val token: Binary.Token) : Oper()
             }
 
             enum class Token(val str: String) {
@@ -599,7 +599,7 @@ sealed class Node {
         /**
          * AST node corresponds to KtUnaryExpression.
          */
-        data class UnaryOp(
+        data class Unary(
             val expression: Expression,
             val oper: Oper,
             val prefix: Boolean
@@ -613,7 +613,7 @@ sealed class Node {
         /**
          * AST node corresponds to KtBinaryExpressionWithTypeRHS or KtIsExpression.
          */
-        data class TypeOp(
+        data class BinaryType(
             val lhs: Expression,
             val oper: Oper,
             val rhs: TypeRef

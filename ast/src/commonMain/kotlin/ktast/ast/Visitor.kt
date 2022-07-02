@@ -259,24 +259,24 @@ open class Visitor {
                 visitChildren(condition)
                 visitChildren(body)
             }
-            is Node.Expression.BinaryOp -> {
+            is Node.Expression.Binary -> {
                 visitChildren(lhs)
                 visitChildren(oper)
                 visitChildren(rhs)
             }
-            is Node.Expression.BinaryOp.Oper.Infix -> {}
-            is Node.Expression.BinaryOp.Oper.Token -> {}
-            is Node.Expression.UnaryOp -> {
+            is Node.Expression.Binary.Oper.Infix -> {}
+            is Node.Expression.Binary.Oper.Token -> {}
+            is Node.Expression.Unary -> {
                 visitChildren(expression)
                 visitChildren(oper)
             }
-            is Node.Expression.UnaryOp.Oper -> {}
-            is Node.Expression.TypeOp -> {
+            is Node.Expression.Unary.Oper -> {}
+            is Node.Expression.BinaryType -> {
                 visitChildren(lhs)
                 visitChildren(oper)
                 visitChildren(rhs)
             }
-            is Node.Expression.TypeOp.Oper -> {}
+            is Node.Expression.BinaryType.Oper -> {}
             is Node.Expression.DoubleColonRef.Callable -> {
                 visitChildren(recv)
                 visitChildren(name)
