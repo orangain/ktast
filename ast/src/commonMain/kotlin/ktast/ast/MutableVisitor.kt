@@ -86,7 +86,6 @@ open class MutableVisitor(
                         typeParams = visitChildren(typeParams, newCh),
                         receiverTypeRef = visitChildren(receiverTypeRef, newCh),
                         name = visitChildren(name, newCh),
-                        postTypeParams = visitChildren(postTypeParams, newCh),
                         params = visitChildren(params, newCh),
                         typeRef = visitChildren(typeRef, newCh),
                         postModifiers = visitChildren(postModifiers, newCh),

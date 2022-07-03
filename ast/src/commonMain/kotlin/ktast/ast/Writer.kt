@@ -126,7 +126,6 @@ open class Writer(
                     children(typeParams)
                     if (receiverTypeRef != null) children(receiverTypeRef).append(".")
                     name?.also { children(it) }
-                    children(postTypeParams)
                     children(params)
                     if (typeRef != null) append(":").also { children(typeRef) }
                     children(postModifiers)

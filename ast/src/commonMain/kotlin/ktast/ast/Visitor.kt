@@ -80,7 +80,6 @@ open class Visitor {
                 visitChildren(typeParams)
                 visitChildren(receiverTypeRef)
                 visitChildren(name)
-                visitChildren(postTypeParams)
                 visitChildren(params)
                 visitChildren(typeRef)
                 visitChildren(postModifiers)

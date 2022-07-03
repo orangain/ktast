@@ -124,19 +124,22 @@ open class Converter {
     ).map(v)
 
     open fun convertFunction(v: KtNamedFunction): Node.Declaration.Function {
-        val hasTypeParameterListBeforeFunctionName = v.allChildren.find {
-            it is KtTypeParameterList || it is KtTypeReference || it.node.elementType == KtTokens.IDENTIFIER
-        } is KtTypeParameterList
+        if (v.typeParameterList != null) {
+            val hasTypeParameterListBeforeFunctionName = v.allChildren.find {
+                it is KtTypeParameterList || it is KtTypeReference || it.node.elementType == KtTokens.IDENTIFIER
+            } is KtTypeParameterList
+            if (!hasTypeParameterListBeforeFunctionName) {
+                // According to the Kotlin syntax, type parameters are not allowed here. However, Kotlin compiler can parse them.
+                throw Unsupported("Type parameters after function name is not allowed")
+            }
+        }
 
         return Node.Declaration.Function(
             modifiers = v.modifierList?.let(::convertModifiers),
             funKeyword = v.funKeyword?.let { convertKeyword(it, Node.Keyword::Fun) } ?: error("No fun keyword for $v"),
-            typeParams =
-            if (hasTypeParameterListBeforeFunctionName) v.typeParameterList?.let(::convertTypeParams) else null,
+            typeParams = v.typeParameterList?.let(::convertTypeParams),
             receiverTypeRef = v.receiverTypeReference?.let(::convertTypeRef),
             name = v.nameIdentifier?.let(::convertName),
-            postTypeParams =
-            if (!hasTypeParameterListBeforeFunctionName) v.typeParameterList?.let(::convertTypeParams) else null,
             params = v.valueParameterList?.let(::convertFuncParams),
             typeRef = v.typeReference?.let(::convertTypeRef),
             postModifiers = convertPostModifiers(v),

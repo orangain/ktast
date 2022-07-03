@@ -200,8 +200,6 @@ sealed class Node {
             val receiverTypeRef: TypeRef?,
             // Name not present on anonymous functions
             val name: Expression.Name?,
-            // According to the Kotlin syntax, type parameters are not allowed here. However, Kotlin compiler can parse them.
-            val postTypeParams: TypeParams?,
             val params: Params?,
             val typeRef: TypeRef?,
             override val postModifiers: List<PostModifier>,
