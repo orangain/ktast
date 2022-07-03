@@ -289,22 +289,22 @@ sealed class Node {
              * AST node corresponds to KtPropertyAccessor.
              */
             sealed class Accessor : Node(), WithModifiers, WithPostModifiers {
-                abstract val body: Declaration.Function.Body?
+                abstract val body: Function.Body?
 
-                data class Get(
+                data class Getter(
                     override val modifiers: Modifiers?,
                     val getKeyword: Keyword.Get,
                     val typeRef: TypeRef?,
                     override val postModifiers: List<PostModifier>,
-                    override val body: Declaration.Function.Body?
+                    override val body: Function.Body?
                 ) : Accessor()
 
-                data class Set(
+                data class Setter(
                     override val modifiers: Modifiers?,
                     val setKeyword: Keyword.Set,
                     val params: Params?,
                     override val postModifiers: List<PostModifier>,
-                    override val body: Declaration.Function.Body?
+                    override val body: Function.Body?
                 ) : Accessor()
 
                 /**
@@ -312,9 +312,9 @@ sealed class Node {
                  * Unlike [Function.Params], it does not contain parentheses.
                  */
                 data class Params(
-                    override val elements: List<Declaration.Function.Param>,
+                    override val elements: List<Function.Param>,
                     override val trailingComma: Keyword.Comma?,
-                ) : CommaSeparatedNodeList<Declaration.Function.Param>("", "")
+                ) : CommaSeparatedNodeList<Function.Param>("", "")
             }
         }
 

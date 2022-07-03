@@ -123,14 +123,14 @@ open class Visitor {
                 visitChildren(vars)
                 visitChildren(trailingComma)
             }
-            is Node.Declaration.Property.Accessor.Get -> {
+            is Node.Declaration.Property.Accessor.Getter -> {
                 visitChildren(modifiers)
                 visitChildren(getKeyword)
                 visitChildren(typeRef)
                 visitChildren(postModifiers)
                 visitChildren(body)
             }
-            is Node.Declaration.Property.Accessor.Set -> {
+            is Node.Declaration.Property.Accessor.Setter -> {
                 visitChildren(modifiers)
                 visitChildren(setKeyword)
                 visitChildren(params)

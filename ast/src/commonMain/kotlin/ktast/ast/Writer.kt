@@ -165,7 +165,7 @@ open class Writer(
                 is Node.Declaration.Property.Variable.Multi -> {
                     children(vars, ",", "(", ")", trailingComma)
                 }
-                is Node.Declaration.Property.Accessor.Get -> {
+                is Node.Declaration.Property.Accessor.Getter -> {
                     children(modifiers)
                     children(getKeyword)
                     if (body != null) {
@@ -175,7 +175,7 @@ open class Writer(
                         children(body)
                     }
                 }
-                is Node.Declaration.Property.Accessor.Set -> {
+                is Node.Declaration.Property.Accessor.Setter -> {
                     children(modifiers)
                     children(setKeyword)
                     if (body != null) {

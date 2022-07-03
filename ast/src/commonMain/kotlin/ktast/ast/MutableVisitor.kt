@@ -133,14 +133,14 @@ open class MutableVisitor(
                         vars = visitChildren(vars, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
-                    is Node.Declaration.Property.Accessor.Get -> copy(
+                    is Node.Declaration.Property.Accessor.Getter -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         getKeyword = visitChildren(getKeyword, newCh),
                         typeRef = visitChildren(typeRef, newCh),
                         postModifiers = visitChildren(postModifiers, newCh),
                         body = visitChildren(body, newCh)
                     )
-                    is Node.Declaration.Property.Accessor.Set -> copy(
+                    is Node.Declaration.Property.Accessor.Setter -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         setKeyword = visitChildren(setKeyword, newCh),
                         params = visitChildren(params, newCh),

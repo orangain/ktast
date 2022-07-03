@@ -222,13 +222,13 @@ open class Converter {
     ).map(v)
 
     open fun convertPropertyAccessor(v: KtPropertyAccessor) =
-        if (v.isGetter) Node.Declaration.Property.Accessor.Get(
+        if (v.isGetter) Node.Declaration.Property.Accessor.Getter(
             modifiers = v.modifierList?.let(::convertModifiers),
             getKeyword = convertKeyword(v.getKeyword, Node.Keyword::Get),
             typeRef = v.returnTypeReference?.let(::convertTypeRef),
             postModifiers = convertPostModifiers(v),
             body = convertFuncBody(v),
-        ).map(v) else Node.Declaration.Property.Accessor.Set(
+        ).map(v) else Node.Declaration.Property.Accessor.Setter(
             modifiers = v.modifierList?.let(::convertModifiers),
             setKeyword = convertKeyword(v.setKeyword, Node.Keyword::Set),
             params = v.parameterList?.let(::convertPropertyAccessorParams),
