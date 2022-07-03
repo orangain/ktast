@@ -239,9 +239,6 @@ open class MutableVisitor(
                         rPar = visitChildren(rPar, newCh),
                     )
                     is Node.Type.Dynamic -> this
-                    is Node.ConstructorCallee -> copy(
-                        type = visitChildren(type, newCh),
-                    )
                     is Node.ValueArgs -> copy(
                         elements = visitChildren(elements, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
@@ -430,12 +427,13 @@ open class MutableVisitor(
                     )
                     is Node.Modifier.AnnotationSet -> copy(
                         atSymbol = visitChildren(atSymbol, newCh),
+                        colon = visitChildren(colon, newCh),
                         lBracket = visitChildren(lBracket, newCh),
                         annotations = visitChildren(annotations, newCh),
                         rBracket = visitChildren(rBracket, newCh),
                     )
                     is Node.Modifier.AnnotationSet.Annotation -> copy(
-                        constructorCallee = visitChildren(constructorCallee, newCh),
+                        type = visitChildren(type, newCh),
                         args = visitChildren(args, newCh),
                     )
                     is Node.Modifier.Literal -> this

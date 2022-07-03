@@ -281,9 +281,6 @@ open class Writer(
                 }
                 is Node.Type.Dynamic ->
                     append("dynamic")
-                is Node.ConstructorCallee -> {
-                    children(type)
-                }
                 is Node.ExpressionContainer -> {
                     children(expression)
                 }
@@ -519,13 +516,14 @@ open class Writer(
                 }
                 is Node.Modifier.AnnotationSet -> {
                     children(atSymbol)
-                    if (target != null) append(target.name.lowercase()).append(':')
+                    if (target != null) append(target.name.lowercase())
+                    children(colon)
                     children(lBracket)
                     children(annotations)
                     children(rBracket)
                 }
                 is Node.Modifier.AnnotationSet.Annotation -> {
-                    children(constructorCallee)
+                    children(type)
                     children(args)
                     if (parent is Node.Modifier.AnnotationSet && parent.rBracket == null) {
                         nextHeuristicWhitespace = " " // Insert heuristic space after annotation if single form

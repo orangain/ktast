@@ -213,9 +213,6 @@ open class Visitor {
                 visitChildren(rPar)
             }
             is Node.Type.Dynamic -> {}
-            is Node.ConstructorCallee -> {
-                visitChildren(type)
-            }
             is Node.ValueArg -> {
                 visitChildren(name)
                 visitChildren(expression)
@@ -389,12 +386,13 @@ open class Visitor {
             }
             is Node.Modifier.AnnotationSet -> {
                 visitChildren(atSymbol)
+                visitChildren(colon)
                 visitChildren(lBracket)
                 visitChildren(annotations)
                 visitChildren(rBracket)
             }
             is Node.Modifier.AnnotationSet.Annotation -> {
-                visitChildren(constructorCallee)
+                visitChildren(type)
                 visitChildren(args)
             }
             is Node.Modifier.Literal -> {}

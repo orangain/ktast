@@ -418,12 +418,6 @@ open class Converter {
         expression = convertExpression(v.getExpression()),
     ).map(v)
 
-    open fun convertConstructorCallee(v: KtConstructorCalleeExpression) = Node.ConstructorCallee(
-        type = convertType(
-            v.typeReference?.typeElement ?: error("No type reference or type element for $v")
-        ) as? Node.Type.Simple ?: error(""),
-    ).map(v)
-
     open fun convertValueArgs(v: KtValueArgumentList) = Node.ValueArgs(
         elements = v.arguments.map(::convertValueArg),
         trailingComma = v.trailingComma?.let(::convertComma),
@@ -872,6 +866,7 @@ open class Converter {
     open fun convertAnnotationSet(v: KtAnnotation) = Node.Modifier.AnnotationSet(
         atSymbol = v.node.findChildByType(KtTokens.AT)?.let { convertKeyword(it.psi, Node.Keyword::At) },
         target = v.useSiteTarget?.let(::convertAnnotationSetTarget),
+        colon = v.colon?.let { convertKeyword(it, Node.Keyword::Colon) },
         lBracket = v.node.findChildByType(KtTokens.LBRACKET)?.let { convertKeyword(it.psi, Node.Keyword::LBracket) },
         annotations = v.entries.map(::convertAnnotation),
         rBracket = v.node.findChildByType(KtTokens.RBRACKET)?.let { convertKeyword(it.psi, Node.Keyword::RBracket) },
@@ -880,6 +875,7 @@ open class Converter {
     open fun convertAnnotationSet(v: KtAnnotationEntry) = Node.Modifier.AnnotationSet(
         atSymbol = v.atSymbol?.let { convertKeyword(it, Node.Keyword::At) },
         target = v.useSiteTarget?.let(::convertAnnotationSetTarget),
+        colon = v.colon?.let { convertKeyword(it, Node.Keyword::Colon) },
         lBracket = null,
         annotations = listOf(convertAnnotation(v)),
         rBracket = null,
@@ -898,7 +894,10 @@ open class Converter {
     }
 
     open fun convertAnnotation(v: KtAnnotationEntry) = Node.Modifier.AnnotationSet.Annotation(
-        constructorCallee = convertConstructorCallee(v.calleeExpression ?: error("No callee expression for $v")),
+        type = convertType(
+            v.calleeExpression?.typeReference?.typeElement
+                ?: error("No callee expression, type reference or type element for $v")
+        ) as? Node.Type.Simple ?: error("calleeExpression is not simple type"),
         args = v.valueArgumentList?.let(::convertValueArgs),
     ).map(v)
 
@@ -1022,6 +1021,11 @@ open class Converter {
                 .takeWhile { it.node.elementType != KtTokens.COLONCOLON }
                 .filter { it.node.elementType == KtTokens.QUEST }
                 .toList()
+
+        internal val KtAnnotation.colon: PsiElement?
+            get() = findChildByType(this, KtTokens.COLON)
+        internal val KtAnnotationEntry.colon: PsiElement?
+            get() = findChildByType(this, KtTokens.COLON)
 
         private fun findChildByType(v: KtElement, type: IElementType): PsiElement? =
             v.node.findChildByType(type)?.psi

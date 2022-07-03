@@ -511,13 +511,6 @@ sealed class Node {
     ) : Node(), WithModifiers
 
     /**
-     * AST node corresponds to KtConstructorCalleeExpression.
-     */
-    data class ConstructorCallee(
-        val type: Type.Simple,
-    ) : Node()
-
-    /**
      * AST node corresponds to KtValueArgumentList or KtInitializerList.
      */
     data class ValueArgs(
@@ -962,6 +955,7 @@ sealed class Node {
         data class AnnotationSet(
             val atSymbol: Node.Keyword.At?,
             val target: Target?,
+            val colon: Node.Keyword.Colon?,
             val lBracket: Node.Keyword.LBracket?,
             val annotations: List<Annotation>,
             val rBracket: Node.Keyword.RBracket?,
@@ -974,7 +968,7 @@ sealed class Node {
              * AST node corresponds to KtAnnotationEntry.
              */
             data class Annotation(
-                val constructorCallee: ConstructorCallee,
+                val type: Type.Simple,
                 val args: ValueArgs?
             ) : Node()
         }
@@ -1108,6 +1102,7 @@ sealed class Node {
         class LBracket : Keyword("[")
         class RBracket : Keyword("]")
         class At : Keyword("@")
+        class Colon : Keyword(":")
     }
 
     sealed class Extra : Node() {
