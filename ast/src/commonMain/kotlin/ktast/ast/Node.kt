@@ -512,7 +512,7 @@ sealed class Node {
      */
     data class ValueArg(
         val name: Expression.Name?,
-        val asterisk: Boolean,
+        val asterisk: Boolean, // Array spread operator
         val expression: Expression
     ) : Node()
 
