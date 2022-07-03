@@ -493,7 +493,7 @@ open class Writer(
                     children(expression)
                     children(typeArgs)
                     children(args)
-                    children(lambdaArgs)
+                    children(lambdaArg)
                 }
                 is Node.Expression.Call.LambdaArg -> {
                     children(annotationSets)
@@ -632,7 +632,7 @@ open class Writer(
                 append(";")
             }
         }
-        if (v is Node.Expression.Call && v.lambdaArgs.isEmpty() && next is Node.Expression.Lambda) {
+        if (v is Node.Expression.Call && v.lambdaArg == null && next is Node.Expression.Lambda) {
             if (!containsSemicolon(extrasSinceLastNonSymbol)) {
                 append(";")
             }

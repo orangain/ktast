@@ -797,7 +797,13 @@ open class Converter {
         expression = convertExpression(v.calleeExpression ?: error("No call expr for $v")),
         typeArgs = v.typeArgumentList?.let(::convertTypeArgs),
         args = v.valueArgumentList?.let(::convertValueArgs),
-        lambdaArgs = v.lambdaArguments.map(::convertCallLambdaArg)
+        lambdaArg = v.lambdaArguments.also {
+            if (it.size >= 2) {
+                // According to the Kotlin syntax, at most one lambda argument is allowed.
+                // However, Kotlin compiler can parse multiple lambda arguments.
+                throw Unsupported("At most one lambda argument is allowed")
+            }
+        }.firstOrNull()?.let(::convertCallLambdaArg)
     ).map(v)
 
     open fun convertCallLambdaArg(v: KtLambdaArgument): Node.Expression.Call.LambdaArg {

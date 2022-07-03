@@ -898,8 +898,7 @@ sealed class Node {
             val expression: Expression,
             val typeArgs: TypeArgs?,
             val args: ValueArgs?,
-            // According to the Kotlin syntax, at most one lambda argument is allowed. However, Kotlin compiler can parse multiple lambda arguments.
-            val lambdaArgs: List<LambdaArg>
+            val lambdaArg: LambdaArg?,
         ) : Expression() {
             /**
              * AST node corresponds to KtLambdaArgument.

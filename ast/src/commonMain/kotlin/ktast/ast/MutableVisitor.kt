@@ -402,7 +402,7 @@ open class MutableVisitor(
                         expression = visitChildren(expression, newCh),
                         typeArgs = visitChildren(typeArgs, newCh),
                         args = visitChildren(args, newCh),
-                        lambdaArgs = visitChildren(lambdaArgs, newCh)
+                        lambdaArg = visitChildren(lambdaArg, newCh)
                     )
                     is Node.Expression.Call.LambdaArg -> copy(
                         annotationSets = visitChildren(annotationSets, newCh),
