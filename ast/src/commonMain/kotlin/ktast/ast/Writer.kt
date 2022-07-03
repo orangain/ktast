@@ -92,9 +92,6 @@ open class Writer(
                     children(typeConstraints)
                     children(body)
                 }
-                is Node.Declaration.Class.Parents -> {
-                    children(items, ",")
-                }
                 is Node.Declaration.Class.Parent.CallConstructor -> {
                     children(type)
                     children(args)

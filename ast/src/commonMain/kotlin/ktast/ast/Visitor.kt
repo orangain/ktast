@@ -47,9 +47,6 @@ open class Visitor {
                 visitChildren(typeConstraints)
                 visitChildren(body)
             }
-            is Node.Declaration.Class.Parents -> {
-                visitChildren(items)
-            }
             is Node.Declaration.Class.Parent.CallConstructor -> {
                 visitChildren(type)
                 visitChildren(typeArgs)

@@ -88,7 +88,7 @@ open class Converter {
     ).map(v)
 
     open fun convertParents(v: KtSuperTypeList) = Node.Declaration.Class.Parents(
-        items = v.entries.map(::convertParent),
+        elements = v.entries.map(::convertParent),
     ).map(v)
 
     open fun convertParent(v: KtSuperTypeListEntry) = when (v) {

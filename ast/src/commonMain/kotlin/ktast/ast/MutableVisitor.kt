@@ -51,7 +51,7 @@ open class MutableVisitor(
                         body = visitChildren(body, newCh)
                     )
                     is Node.Declaration.Class.Parents -> copy(
-                        items = visitChildren(items, newCh),
+                        elements = visitChildren(elements, newCh),
                     )
                     is Node.Declaration.Class.Parent.CallConstructor -> copy(
                         type = visitChildren(type, newCh),

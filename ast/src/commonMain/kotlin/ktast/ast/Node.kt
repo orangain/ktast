@@ -126,7 +126,11 @@ sealed class Node {
             /**
              * AST node corresponds to KtSuperTypeList.
              */
-            data class Parents(val items: List<Parent>) : Node()
+            data class Parents(
+                override val elements: List<Parent>,
+            ) : CommaSeparatedNodeList<Parent>("", "") {
+                override val trailingComma: Keyword.Comma? = null
+            }
 
             /**
              * AST node corresponds to KtSuperTypeListEntry.
