@@ -224,7 +224,8 @@ sealed class Node {
                 val name: Expression.Name,
                 // Type can be null for anon functions
                 val typeRef: TypeRef?,
-                val initializer: Initializer?
+                val equals: Keyword.Equal?,
+                val defaultValue: Expression?,
             ) : Node(), WithModifiers
 
             /**
@@ -250,7 +251,8 @@ sealed class Node {
             // Always at least one, more than one is destructuring
             val variable: Variable,
             val typeConstraints: PostModifier.TypeConstraints?,
-            val initializer: Initializer?,
+            val equals: Keyword.Equal?,
+            val initializer: Expression?,
             val delegate: Delegate?,
             val accessors: List<Accessor>
         ) : Declaration(), WithModifiers {
@@ -360,14 +362,6 @@ sealed class Node {
         val args: ValueArgs?,
         val body: Declaration.Class.Body?,
     ) : Node(), WithModifiers
-
-    /**
-     * Virtual AST node corresponds to a pair of equals and expression.
-     */
-    data class Initializer(
-        val equals: Keyword.Equal,
-        val expression: Expression,
-    ) : Node()
 
     /**
      * AST node corresponds to KtTypeParameterList.

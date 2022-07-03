@@ -91,7 +91,8 @@ open class Visitor {
                 visitChildren(valOrVar)
                 visitChildren(name)
                 visitChildren(typeRef)
-                visitChildren(initializer)
+                visitChildren(equals)
+                visitChildren(defaultValue)
             }
             is Node.Declaration.Function.Body.Block -> {
                 visitChildren(block)
@@ -107,6 +108,7 @@ open class Visitor {
                 visitChildren(receiverTypeRef)
                 visitChildren(variable)
                 visitChildren(typeConstraints)
+                visitChildren(equals)
                 visitChildren(initializer)
                 visitChildren(delegate)
                 visitChildren(accessors)
@@ -162,10 +164,6 @@ open class Visitor {
                 visitChildren(name)
                 visitChildren(args)
                 visitChildren(body)
-            }
-            is Node.Initializer -> {
-                visitChildren(equals)
-                visitChildren(expression)
             }
             is Node.TypeParam -> {
                 visitChildren(modifiers)

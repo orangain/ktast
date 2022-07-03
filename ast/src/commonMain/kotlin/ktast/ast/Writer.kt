@@ -137,7 +137,8 @@ open class Writer(
                     children(valOrVar)
                     children(name)
                     if (typeRef != null) append(":").also { children(typeRef) }
-                    children(initializer)
+                    children(equals)
+                    children(defaultValue)
                 }
                 is Node.Declaration.Function.Body.Block ->
                     children(block)
@@ -150,6 +151,7 @@ open class Writer(
                     if (receiverTypeRef != null) children(receiverTypeRef).append('.')
                     children(variable)
                     children(typeConstraints)
+                    children(equals)
                     children(initializer)
                     children(delegate)
                     children(accessors)
@@ -216,10 +218,6 @@ open class Writer(
                     if (parent.declarations.isNotEmpty() && isLastEntry && !containsSemicolon(extrasSinceLastNonSymbol)) {
                         append(";") // Insert heuristic semicolon after the last enum entry
                     }
-                }
-                is Node.Initializer -> {
-                    children(equals)
-                    children(expression)
                 }
                 is Node.TypeParam -> {
                     children(modifiers)

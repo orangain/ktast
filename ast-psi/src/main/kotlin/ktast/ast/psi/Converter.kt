@@ -155,9 +155,8 @@ open class Converter {
         valOrVar = v.valOrVarKeyword?.let(::convertValOrVarKeyword),
         name = v.nameIdentifier?.let(::convertName) ?: error("No param name"),
         typeRef = v.typeReference?.let(::convertTypeRef),
-        initializer = v.defaultValue?.let {
-            convertInitializer(v.equalsToken ?: error("No equals token for initializer of $v"), it, v)
-        },
+        equals = v.equalsToken?.let { convertKeyword(it, Node.Keyword::Equal) },
+        defaultValue = v.defaultValue?.let(::convertExpression),
     ).map(v)
 
     open fun convertFuncBody(v: KtDeclarationWithBody): Node.Declaration.Function.Body? =
@@ -189,9 +188,8 @@ open class Converter {
                 constraints = convertTypeConstraints(typeConstraintList),
             ).mapNotCorrespondsPsiElement(v)
         },
-        initializer = v.initializer?.let {
-            convertInitializer(v.equalsToken ?: error("No equals token for initializer of $v"), it, v)
-        },
+        equals = v.equalsToken?.let { convertKeyword(it, Node.Keyword::Equal) },
+        initializer = v.initializer?.let(::convertExpression),
         delegate = v.delegate?.let(::convertPropertyDelegate),
         accessors = v.accessors.map(::convertPropertyAccessor),
     ).map(v)
@@ -206,7 +204,8 @@ open class Converter {
             trailingComma = v.trailingComma?.let(::convertComma),
         ),
         typeConstraints = null,
-        initializer = v.initializer?.let { convertInitializer(v.equalsToken, it, v) },
+        equals = convertKeyword(v.equalsToken, Node.Keyword::Equal),
+        initializer = v.initializer?.let(::convertExpression),
         delegate = null,
         accessors = listOf(),
     ).map(v)
@@ -281,11 +280,6 @@ open class Converter {
             declarations = declarationsExcludingKtEnumEntry.map(::convertDeclaration),
         ).map(v)
     }
-
-    open fun convertInitializer(equalsToken: PsiElement, expr: KtExpression, parent: PsiElement) = Node.Initializer(
-        equals = convertKeyword(equalsToken, Node.Keyword::Equal),
-        expression = convertExpression(expr),
-    ).mapNotCorrespondsPsiElement(parent)
 
     open fun convertTypeParams(v: KtTypeParameterList) = Node.TypeParams(
         elements = v.parameters.map(::convertTypeParam),

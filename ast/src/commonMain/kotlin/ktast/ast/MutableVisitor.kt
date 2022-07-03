@@ -101,7 +101,8 @@ open class MutableVisitor(
                         valOrVar = visitChildren(valOrVar, newCh),
                         name = visitChildren(name, newCh),
                         typeRef = visitChildren(typeRef, newCh),
-                        initializer = visitChildren(initializer, newCh)
+                        equals = visitChildren(equals, newCh),
+                        defaultValue = visitChildren(defaultValue, newCh),
                     )
                     is Node.Declaration.Function.Body.Block -> copy(
                         block = visitChildren(block, newCh)
@@ -117,6 +118,7 @@ open class MutableVisitor(
                         receiverTypeRef = visitChildren(receiverTypeRef, newCh),
                         variable = visitChildren(variable, newCh),
                         typeConstraints = visitChildren(typeConstraints, newCh),
+                        equals = visitChildren(equals, newCh),
                         initializer = visitChildren(initializer, newCh),
                         delegate = visitChildren(delegate, newCh),
                         accessors = visitChildren(accessors, newCh)
@@ -172,10 +174,6 @@ open class MutableVisitor(
                         name = visitChildren(name, newCh),
                         args = visitChildren(args, newCh),
                         body = visitChildren(body, newCh)
-                    )
-                    is Node.Initializer -> copy(
-                        equals = visitChildren(equals, newCh),
-                        expression = visitChildren(expression, newCh),
                     )
                     is Node.TypeParams -> copy(
                         elements = visitChildren(elements, newCh),
