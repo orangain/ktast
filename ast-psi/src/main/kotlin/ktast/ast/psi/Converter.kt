@@ -864,12 +864,12 @@ open class Converter {
     }
 
     open fun convertAnnotationSet(v: KtAnnotation) = Node.Modifier.AnnotationSet(
-        atSymbol = v.node.findChildByType(KtTokens.AT)?.let { convertKeyword(it.psi, Node.Keyword::At) },
+        atSymbol = v.atSymbol?.let { convertKeyword(it, Node.Keyword::At) },
         target = v.useSiteTarget?.let(::convertAnnotationSetTarget),
         colon = v.colon?.let { convertKeyword(it, Node.Keyword::Colon) },
-        lBracket = v.node.findChildByType(KtTokens.LBRACKET)?.let { convertKeyword(it.psi, Node.Keyword::LBracket) },
+        lBracket = v.lBracket?.let { convertKeyword(it, Node.Keyword::LBracket) },
         annotations = v.entries.map(::convertAnnotation),
-        rBracket = v.node.findChildByType(KtTokens.RBRACKET)?.let { convertKeyword(it.psi, Node.Keyword::RBracket) },
+        rBracket = v.rBracket?.let { convertKeyword(it, Node.Keyword::RBracket) },
     ).map(v)
 
     open fun convertAnnotationSet(v: KtAnnotationEntry) = Node.Modifier.AnnotationSet(
@@ -1022,8 +1022,14 @@ open class Converter {
                 .filter { it.node.elementType == KtTokens.QUEST }
                 .toList()
 
+        internal val KtAnnotation.atSymbol: PsiElement?
+            get() = findChildByType(this, KtTokens.AT)
         internal val KtAnnotation.colon: PsiElement?
             get() = findChildByType(this, KtTokens.COLON)
+        internal val KtAnnotation.lBracket: PsiElement?
+            get() = findChildByType(this, KtTokens.LBRACKET)
+        internal val KtAnnotation.rBracket: PsiElement?
+            get() = findChildByType(this, KtTokens.RBRACKET)
         internal val KtAnnotationEntry.colon: PsiElement?
             get() = findChildByType(this, KtTokens.COLON)
 
