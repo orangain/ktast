@@ -34,9 +34,13 @@ class CorpusParseAndWriteWithExtrasTest(private val unit: Corpus.Unit) {
             val identityNode = MutableVisitor.preVisit(origFile) { v, _ -> v }
             assertEquals(origFile, identityNode)
         } catch (e: Converter.Unsupported) {
-            Assume.assumeNoException(e.message, e)
+            if (unit.canSkip) {
+                Assume.assumeNoException(e.message, e)
+            } else {
+                throw e
+            }
         } catch (e: Parser.ParseError) {
-            if (unit.errorMessages.isEmpty()) throw e
+            if (!unit.canSkip || unit.errorMessages.isEmpty()) throw e
             assertEquals(unit.errorMessages.toSet(), e.errors.map { it.errorDescription }.toSet())
             Assume.assumeTrue("Partial parsing not supported (expected parse errors: ${unit.errorMessages})", false)
         }
