@@ -317,7 +317,6 @@ open class Writer(
                 is Node.Expression.For -> {
                     children(forKeyword)
                     append("(")
-                    children(annotationSets)
                     children(loopParam)
                     append("in")
                     children(loopRange)

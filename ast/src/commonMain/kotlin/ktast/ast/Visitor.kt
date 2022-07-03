@@ -231,7 +231,6 @@ open class Visitor {
             }
             is Node.Expression.For -> {
                 visitChildren(forKeyword)
-                visitChildren(annotationSets)
                 visitChildren(loopParam)
                 visitChildren(loopRange)
                 visitChildren(body)

@@ -607,11 +607,10 @@ sealed class Node {
          */
         data class For(
             val forKeyword: Keyword.For,
-            override val annotationSets: List<Modifier.AnnotationSet>,
             val loopParam: Lambda.Param,
             val loopRange: ExpressionContainer,
             val body: ExpressionContainer,
-        ) : Expression(), WithAnnotationSets
+        ) : Expression()
 
         /**
          * AST node corresponds to KtWhileExpressionBase.

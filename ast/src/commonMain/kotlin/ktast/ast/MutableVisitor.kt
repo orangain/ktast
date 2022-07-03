@@ -261,7 +261,6 @@ open class MutableVisitor(
                     )
                     is Node.Expression.For -> copy(
                         forKeyword = visitChildren(forKeyword, newCh),
-                        annotationSets = visitChildren(annotationSets, newCh),
                         loopParam = visitChildren(loopParam, newCh),
                         loopRange = visitChildren(loopRange, newCh),
                         body = visitChildren(body, newCh)

@@ -500,7 +500,6 @@ open class Converter {
 
     open fun convertFor(v: KtForExpression) = Node.Expression.For(
         forKeyword = convertKeyword(v.forKeyword, Node.Keyword::For),
-        annotationSets = v.loopParameter?.annotations?.map(::convertAnnotationSet) ?: emptyList(),
         loopParam = convertLambdaParam(v.loopParameter ?: error("No param on for $v")),
         loopRange = convertExpressionContainer(v.loopRangeContainer),
         body = convertExpressionContainer(v.bodyContainer),
@@ -877,7 +876,7 @@ open class Converter {
                 listOf(convertAnnotationSet(elem))
             is KtAnnotation ->
                 listOf(convertAnnotationSet(elem))
-            is KtFileAnnotationList ->
+            is KtAnnotationsContainer ->
                 convertAnnotationSets(elem)
             else ->
                 emptyList()
