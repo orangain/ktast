@@ -986,7 +986,7 @@ open class Converter {
         internal val KtPropertyAccessor.getKeyword: PsiElement
             get() = findChildByType(this, KtTokens.GET_KEYWORD) ?: error("No get keyword for $this")
 
-        private val KtEnumEntry.comma: PsiElement?
+        internal val KtEnumEntry.comma: PsiElement?
             get() = findChildByType(this, KtTokens.COMMA)
 
         internal val KtNullableType.leftParenthesis: PsiElement?
@@ -1006,14 +1006,14 @@ open class Converter {
             get() = findChildByType(this, KtNodeTypes.LOOP_RANGE)
                     as? KtContainerNode ?: error("No in range for $this")
 
-        private val KtWhileExpressionBase.whileKeyword: PsiElement
+        internal val KtWhileExpressionBase.whileKeyword: PsiElement
             get() = findChildByType(this, KtTokens.WHILE_KEYWORD) ?: error("No while keyword for $this")
 
         internal val KtLoopExpression.bodyContainer: KtContainerNodeForControlStructureBody
             get() = findChildByType(this, KtNodeTypes.BODY)
                     as? KtContainerNodeForControlStructureBody ?: error("No body for $this")
 
-        private val KtWhileExpressionBase.conditionContainer: KtContainerNode
+        internal val KtWhileExpressionBase.conditionContainer: KtContainerNode
             get() = findChildByType(this, KtNodeTypes.CONDITION)
                     as? KtContainerNode ?: error("No condition for $this")
 
