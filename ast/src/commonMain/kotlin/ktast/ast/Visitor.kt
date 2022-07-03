@@ -170,10 +170,7 @@ open class Visitor {
                 visitChildren(name)
                 visitChildren(typeRef)
             }
-            is Node.TypeArg.Asterisk -> {
-                visitChildren(asterisk)
-            }
-            is Node.TypeArg.Type -> {
+            is Node.TypeArg -> {
                 visitChildren(modifiers)
                 visitChildren(typeRef)
             }

@@ -224,12 +224,12 @@ open class Writer(
                     children(name)
                     if (typeRef != null) append(":").also { children(typeRef) }
                 }
-                is Node.TypeArg.Asterisk -> {
-                    children(asterisk)
-                }
-                is Node.TypeArg.Type -> {
+                is Node.TypeArg -> {
                     children(modifiers)
                     children(typeRef)
+                    if (asterisk) {
+                        append("*")
+                    }
                 }
                 is Node.TypeRef -> {
                     children(lPar)

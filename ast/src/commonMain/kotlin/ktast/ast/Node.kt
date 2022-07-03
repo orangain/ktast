@@ -468,16 +468,11 @@ sealed class Node {
     /**
      * AST node corresponds to KtTypeProjection.
      */
-    sealed class TypeArg : Node() {
-        data class Asterisk(
-            val asterisk: Keyword.Asterisk,
-        ) : TypeArg()
-
-        data class Type(
-            override val modifiers: Modifiers?,
-            val typeRef: TypeRef,
-        ) : TypeArg(), WithModifiers
-    }
+    data class TypeArg(
+        override val modifiers: Modifiers?,
+        val typeRef: TypeRef?,
+        val asterisk: Boolean,
+    ) : Node(), WithModifiers
 
     /**
      * AST node corresponds to KtTypeReference.
@@ -1085,7 +1080,6 @@ sealed class Node {
         class Equal : Keyword("=")
         class Comma : Keyword(",")
         class Question : Keyword("?")
-        class Asterisk : Keyword("*")
         class LPar : Keyword("(")
         class RPar : Keyword(")")
         class LBracket : Keyword("[")
