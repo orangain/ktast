@@ -474,8 +474,8 @@ open class Converter {
         is KtUnaryExpression -> convertUnary(v)
         is KtBinaryExpressionWithTypeRHS -> convertBinaryType(v)
         is KtIsExpression -> convertBinaryType(v)
-        is KtCallableReferenceExpression -> convertDoubleColonCallable(v)
-        is KtClassLiteralExpression -> convertDoubleColonClassLiteral(v)
+        is KtCallableReferenceExpression -> convertCallableReference(v)
+        is KtClassLiteralExpression -> convertClassLiteral(v)
         is KtParenthesizedExpression -> convertParenthesized(v)
         is KtStringTemplateExpression -> convertStringTemplate(v)
         is KtConstantExpression -> convertConst(v)
@@ -582,18 +582,18 @@ open class Converter {
         rhs = convertTypeRef(v.typeReference ?: error("No type op rhs for $v"))
     ).map(v)
 
-    open fun convertDoubleColonCallable(v: KtCallableReferenceExpression) = Node.Expression.DoubleColon.Callable(
-        receiver = v.receiverExpression?.let { expr ->
+    open fun convertCallableReference(v: KtCallableReferenceExpression) = Node.Expression.CallableReference(
+        lhs = v.receiverExpression?.let { expr ->
             convertDoubleColonReceiver(
                 expr,
                 v.questionMarks.map { convertKeyword(it, Node.Keyword::Question) }
             )
         },
-        name = convertName(v.callableReference)
+        rhs = convertName(v.callableReference)
     ).map(v)
 
-    open fun convertDoubleColonClassLiteral(v: KtClassLiteralExpression) = Node.Expression.DoubleColon.ClassLiteral(
-        receiver = v.receiverExpression?.let { expr ->
+    open fun convertClassLiteral(v: KtClassLiteralExpression) = Node.Expression.ClassLiteral(
+        lhs = v.receiverExpression?.let { expr ->
             convertDoubleColonReceiver(
                 expr,
                 v.questionMarks.map { convertKeyword(it, Node.Keyword::Question) }

@@ -277,12 +277,12 @@ open class Visitor {
                 visitChildren(rhs)
             }
             is Node.Expression.BinaryType.Operator -> {}
-            is Node.Expression.DoubleColon.Callable -> {
-                visitChildren(receiver)
-                visitChildren(name)
+            is Node.Expression.CallableReference -> {
+                visitChildren(lhs)
+                visitChildren(rhs)
             }
-            is Node.Expression.DoubleColon.ClassLiteral -> {
-                visitChildren(receiver)
+            is Node.Expression.ClassLiteral -> {
+                visitChildren(lhs)
             }
             is Node.Expression.DoubleColon.Receiver.Expression -> {
                 visitChildren(expression)

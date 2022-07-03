@@ -631,22 +631,7 @@ sealed class Node {
          * AST node corresponds to KtDoubleColonExpression.
          */
         sealed class DoubleColon : Expression() {
-            abstract val receiver: Receiver?
-
-            /**
-             * AST node corresponds to KtCallableReferenceExpression.
-             */
-            data class Callable(
-                override val receiver: Receiver?,
-                val name: Name
-            ) : DoubleColon()
-
-            /**
-             * AST node corresponds to KtClassLiteralExpression.
-             */
-            data class ClassLiteral(
-                override val receiver: Receiver?
-            ) : DoubleColon()
+            abstract val lhs: Receiver?
 
             sealed class Receiver : Node() {
                 data class Expression(val expression: Node.Expression) : Receiver()
@@ -656,6 +641,22 @@ sealed class Node {
                 ) : Receiver()
             }
         }
+
+        /**
+         * AST node corresponds to KtCallableReferenceExpression.
+         */
+        data class CallableReference(
+            override val lhs: Receiver?,
+            val rhs: Name
+        ) : DoubleColon()
+
+        /**
+         * AST node corresponds to KtClassLiteralExpression.
+         */
+        data class ClassLiteral(
+            // Class literal expression without lhs is not supported, but Kotlin compiler does parse it.
+            override val lhs: Receiver?
+        ) : DoubleColon()
 
         /**
          * AST node corresponds to KtParenthesizedExpression.

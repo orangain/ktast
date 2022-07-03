@@ -373,13 +373,13 @@ open class Writer(
                         append(token.str)
                     }
                 }
-                is Node.Expression.DoubleColon.Callable -> {
-                    if (receiver != null) children(receiver)
+                is Node.Expression.CallableReference -> {
+                    if (lhs != null) children(lhs)
                     append("::")
-                    children(name)
+                    children(rhs)
                 }
-                is Node.Expression.DoubleColon.ClassLiteral -> {
-                    if (receiver != null) children(receiver)
+                is Node.Expression.ClassLiteral -> {
+                    if (lhs != null) children(lhs)
                     append("::")
                     append("class")
                 }
