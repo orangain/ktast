@@ -802,21 +802,21 @@ open class Converter {
 
     open fun convertCallLambdaArg(v: KtLambdaArgument): Node.Expression.Call.LambdaArg {
         var label: String? = null
-        var anns: List<Node.Modifier.AnnotationSet> = emptyList()
+        var annotationSets: List<Node.Modifier.AnnotationSet> = emptyList()
         fun KtExpression.extractLambda(): KtLambdaExpression? = when (this) {
             is KtLambdaExpression -> this
             is KtLabeledExpression -> baseExpression?.extractLambda().also {
                 label = getLabelName()
             }
             is KtAnnotatedExpression -> baseExpression?.extractLambda().also {
-                anns = convertAnnotationSets(this)
+                annotationSets = convertAnnotationSets(this)
             }
             else -> null
         }
 
         val expr = v.getArgumentExpression()?.extractLambda() ?: error("No lambda for $v")
         return Node.Expression.Call.LambdaArg(
-            annotationSets = anns,
+            annotationSets = annotationSets,
             label = label,
             func = convertLambda(expr)
         ).map(v)
