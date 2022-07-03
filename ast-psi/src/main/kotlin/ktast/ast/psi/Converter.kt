@@ -803,15 +803,14 @@ open class Converter {
     open fun convertCallLambdaArg(v: KtLambdaArgument): Node.Expression.Call.LambdaArg {
         var label: String? = null
         var anns: List<Node.Modifier.AnnotationSet> = emptyList()
-        fun KtExpression.extractLambda(allowParens: Boolean = false): KtLambdaExpression? = when (this) {
+        fun KtExpression.extractLambda(): KtLambdaExpression? = when (this) {
             is KtLambdaExpression -> this
-            is KtLabeledExpression -> baseExpression?.extractLambda(allowParens).also {
+            is KtLabeledExpression -> baseExpression?.extractLambda().also {
                 label = getLabelName()
             }
-            is KtAnnotatedExpression -> baseExpression?.extractLambda(allowParens).also {
+            is KtAnnotatedExpression -> baseExpression?.extractLambda().also {
                 anns = convertAnnotationSets(this)
             }
-            is KtParenthesizedExpression -> if (allowParens) expression?.extractLambda(allowParens) else null
             else -> null
         }
 
