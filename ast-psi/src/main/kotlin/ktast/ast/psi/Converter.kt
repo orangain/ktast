@@ -12,7 +12,6 @@ import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
 import org.jetbrains.kotlin.psi.psiUtil.children
 import org.jetbrains.kotlin.psi.psiUtil.siblings
-import org.jetbrains.kotlin.psi.stubs.elements.KtStubElementTypes
 
 open class Converter {
     protected open fun onNode(node: Node, elem: PsiElement?) {}
@@ -989,9 +988,6 @@ open class Converter {
 
         private val KtEnumEntry.comma: PsiElement?
             get() = findChildByType(this, KtTokens.COMMA)
-
-        internal val KtTypeReference.contextReceiverList
-            get() = getStubOrPsiChild(KtStubElementTypes.CONTEXT_RECEIVER_LIST)
 
         internal val KtNullableType.leftParenthesis: PsiElement?
             get() = findChildByType(this, KtTokens.LPAR)
