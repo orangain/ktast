@@ -868,7 +868,10 @@ open class Converter {
         target = v.useSiteTarget?.let(::convertAnnotationSetTarget),
         colon = v.colon?.let { convertKeyword(it, Node.Keyword::Colon) },
         lBracket = v.lBracket?.let { convertKeyword(it, Node.Keyword::LBracket) },
-        annotations = v.entries.map(::convertAnnotation),
+        annotations = v.entries.map {
+            convertAnnotationWithoutMapping(it)
+                .map(it)
+        },
         rBracket = v.rBracket?.let { convertKeyword(it, Node.Keyword::RBracket) },
     ).map(v)
 
@@ -877,7 +880,10 @@ open class Converter {
         target = v.useSiteTarget?.let(::convertAnnotationSetTarget),
         colon = v.colon?.let { convertKeyword(it, Node.Keyword::Colon) },
         lBracket = null,
-        annotations = listOf(convertAnnotation(v)),
+        annotations = listOf(
+            convertAnnotationWithoutMapping(v)
+                .mapNotCorrespondsPsiElement(v),
+        ),
         rBracket = null,
     ).map(v)
 
@@ -893,13 +899,13 @@ open class Converter {
         AnnotationUseSiteTarget.PROPERTY_DELEGATE_FIELD -> Node.Modifier.AnnotationSet.Target.DELEGATE
     }
 
-    open fun convertAnnotation(v: KtAnnotationEntry) = Node.Modifier.AnnotationSet.Annotation(
+    open fun convertAnnotationWithoutMapping(v: KtAnnotationEntry) = Node.Modifier.AnnotationSet.Annotation(
         type = convertType(
             v.calleeExpression?.typeReference?.typeElement
                 ?: error("No callee expression, type reference or type element for $v")
         ) as? Node.Type.Simple ?: error("calleeExpression is not simple type"),
         args = v.valueArgumentList?.let(::convertValueArgs),
-    ).map(v)
+    )
 
     open fun convertModifiers(v: KtModifierList) = Node.Modifiers(
         elements = v.node.children().mapNotNull { node ->

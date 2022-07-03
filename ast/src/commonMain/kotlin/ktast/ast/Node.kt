@@ -950,7 +950,7 @@ sealed class Node {
 
     sealed class Modifier : Node() {
         /**
-         * AST node corresponds to KtAnnotation or single KtAnnotationEntry.
+         * AST node corresponds to KtAnnotation or KtAnnotationEntry not under KtAnnotation.
          */
         data class AnnotationSet(
             val atSymbol: Node.Keyword.At?,
@@ -965,7 +965,7 @@ sealed class Node {
             }
 
             /**
-             * AST node corresponds to KtAnnotationEntry.
+             * AST node corresponds to KtAnnotationEntry under KtAnnotation or virtual AST node corresponds to KtAnnotationEntry not under KtAnnotation.
              */
             data class Annotation(
                 val type: Type.Simple,
