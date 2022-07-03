@@ -24,11 +24,12 @@ open class Parser(val converter: Converter = Converter) {
         ).project
     }
 
-    fun parseFile(code: String, throwOnError: Boolean = true) = converter.convertFile(parsePsiFile(code).also { file ->
-        if (throwOnError) file.collectDescendantsOfType<PsiErrorElement>().let {
-            if (it.isNotEmpty()) throw ParseError(file, it)
-        }
-    })
+    fun parseFile(code: String, throwOnError: Boolean = true) =
+        converter.convertKotlinFile(parsePsiFile(code).also { file ->
+            if (throwOnError) file.collectDescendantsOfType<PsiErrorElement>().let {
+                if (it.isNotEmpty()) throw ParseError(file, it)
+            }
+        })
 
     fun parsePsiFile(code: String) =
         PsiManager.getInstance(proj).findFile(LightVirtualFile("temp.kt", KotlinFileType.INSTANCE, code)) as KtFile

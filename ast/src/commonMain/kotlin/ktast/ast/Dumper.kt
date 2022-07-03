@@ -15,24 +15,20 @@ class Dumper(
     }
 
     fun dump(v: Node) {
-        visit(v, v)
+        visit(v)
     }
 
     private val levelMap = mutableMapOf<Int, Int>()
 
-    private fun levelOf(v: Node): Int {
-        return (levelMap[System.identityHashCode(v)] ?: -1)
+    private fun levelOf(v: Node?): Int {
+        return if (v == null) -1 else levelMap[System.identityHashCode(v)] ?: error("$v is not found in levelMap")
     }
 
-    private fun setLevel(v: Node, parent: Node) {
+    private fun setLevel(v: Node, parent: Node?) {
         levelMap[System.identityHashCode(v)] = levelOf(parent) + 1
     }
 
-    override fun visit(v: Node?, parent: Node) {
-        if (v == null) {
-            return
-        }
-
+    override fun visit(v: Node, parent: Node?) {
         setLevel(v, parent)
 
         v.writeExtrasBefore()
@@ -73,16 +69,16 @@ class Dumper(
         app.append(this::class.qualifiedName?.substring(10)) // 10 means length of "ktast.ast."
         if (verbose) {
             when (this) {
-                is Node.Decl.SecondaryConstructor.DelegationCall -> mapOf("target" to target)
-                is Node.Expr.BinaryOp.Oper.Infix -> mapOf("str" to str)
-                is Node.Expr.BinaryOp.Oper.Token -> mapOf("token" to token)
-                is Node.Expr.UnaryOp -> mapOf("prefix" to prefix)
-                is Node.Expr.UnaryOp.Oper -> mapOf("token" to token)
-                is Node.Expr.TypeOp.Oper -> mapOf("token" to token)
+                is Node.Declaration.SecondaryConstructor.DelegationCall -> mapOf("target" to target)
+                is Node.Expression.Binary.Operator.Infix -> mapOf("str" to str)
+                is Node.Expression.Binary.Operator.Token -> mapOf("token" to token)
+                is Node.Expression.Unary -> mapOf("prefix" to prefix)
+                is Node.Expression.Unary.Operator -> mapOf("token" to token)
+                is Node.Expression.BinaryType.Operator -> mapOf("token" to token)
                 is Node.Modifier.AnnotationSet -> mapOf("target" to target)
-                is Node.Modifier.Lit -> mapOf("keyword" to keyword)
-                is Node.Expr.Name -> mapOf("name" to name)
-                is Node.Expr.Const -> mapOf("value" to value, "form" to form)
+                is Node.Modifier.Literal -> mapOf("keyword" to keyword)
+                is Node.Expression.Name -> mapOf("name" to name)
+                is Node.Expression.Constant -> mapOf("value" to value, "form" to form)
                 is Node.Keyword.ValOrVar -> mapOf("token" to token)
                 is Node.Keyword.Declaration -> mapOf("token" to token)
                 is Node.Extra.Comment -> mapOf("text" to text)
