@@ -19,6 +19,9 @@ class CorpusParseAndWriteWithExtrasTest(private val unit: Corpus.Unit) {
         // convert to our AST, write out our AST, and compare
         try {
             val origExtrasConv = ConverterWithExtras()
+            if (unit is Corpus.Unit.FromFile) {
+                println("Loading ${unit.fullPath}")
+            }
             val origCode = StringUtilRt.convertLineSeparators(unit.read())
 //            println("----ORIG CODE----\n$origCode\n------------")
             val origFile = Parser(origExtrasConv).parseFile(origCode)

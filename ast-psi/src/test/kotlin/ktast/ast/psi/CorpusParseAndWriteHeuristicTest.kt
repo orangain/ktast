@@ -17,6 +17,9 @@ class CorpusParseAndWriteHeuristicTest(private val unit: Corpus.Unit) {
         // In order to test, we parse the test code (failing and validating errors if present),
         // convert to our AST, write out our AST, re-parse what we wrote, re-convert, and compare
         try {
+            if (unit is Corpus.Unit.FromFile) {
+                println("Loading ${unit.fullPath}")
+            }
             val origCode = StringUtilRt.convertLineSeparators(unit.read())
             println("----ORIG CODE----\n$origCode\n------------")
             val origFile = Parser.parseFile(origCode)
