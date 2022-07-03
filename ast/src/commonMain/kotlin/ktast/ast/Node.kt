@@ -256,6 +256,17 @@ sealed class Node {
             val delegate: Delegate?,
             val accessors: List<Accessor>
         ) : Declaration(), WithModifiers {
+            init {
+                if (delegate != null) {
+                    require(equals == null && initializer == null) {
+                        "equals and initializer must be null when delegate is not null"
+                    }
+                }
+                require((equals == null && initializer == null) || (equals != null && initializer != null)) {
+                    "equals and initializer must be both null or both non-null"
+                }
+            }
+
             /**
              * Virtual AST node corresponds a part of KtProperty,
              * virtual AST node corresponds to a list of KtDestructuringDeclarationEntry or
@@ -472,7 +483,19 @@ sealed class Node {
         override val modifiers: Modifiers?,
         val typeRef: TypeRef?,
         val asterisk: Boolean,
-    ) : Node(), WithModifiers
+    ) : Node(), WithModifiers {
+        init {
+            if (asterisk) {
+                require(modifiers == null && typeRef == null) {
+                    "modifiers and typeRef must be null when asterisk is true"
+                }
+            } else {
+                require(typeRef != null) {
+                    "typeRef must be not null when asterisk is false"
+                }
+            }
+        }
+    }
 
     /**
      * AST node corresponds to KtTypeReference.
