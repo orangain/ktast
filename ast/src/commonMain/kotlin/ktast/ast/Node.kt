@@ -195,7 +195,7 @@ sealed class Node {
             data class PrimaryConstructor(
                 override val modifiers: Modifiers?,
                 val constructorKeyword: Keyword.Constructor?,
-                val params: Declaration.Function.Params?
+                val params: Function.Params?
             ) : Node(), WithModifiers
 
             /**
@@ -256,11 +256,11 @@ sealed class Node {
              * Virtual AST node corresponds to function body.
              */
             sealed class Body : Node() {
-                data class Block(val block: Expression.Block) : Declaration.Function.Body()
+                data class Block(val block: Expression.Block) : Body()
                 data class Expr(
                     val equals: Keyword.Equal,
                     val expression: Expression,
-                ) : Declaration.Function.Body()
+                ) : Body()
             }
         }
 
@@ -386,7 +386,7 @@ sealed class Node {
         data class SecondaryConstructor(
             override val modifiers: Modifiers?,
             val constructorKeyword: Keyword.Constructor,
-            val params: Declaration.Function.Params?,
+            val params: Function.Params?,
             val delegationCall: DelegationCall?,
             val block: Expression.Block?
         ) : Declaration(), WithModifiers {
