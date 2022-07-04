@@ -132,6 +132,7 @@ open class Writer(
                     children(params)
                     if (typeRef != null) append(":").also { children(typeRef) }
                     children(postModifiers)
+                    children(equals)
                     children(body)
                 }
                 is Node.Declaration.Function.Param -> {
@@ -142,10 +143,6 @@ open class Writer(
                     children(equals)
                     children(defaultValue)
                 }
-                is Node.Declaration.Function.Body.Block ->
-                    children(block)
-                is Node.Declaration.Function.Body.Expr ->
-                    children(equals, expression)
                 is Node.Declaration.Property -> {
                     children(modifiers)
                     children(valOrVar)
@@ -176,6 +173,7 @@ open class Writer(
                         append("()")
                         if (typeRef != null) append(":").also { children(typeRef) }
                         children(postModifiers)
+                        children(equals)
                         children(body)
                     }
                 }
@@ -187,6 +185,7 @@ open class Writer(
                         children(params)
                         append(")")
                         children(postModifiers)
+                        children(equals)
                         children(body)
                     }
                 }
@@ -577,7 +576,7 @@ open class Writer(
         if (parent is Node.Declaration.Property && this is Node.Declaration.Property.Accessor) {
             // Property accessors require newline when the previous element is expression
             if ((parent.accessors.first() === this && (parent.delegate != null || parent.initializer != null)) ||
-                (parent.accessors.size == 2 && parent.accessors.last() === this && parent.accessors[0].body is Node.Declaration.Function.Body.Expr)
+                (parent.accessors.size == 2 && parent.accessors.last() === this && parent.accessors[0].equals != null)
             ) {
                 if (!containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
                     append("\n")

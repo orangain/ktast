@@ -146,7 +146,8 @@ open class Converter {
             params = v.valueParameterList?.let(::convertFuncParams),
             typeRef = v.typeReference?.let(::convertTypeRef),
             postModifiers = convertPostModifiers(v),
-            body = convertFuncBody(v),
+            equals = v.equalsToken?.let { convertKeyword(it, Node.Keyword::Equal) },
+            body = v.bodyExpression?.let { convertExpression(it) },
         ).map(v)
     }
 
@@ -163,20 +164,6 @@ open class Converter {
         equals = v.equalsToken?.let { convertKeyword(it, Node.Keyword::Equal) },
         defaultValue = v.defaultValue?.let(::convertExpression),
     ).map(v)
-
-    open fun convertFuncBody(v: KtDeclarationWithBody): Node.Declaration.Function.Body? =
-        when (val bodyExpression = v.bodyExpression) {
-            null -> null
-            is KtBlockExpression ->
-                Node.Declaration.Function.Body.Block(
-                    block = convertBlock(bodyExpression),
-                ).mapNotCorrespondsPsiElement(v)
-            else ->
-                Node.Declaration.Function.Body.Expr(
-                    equals = convertKeyword(v.equalsToken ?: error("No equals token before $v"), Node.Keyword::Equal),
-                    expression = convertExpression(bodyExpression),
-                ).mapNotCorrespondsPsiElement(v)
-        }
 
     open fun convertProperty(v: KtProperty) = Node.Declaration.Property(
         modifiers = v.modifierList?.let(::convertModifiers),
@@ -234,13 +221,15 @@ open class Converter {
             getKeyword = convertKeyword(v.getKeyword, Node.Keyword::Get),
             typeRef = v.returnTypeReference?.let(::convertTypeRef),
             postModifiers = convertPostModifiers(v),
-            body = convertFuncBody(v),
+            equals = v.equalsToken?.let { convertKeyword(it, Node.Keyword::Equal) },
+            body = v.bodyExpression?.let(::convertExpression),
         ).map(v) else Node.Declaration.Property.Accessor.Setter(
             modifiers = v.modifierList?.let(::convertModifiers),
             setKeyword = convertKeyword(v.setKeyword, Node.Keyword::Set),
             params = v.parameterList?.let(::convertPropertyAccessorParams),
             postModifiers = convertPostModifiers(v),
-            body = convertFuncBody(v),
+            equals = v.equalsToken?.let { convertKeyword(it, Node.Keyword::Equal) },
+            body = v.bodyExpression?.let(::convertExpression),
         ).map(v)
 
     open fun convertPropertyAccessorParams(v: KtParameterList) = Node.Declaration.Property.Accessor.Params(

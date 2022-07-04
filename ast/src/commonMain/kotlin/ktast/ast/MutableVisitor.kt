@@ -90,6 +90,7 @@ open class MutableVisitor(
                         params = visitChildren(params, newCh),
                         typeRef = visitChildren(typeRef, newCh),
                         postModifiers = visitChildren(postModifiers, newCh),
+                        equals = visitChildren(equals, newCh),
                         body = visitChildren(body, newCh),
                     )
                     is Node.Declaration.Function.Params -> copy(
@@ -103,13 +104,6 @@ open class MutableVisitor(
                         typeRef = visitChildren(typeRef, newCh),
                         equals = visitChildren(equals, newCh),
                         defaultValue = visitChildren(defaultValue, newCh),
-                    )
-                    is Node.Declaration.Function.Body.Block -> copy(
-                        block = visitChildren(block, newCh)
-                    )
-                    is Node.Declaration.Function.Body.Expr -> copy(
-                        equals = visitChildren(equals, newCh),
-                        expression = visitChildren(expression, newCh),
                     )
                     is Node.Declaration.Property -> copy(
                         modifiers = visitChildren(modifiers, newCh),
@@ -140,14 +134,16 @@ open class MutableVisitor(
                         getKeyword = visitChildren(getKeyword, newCh),
                         typeRef = visitChildren(typeRef, newCh),
                         postModifiers = visitChildren(postModifiers, newCh),
-                        body = visitChildren(body, newCh)
+                        equals = visitChildren(equals, newCh),
+                        body = visitChildren(body, newCh),
                     )
                     is Node.Declaration.Property.Accessor.Setter -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         setKeyword = visitChildren(setKeyword, newCh),
                         params = visitChildren(params, newCh),
                         postModifiers = visitChildren(postModifiers, newCh),
-                        body = visitChildren(body, newCh)
+                        equals = visitChildren(equals, newCh),
+                        body = visitChildren(body, newCh),
                     )
                     is Node.Declaration.Property.Accessor.Params -> copy(
                         elements = visitChildren(elements, newCh),

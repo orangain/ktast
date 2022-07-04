@@ -84,6 +84,7 @@ open class Visitor {
                 visitChildren(params)
                 visitChildren(typeRef)
                 visitChildren(postModifiers)
+                visitChildren(equals)
                 visitChildren(body)
             }
             is Node.Declaration.Function.Param -> {
@@ -93,13 +94,6 @@ open class Visitor {
                 visitChildren(typeRef)
                 visitChildren(equals)
                 visitChildren(defaultValue)
-            }
-            is Node.Declaration.Function.Body.Block -> {
-                visitChildren(block)
-            }
-            is Node.Declaration.Function.Body.Expr -> {
-                visitChildren(equals)
-                visitChildren(expression)
             }
             is Node.Declaration.Property -> {
                 visitChildren(modifiers)
@@ -130,6 +124,7 @@ open class Visitor {
                 visitChildren(getKeyword)
                 visitChildren(typeRef)
                 visitChildren(postModifiers)
+                visitChildren(equals)
                 visitChildren(body)
             }
             is Node.Declaration.Property.Accessor.Setter -> {
@@ -137,6 +132,7 @@ open class Visitor {
                 visitChildren(setKeyword)
                 visitChildren(params)
                 visitChildren(postModifiers)
+                visitChildren(equals)
                 visitChildren(body)
             }
             is Node.Declaration.TypeAlias -> {

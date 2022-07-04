@@ -39,6 +39,11 @@ sealed class Node {
         val postModifiers: List<PostModifier>
     }
 
+    interface WithFunctionBody {
+        val equals: Keyword.Equal?
+        val body: Expression?
+    }
+
     interface StatementsContainer {
         val statements: List<Statement>
     }
@@ -229,8 +234,9 @@ sealed class Node {
             val params: Params?,
             val typeRef: TypeRef?,
             override val postModifiers: List<PostModifier>,
-            val body: Body?
-        ) : Declaration(), WithModifiers, WithPostModifiers {
+            override val equals: Keyword.Equal?,
+            override val body: Expression?,
+        ) : Declaration(), WithModifiers, WithPostModifiers, WithFunctionBody {
             /**
              * AST node corresponds to KtParameterList under KtNamedFunction.
              */
@@ -251,17 +257,6 @@ sealed class Node {
                 val equals: Keyword.Equal?,
                 val defaultValue: Expression?,
             ) : Node(), WithModifiers
-
-            /**
-             * Virtual AST node corresponds to function body.
-             */
-            sealed class Body : Node() {
-                data class Block(val block: Expression.Block) : Body()
-                data class Expr(
-                    val equals: Keyword.Equal,
-                    val expression: Expression,
-                ) : Body()
-            }
         }
 
         /**
@@ -340,15 +335,15 @@ sealed class Node {
             /**
              * AST node corresponds to KtPropertyAccessor.
              */
-            sealed class Accessor : Node(), WithModifiers, WithPostModifiers {
-                abstract val body: Function.Body?
+            sealed class Accessor : Node(), WithModifiers, WithPostModifiers, WithFunctionBody {
 
                 data class Getter(
                     override val modifiers: Modifiers?,
                     val getKeyword: Keyword.Get,
                     val typeRef: TypeRef?,
                     override val postModifiers: List<PostModifier>,
-                    override val body: Function.Body?
+                    override val equals: Keyword.Equal?,
+                    override val body: Expression?,
                 ) : Accessor()
 
                 data class Setter(
@@ -356,7 +351,8 @@ sealed class Node {
                     val setKeyword: Keyword.Set,
                     val params: Params?,
                     override val postModifiers: List<PostModifier>,
-                    override val body: Function.Body?
+                    override val equals: Keyword.Equal?,
+                    override val body: Expression?,
                 ) : Accessor()
 
                 /**
