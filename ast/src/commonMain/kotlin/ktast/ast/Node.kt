@@ -856,22 +856,22 @@ sealed class Node {
             val lPar: Keyword.LPar,
             val expression: Expression?,
             val rPar: Keyword.RPar,
-            val entries: List<Entry>
+            val branches: List<Branch>
         ) : Expression() {
             /**
              * AST node corresponds to KtWhenEntry.
              */
-            sealed class Entry : Node() {
-                data class Conditions(
+            sealed class Branch : Node() {
+                data class Conditional(
                     val conditions: List<Condition>,
                     val trailingComma: Keyword.Comma?,
                     val body: Expression,
-                ) : Entry()
+                ) : Branch()
 
                 data class Else(
                     val elseKeyword: Keyword.Else,
                     val body: Expression,
-                ) : Entry()
+                ) : Branch()
             }
 
             /**

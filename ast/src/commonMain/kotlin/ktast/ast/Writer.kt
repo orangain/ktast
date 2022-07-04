@@ -427,14 +427,14 @@ open class Writer(
                     append("when")
                     children(lPar, expression, rPar)
                     append("{")
-                    children(entries)
+                    children(branches)
                     append("}")
                 }
-                is Node.Expression.When.Entry.Conditions -> {
+                is Node.Expression.When.Branch.Conditional -> {
                     children(conditions, ",", trailingSeparator = trailingComma)
                     append("->").also { children(body) }
                 }
-                is Node.Expression.When.Entry.Else -> {
+                is Node.Expression.When.Branch.Else -> {
                     children(elseKeyword)
                     append("->").also { children(body) }
                 }
@@ -583,8 +583,8 @@ open class Writer(
                 }
             }
         }
-        if (parent is Node.Expression.When && this is Node.Expression.When.Entry) {
-            if (parent.entries.first() !== this && !containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
+        if (parent is Node.Expression.When && this is Node.Expression.When.Branch) {
+            if (parent.branches.first() !== this && !containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
                 append("\n")
             }
         }
