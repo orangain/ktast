@@ -17,6 +17,9 @@ class CorpusParseAndWriteHeuristicTest(private val unit: Corpus.Unit) {
         // In order to test, we parse the test code (failing and validating errors if present),
         // convert to our AST, write out our AST, re-parse what we wrote, re-convert, and compare
         try {
+            if (unit is Corpus.Unit.FromFile) {
+                println("Loading ${unit.fullPath}")
+            }
             val origCode = StringUtilRt.convertLineSeparators(unit.read())
             println("----ORIG CODE----\n$origCode\n------------")
             val origFile = Parser.parseFile(origCode)
@@ -31,9 +34,13 @@ class CorpusParseAndWriteHeuristicTest(private val unit: Corpus.Unit) {
             assertEquals(origDump, newDump)
             assertEquals(origFile, newFile)
         } catch (e: Converter.Unsupported) {
-            Assume.assumeNoException(e.message, e)
+            if (unit.canSkip) {
+                Assume.assumeNoException(e.message, e)
+            } else {
+                throw e
+            }
         } catch (e: Parser.ParseError) {
-            if (unit.errorMessages.isEmpty()) throw e
+            if (!unit.canSkip || unit.errorMessages.isEmpty()) throw e
             assertEquals(unit.errorMessages.toSet(), e.errors.map { it.errorDescription }.toSet())
             Assume.assumeTrue("Partial parsing not supported (expected parse errors: ${unit.errorMessages})", false)
         }

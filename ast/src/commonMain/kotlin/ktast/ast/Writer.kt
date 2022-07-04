@@ -92,9 +92,6 @@ open class Writer(
                     children(typeConstraints)
                     children(body)
                 }
-                is Node.Declaration.Class.Parents -> {
-                    children(items, ",")
-                }
                 is Node.Declaration.Class.Parent.CallConstructor -> {
                     children(type)
                     children(args)
@@ -129,7 +126,6 @@ open class Writer(
                     children(typeParams)
                     if (receiverTypeRef != null) children(receiverTypeRef).append(".")
                     name?.also { children(it) }
-                    children(postTypeParams)
                     children(params)
                     if (typeRef != null) append(":").also { children(typeRef) }
                     children(postModifiers)
@@ -140,7 +136,8 @@ open class Writer(
                     children(valOrVar)
                     children(name)
                     if (typeRef != null) append(":").also { children(typeRef) }
-                    children(initializer)
+                    children(equals)
+                    children(defaultValue)
                 }
                 is Node.Declaration.Function.Body.Block ->
                     children(block)
@@ -153,6 +150,7 @@ open class Writer(
                     if (receiverTypeRef != null) children(receiverTypeRef).append('.')
                     children(variable)
                     children(typeConstraints)
+                    children(equals)
                     children(initializer)
                     children(delegate)
                     children(accessors)
@@ -168,7 +166,7 @@ open class Writer(
                 is Node.Declaration.Property.Variable.Multi -> {
                     children(vars, ",", "(", ")", trailingComma)
                 }
-                is Node.Declaration.Property.Accessor.Get -> {
+                is Node.Declaration.Property.Accessor.Getter -> {
                     children(modifiers)
                     children(getKeyword)
                     if (body != null) {
@@ -178,7 +176,7 @@ open class Writer(
                         children(body)
                     }
                 }
-                is Node.Declaration.Property.Accessor.Set -> {
+                is Node.Declaration.Property.Accessor.Setter -> {
                     children(modifiers)
                     children(setKeyword)
                     if (body != null) {
@@ -220,21 +218,17 @@ open class Writer(
                         append(";") // Insert heuristic semicolon after the last enum entry
                     }
                 }
-                is Node.Initializer -> {
-                    children(equals)
-                    children(expression)
-                }
                 is Node.TypeParam -> {
                     children(modifiers)
                     children(name)
                     if (typeRef != null) append(":").also { children(typeRef) }
                 }
-                is Node.TypeArg.Asterisk -> {
-                    children(asterisk)
-                }
-                is Node.TypeArg.Type -> {
+                is Node.TypeArg -> {
                     children(modifiers)
                     children(typeRef)
+                    if (asterisk) {
+                        append("*")
+                    }
                 }
                 is Node.TypeRef -> {
                     children(lPar)
@@ -286,9 +280,6 @@ open class Writer(
                 }
                 is Node.Type.Dynamic ->
                     append("dynamic")
-                is Node.ConstructorCallee -> {
-                    children(type)
-                }
                 is Node.ExpressionContainer -> {
                     children(expression)
                 }
@@ -373,13 +364,13 @@ open class Writer(
                         append(token.str)
                     }
                 }
-                is Node.Expression.DoubleColon.Callable -> {
-                    if (receiver != null) children(receiver)
+                is Node.Expression.CallableReference -> {
+                    if (lhs != null) children(lhs)
                     append("::")
-                    children(name)
+                    children(rhs)
                 }
-                is Node.Expression.DoubleColon.ClassLiteral -> {
-                    if (receiver != null) children(receiver)
+                is Node.Expression.ClassLiteral -> {
+                    if (lhs != null) children(lhs)
                     append("::")
                     append("class")
                 }
@@ -501,7 +492,7 @@ open class Writer(
                     children(expression)
                     children(typeArgs)
                     children(args)
-                    children(lambdaArgs)
+                    children(lambdaArg)
                 }
                 is Node.Expression.Call.LambdaArg -> {
                     children(annotationSets)
@@ -524,13 +515,14 @@ open class Writer(
                 }
                 is Node.Modifier.AnnotationSet -> {
                     children(atSymbol)
-                    if (target != null) append(target.name.lowercase()).append(':')
+                    if (target != null) append(target.name.lowercase())
+                    children(colon)
                     children(lBracket)
                     children(annotations)
                     children(rBracket)
                 }
                 is Node.Modifier.AnnotationSet.Annotation -> {
-                    children(constructorCallee)
+                    children(type)
                     children(args)
                     if (parent is Node.Modifier.AnnotationSet && parent.rBracket == null) {
                         nextHeuristicWhitespace = " " // Insert heuristic space after annotation if single form
@@ -639,7 +631,7 @@ open class Writer(
                 append(";")
             }
         }
-        if (v is Node.Expression.Call && v.lambdaArgs.isEmpty() && next is Node.Expression.Lambda) {
+        if (v is Node.Expression.Call && v.lambdaArg == null && next is Node.Expression.Lambda) {
             if (!containsSemicolon(extrasSinceLastNonSymbol)) {
                 append(";")
             }

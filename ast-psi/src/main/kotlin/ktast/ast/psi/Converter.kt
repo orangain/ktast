@@ -12,7 +12,6 @@ import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
 import org.jetbrains.kotlin.psi.psiUtil.children
 import org.jetbrains.kotlin.psi.psiUtil.siblings
-import org.jetbrains.kotlin.psi.stubs.elements.KtStubElementTypes
 
 open class Converter {
     protected open fun onNode(node: Node, elem: PsiElement?) {}
@@ -88,7 +87,7 @@ open class Converter {
     ).map(v)
 
     open fun convertParents(v: KtSuperTypeList) = Node.Declaration.Class.Parents(
-        items = v.entries.map(::convertParent),
+        elements = v.entries.map(::convertParent),
     ).map(v)
 
     open fun convertParent(v: KtSuperTypeListEntry) = when (v) {
@@ -125,19 +124,22 @@ open class Converter {
     ).map(v)
 
     open fun convertFunction(v: KtNamedFunction): Node.Declaration.Function {
-        val hasTypeParameterListBeforeFunctionName = v.allChildren.find {
-            it is KtTypeParameterList || it is KtTypeReference || it.node.elementType == KtTokens.IDENTIFIER
-        } is KtTypeParameterList
+        if (v.typeParameterList != null) {
+            val hasTypeParameterListBeforeFunctionName = v.allChildren.find {
+                it is KtTypeParameterList || it is KtTypeReference || it.node.elementType == KtTokens.IDENTIFIER
+            } is KtTypeParameterList
+            if (!hasTypeParameterListBeforeFunctionName) {
+                // According to the Kotlin syntax, type parameters are not allowed here. However, Kotlin compiler can parse them.
+                throw Unsupported("Type parameters after function name is not allowed")
+            }
+        }
 
         return Node.Declaration.Function(
             modifiers = v.modifierList?.let(::convertModifiers),
             funKeyword = v.funKeyword?.let { convertKeyword(it, Node.Keyword::Fun) } ?: error("No fun keyword for $v"),
-            typeParams =
-            if (hasTypeParameterListBeforeFunctionName) v.typeParameterList?.let(::convertTypeParams) else null,
+            typeParams = v.typeParameterList?.let(::convertTypeParams),
             receiverTypeRef = v.receiverTypeReference?.let(::convertTypeRef),
             name = v.nameIdentifier?.let(::convertName),
-            postTypeParams =
-            if (!hasTypeParameterListBeforeFunctionName) v.typeParameterList?.let(::convertTypeParams) else null,
             params = v.valueParameterList?.let(::convertFuncParams),
             typeRef = v.typeReference?.let(::convertTypeRef),
             postModifiers = convertPostModifiers(v),
@@ -155,9 +157,8 @@ open class Converter {
         valOrVar = v.valOrVarKeyword?.let(::convertValOrVarKeyword),
         name = v.nameIdentifier?.let(::convertName) ?: error("No param name"),
         typeRef = v.typeReference?.let(::convertTypeRef),
-        initializer = v.defaultValue?.let {
-            convertInitializer(v.equalsToken ?: error("No equals token for initializer of $v"), it, v)
-        },
+        equals = v.equalsToken?.let { convertKeyword(it, Node.Keyword::Equal) },
+        defaultValue = v.defaultValue?.let(::convertExpression),
     ).map(v)
 
     open fun convertFuncBody(v: KtDeclarationWithBody): Node.Declaration.Function.Body? =
@@ -189,9 +190,8 @@ open class Converter {
                 constraints = convertTypeConstraints(typeConstraintList),
             ).mapNotCorrespondsPsiElement(v)
         },
-        initializer = v.initializer?.let {
-            convertInitializer(v.equalsToken ?: error("No equals token for initializer of $v"), it, v)
-        },
+        equals = v.equalsToken?.let { convertKeyword(it, Node.Keyword::Equal) },
+        initializer = v.initializer?.let(::convertExpression),
         delegate = v.delegate?.let(::convertPropertyDelegate),
         accessors = v.accessors.map(::convertPropertyAccessor),
     ).map(v)
@@ -206,7 +206,8 @@ open class Converter {
             trailingComma = v.trailingComma?.let(::convertComma),
         ),
         typeConstraints = null,
-        initializer = v.initializer?.let { convertInitializer(v.equalsToken, it, v) },
+        equals = convertKeyword(v.equalsToken, Node.Keyword::Equal),
+        initializer = v.initializer?.let(::convertExpression),
         delegate = null,
         accessors = listOf(),
     ).map(v)
@@ -222,13 +223,13 @@ open class Converter {
     ).map(v)
 
     open fun convertPropertyAccessor(v: KtPropertyAccessor) =
-        if (v.isGetter) Node.Declaration.Property.Accessor.Get(
+        if (v.isGetter) Node.Declaration.Property.Accessor.Getter(
             modifiers = v.modifierList?.let(::convertModifiers),
             getKeyword = convertKeyword(v.getKeyword, Node.Keyword::Get),
             typeRef = v.returnTypeReference?.let(::convertTypeRef),
             postModifiers = convertPostModifiers(v),
             body = convertFuncBody(v),
-        ).map(v) else Node.Declaration.Property.Accessor.Set(
+        ).map(v) else Node.Declaration.Property.Accessor.Setter(
             modifiers = v.modifierList?.let(::convertModifiers),
             setKeyword = convertKeyword(v.setKeyword, Node.Keyword::Set),
             params = v.parameterList?.let(::convertPropertyAccessorParams),
@@ -282,11 +283,6 @@ open class Converter {
         ).map(v)
     }
 
-    open fun convertInitializer(equalsToken: PsiElement, expr: KtExpression, parent: PsiElement) = Node.Initializer(
-        equals = convertKeyword(equalsToken, Node.Keyword::Equal),
-        expression = convertExpression(expr),
-    ).mapNotCorrespondsPsiElement(parent)
-
     open fun convertTypeParams(v: KtTypeParameterList) = Node.TypeParams(
         elements = v.parameters.map(::convertTypeParam),
         trailingComma = v.trailingComma?.let(::convertComma),
@@ -303,20 +299,11 @@ open class Converter {
         trailingComma = v.trailingComma?.let(::convertComma),
     ).map(v)
 
-    open fun convertTypeArg(v: KtTypeProjection): Node.TypeArg =
-        if (v.projectionKind == KtProjectionKind.STAR) {
-            Node.TypeArg.Asterisk(
-                asterisk = convertKeyword(
-                    v.projectionToken ?: error("No projection token for $v"),
-                    Node.Keyword::Asterisk
-                ),
-            ).map(v)
-        } else {
-            Node.TypeArg.Type(
-                modifiers = v.modifierList?.let(::convertModifiers),
-                typeRef = convertTypeRef(v.typeReference ?: error("No type reference for $v")),
-            ).map(v)
-        }
+    open fun convertTypeArg(v: KtTypeProjection): Node.TypeArg = Node.TypeArg(
+        modifiers = v.modifierList?.let(::convertModifiers),
+        typeRef = v.typeReference?.let(::convertTypeRef),
+        asterisk = v.projectionKind == KtProjectionKind.STAR,
+    ).map(v)
 
     open fun convertTypeRef(v: KtTypeReference): Node.TypeRef {
         var lPar: PsiElement? = null
@@ -434,12 +421,6 @@ open class Converter {
         expression = convertExpression(v.getExpression()),
     ).map(v)
 
-    open fun convertConstructorCallee(v: KtConstructorCalleeExpression) = Node.ConstructorCallee(
-        type = convertType(
-            v.typeReference?.typeElement ?: error("No type reference or type element for $v")
-        ) as? Node.Type.Simple ?: error(""),
-    ).map(v)
-
     open fun convertValueArgs(v: KtValueArgumentList) = Node.ValueArgs(
         elements = v.arguments.map(::convertValueArg),
         trailingComma = v.trailingComma?.let(::convertComma),
@@ -474,8 +455,8 @@ open class Converter {
         is KtUnaryExpression -> convertUnary(v)
         is KtBinaryExpressionWithTypeRHS -> convertBinaryType(v)
         is KtIsExpression -> convertBinaryType(v)
-        is KtCallableReferenceExpression -> convertDoubleColonCallable(v)
-        is KtClassLiteralExpression -> convertDoubleColonClassLiteral(v)
+        is KtCallableReferenceExpression -> convertCallableReference(v)
+        is KtClassLiteralExpression -> convertClassLiteral(v)
         is KtParenthesizedExpression -> convertParenthesized(v)
         is KtStringTemplateExpression -> convertStringTemplate(v)
         is KtConstantExpression -> convertConst(v)
@@ -582,18 +563,18 @@ open class Converter {
         rhs = convertTypeRef(v.typeReference ?: error("No type op rhs for $v"))
     ).map(v)
 
-    open fun convertDoubleColonCallable(v: KtCallableReferenceExpression) = Node.Expression.DoubleColon.Callable(
-        receiver = v.receiverExpression?.let { expr ->
+    open fun convertCallableReference(v: KtCallableReferenceExpression) = Node.Expression.CallableReference(
+        lhs = v.receiverExpression?.let { expr ->
             convertDoubleColonReceiver(
                 expr,
                 v.questionMarks.map { convertKeyword(it, Node.Keyword::Question) }
             )
         },
-        name = convertName(v.callableReference)
+        rhs = convertName(v.callableReference)
     ).map(v)
 
-    open fun convertDoubleColonClassLiteral(v: KtClassLiteralExpression) = Node.Expression.DoubleColon.ClassLiteral(
-        receiver = v.receiverExpression?.let { expr ->
+    open fun convertClassLiteral(v: KtClassLiteralExpression) = Node.Expression.ClassLiteral(
+        lhs = v.receiverExpression?.let { expr ->
             convertDoubleColonReceiver(
                 expr,
                 v.questionMarks.map { convertKeyword(it, Node.Keyword::Question) }
@@ -819,27 +800,32 @@ open class Converter {
         expression = convertExpression(v.calleeExpression ?: error("No call expr for $v")),
         typeArgs = v.typeArgumentList?.let(::convertTypeArgs),
         args = v.valueArgumentList?.let(::convertValueArgs),
-        lambdaArgs = v.lambdaArguments.map(::convertCallLambdaArg)
+        lambdaArg = v.lambdaArguments.also {
+            if (it.size >= 2) {
+                // According to the Kotlin syntax, at most one lambda argument is allowed.
+                // However, Kotlin compiler can parse multiple lambda arguments.
+                throw Unsupported("At most one lambda argument is allowed")
+            }
+        }.firstOrNull()?.let(::convertCallLambdaArg)
     ).map(v)
 
     open fun convertCallLambdaArg(v: KtLambdaArgument): Node.Expression.Call.LambdaArg {
         var label: String? = null
-        var anns: List<Node.Modifier.AnnotationSet> = emptyList()
-        fun KtExpression.extractLambda(allowParens: Boolean = false): KtLambdaExpression? = when (this) {
+        var annotationSets: List<Node.Modifier.AnnotationSet> = emptyList()
+        fun KtExpression.extractLambda(): KtLambdaExpression? = when (this) {
             is KtLambdaExpression -> this
-            is KtLabeledExpression -> baseExpression?.extractLambda(allowParens).also {
+            is KtLabeledExpression -> baseExpression?.extractLambda().also {
                 label = getLabelName()
             }
-            is KtAnnotatedExpression -> baseExpression?.extractLambda(allowParens).also {
-                anns = convertAnnotationSets(this)
+            is KtAnnotatedExpression -> baseExpression?.extractLambda().also {
+                annotationSets = convertAnnotationSets(this)
             }
-            is KtParenthesizedExpression -> if (allowParens) expression?.extractLambda(allowParens) else null
             else -> null
         }
 
         val expr = v.getArgumentExpression()?.extractLambda() ?: error("No lambda for $v")
         return Node.Expression.Call.LambdaArg(
-            annotationSets = anns,
+            annotationSets = annotationSets,
             label = label,
             func = convertLambda(expr)
         ).map(v)
@@ -886,18 +872,26 @@ open class Converter {
     }
 
     open fun convertAnnotationSet(v: KtAnnotation) = Node.Modifier.AnnotationSet(
-        atSymbol = v.node.findChildByType(KtTokens.AT)?.let { convertKeyword(it.psi, Node.Keyword::At) },
+        atSymbol = v.atSymbol?.let { convertKeyword(it, Node.Keyword::At) },
         target = v.useSiteTarget?.let(::convertAnnotationSetTarget),
-        lBracket = v.node.findChildByType(KtTokens.LBRACKET)?.let { convertKeyword(it.psi, Node.Keyword::LBracket) },
-        annotations = v.entries.map(::convertAnnotation),
-        rBracket = v.node.findChildByType(KtTokens.RBRACKET)?.let { convertKeyword(it.psi, Node.Keyword::RBracket) },
+        colon = v.colon?.let { convertKeyword(it, Node.Keyword::Colon) },
+        lBracket = v.lBracket?.let { convertKeyword(it, Node.Keyword::LBracket) },
+        annotations = v.entries.map {
+            convertAnnotationWithoutMapping(it)
+                .map(it)
+        },
+        rBracket = v.rBracket?.let { convertKeyword(it, Node.Keyword::RBracket) },
     ).map(v)
 
     open fun convertAnnotationSet(v: KtAnnotationEntry) = Node.Modifier.AnnotationSet(
         atSymbol = v.atSymbol?.let { convertKeyword(it, Node.Keyword::At) },
         target = v.useSiteTarget?.let(::convertAnnotationSetTarget),
+        colon = v.colon?.let { convertKeyword(it, Node.Keyword::Colon) },
         lBracket = null,
-        annotations = listOf(convertAnnotation(v)),
+        annotations = listOf(
+            convertAnnotationWithoutMapping(v)
+                .mapNotCorrespondsPsiElement(v),
+        ),
         rBracket = null,
     ).map(v)
 
@@ -913,10 +907,13 @@ open class Converter {
         AnnotationUseSiteTarget.PROPERTY_DELEGATE_FIELD -> Node.Modifier.AnnotationSet.Target.DELEGATE
     }
 
-    open fun convertAnnotation(v: KtAnnotationEntry) = Node.Modifier.AnnotationSet.Annotation(
-        constructorCallee = convertConstructorCallee(v.calleeExpression ?: error("No callee expression for $v")),
+    open fun convertAnnotationWithoutMapping(v: KtAnnotationEntry) = Node.Modifier.AnnotationSet.Annotation(
+        type = convertType(
+            v.calleeExpression?.typeReference?.typeElement
+                ?: error("No callee expression, type reference or type element for $v")
+        ) as? Node.Type.Simple ?: error("calleeExpression is not simple type"),
         args = v.valueArgumentList?.let(::convertValueArgs),
-    ).map(v)
+    )
 
     open fun convertModifiers(v: KtModifierList) = Node.Modifiers(
         elements = v.node.children().mapNotNull { node ->
@@ -1002,11 +999,8 @@ open class Converter {
         internal val KtPropertyAccessor.getKeyword: PsiElement
             get() = findChildByType(this, KtTokens.GET_KEYWORD) ?: error("No get keyword for $this")
 
-        private val KtEnumEntry.comma: PsiElement?
+        internal val KtEnumEntry.comma: PsiElement?
             get() = findChildByType(this, KtTokens.COMMA)
-
-        internal val KtTypeReference.contextReceiverList
-            get() = getStubOrPsiChild(KtStubElementTypes.CONTEXT_RECEIVER_LIST)
 
         internal val KtNullableType.leftParenthesis: PsiElement?
             get() = findChildByType(this, KtTokens.LPAR)
@@ -1025,14 +1019,14 @@ open class Converter {
             get() = findChildByType(this, KtNodeTypes.LOOP_RANGE)
                     as? KtContainerNode ?: error("No in range for $this")
 
-        private val KtWhileExpressionBase.whileKeyword: PsiElement
+        internal val KtWhileExpressionBase.whileKeyword: PsiElement
             get() = findChildByType(this, KtTokens.WHILE_KEYWORD) ?: error("No while keyword for $this")
 
         internal val KtLoopExpression.bodyContainer: KtContainerNodeForControlStructureBody
             get() = findChildByType(this, KtNodeTypes.BODY)
                     as? KtContainerNodeForControlStructureBody ?: error("No body for $this")
 
-        private val KtWhileExpressionBase.conditionContainer: KtContainerNode
+        internal val KtWhileExpressionBase.conditionContainer: KtContainerNode
             get() = findChildByType(this, KtNodeTypes.CONDITION)
                     as? KtContainerNode ?: error("No condition for $this")
 
@@ -1041,6 +1035,17 @@ open class Converter {
                 .takeWhile { it.node.elementType != KtTokens.COLONCOLON }
                 .filter { it.node.elementType == KtTokens.QUEST }
                 .toList()
+
+        internal val KtAnnotation.atSymbol: PsiElement?
+            get() = findChildByType(this, KtTokens.AT)
+        internal val KtAnnotation.colon: PsiElement?
+            get() = findChildByType(this, KtTokens.COLON)
+        internal val KtAnnotation.lBracket: PsiElement?
+            get() = findChildByType(this, KtTokens.LBRACKET)
+        internal val KtAnnotation.rBracket: PsiElement?
+            get() = findChildByType(this, KtTokens.RBRACKET)
+        internal val KtAnnotationEntry.colon: PsiElement?
+            get() = findChildByType(this, KtTokens.COLON)
 
         private fun findChildByType(v: KtElement, type: IElementType): PsiElement? =
             v.node.findChildByType(type)?.psi
