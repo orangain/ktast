@@ -127,27 +127,26 @@ sealed class Node {
             val body: Body?,
         ) : Declaration(), WithModifiers {
 
-            val isClass = declarationKeyword.token == DeclarationKeywordToken.CLASS
-            val isObject = declarationKeyword.token == DeclarationKeywordToken.OBJECT
-            val isInterface = declarationKeyword.token == DeclarationKeywordToken.INTERFACE
-            val isCompanion = modifiers?.elements.orEmpty().contains(Modifier.Keyword(Modifier.KeywordToken.COMPANION))
-            val isEnum = modifiers?.elements.orEmpty().contains(Modifier.Keyword(Modifier.KeywordToken.ENUM))
+            val isClass = declarationKeyword.token == DeclarationKeyword.Token.CLASS
+            val isObject = declarationKeyword.token == DeclarationKeyword.Token.OBJECT
+            val isInterface = declarationKeyword.token == DeclarationKeyword.Token.INTERFACE
+            val isCompanion = modifiers?.elements.orEmpty().contains(Modifier.Keyword(Modifier.Keyword.Token.COMPANION))
+            val isEnum = modifiers?.elements.orEmpty().contains(Modifier.Keyword(Modifier.Keyword.Token.ENUM))
 
-
-            data class DeclarationKeyword(override val token: DeclarationKeywordToken) : Node(),
-                TokenContainer<DeclarationKeywordToken> {
+            data class DeclarationKeyword(override val token: Token) : Node(),
+                TokenContainer<DeclarationKeyword.Token> {
                 companion object {
-                    private val mapStringToToken = DeclarationKeywordToken.values().associateBy { it.string }
-                    fun of(value: String) =
+                    private val mapStringToToken = Token.values().associateBy { it.string }
+                    fun of(value: String): DeclarationKeyword =
                         mapStringToToken[value]?.let(::DeclarationKeyword) ?: error("Unknown value: $value")
                 }
-            }
 
-            enum class DeclarationKeywordToken : HasSimpleStringRepresentation {
-                INTERFACE, CLASS, OBJECT;
+                enum class Token : HasSimpleStringRepresentation {
+                    INTERFACE, CLASS, OBJECT;
 
-                override val string: String
-                    get() = name.lowercase()
+                    override val string: String
+                        get() = name.lowercase()
+                }
             }
 
             /**
@@ -292,18 +291,19 @@ sealed class Node {
                 }
             }
 
-            data class ValOrVar(override val token: ValOrVarToken) : Node(), TokenContainer<ValOrVarToken> {
+            data class ValOrVar(override val token: Token) : Node(), TokenContainer<ValOrVar.Token> {
                 companion object {
-                    private val mapStringToToken = ValOrVarToken.values().associateBy { it.string }
-                    fun of(value: String) = mapStringToToken[value]?.let(::ValOrVar) ?: error("Unknown value: $value")
+                    private val mapStringToToken = Token.values().associateBy { it.string }
+                    fun of(value: String): ValOrVar =
+                        mapStringToToken[value]?.let(::ValOrVar) ?: error("Unknown value: $value")
                 }
-            }
 
-            enum class ValOrVarToken : HasSimpleStringRepresentation {
-                VAL, VAR;
+                enum class Token : HasSimpleStringRepresentation {
+                    VAL, VAR;
 
-                override val string: String
-                    get() = name.lowercase()
+                    override val string: String
+                        get() = name.lowercase()
+                }
             }
 
             /**
@@ -669,16 +669,16 @@ sealed class Node {
             val operator: Operator,
             val prefix: Boolean
         ) : Expression() {
-            data class Operator(override val token: Token) : Node(), TokenContainer<Token> {
+            data class Operator(override val token: Token) : Node(), TokenContainer<Operator.Token> {
                 companion object {
                     private val mapStringToToken = Token.values().associateBy { it.string }
                     fun of(value: String): Operator =
                         mapStringToToken[value]?.let(::Operator) ?: error("Unknown value: $value")
                 }
-            }
 
-            enum class Token(override val string: String) : HasSimpleStringRepresentation {
-                NEG("-"), POS("+"), INC("++"), DEC("--"), NOT("!"), NULL_DEREF("!!")
+                enum class Token(override val string: String) : HasSimpleStringRepresentation {
+                    NEG("-"), POS("+"), INC("++"), DEC("--"), NOT("!"), NULL_DEREF("!!")
+                }
             }
         }
 
@@ -690,17 +690,18 @@ sealed class Node {
             val operator: Operator,
             val rhs: TypeRef
         ) : Expression() {
-            data class Operator(override val token: Token) : Node(), TokenContainer<Token> {
+            data class Operator(override val token: Token) : Node(), TokenContainer<Operator.Token> {
                 companion object {
                     private val mapStringToToken = Token.values().associateBy { it.string }
                     fun of(value: String): Operator =
                         mapStringToToken[value]?.let(::Operator) ?: error("Unknown value: $value")
                 }
+
+                enum class Token(override val string: String) : HasSimpleStringRepresentation {
+                    AS("as"), AS_SAFE("as?"), COL(":"), IS("is"), NOT_IS("!is")
+                }
             }
 
-            enum class Token(override val string: String) : HasSimpleStringRepresentation {
-                AS("as"), AS_SAFE("as?"), COL(":"), IS("is"), NOT_IS("!is")
-            }
         }
 
         /**
@@ -1039,22 +1040,23 @@ sealed class Node {
             ) : Node()
         }
 
-        data class Keyword(override val token: KeywordToken) : Modifier(), TokenContainer<KeywordToken> {
+        data class Keyword(override val token: Token) : Modifier(), TokenContainer<Keyword.Token> {
             companion object {
-                private val mapStringToToken = KeywordToken.values().associateBy { it.string }
-                fun of(value: String) = mapStringToToken[value]?.let(::Keyword) ?: error("Unknown value: $value")
+                private val mapStringToToken = Token.values().associateBy { it.string }
+                fun of(value: String): Keyword =
+                    mapStringToToken[value]?.let(::Keyword) ?: error("Unknown value: $value")
             }
-        }
 
-        enum class KeywordToken : HasSimpleStringRepresentation {
-            ABSTRACT, FINAL, OPEN, ANNOTATION, SEALED, DATA, OVERRIDE, LATEINIT, INNER, ENUM, COMPANION,
-            PRIVATE, PROTECTED, PUBLIC, INTERNAL,
-            IN, OUT, NOINLINE, CROSSINLINE, VARARG, REIFIED,
-            TAILREC, OPERATOR, INFIX, INLINE, EXTERNAL, SUSPEND, CONST, FUN,
-            ACTUAL, EXPECT;
+            enum class Token : HasSimpleStringRepresentation {
+                ABSTRACT, FINAL, OPEN, ANNOTATION, SEALED, DATA, OVERRIDE, LATEINIT, INNER, ENUM, COMPANION,
+                PRIVATE, PROTECTED, PUBLIC, INTERNAL,
+                IN, OUT, NOINLINE, CROSSINLINE, VARARG, REIFIED,
+                TAILREC, OPERATOR, INFIX, INLINE, EXTERNAL, SUSPEND, CONST, FUN,
+                ACTUAL, EXPECT;
 
-            override val string: String
-                get() = name.lowercase()
+                override val string: String
+                    get() = name.lowercase()
+            }
         }
     }
 
