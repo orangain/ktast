@@ -12,6 +12,7 @@ open class Visitor {
             is Node.NodeList<*> -> {
                 visitChildren(elements)
             }
+            is Node.SymbolOrKeyword -> {}
             is Node.KotlinFile -> {
                 visitChildren(annotationSets)
                 visitChildren(packageDirective)
@@ -413,6 +414,7 @@ open class Visitor {
             }
             is Node.Keyword -> {}
             is Node.Extra -> {}
+            else -> error("Expected to be unreachable here")
         }
     }
 

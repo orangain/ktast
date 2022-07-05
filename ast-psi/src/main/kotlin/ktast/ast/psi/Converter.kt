@@ -154,7 +154,7 @@ open class Converter {
 
     open fun convertFuncParam(v: KtParameter) = Node.Declaration.Function.Param(
         modifiers = v.modifierList?.let(::convertModifiers),
-        valOrVar = v.valOrVarKeyword?.let(::convertValOrVarKeyword),
+        valOrVar = v.valOrVarKeyword?.let(::convertValOrVar),
         name = v.nameIdentifier?.let(::convertName) ?: error("No param name"),
         typeRef = v.typeReference?.let(::convertTypeRef),
         equals = v.equalsToken?.let { convertKeyword(it, Node.Keyword::Equal) },
@@ -177,7 +177,7 @@ open class Converter {
 
     open fun convertProperty(v: KtProperty) = Node.Declaration.Property(
         modifiers = v.modifierList?.let(::convertModifiers),
-        valOrVar = convertValOrVarKeyword(v.valOrVarKeyword),
+        valOrVar = convertValOrVar(v.valOrVarKeyword),
         typeParams = v.typeParameterList?.let(::convertTypeParams),
         receiverTypeRef = v.receiverTypeReference?.let(::convertTypeRef),
         variable = Node.Declaration.Property.Variable.Single(
@@ -198,7 +198,7 @@ open class Converter {
 
     open fun convertProperty(v: KtDestructuringDeclaration) = Node.Declaration.Property(
         modifiers = v.modifierList?.let(::convertModifiers),
-        valOrVar = v.valOrVarKeyword?.let(::convertValOrVarKeyword) ?: error("Missing valOrVarKeyword"),
+        valOrVar = v.valOrVarKeyword?.let(::convertValOrVar) ?: error("Missing valOrVarKeyword"),
         typeParams = null,
         receiverTypeRef = null,
         variable = Node.Declaration.Property.Variable.Multi(
@@ -211,6 +211,9 @@ open class Converter {
         delegate = null,
         accessors = listOf(),
     ).map(v)
+
+    open fun convertValOrVar(v: PsiElement) = Node.Declaration.Property.ValOrVar.of(v.text)
+        .map(v)
 
     open fun convertPropertyVariable(v: KtDestructuringDeclarationEntry) = Node.Declaration.Property.Variable.Single(
         name = v.nameIdentifier?.let(::convertName) ?: error("No property name on $v"),
@@ -955,9 +958,6 @@ open class Converter {
             }.also { prevPsi = psi }
         }
     }
-
-    open fun convertValOrVarKeyword(v: PsiElement) = Node.Keyword.ValOrVar.of(v.text)
-        .map(v)
 
     open fun convertDeclarationKeyword(v: PsiElement) = Node.Keyword.Declaration.of(v.text)
         .map(v)

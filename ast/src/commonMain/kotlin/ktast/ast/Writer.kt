@@ -59,6 +59,9 @@ open class Writer(
                 is Node.NodeList<*> -> {
                     children(elements, prefix = prefix, suffix = suffix)
                 }
+                is Node.SymbolOrKeyword -> {
+                    append(str)
+                }
                 is Node.KotlinFile -> {
                     children(annotationSets, skipWritingExtrasWithin = true)
                     children(packageDirective)

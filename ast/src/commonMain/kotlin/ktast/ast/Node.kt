@@ -47,6 +47,16 @@ sealed class Node {
         val declarations: List<Declaration>
     }
 
+    interface SymbolOrKeyword {
+        val str: String
+    }
+
+    interface TokenContainer<T : Enum<*>> : SymbolOrKeyword {
+        val token: T
+        override val str: String
+            get() = token.toString().lowercase()
+    }
+
     /**
      * AST node corresponds to KtFile.
      */
@@ -218,7 +228,7 @@ sealed class Node {
              */
             data class Param(
                 override val modifiers: Modifiers?,
-                val valOrVar: Keyword.ValOrVar?,
+                val valOrVar: Property.ValOrVar?,
                 val name: Expression.Name,
                 // Type can be null for anon functions
                 val typeRef: TypeRef?,
@@ -243,7 +253,7 @@ sealed class Node {
          */
         data class Property(
             override val modifiers: Modifiers?,
-            val valOrVar: Keyword.ValOrVar,
+            val valOrVar: ValOrVar,
             val typeParams: TypeParams?,
             val receiverTypeRef: TypeRef?,
             // Always at least one, more than one is destructuring
@@ -263,6 +273,19 @@ sealed class Node {
                 require((equals == null && initializer == null) || (equals != null && initializer != null)) {
                     "equals and initializer must be both null or both non-null"
                 }
+            }
+
+            data class ValOrVar(override val token: ValOrVarToken) : Node(), TokenContainer<ValOrVarToken> {
+                companion object {
+                    private val valOrVarValues = ValOrVarToken.values().associateBy { it.name.lowercase() }
+
+                    fun of(value: String) = valOrVarValues[value]?.let { ValOrVar(it) }
+                        ?: error("Unknown value: $value")
+                }
+            }
+
+            enum class ValOrVarToken {
+                VAL, VAR,
             }
 
             /**
@@ -1049,19 +1072,6 @@ sealed class Node {
 
         override fun hashCode(): Int {
             return value.hashCode()
-        }
-
-        data class ValOrVar(val token: ValOrVarToken) : Keyword(token.name.lowercase()) {
-            companion object {
-                private val valOrVarValues = ValOrVarToken.values().associateBy { it.name.lowercase() }
-
-                fun of(value: String) = valOrVarValues[value]?.let { ValOrVar(it) }
-                    ?: error("Unknown value: $value")
-            }
-        }
-
-        enum class ValOrVarToken {
-            VAL, VAR,
         }
 
         data class Declaration(val token: DeclarationToken) : Keyword(token.name.lowercase()) {

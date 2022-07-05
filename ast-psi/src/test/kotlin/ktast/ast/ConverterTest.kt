@@ -16,7 +16,7 @@ class ConverterTest {
             """
                 Node.KotlinFile
                   Node.Declaration.Property
-                    Node.Keyword.ValOrVar
+                    Node.Declaration.Property.ValOrVar
                     AFTER: Node.Extra.Whitespace
                     Node.Declaration.Property.Variable.Single
                       Node.Expression.Name
@@ -37,7 +37,7 @@ class ConverterTest {
             """
                 Node.KotlinFile
                   Node.Declaration.Property
-                    Node.Keyword.ValOrVar
+                    Node.Declaration.Property.ValOrVar
                     AFTER: Node.Extra.Whitespace
                     Node.Declaration.Property.Variable.Single
                       Node.Expression.Name
