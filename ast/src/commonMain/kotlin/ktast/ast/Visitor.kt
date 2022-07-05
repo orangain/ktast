@@ -139,10 +139,6 @@ open class Visitor {
                 visitChildren(postModifiers)
                 visitChildren(body)
             }
-            is Node.Declaration.Property.Accessor.Params -> {
-                visitChildren(elements)
-                visitChildren(trailingComma)
-            }
             is Node.Declaration.TypeAlias -> {
                 visitChildren(modifiers)
                 visitChildren(name)
