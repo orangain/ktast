@@ -412,7 +412,6 @@ open class Visitor {
             is Node.PostModifier.Contract.ContractEffect -> {
                 visitChildren(expression)
             }
-            is Node.Keyword -> {}
             is Node.Extra -> {}
             else -> error("Expected to be unreachable here")
         }

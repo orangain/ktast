@@ -460,7 +460,6 @@ open class MutableVisitor(
                     is Node.PostModifier.Contract.ContractEffect -> copy(
                         expression = visitChildren(expression, newCh),
                     )
-                    is Node.Keyword -> this
                     is Node.Extra -> this
                     // Currently, else branch is required even when sealed classes are exhaustive.
                     // See: https://youtrack.jetbrains.com/issue/KT-21908

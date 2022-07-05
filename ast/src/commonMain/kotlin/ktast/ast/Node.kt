@@ -1069,7 +1069,7 @@ sealed class Node {
         }
     }
 
-    sealed class Keyword(val value: String) : Node() {
+    sealed class Keyword(override val str: String) : Node(), SymbolOrKeyword {
         override fun toString(): String {
             return javaClass.simpleName
         }
@@ -1080,13 +1080,13 @@ sealed class Node {
 
             other as Keyword
 
-            if (value != other.value) return false
+            if (str != other.str) return false
 
             return true
         }
 
         override fun hashCode(): Int {
-            return value.hashCode()
+            return str.hashCode()
         }
 
         class Package : Keyword("package")

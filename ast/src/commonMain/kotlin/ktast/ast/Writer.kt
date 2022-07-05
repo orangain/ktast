@@ -550,7 +550,6 @@ open class Writer(
                 is Node.PostModifier.Contract.ContractEffect -> {
                     children(expression)
                 }
-                is Node.Keyword -> append(value)
                 else ->
                     error("Unrecognized node type: $this")
             }

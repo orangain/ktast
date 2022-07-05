@@ -966,7 +966,7 @@ open class Converter {
 
     open fun <T : Node.Keyword> convertKeyword(v: PsiElement, factory: () -> T): T =
         factory().also {
-            check(v.text == it.value) { "Unexpected keyword: ${v.text}" }
+            check(v.text == it.str) { "Unexpected keyword: ${v.text}" }
         }.map(v)
 
     protected open fun <T : Node> T.map(v: PsiElement) = also { onNode(it, v) }
