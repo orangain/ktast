@@ -12,7 +12,7 @@ open class Visitor {
             is Node.NodeList<*> -> {
                 visitChildren(elements)
             }
-            is Node.SymbolOrKeyword -> {}
+            is Node.HasSimpleStringRepresentation -> {}
             is Node.KotlinFile -> {
                 visitChildren(annotationSets)
                 visitChildren(packageDirective)

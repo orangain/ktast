@@ -47,13 +47,13 @@ sealed class Node {
         val declarations: List<Declaration>
     }
 
-    interface SymbolOrKeyword {
-        val str: String
+    interface HasSimpleStringRepresentation {
+        val string: String
     }
 
-    interface TokenContainer<T : Enum<*>> : SymbolOrKeyword {
+    interface TokenContainer<T : Enum<*>> : HasSimpleStringRepresentation {
         val token: T
-        override val str: String
+        override val string: String
             get() = token.toString().lowercase()
     }
 
@@ -1069,7 +1069,7 @@ sealed class Node {
         }
     }
 
-    sealed class Keyword(override val str: String) : Node(), SymbolOrKeyword {
+    sealed class Keyword(override val string: String) : Node(), HasSimpleStringRepresentation {
         override fun toString(): String {
             return javaClass.simpleName
         }
@@ -1080,13 +1080,13 @@ sealed class Node {
 
             other as Keyword
 
-            if (str != other.str) return false
+            if (string != other.string) return false
 
             return true
         }
 
         override fun hashCode(): Int {
-            return str.hashCode()
+            return string.hashCode()
         }
 
         class Package : Keyword("package")

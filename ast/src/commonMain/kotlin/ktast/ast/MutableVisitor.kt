@@ -12,7 +12,7 @@ open class MutableVisitor(
         ch.sub { newCh ->
             preVisit(this, parent).run {
                 val new: Node = when (this) {
-                    is Node.SymbolOrKeyword -> this
+                    is Node.HasSimpleStringRepresentation -> this
                     is Node.KotlinFile -> copy(
                         annotationSets = visitChildren(annotationSets, newCh),
                         packageDirective = visitChildren(packageDirective, newCh),

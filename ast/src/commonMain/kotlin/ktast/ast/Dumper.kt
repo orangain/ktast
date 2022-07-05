@@ -69,7 +69,7 @@ class Dumper(
         app.append(this::class.qualifiedName?.substring(10)) // 10 means length of "ktast.ast."
         if (verbose) {
             when (this) {
-                is Node.SymbolOrKeyword -> mapOf("str" to str)
+                is Node.HasSimpleStringRepresentation -> mapOf("str" to string)
                 is Node.Declaration.SecondaryConstructor.DelegationCall -> mapOf("target" to target)
                 is Node.Expression.Binary.Operator.Infix -> mapOf("str" to str)
                 is Node.Expression.Binary.Operator.Token -> mapOf("token" to token)
