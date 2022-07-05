@@ -623,35 +623,43 @@ sealed class Node {
             val doWhile: Boolean
         ) : Expression()
 
+        sealed class BaseBinary : Expression() {
+            abstract val lhs: Expression
+            abstract val rhs: Expression
+        }
+
         /**
          * AST node corresponds to KtBinaryExpression or KtQualifiedExpression.
          */
         data class Binary(
-            val lhs: Expression,
+            override val lhs: Expression,
             val operator: Operator,
-            val rhs: Expression
-        ) : Expression() {
-            sealed class Operator : Node() {
-                data class Infix(val str: String) : Operator()
-                data class Token(override val token: Binary.Token) : Operator(), TokenContainer<Binary.Token> {
-                    companion object {
-                        private val mapStringToToken = Binary.Token.values().associateBy { it.string }
-                        fun of(value: String): Operator = mapStringToToken[value]?.let(::Token)
-                            ?: error("Unknown value: $value")
-                    }
+            override val rhs: Expression
+        ) : BaseBinary() {
+            data class Operator(override val token: Token) : Node(), TokenContainer<Operator.Token> {
+                companion object {
+                    private val mapStringToToken = Token.values().associateBy { it.string }
+                    fun of(value: String): Operator = mapStringToToken[value]?.let(::Operator)
+                        ?: error("Unknown value: $value")
+                }
+
+                enum class Token(override val string: String) : HasSimpleStringRepresentation {
+                    MUL("*"), DIV("/"), MOD("%"), ADD("+"), SUB("-"),
+                    IN("in"), NOT_IN("!in"),
+                    GT(">"), GTE(">="), LT("<"), LTE("<="),
+                    EQ("=="), NEQ("!="),
+                    ASSN("="), MUL_ASSN("*="), DIV_ASSN("/="), MOD_ASSN("%="), ADD_ASSN("+="), SUB_ASSN("-="),
+                    OR("||"), AND("&&"), ELVIS("?:"), RANGE(".."),
+                    DOT("."), DOT_SAFE("?."), SAFE("?")
                 }
             }
-
-            enum class Token(override val string: String) : HasSimpleStringRepresentation {
-                MUL("*"), DIV("/"), MOD("%"), ADD("+"), SUB("-"),
-                IN("in"), NOT_IN("!in"),
-                GT(">"), GTE(">="), LT("<"), LTE("<="),
-                EQ("=="), NEQ("!="),
-                ASSN("="), MUL_ASSN("*="), DIV_ASSN("/="), MOD_ASSN("%="), ADD_ASSN("+="), SUB_ASSN("-="),
-                OR("||"), AND("&&"), ELVIS("?:"), RANGE(".."),
-                DOT("."), DOT_SAFE("?."), SAFE("?")
-            }
         }
+
+        data class BinaryInfix(
+            override val lhs: Expression,
+            val operator: Name,
+            override val rhs: Expression
+        ) : BaseBinary()
 
         /**
          * AST node corresponds to KtUnaryExpression.

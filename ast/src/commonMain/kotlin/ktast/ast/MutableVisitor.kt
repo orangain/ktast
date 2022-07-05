@@ -283,7 +283,11 @@ open class MutableVisitor(
                         operator = visitChildren(operator, newCh),
                         rhs = visitChildren(rhs, newCh)
                     )
-                    is Node.Expression.Binary.Operator.Infix -> this
+                    is Node.Expression.BinaryInfix -> copy(
+                        lhs = visitChildren(lhs, newCh),
+                        operator = visitChildren(operator, newCh),
+                        rhs = visitChildren(rhs, newCh)
+                    )
                     is Node.Expression.Unary -> copy(
                         expression = visitChildren(expression, newCh),
                         operator = visitChildren(operator, newCh)

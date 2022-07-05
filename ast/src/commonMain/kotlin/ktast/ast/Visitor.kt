@@ -249,7 +249,11 @@ open class Visitor {
                 visitChildren(operator)
                 visitChildren(rhs)
             }
-            is Node.Expression.Binary.Operator.Infix -> {}
+            is Node.Expression.BinaryInfix -> {
+                visitChildren(lhs)
+                visitChildren(operator)
+                visitChildren(rhs)
+            }
             is Node.Expression.Unary -> {
                 visitChildren(expression)
                 visitChildren(operator)
@@ -405,7 +409,7 @@ open class Visitor {
                 visitChildren(expression)
             }
             is Node.Extra -> {}
-            else -> error("Expected to be unreachable here")
+            else -> error("Expected to be unreachable here. Missing visitor implementation for $this.")
         }
     }
 

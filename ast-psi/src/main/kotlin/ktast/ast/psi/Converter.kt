@@ -526,28 +526,34 @@ open class Converter {
         doWhile = v is KtDoWhileExpression
     ).map(v)
 
-    open fun convertBinary(v: KtBinaryExpression) = Node.Expression.Binary(
-        lhs = convertExpression(v.left ?: error("No binary lhs for $v")),
-        operator = if (v.operationReference.isConventionOperator()) {
-            convertBinaryOperator(v.operationReference)
+    open fun convertBinary(v: KtBinaryExpression): Node.Expression.BaseBinary =
+        if (v.operationReference.isConventionOperator()) {
+            Node.Expression.Binary(
+                lhs = convertExpression(v.left ?: error("No binary lhs for $v")),
+                operator = convertBinaryOperator(v.operationReference),
+                rhs = convertExpression(v.right ?: error("No binary rhs for $v"))
+            ).map(v)
         } else {
-            convertBinaryInfixOperator(v.operationReference)
-        },
-        rhs = convertExpression(v.right ?: error("No binary rhs for $v"))
-    ).map(v)
+            Node.Expression.BinaryInfix(
+                lhs = convertExpression(v.left ?: error("No binary lhs for $v")),
+                operator = convertName(v.operationReference.firstChild),
+                rhs = convertExpression(v.right ?: error("No binary rhs for $v"))
+            ).map(v)
+        }
 
     open fun convertBinary(v: KtQualifiedExpression) = Node.Expression.Binary(
         lhs = convertExpression(v.receiverExpression),
-        operator = Node.Expression.Binary.Operator.Token(
-            if (v is KtDotQualifiedExpression) Node.Expression.Binary.Token.DOT else Node.Expression.Binary.Token.DOT_SAFE
+        operator = Node.Expression.Binary.Operator(
+            if (v is KtDotQualifiedExpression) {
+                Node.Expression.Binary.Operator.Token.DOT
+            } else {
+                Node.Expression.Binary.Operator.Token.DOT_SAFE
+            }
         ),
         rhs = convertExpression(v.selectorExpression ?: error("No qualified rhs for $v"))
     ).map(v)
 
-    open fun convertBinaryOperator(v: PsiElement) = Node.Expression.Binary.Operator.Token.of(v.text)
-        .map(v)
-
-    open fun convertBinaryInfixOperator(v: PsiElement) = Node.Expression.Binary.Operator.Infix(v.text)
+    open fun convertBinaryOperator(v: PsiElement) = Node.Expression.Binary.Operator.of(v.text)
         .map(v)
 
     open fun convertUnary(v: KtUnaryExpression) = Node.Expression.Unary(

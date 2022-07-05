@@ -71,11 +71,7 @@ class Dumper(
             when (this) {
                 is Node.HasSimpleStringRepresentation -> mapOf("str" to string)
                 is Node.Declaration.SecondaryConstructor.DelegationCall -> mapOf("target" to target)
-                is Node.Expression.Binary.Operator.Infix -> mapOf("str" to str)
-                is Node.Expression.Binary.Operator.Token -> mapOf("token" to token)
                 is Node.Expression.Unary -> mapOf("prefix" to prefix)
-                is Node.Expression.Unary.Operator -> mapOf("token" to token)
-                is Node.Expression.BinaryType.Operator -> mapOf("token" to token)
                 is Node.Modifier.AnnotationSet -> mapOf("target" to target)
                 is Node.Expression.Name -> mapOf("name" to name)
                 is Node.Expression.Constant -> mapOf("value" to value, "form" to form)
