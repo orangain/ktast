@@ -118,7 +118,7 @@ sealed class Node {
          */
         data class Class(
             override val modifiers: Modifiers?,
-            val declarationKeyword: Keyword.Declaration,
+            val declarationKeyword: DeclarationKeyword,
             val name: Expression.Name?,
             val typeParams: TypeParams?,
             val primaryConstructor: PrimaryConstructor?,
@@ -127,11 +127,26 @@ sealed class Node {
             val body: Body?,
         ) : Declaration(), WithModifiers {
 
-            val isClass = declarationKeyword.token == Keyword.DeclarationToken.CLASS
-            val isObject = declarationKeyword.token == Keyword.DeclarationToken.OBJECT
-            val isInterface = declarationKeyword.token == Keyword.DeclarationToken.INTERFACE
+            val isClass = declarationKeyword.token == DeclarationKeywordToken.CLASS
+            val isObject = declarationKeyword.token == DeclarationKeywordToken.OBJECT
+            val isInterface = declarationKeyword.token == DeclarationKeywordToken.INTERFACE
             val isCompanion = modifiers?.elements.orEmpty().contains(Modifier.Literal(Modifier.Keyword.COMPANION))
             val isEnum = modifiers?.elements.orEmpty().contains(Modifier.Literal(Modifier.Keyword.ENUM))
+
+
+            data class DeclarationKeyword(override val token: DeclarationKeywordToken) : Node(),
+                TokenContainer<DeclarationKeywordToken> {
+                companion object {
+                    private val declarationValues = DeclarationKeywordToken.values().associateBy { it.name.lowercase() }
+
+                    fun of(value: String) = declarationValues[value]?.let { DeclarationKeyword(it) }
+                        ?: error("Unknown value: $value")
+                }
+            }
+
+            enum class DeclarationKeywordToken {
+                INTERFACE, CLASS, OBJECT,
+            }
 
             /**
              * AST node corresponds to KtSuperTypeList.
@@ -1072,19 +1087,6 @@ sealed class Node {
 
         override fun hashCode(): Int {
             return value.hashCode()
-        }
-
-        data class Declaration(val token: DeclarationToken) : Keyword(token.name.lowercase()) {
-            companion object {
-                private val declarationValues = DeclarationToken.values().associateBy { it.name.lowercase() }
-
-                fun of(value: String) = declarationValues[value]?.let { Declaration(it) }
-                    ?: error("Unknown value: $value")
-            }
-        }
-
-        enum class DeclarationToken {
-            INTERFACE, CLASS, OBJECT,
         }
 
         class Package : Keyword("package")

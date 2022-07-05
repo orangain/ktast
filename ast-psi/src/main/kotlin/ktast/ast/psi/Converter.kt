@@ -86,6 +86,9 @@ open class Converter {
         body = v.body?.let(::convertClassBody),
     ).map(v)
 
+    open fun convertDeclarationKeyword(v: PsiElement) = Node.Declaration.Class.DeclarationKeyword.of(v.text)
+        .map(v)
+
     open fun convertParents(v: KtSuperTypeList) = Node.Declaration.Class.Parents(
         elements = v.entries.map(::convertParent),
     ).map(v)
@@ -958,9 +961,6 @@ open class Converter {
             }.also { prevPsi = psi }
         }
     }
-
-    open fun convertDeclarationKeyword(v: PsiElement) = Node.Keyword.Declaration.of(v.text)
-        .map(v)
 
     open fun convertComma(v: PsiElement): Node.Keyword.Comma = convertKeyword(v, Node.Keyword::Comma)
 

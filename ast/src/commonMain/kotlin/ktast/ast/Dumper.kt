@@ -80,7 +80,6 @@ class Dumper(
                 is Node.Modifier.Literal -> mapOf("keyword" to keyword)
                 is Node.Expression.Name -> mapOf("name" to name)
                 is Node.Expression.Constant -> mapOf("value" to value, "form" to form)
-                is Node.Keyword.Declaration -> mapOf("token" to token)
                 is Node.Extra.Comment -> mapOf("text" to text)
                 else -> null
             }?.let {
