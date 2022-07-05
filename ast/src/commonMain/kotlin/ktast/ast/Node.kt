@@ -51,10 +51,10 @@ sealed class Node {
         val string: String
     }
 
-    interface TokenContainer<T : Enum<*>> : HasSimpleStringRepresentation {
+    interface TokenContainer<T : HasSimpleStringRepresentation> : HasSimpleStringRepresentation {
         val token: T
         override val string: String
-            get() = token.toString().lowercase()
+            get() = token.string
     }
 
     /**
@@ -144,8 +144,11 @@ sealed class Node {
                 }
             }
 
-            enum class DeclarationKeywordToken {
-                INTERFACE, CLASS, OBJECT,
+            enum class DeclarationKeywordToken : HasSimpleStringRepresentation {
+                INTERFACE, CLASS, OBJECT;
+
+                override val string: String
+                    get() = name.lowercase()
             }
 
             /**
@@ -299,8 +302,11 @@ sealed class Node {
                 }
             }
 
-            enum class ValOrVarToken {
-                VAL, VAR,
+            enum class ValOrVarToken : HasSimpleStringRepresentation {
+                VAL, VAR;
+
+                override val string: String
+                    get() = name.lowercase()
             }
 
             /**
