@@ -137,10 +137,9 @@ sealed class Node {
             data class DeclarationKeyword(override val token: DeclarationKeywordToken) : Node(),
                 TokenContainer<DeclarationKeywordToken> {
                 companion object {
-                    private val declarationValues = DeclarationKeywordToken.values().associateBy { it.name.lowercase() }
-
-                    fun of(value: String) = declarationValues[value]?.let { DeclarationKeyword(it) }
-                        ?: error("Unknown value: $value")
+                    private val mapStringToToken = DeclarationKeywordToken.values().associateBy { it.string }
+                    fun of(value: String) =
+                        mapStringToToken[value]?.let(::DeclarationKeyword) ?: error("Unknown value: $value")
                 }
             }
 
@@ -295,10 +294,8 @@ sealed class Node {
 
             data class ValOrVar(override val token: ValOrVarToken) : Node(), TokenContainer<ValOrVarToken> {
                 companion object {
-                    private val valOrVarValues = ValOrVarToken.values().associateBy { it.name.lowercase() }
-
-                    fun of(value: String) = valOrVarValues[value]?.let { ValOrVar(it) }
-                        ?: error("Unknown value: $value")
+                    private val mapStringToToken = ValOrVarToken.values().associateBy { it.string }
+                    fun of(value: String) = mapStringToToken[value]?.let(::ValOrVar) ?: error("Unknown value: $value")
                 }
             }
 
