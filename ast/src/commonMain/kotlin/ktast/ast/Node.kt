@@ -633,10 +633,16 @@ sealed class Node {
         ) : Expression() {
             sealed class Operator : Node() {
                 data class Infix(val str: String) : Operator()
-                data class Token(val token: Binary.Token) : Operator()
+                data class Token(override val token: Binary.Token) : Operator(), TokenContainer<Binary.Token> {
+                    companion object {
+                        private val mapStringToToken = Binary.Token.values().associateBy { it.string }
+                        fun of(value: String): Operator = mapStringToToken[value]?.let(::Token)
+                            ?: error("Unknown value: $value")
+                    }
+                }
             }
 
-            enum class Token(val str: String) {
+            enum class Token(override val string: String) : HasSimpleStringRepresentation {
                 MUL("*"), DIV("/"), MOD("%"), ADD("+"), SUB("-"),
                 IN("in"), NOT_IN("!in"),
                 GT(">"), GTE(">="), LT("<"), LTE("<="),
@@ -655,8 +661,15 @@ sealed class Node {
             val operator: Operator,
             val prefix: Boolean
         ) : Expression() {
-            data class Operator(val token: Token) : Node()
-            enum class Token(val str: String) {
+            data class Operator(override val token: Token) : Node(), TokenContainer<Token> {
+                companion object {
+                    private val mapStringToToken = Token.values().associateBy { it.string }
+                    fun of(value: String): Operator =
+                        mapStringToToken[value]?.let(::Operator) ?: error("Unknown value: $value")
+                }
+            }
+
+            enum class Token(override val string: String) : HasSimpleStringRepresentation {
                 NEG("-"), POS("+"), INC("++"), DEC("--"), NOT("!"), NULL_DEREF("!!")
             }
         }
@@ -669,8 +682,15 @@ sealed class Node {
             val operator: Operator,
             val rhs: TypeRef
         ) : Expression() {
-            data class Operator(val token: Token) : Node()
-            enum class Token(val str: String) {
+            data class Operator(override val token: Token) : Node(), TokenContainer<Token> {
+                companion object {
+                    private val mapStringToToken = Token.values().associateBy { it.string }
+                    fun of(value: String): Operator =
+                        mapStringToToken[value]?.let(::Operator) ?: error("Unknown value: $value")
+                }
+            }
+
+            enum class Token(override val string: String) : HasSimpleStringRepresentation {
                 AS("as"), AS_SAFE("as?"), COL(":"), IS("is"), NOT_IS("!is")
             }
         }

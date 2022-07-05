@@ -344,29 +344,10 @@ open class Writer(
                 }
                 is Node.Expression.Binary.Operator.Infix ->
                     append(str)
-                is Node.Expression.Binary.Operator.Token ->
-                    if (token == Node.Expression.Binary.Token.IN || token == Node.Expression.Binary.Token.NOT_IN) {
-                        // Using appendNonSymbol may cause insertion of unneeded space before !in.
-                        // However, we ignore them as it is rare case for now.
-                        append(token.str)
-                    } else {
-                        append(token.str)
-                    }
                 is Node.Expression.Unary ->
                     if (prefix) children(operator, expression) else children(expression, operator)
-                is Node.Expression.Unary.Operator ->
-                    append(token.str)
                 is Node.Expression.BinaryType ->
                     children(listOf(lhs, operator, rhs), "")
-                is Node.Expression.BinaryType.Operator -> {
-                    if (token == Node.Expression.BinaryType.Token.COL) {
-                        append(token.str)
-                    } else {
-                        // Using appendNonSymbol may cause insertion of unneeded spaces before or after symbols.
-                        // However, we ignore them as it is rare case for now.
-                        append(token.str)
-                    }
-                }
                 is Node.Expression.CallableReference -> {
                     if (lhs != null) children(lhs)
                     append("::")

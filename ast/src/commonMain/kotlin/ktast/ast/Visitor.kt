@@ -250,18 +250,15 @@ open class Visitor {
                 visitChildren(rhs)
             }
             is Node.Expression.Binary.Operator.Infix -> {}
-            is Node.Expression.Binary.Operator.Token -> {}
             is Node.Expression.Unary -> {
                 visitChildren(expression)
                 visitChildren(operator)
             }
-            is Node.Expression.Unary.Operator -> {}
             is Node.Expression.BinaryType -> {
                 visitChildren(lhs)
                 visitChildren(operator)
                 visitChildren(rhs)
             }
-            is Node.Expression.BinaryType.Operator -> {}
             is Node.Expression.CallableReference -> {
                 visitChildren(lhs)
                 visitChildren(rhs)
