@@ -395,7 +395,6 @@ open class Visitor {
                 visitChildren(type)
                 visitChildren(args)
             }
-            is Node.Modifier.Literal -> {}
             is Node.PostModifier.TypeConstraints -> {
                 visitChildren(whereKeyword)
                 visitChildren(constraints)

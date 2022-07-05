@@ -130,8 +130,8 @@ sealed class Node {
             val isClass = declarationKeyword.token == DeclarationKeywordToken.CLASS
             val isObject = declarationKeyword.token == DeclarationKeywordToken.OBJECT
             val isInterface = declarationKeyword.token == DeclarationKeywordToken.INTERFACE
-            val isCompanion = modifiers?.elements.orEmpty().contains(Modifier.Literal(Modifier.Keyword.COMPANION))
-            val isEnum = modifiers?.elements.orEmpty().contains(Modifier.Literal(Modifier.Keyword.ENUM))
+            val isCompanion = modifiers?.elements.orEmpty().contains(Modifier.Keyword(Modifier.KeywordToken.COMPANION))
+            val isEnum = modifiers?.elements.orEmpty().contains(Modifier.Keyword(Modifier.KeywordToken.ENUM))
 
 
             data class DeclarationKeyword(override val token: DeclarationKeywordToken) : Node(),
@@ -1014,13 +1014,22 @@ sealed class Node {
             ) : Node()
         }
 
-        data class Literal(val keyword: Keyword) : Modifier()
-        enum class Keyword {
+        data class Keyword(override val token: KeywordToken) : Modifier(), TokenContainer<KeywordToken> {
+            companion object {
+                private val mapStringToToken = KeywordToken.values().associateBy { it.string }
+                fun of(value: String) = mapStringToToken[value]?.let(::Keyword) ?: error("Unknown value: $value")
+            }
+        }
+
+        enum class KeywordToken : HasSimpleStringRepresentation {
             ABSTRACT, FINAL, OPEN, ANNOTATION, SEALED, DATA, OVERRIDE, LATEINIT, INNER, ENUM, COMPANION,
             PRIVATE, PROTECTED, PUBLIC, INTERNAL,
             IN, OUT, NOINLINE, CROSSINLINE, VARARG, REIFIED,
             TAILREC, OPERATOR, INFIX, INLINE, EXTERNAL, SUSPEND, CONST, FUN,
-            ACTUAL, EXPECT
+            ACTUAL, EXPECT;
+
+            override val string: String
+                get() = name.lowercase()
         }
     }
 

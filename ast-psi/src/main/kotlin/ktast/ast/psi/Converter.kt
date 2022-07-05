@@ -929,15 +929,14 @@ open class Converter {
                     is KtAnnotationEntry -> convertAnnotationSet(psi)
                     is KtAnnotation -> convertAnnotationSet(psi)
                     is PsiWhiteSpace -> null
-                    else -> (
-                            modifiersByText[node.text]?.let { keyword ->
-                                Node.Modifier.Literal(keyword)
-                            } ?: error("Unrecognized modifier: ${node.text}")
-                            ).map(psi)
+                    else -> convertKeywordModifier(psi)
                 }
             }
         }.toList(),
     ).map(v)
+
+    open fun convertKeywordModifier(v: PsiElement) = Node.Modifier.Keyword.of(v.text)
+        .map(v)
 
     open fun convertPostModifiers(v: KtElement): List<Node.PostModifier> {
         val nonExtraChildren = v.allChildren.filterNot { it is PsiComment || it is PsiWhiteSpace }.toList()
@@ -975,7 +974,6 @@ open class Converter {
     class Unsupported(message: String) : UnsupportedOperationException(message)
 
     companion object : Converter() {
-        internal val modifiersByText = Node.Modifier.Keyword.values().associateBy { it.name.lowercase() }
         internal val binaryTokensByText = Node.Expression.Binary.Token.values().associateBy { it.str }
         internal val unaryTokensByText = Node.Expression.Unary.Token.values().associateBy { it.str }
         internal val binaryTypeTokensByText = Node.Expression.BinaryType.Token.values().associateBy { it.str }

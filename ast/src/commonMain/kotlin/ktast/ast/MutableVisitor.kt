@@ -436,7 +436,6 @@ open class MutableVisitor(
                         type = visitChildren(type, newCh),
                         args = visitChildren(args, newCh),
                     )
-                    is Node.Modifier.Literal -> this
                     is Node.PostModifier.TypeConstraints -> copy(
                         whereKeyword = visitChildren(whereKeyword, newCh),
                         constraints = visitChildren(constraints, newCh),

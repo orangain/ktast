@@ -531,8 +531,6 @@ open class Writer(
                         nextHeuristicWhitespace = " " // Insert heuristic space after annotation if single form
                     }
                 }
-                is Node.Modifier.Literal ->
-                    append(keyword.name.lowercase())
                 is Node.PostModifier.TypeConstraints -> {
                     children(whereKeyword)
                     children(constraints)
@@ -627,7 +625,7 @@ open class Writer(
     protected open fun writeHeuristicExtraAfterChild(v: Node, next: Node?, parent: Node?) {
         if (v is Node.Expression.Name && next is Node.Declaration && parent is Node.StatementsContainer) {
             val upperCasedName = v.name.uppercase()
-            if (Node.Modifier.Keyword.values().any { it.name == upperCasedName } &&
+            if (Node.Modifier.KeywordToken.values().any { it.name == upperCasedName } &&
                 !containsSemicolon(extrasSinceLastNonSymbol)
             ) {
                 append(";")
