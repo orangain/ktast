@@ -153,6 +153,7 @@ open class Visitor {
                 visitChildren(block)
             }
             is Node.Declaration.SecondaryConstructor.DelegationCall -> {
+                visitChildren(target)
                 visitChildren(args)
             }
             is Node.EnumEntry -> {
@@ -383,6 +384,7 @@ open class Visitor {
             }
             is Node.Modifier.AnnotationSet -> {
                 visitChildren(atSymbol)
+                visitChildren(target)
                 visitChildren(colon)
                 visitChildren(lBracket)
                 visitChildren(annotations)

@@ -398,7 +398,20 @@ sealed class Node {
                 val args: ValueArgs?
             ) : Node()
 
-            enum class DelegationTarget { THIS, SUPER }
+            data class DelegationTarget(override val token: Token) : Node(), TokenContainer<DelegationTarget.Token> {
+                companion object {
+                    private val mapStringToToken = Token.values().associateBy { it.string }
+                    fun of(value: String): DelegationTarget = mapStringToToken[value]?.let(::DelegationTarget)
+                        ?: error("Unknown value: $value")
+                }
+
+                enum class Token : HasSimpleStringRepresentation {
+                    THIS, SUPER;
+
+                    override val string: String
+                        get() = name.lowercase()
+                }
+            }
         }
 
     }
@@ -1027,8 +1040,20 @@ sealed class Node {
             val annotations: List<Annotation>,
             val rBracket: Node.Keyword.RBracket?,
         ) : Modifier() {
-            enum class Target {
-                FIELD, FILE, PROPERTY, GET, SET, RECEIVER, PARAM, SETPARAM, DELEGATE
+
+            data class Target(override val token: Token) : Node(), TokenContainer<Target.Token> {
+                companion object {
+                    private val mapStringToToken = Token.values().associateBy { it.string }
+                    fun of(value: String): Target = mapStringToToken[value]?.let(::Target)
+                        ?: error("Unknown value: $value")
+                }
+
+                enum class Token : HasSimpleStringRepresentation {
+                    FIELD, FILE, PROPERTY, GET, SET, RECEIVER, PARAM, SETPARAM, DELEGATE;
+
+                    override val string: String
+                        get() = name.lowercase()
+                }
             }
 
             /**

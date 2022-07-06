@@ -167,7 +167,8 @@ open class MutableVisitor(
                         block = visitChildren(block, newCh)
                     )
                     is Node.Declaration.SecondaryConstructor.DelegationCall -> copy(
-                        args = visitChildren(args, newCh)
+                        target = visitChildren(target, newCh),
+                        args = visitChildren(args, newCh),
                     )
                     is Node.EnumEntry -> copy(
                         modifiers = visitChildren(modifiers, newCh),
@@ -428,6 +429,7 @@ open class MutableVisitor(
                     )
                     is Node.Modifier.AnnotationSet -> copy(
                         atSymbol = visitChildren(atSymbol, newCh),
+                        target = visitChildren(target, newCh),
                         colon = visitChildren(colon, newCh),
                         lBracket = visitChildren(lBracket, newCh),
                         annotations = visitChildren(annotations, newCh),

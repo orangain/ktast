@@ -204,8 +204,10 @@ open class Writer(
                     if (delegationCall != null) append(":").also { children(delegationCall) }
                     children(block)
                 }
-                is Node.Declaration.SecondaryConstructor.DelegationCall ->
-                    append(target.name.lowercase()).also { children(args) }
+                is Node.Declaration.SecondaryConstructor.DelegationCall -> {
+                    children(target)
+                    children(args)
+                }
                 is Node.EnumEntry -> {
                     children(modifiers)
                     children(name)
@@ -500,7 +502,7 @@ open class Writer(
                 }
                 is Node.Modifier.AnnotationSet -> {
                     children(atSymbol)
-                    if (target != null) append(target.name.lowercase())
+                    children(target)
                     children(colon)
                     children(lBracket)
                     children(annotations)

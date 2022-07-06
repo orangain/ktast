@@ -265,10 +265,13 @@ open class Converter {
 
     open fun convertSecondaryConstructorDelegationCall(v: KtConstructorDelegationCall) =
         Node.Declaration.SecondaryConstructor.DelegationCall(
-            target = if (v.isCallToThis)
-                Node.Declaration.SecondaryConstructor.DelegationTarget.THIS
-            else
-                Node.Declaration.SecondaryConstructor.DelegationTarget.SUPER,
+            target = Node.Declaration.SecondaryConstructor.DelegationTarget(
+                if (v.isCallToThis) {
+                    Node.Declaration.SecondaryConstructor.DelegationTarget.Token.THIS
+                } else {
+                    Node.Declaration.SecondaryConstructor.DelegationTarget.Token.SUPER
+                }
+            ),
             args = v.valueArgumentList?.let(::convertValueArgs)
         ).map(v)
 
@@ -912,17 +915,19 @@ open class Converter {
         rBracket = null,
     ).map(v)
 
-    open fun convertAnnotationSetTarget(v: KtAnnotationUseSiteTarget) = when (v.getAnnotationUseSiteTarget()) {
-        AnnotationUseSiteTarget.FIELD -> Node.Modifier.AnnotationSet.Target.FIELD
-        AnnotationUseSiteTarget.FILE -> Node.Modifier.AnnotationSet.Target.FILE
-        AnnotationUseSiteTarget.PROPERTY -> Node.Modifier.AnnotationSet.Target.PROPERTY
-        AnnotationUseSiteTarget.PROPERTY_GETTER -> Node.Modifier.AnnotationSet.Target.GET
-        AnnotationUseSiteTarget.PROPERTY_SETTER -> Node.Modifier.AnnotationSet.Target.SET
-        AnnotationUseSiteTarget.RECEIVER -> Node.Modifier.AnnotationSet.Target.RECEIVER
-        AnnotationUseSiteTarget.CONSTRUCTOR_PARAMETER -> Node.Modifier.AnnotationSet.Target.PARAM
-        AnnotationUseSiteTarget.SETTER_PARAMETER -> Node.Modifier.AnnotationSet.Target.SETPARAM
-        AnnotationUseSiteTarget.PROPERTY_DELEGATE_FIELD -> Node.Modifier.AnnotationSet.Target.DELEGATE
-    }
+    open fun convertAnnotationSetTarget(v: KtAnnotationUseSiteTarget) = Node.Modifier.AnnotationSet.Target(
+        when (v.getAnnotationUseSiteTarget()) {
+            AnnotationUseSiteTarget.FIELD -> Node.Modifier.AnnotationSet.Target.Token.FIELD
+            AnnotationUseSiteTarget.FILE -> Node.Modifier.AnnotationSet.Target.Token.FILE
+            AnnotationUseSiteTarget.PROPERTY -> Node.Modifier.AnnotationSet.Target.Token.PROPERTY
+            AnnotationUseSiteTarget.PROPERTY_GETTER -> Node.Modifier.AnnotationSet.Target.Token.GET
+            AnnotationUseSiteTarget.PROPERTY_SETTER -> Node.Modifier.AnnotationSet.Target.Token.SET
+            AnnotationUseSiteTarget.RECEIVER -> Node.Modifier.AnnotationSet.Target.Token.RECEIVER
+            AnnotationUseSiteTarget.CONSTRUCTOR_PARAMETER -> Node.Modifier.AnnotationSet.Target.Token.PARAM
+            AnnotationUseSiteTarget.SETTER_PARAMETER -> Node.Modifier.AnnotationSet.Target.Token.SETPARAM
+            AnnotationUseSiteTarget.PROPERTY_DELEGATE_FIELD -> Node.Modifier.AnnotationSet.Target.Token.DELEGATE
+        }
+    )
 
     open fun convertAnnotationWithoutMapping(v: KtAnnotationEntry) = Node.Modifier.AnnotationSet.Annotation(
         type = convertType(
