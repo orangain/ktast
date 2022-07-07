@@ -1006,6 +1006,9 @@ open class Converter {
         internal val KtNullableType.rightParenthesis: PsiElement?
             get() = findChildByType(this, KtTokens.RPAR)
 
+        internal val KtContainerNode.expression: KtExpression
+            get() = findChildByClass<KtExpression>(this) ?: error("No expression for $this")
+
         internal val KtIfExpression.thenContainer: KtContainerNode
             get() = findChildByType(this, KtNodeTypes.THEN) as? KtContainerNode ?: error("No then container for $this")
         internal val KtIfExpression.elseContainer: KtContainerNode?
@@ -1048,9 +1051,6 @@ open class Converter {
 
         private fun findChildByType(v: KtElement, type: IElementType): PsiElement? =
             v.node.findChildByType(type)?.psi
-
-        internal val KtContainerNode.expression: KtExpression
-            get() = findChildByClass<KtExpression>(this) ?: error("No expression for $this")
 
         private inline fun <reified T> findChildByClass(v: PsiElement): T? =
             v.children.firstOrNull { it is T } as? T
