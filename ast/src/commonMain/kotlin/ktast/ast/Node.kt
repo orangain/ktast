@@ -246,7 +246,7 @@ sealed class Node {
             ) : CommaSeparatedNodeList<Param>("(", ")")
 
             /**
-             * AST node corresponds to KtParameter.
+             * AST node corresponds to KtParameter inside KtNamedFunction.
              */
             data class Param(
                 override val modifiers: Modifiers?,
@@ -472,7 +472,7 @@ sealed class Node {
             ) : Node()
 
             /**
-             * AST node corresponds to KtParameterList.
+             * AST node corresponds to KtParameterList under KtFunctionType.
              */
             data class Params(
                 override val elements: List<Param>,
@@ -480,7 +480,7 @@ sealed class Node {
             ) : CommaSeparatedNodeList<Param>("(", ")")
 
             /**
-             * AST node corresponds to KtParameter.
+             * AST node corresponds to KtParameter inside KtFunctionType.
              */
             data class Param(
                 val name: Expression.Name?,
