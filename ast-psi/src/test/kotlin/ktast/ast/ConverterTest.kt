@@ -18,7 +18,7 @@ class ConverterTest {
                   Node.Declaration.Property
                     Node.Declaration.Property.ValOrVar
                     AFTER: Node.Extra.Whitespace
-                    Node.Declaration.Property.Variable.Single
+                    Node.Declaration.Property.Variable
                       Node.Expression.Name
                       AFTER: Node.Extra.Whitespace
                     Node.Keyword.Equal
@@ -39,7 +39,7 @@ class ConverterTest {
                   Node.Declaration.Property
                     Node.Declaration.Property.ValOrVar
                     AFTER: Node.Extra.Whitespace
-                    Node.Declaration.Property.Variable.Single
+                    Node.Declaration.Property.Variable
                       Node.Expression.Name
                       AFTER: Node.Extra.Whitespace
                     Node.Keyword.Equal

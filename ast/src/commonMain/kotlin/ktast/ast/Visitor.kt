@@ -100,7 +100,10 @@ open class Visitor {
                 visitChildren(valOrVar)
                 visitChildren(typeParams)
                 visitChildren(receiverTypeRef)
-                visitChildren(variable)
+                visitChildren(lPar)
+                visitChildren(variables)
+                visitChildren(trailingComma)
+                visitChildren(rPar)
                 visitChildren(typeConstraints)
                 visitChildren(equals)
                 visitChildren(initializer)
@@ -111,13 +114,9 @@ open class Visitor {
                 visitChildren(byKeyword)
                 visitChildren(expression)
             }
-            is Node.Declaration.Property.Variable.Single -> {
+            is Node.Declaration.Property.Variable -> {
                 visitChildren(name)
                 visitChildren(typeRef)
-            }
-            is Node.Declaration.Property.Variable.Multi -> {
-                visitChildren(vars)
-                visitChildren(trailingComma)
             }
             is Node.Declaration.Property.Accessor.Getter -> {
                 visitChildren(modifiers)

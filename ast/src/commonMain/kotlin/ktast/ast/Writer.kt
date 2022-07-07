@@ -148,7 +148,10 @@ open class Writer(
                     children(valOrVar)
                     children(typeParams)
                     if (receiverTypeRef != null) children(receiverTypeRef).append('.')
-                    children(variable)
+                    children(lPar)
+                    children(variables, ",")
+                    children(trailingComma)
+                    children(rPar)
                     children(typeConstraints)
                     children(equals)
                     children(initializer)
@@ -159,12 +162,9 @@ open class Writer(
                     children(byKeyword)
                     children(expression)
                 }
-                is Node.Declaration.Property.Variable.Single -> {
+                is Node.Declaration.Property.Variable -> {
                     children(name)
                     if (typeRef != null) append(":").also { children(typeRef) }
-                }
-                is Node.Declaration.Property.Variable.Multi -> {
-                    children(vars, ",", "(", ")", trailingComma)
                 }
                 is Node.Declaration.Property.Accessor.Getter -> {
                     children(modifiers)

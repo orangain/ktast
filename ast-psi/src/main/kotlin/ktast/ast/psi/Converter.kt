@@ -170,10 +170,15 @@ open class Converter {
         valOrVar = convertValOrVar(v.valOrVarKeyword),
         typeParams = v.typeParameterList?.let(::convertTypeParams),
         receiverTypeRef = v.receiverTypeReference?.let(::convertTypeRef),
-        variable = Node.Declaration.Property.Variable.Single(
-            name = v.nameIdentifier?.let(::convertName) ?: error("No property name on $v"),
-            typeRef = v.typeReference?.let(::convertTypeRef)
-        ).mapNotCorrespondsPsiElement(v),
+        lPar = null,
+        variables = listOf(
+            Node.Declaration.Property.Variable(
+                name = v.nameIdentifier?.let(::convertName) ?: error("No property name on $v"),
+                typeRef = v.typeReference?.let(::convertTypeRef)
+            ).mapNotCorrespondsPsiElement(v)
+        ),
+        trailingComma = null,
+        rPar = null,
         typeConstraints = v.typeConstraintList?.let { typeConstraintList ->
             Node.PostModifier.TypeConstraints(
                 whereKeyword = convertKeyword(v.whereKeyword, Node.Keyword::Where),
@@ -191,10 +196,10 @@ open class Converter {
         valOrVar = v.valOrVarKeyword?.let(::convertValOrVar) ?: error("Missing valOrVarKeyword"),
         typeParams = null,
         receiverTypeRef = null,
-        variable = Node.Declaration.Property.Variable.Multi(
-            vars = v.entries.map(::convertPropertyVariable),
-            trailingComma = v.trailingComma?.let(::convertComma),
-        ),
+        lPar = v.lPar?.let { convertKeyword(it, Node.Keyword::LPar) },
+        variables = v.entries.map(::convertPropertyVariable),
+        trailingComma = v.trailingComma?.let(::convertComma),
+        rPar = v.rPar?.let { convertKeyword(it, Node.Keyword::RPar) },
         typeConstraints = null,
         equals = convertKeyword(v.equalsToken, Node.Keyword::Equal),
         initializer = v.initializer?.let(::convertExpression),
@@ -205,7 +210,7 @@ open class Converter {
     open fun convertValOrVar(v: PsiElement) = Node.Declaration.Property.ValOrVar.of(v.text)
         .map(v)
 
-    open fun convertPropertyVariable(v: KtDestructuringDeclarationEntry) = Node.Declaration.Property.Variable.Single(
+    open fun convertPropertyVariable(v: KtDestructuringDeclarationEntry) = Node.Declaration.Property.Variable(
         name = v.nameIdentifier?.let(::convertName) ?: error("No property name on $v"),
         typeRef = v.typeReference?.let(::convertTypeRef)
     ).map(v)

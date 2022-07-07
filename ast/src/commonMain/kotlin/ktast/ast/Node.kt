@@ -267,8 +267,11 @@ sealed class Node {
             val valOrVar: ValOrVar,
             val typeParams: TypeParams?,
             val receiverTypeRef: TypeRef?,
+            val lPar: Keyword.LPar?,
             // Always at least one, more than one is destructuring
-            val variable: Variable,
+            val variables: List<Variable>,
+            val trailingComma: Keyword.Comma?,
+            val rPar: Keyword.RPar?,
             val typeConstraints: PostModifier.TypeConstraints?,
             val equals: Keyword.Equal?,
             val initializer: Expression?,
@@ -302,27 +305,12 @@ sealed class Node {
             }
 
             /**
-             * Virtual AST node corresponds a part of KtProperty,
-             * virtual AST node corresponds to a list of KtDestructuringDeclarationEntry or
-             * AST node corresponds to KtDestructuringDeclarationEntry.
+             * Virtual AST node corresponds a part of KtProperty or AST node corresponds to KtDestructuringDeclarationEntry.
              */
-            sealed class Variable : Node() {
-                /**
-                 * Virtual AST node corresponds a part of KtProperty or AST node corresponds to KtDestructuringDeclarationEntry.
-                 */
-                data class Single(
-                    val name: Expression.Name,
-                    val typeRef: TypeRef?
-                ) : Variable()
-
-                /**
-                 * Virtual AST node corresponds to a list of KtDestructuringDeclarationEntry.
-                 */
-                data class Multi(
-                    val vars: List<Single>,
-                    val trailingComma: Keyword.Comma?,
-                ) : Variable()
-            }
+            data class Variable(
+                val name: Expression.Name,
+                val typeRef: TypeRef?
+            ) : Node()
 
             /**
              * AST node corresponds to KtPropertyDelegate.
