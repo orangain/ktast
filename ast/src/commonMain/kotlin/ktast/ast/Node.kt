@@ -287,6 +287,12 @@ sealed class Node {
                 require((equals == null && initializer == null) || (equals != null && initializer != null)) {
                     "equals and initializer must be both null or both non-null"
                 }
+                if (variables.size >= 2) {
+                    require(lPar != null && rPar != null) { "lPar and rPar are required when there are multiple variables" }
+                }
+                if (trailingComma != null) {
+                    require(lPar != null && rPar != null) { "lPar and rPar are required when trailing comma exists" }
+                }
             }
 
             data class ValOrVar(override val token: Token) : Node(), TokenContainer<ValOrVar.Token> {
@@ -784,6 +790,15 @@ sealed class Node {
                 val colon: Keyword.Colon?,
                 val destructTypeRef: TypeRef?,
             ) : Node() {
+                init {
+                    if (variables.size >= 2) {
+                        require(lPar != null && rPar != null) { "lPar and rPar are required when there are multiple variables" }
+                    }
+                    if (trailingComma != null) {
+                        require(lPar != null && rPar != null) { "lPar and rPar are required when trailing comma exists" }
+                    }
+                }
+
                 /**
                  * AST node corresponds to KtDestructuringDeclarationEntry or virtual AST node corresponds to KtParameter whose child is IDENTIFIER.
                  */
