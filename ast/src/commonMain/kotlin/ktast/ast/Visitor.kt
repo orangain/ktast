@@ -292,13 +292,18 @@ open class Visitor {
                 visitChildren(params)
                 visitChildren(body)
             }
-            is Node.Expression.Lambda.Param.Single -> {
+            is Node.Expression.Lambda.Param -> {
+                visitChildren(lPar)
+                visitChildren(variables)
+                visitChildren(trailingComma)
+                visitChildren(rPar)
+                visitChildren(colon)
+                visitChildren(destructTypeRef)
+            }
+            is Node.Expression.Lambda.Param.Variable -> {
+                visitChildren(annotationSets)
                 visitChildren(name)
                 visitChildren(typeRef)
-            }
-            is Node.Expression.Lambda.Param.Multi -> {
-                visitChildren(vars)
-                visitChildren(destructTypeRef)
             }
             is Node.Expression.Lambda.Body -> {
                 visitChildren(statements)

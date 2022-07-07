@@ -682,29 +682,38 @@ open class Converter {
 
     open fun convertLambdaParam(v: KtParameter): Node.Expression.Lambda.Param {
         val destructuringDeclaration = v.destructuringDeclaration
-        return if (destructuringDeclaration == null) {
-            Node.Expression.Lambda.Param.Single(
-                name = v.nameIdentifier?.let(::convertName) ?: error("No property name on $v"),
-                typeRef = v.typeReference?.let(::convertTypeRef),
+        return if (destructuringDeclaration != null) {
+            Node.Expression.Lambda.Param(
+                lPar = destructuringDeclaration.lPar?.let { convertKeyword(it, Node.Keyword::LPar) },
+                variables = destructuringDeclaration.entries.map(::convertLambdaParamVariable),
+                trailingComma = destructuringDeclaration.trailingComma?.let(::convertComma),
+                rPar = destructuringDeclaration.rPar?.let { convertKeyword(it, Node.Keyword::RPar) },
+                colon = v.colon?.let { convertKeyword(it, Node.Keyword::Colon) },
+                destructTypeRef = v.typeReference?.let(::convertTypeRef),
             ).map(v)
         } else {
-            Node.Expression.Lambda.Param.Multi(
-                vars = convertLambdaParamVars(destructuringDeclaration),
-                destructTypeRef = v.typeReference?.let(::convertTypeRef),
+            Node.Expression.Lambda.Param(
+                lPar = null,
+                variables = listOf(
+                    Node.Expression.Lambda.Param.Variable(
+                        annotationSets = v.annotations.map(::convertAnnotationSet), //convertAnnotationSets(v),
+                        name = v.nameIdentifier?.let(::convertName) ?: error("No lambda param name on $v"),
+                        typeRef = v.typeReference?.let(::convertTypeRef),
+                    ).mapNotCorrespondsPsiElement(v)
+                ),
+                trailingComma = null,
+                rPar = null,
+                colon = null,
+                destructTypeRef = null,
             ).map(v)
         }
     }
 
-    open fun convertLambdaParamVars(v: KtDestructuringDeclaration) = Node.Expression.Lambda.Param.Multi.Variables(
-        elements = v.entries.map(::convertLambdaParamVar),
-        trailingComma = v.trailingComma?.let(::convertComma),
+    open fun convertLambdaParamVariable(v: KtDestructuringDeclarationEntry) = Node.Expression.Lambda.Param.Variable(
+        annotationSets = v.annotations.map(::convertAnnotationSet),
+        name = v.nameIdentifier?.let(::convertName) ?: error("No lambda param name on $v"),
+        typeRef = v.typeReference?.let(::convertTypeRef),
     ).map(v)
-
-    open fun convertLambdaParamVar(v: KtDestructuringDeclarationEntry) =
-        Node.Expression.Lambda.Param.Single(
-            name = v.nameIdentifier?.let(::convertName) ?: error("No property name on $v"),
-            typeRef = v.typeReference?.let(::convertTypeRef)
-        ).map(v)
 
     open fun convertLambdaBody(v: KtBlockExpression) = Node.Expression.Lambda.Body(
         statements = v.statements.map(::convertStatement)

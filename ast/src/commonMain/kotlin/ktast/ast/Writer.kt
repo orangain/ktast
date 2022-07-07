@@ -400,16 +400,21 @@ open class Writer(
                     children(body)
                     append("}")
                 }
-                is Node.Expression.Lambda.Param.Single -> {
+                is Node.Expression.Lambda.Param -> {
+                    children(lPar)
+                    children(variables, ",")
+                    children(trailingComma)
+                    children(rPar)
+                    children(colon)
+                    children(destructTypeRef)
+                }
+                is Node.Expression.Lambda.Param.Variable -> {
+                    children(annotationSets)
                     children(name)
                     if (typeRef != null) {
                         append(":")
                         children(typeRef)
                     }
-                }
-                is Node.Expression.Lambda.Param.Multi -> {
-                    children(vars)
-                    if (destructTypeRef != null) append(":").also { children(destructTypeRef) }
                 }
                 is Node.Expression.Lambda.Body -> {
                     children(statements)

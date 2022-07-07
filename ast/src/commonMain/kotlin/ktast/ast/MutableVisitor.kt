@@ -330,17 +330,18 @@ open class MutableVisitor(
                         elements = visitChildren(elements, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
-                    is Node.Expression.Lambda.Param.Single -> copy(
+                    is Node.Expression.Lambda.Param -> copy(
+                        lPar = visitChildren(lPar, newCh),
+                        variables = visitChildren(variables, newCh),
+                        trailingComma = visitChildren(trailingComma, newCh),
+                        rPar = visitChildren(rPar, newCh),
+                        colon = visitChildren(colon, newCh),
+                        destructTypeRef = visitChildren(destructTypeRef, newCh),
+                    )
+                    is Node.Expression.Lambda.Param.Variable -> copy(
+                        annotationSets = visitChildren(annotationSets, newCh),
                         name = visitChildren(name, newCh),
                         typeRef = visitChildren(typeRef, newCh),
-                    )
-                    is Node.Expression.Lambda.Param.Multi -> copy(
-                        vars = visitChildren(vars, newCh),
-                        destructTypeRef = visitChildren(destructTypeRef, newCh)
-                    )
-                    is Node.Expression.Lambda.Param.Multi.Variables -> copy(
-                        elements = visitChildren(elements, newCh),
-                        trailingComma = visitChildren(trailingComma, newCh),
                     )
                     is Node.Expression.Lambda.Body -> copy(
                         statements = visitChildren(statements, newCh)

@@ -796,32 +796,24 @@ sealed class Node {
             ) : CommaSeparatedNodeList<Param>("", "")
 
             /**
-             * AST node corresponds to KtParameter or KtDestructuringDeclarationEntry in lambda arguments or for statement.
+             * AST node corresponds to KtParameter under KtLambdaExpression.
              */
-            sealed class Param : Node() {
+            data class Param(
+                val lPar: Keyword.LPar?,
+                val variables: List<Variable>,
+                val trailingComma: Keyword.Comma?,
+                val rPar: Keyword.RPar?,
+                val colon: Keyword.Colon?,
+                val destructTypeRef: TypeRef?,
+            ) : Node() {
                 /**
-                 * AST node corresponds to KtParameter whose child is IDENTIFIER or KtDestructuringDeclarationEntry.
+                 * AST node corresponds to KtDestructuringDeclarationEntry or virtual AST node corresponds to KtParameter whose child is IDENTIFIER.
                  */
-                data class Single(
+                data class Variable(
+                    override val annotationSets: List<Modifier.AnnotationSet>,
                     val name: Name,
-                    val typeRef: TypeRef?
-                ) : Param()
-
-                /**
-                 * AST node corresponds to KtParameter whose child is KtDestructuringDeclaration.
-                 */
-                data class Multi(
-                    val vars: Variables,
-                    val destructTypeRef: TypeRef?
-                ) : Param() {
-                    /**
-                     * AST node corresponds to KtDestructuringDeclaration in lambda arguments.
-                     */
-                    data class Variables(
-                        override val elements: List<Single>,
-                        override val trailingComma: Keyword.Comma?,
-                    ) : CommaSeparatedNodeList<Single>("(", ")")
-                }
+                    val typeRef: TypeRef?,
+                ) : Node(), WithAnnotationSets
             }
 
             /**
