@@ -226,16 +226,11 @@ open class Converter {
         ).map(v) else Node.Declaration.Property.Accessor.Setter(
             modifiers = v.modifierList?.let(::convertModifiers),
             setKeyword = convertKeyword(v.setKeyword, Node.Keyword::Set),
-            params = v.parameterList?.let(::convertPropertyAccessorParams),
+            params = v.parameterList?.let(::convertLambdaParams),
             postModifiers = convertPostModifiers(v),
             equals = v.equalsToken?.let { convertKeyword(it, Node.Keyword::Equal) },
             body = v.bodyExpression?.let(::convertExpression),
         ).map(v)
-
-    open fun convertPropertyAccessorParams(v: KtParameterList) = Node.Declaration.Property.Accessor.Params(
-        elements = v.parameters.map(::convertFuncParam),
-        trailingComma = v.trailingComma?.let(::convertComma),
-    ).map(v)
 
     open fun convertTypeAlias(v: KtTypeAlias) = Node.Declaration.TypeAlias(
         modifiers = v.modifierList?.let(::convertModifiers),
@@ -696,7 +691,7 @@ open class Converter {
                 lPar = null,
                 variables = listOf(
                     Node.Expression.Lambda.Param.Variable(
-                        annotationSets = v.annotations.map(::convertAnnotationSet), //convertAnnotationSets(v),
+                        modifiers = v.modifierList?.let(::convertModifiers),
                         name = v.nameIdentifier?.let(::convertName) ?: error("No lambda param name on $v"),
                         typeRef = v.typeReference?.let(::convertTypeRef),
                     ).mapNotCorrespondsPsiElement(v)
@@ -710,7 +705,7 @@ open class Converter {
     }
 
     open fun convertLambdaParamVariable(v: KtDestructuringDeclarationEntry) = Node.Expression.Lambda.Param.Variable(
-        annotationSets = v.annotations.map(::convertAnnotationSet),
+        modifiers = v.modifierList?.let(::convertModifiers),
         name = v.nameIdentifier?.let(::convertName) ?: error("No lambda param name on $v"),
         typeRef = v.typeReference?.let(::convertTypeRef),
     ).map(v)

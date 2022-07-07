@@ -145,10 +145,6 @@ open class MutableVisitor(
                         equals = visitChildren(equals, newCh),
                         body = visitChildren(body, newCh),
                     )
-                    is Node.Declaration.Property.Accessor.Params -> copy(
-                        elements = visitChildren(elements, newCh),
-                        trailingComma = visitChildren(trailingComma, newCh),
-                    )
                     is Node.Declaration.TypeAlias -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         name = visitChildren(name, newCh),
@@ -339,7 +335,7 @@ open class MutableVisitor(
                         destructTypeRef = visitChildren(destructTypeRef, newCh),
                     )
                     is Node.Expression.Lambda.Param.Variable -> copy(
-                        annotationSets = visitChildren(annotationSets, newCh),
+                        modifiers = visitChildren(modifiers, newCh),
                         name = visitChildren(name, newCh),
                         typeRef = visitChildren(typeRef, newCh),
                     )

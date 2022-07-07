@@ -409,7 +409,7 @@ open class Writer(
                     children(destructTypeRef)
                 }
                 is Node.Expression.Lambda.Param.Variable -> {
-                    children(annotationSets)
+                    children(modifiers)
                     children(name)
                     if (typeRef != null) {
                         append(":")

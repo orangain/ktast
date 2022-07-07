@@ -301,7 +301,7 @@ open class Visitor {
                 visitChildren(destructTypeRef)
             }
             is Node.Expression.Lambda.Param.Variable -> {
-                visitChildren(annotationSets)
+                visitChildren(modifiers)
                 visitChildren(name)
                 visitChildren(typeRef)
             }

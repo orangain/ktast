@@ -349,20 +349,11 @@ sealed class Node {
                 data class Setter(
                     override val modifiers: Modifiers?,
                     val setKeyword: Keyword.Set,
-                    val params: Params?,
+                    val params: Expression.Lambda.Params?,
                     override val postModifiers: List<PostModifier>,
                     override val equals: Keyword.Equal?,
                     override val body: Expression?,
                 ) : Accessor()
-
-                /**
-                 * AST node corresponds to KtParameterList under KtPropertyAccessor.
-                 * Unlike [Function.Params], it does not contain parentheses.
-                 */
-                data class Params(
-                    override val elements: List<Function.Param>,
-                    override val trailingComma: Keyword.Comma?,
-                ) : CommaSeparatedNodeList<Function.Param>("", "")
             }
         }
 
@@ -810,10 +801,10 @@ sealed class Node {
                  * AST node corresponds to KtDestructuringDeclarationEntry or virtual AST node corresponds to KtParameter whose child is IDENTIFIER.
                  */
                 data class Variable(
-                    override val annotationSets: List<Modifier.AnnotationSet>,
+                    override val modifiers: Modifiers?,
                     val name: Name,
                     val typeRef: TypeRef?,
-                ) : Node(), WithAnnotationSets
+                ) : Node(), WithModifiers
             }
 
             /**
