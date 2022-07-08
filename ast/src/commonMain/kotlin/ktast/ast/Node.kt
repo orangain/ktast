@@ -724,7 +724,7 @@ sealed class Node {
          * AST node corresponds to KtClassLiteralExpression.
          */
         data class ClassLiteral(
-            // Class literal expression without lhs is not supported, but Kotlin compiler does parse it.
+            // Class literal expression without lhs is not supported in Kotlin syntax, but Kotlin compiler does parse it.
             override val lhs: Receiver?
         ) : DoubleColon()
 

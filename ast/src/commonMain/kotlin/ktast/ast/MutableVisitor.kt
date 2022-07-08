@@ -7,7 +7,7 @@ open class MutableVisitor(
     open fun <T : Node> preVisit(v: T, parent: Node?): T = v
     open fun <T : Node> postVisit(v: T, parent: Node?): T = v
 
-    fun visit(v: Node) = visit(v, null)
+    fun <T : Node> visit(v: T) = visit(v, null)
     open fun <T : Node> visit(v: T, parent: Node?, ch: ChangedRef = ChangedRef(false)): T = v.run {
         ch.sub { newCh ->
             preVisit(this, parent).run {
