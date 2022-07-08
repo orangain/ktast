@@ -90,6 +90,7 @@ open class MutableVisitor(
                         params = visitChildren(params, newCh),
                         typeRef = visitChildren(typeRef, newCh),
                         postModifiers = visitChildren(postModifiers, newCh),
+                        equals = visitChildren(equals, newCh),
                         body = visitChildren(body, newCh),
                     )
                     is Node.Declaration.Function.Params -> copy(
@@ -104,19 +105,15 @@ open class MutableVisitor(
                         equals = visitChildren(equals, newCh),
                         defaultValue = visitChildren(defaultValue, newCh),
                     )
-                    is Node.Declaration.Function.Body.Block -> copy(
-                        block = visitChildren(block, newCh)
-                    )
-                    is Node.Declaration.Function.Body.Expr -> copy(
-                        equals = visitChildren(equals, newCh),
-                        expression = visitChildren(expression, newCh),
-                    )
                     is Node.Declaration.Property -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         valOrVar = visitChildren(valOrVar, newCh),
                         typeParams = visitChildren(typeParams, newCh),
                         receiverTypeRef = visitChildren(receiverTypeRef, newCh),
-                        variable = visitChildren(variable, newCh),
+                        lPar = visitChildren(lPar, newCh),
+                        variables = visitChildren(variables, newCh),
+                        trailingComma = visitChildren(trailingComma, newCh),
+                        rPar = visitChildren(rPar, newCh),
                         typeConstraints = visitChildren(typeConstraints, newCh),
                         equals = visitChildren(equals, newCh),
                         initializer = visitChildren(initializer, newCh),
@@ -127,31 +124,25 @@ open class MutableVisitor(
                         byKeyword = visitChildren(byKeyword, newCh),
                         expression = visitChildren(expression, newCh),
                     )
-                    is Node.Declaration.Property.Variable.Single -> copy(
+                    is Node.Declaration.Property.Variable -> copy(
                         name = visitChildren(name, newCh),
                         typeRef = visitChildren(typeRef, newCh)
-                    )
-                    is Node.Declaration.Property.Variable.Multi -> copy(
-                        vars = visitChildren(vars, newCh),
-                        trailingComma = visitChildren(trailingComma, newCh),
                     )
                     is Node.Declaration.Property.Accessor.Getter -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         getKeyword = visitChildren(getKeyword, newCh),
                         typeRef = visitChildren(typeRef, newCh),
                         postModifiers = visitChildren(postModifiers, newCh),
-                        body = visitChildren(body, newCh)
+                        equals = visitChildren(equals, newCh),
+                        body = visitChildren(body, newCh),
                     )
                     is Node.Declaration.Property.Accessor.Setter -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         setKeyword = visitChildren(setKeyword, newCh),
                         params = visitChildren(params, newCh),
                         postModifiers = visitChildren(postModifiers, newCh),
-                        body = visitChildren(body, newCh)
-                    )
-                    is Node.Declaration.Property.Accessor.Params -> copy(
-                        elements = visitChildren(elements, newCh),
-                        trailingComma = visitChildren(trailingComma, newCh),
+                        equals = visitChildren(equals, newCh),
+                        body = visitChildren(body, newCh),
                     )
                     is Node.Declaration.TypeAlias -> copy(
                         modifiers = visitChildren(modifiers, newCh),
@@ -269,7 +260,6 @@ open class MutableVisitor(
                     )
                     is Node.Expression.For -> copy(
                         forKeyword = visitChildren(forKeyword, newCh),
-                        annotationSets = visitChildren(annotationSets, newCh),
                         loopParam = visitChildren(loopParam, newCh),
                         loopRange = visitChildren(loopRange, newCh),
                         body = visitChildren(body, newCh)
@@ -334,17 +324,18 @@ open class MutableVisitor(
                         elements = visitChildren(elements, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
-                    is Node.Expression.Lambda.Param.Single -> copy(
+                    is Node.Expression.Lambda.Param -> copy(
+                        lPar = visitChildren(lPar, newCh),
+                        variables = visitChildren(variables, newCh),
+                        trailingComma = visitChildren(trailingComma, newCh),
+                        rPar = visitChildren(rPar, newCh),
+                        colon = visitChildren(colon, newCh),
+                        destructTypeRef = visitChildren(destructTypeRef, newCh),
+                    )
+                    is Node.Expression.Lambda.Param.Variable -> copy(
+                        modifiers = visitChildren(modifiers, newCh),
                         name = visitChildren(name, newCh),
                         typeRef = visitChildren(typeRef, newCh),
-                    )
-                    is Node.Expression.Lambda.Param.Multi -> copy(
-                        vars = visitChildren(vars, newCh),
-                        destructTypeRef = visitChildren(destructTypeRef, newCh)
-                    )
-                    is Node.Expression.Lambda.Param.Multi.Variables -> copy(
-                        elements = visitChildren(elements, newCh),
-                        trailingComma = visitChildren(trailingComma, newCh),
                     )
                     is Node.Expression.Lambda.Body -> copy(
                         statements = visitChildren(statements, newCh)
@@ -357,14 +348,14 @@ open class MutableVisitor(
                         lPar = visitChildren(lPar, newCh),
                         expression = visitChildren(expression, newCh),
                         rPar = visitChildren(rPar, newCh),
-                        entries = visitChildren(entries, newCh),
+                        branches = visitChildren(branches, newCh),
                     )
-                    is Node.Expression.When.Entry.Conditions -> copy(
+                    is Node.Expression.When.Branch.Conditional -> copy(
                         conditions = visitChildren(conditions, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
                         body = visitChildren(body, newCh),
                     )
-                    is Node.Expression.When.Entry.Else -> copy(
+                    is Node.Expression.When.Branch.Else -> copy(
                         elseKeyword = visitChildren(elseKeyword, newCh),
                         body = visitChildren(body, newCh),
                     )

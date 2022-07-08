@@ -39,6 +39,11 @@ sealed class Node {
         val postModifiers: List<PostModifier>
     }
 
+    interface WithFunctionBody {
+        val equals: Keyword.Equal?
+        val body: Expression?
+    }
+
     interface StatementsContainer {
         val statements: List<Statement>
     }
@@ -195,7 +200,7 @@ sealed class Node {
             data class PrimaryConstructor(
                 override val modifiers: Modifiers?,
                 val constructorKeyword: Keyword.Constructor?,
-                val params: Declaration.Function.Params?
+                val params: Function.Params?
             ) : Node(), WithModifiers
 
             /**
@@ -229,8 +234,9 @@ sealed class Node {
             val params: Params?,
             val typeRef: TypeRef?,
             override val postModifiers: List<PostModifier>,
-            val body: Body?
-        ) : Declaration(), WithModifiers, WithPostModifiers {
+            override val equals: Keyword.Equal?,
+            override val body: Expression?,
+        ) : Declaration(), WithModifiers, WithPostModifiers, WithFunctionBody {
             /**
              * AST node corresponds to KtParameterList under KtNamedFunction.
              */
@@ -240,7 +246,7 @@ sealed class Node {
             ) : CommaSeparatedNodeList<Param>("(", ")")
 
             /**
-             * AST node corresponds to KtParameter.
+             * AST node corresponds to KtParameter inside KtNamedFunction.
              */
             data class Param(
                 override val modifiers: Modifiers?,
@@ -251,17 +257,6 @@ sealed class Node {
                 val equals: Keyword.Equal?,
                 val defaultValue: Expression?,
             ) : Node(), WithModifiers
-
-            /**
-             * Virtual AST node corresponds to function body.
-             */
-            sealed class Body : Node() {
-                data class Block(val block: Expression.Block) : Declaration.Function.Body()
-                data class Expr(
-                    val equals: Keyword.Equal,
-                    val expression: Expression,
-                ) : Declaration.Function.Body()
-            }
         }
 
         /**
@@ -272,8 +267,11 @@ sealed class Node {
             val valOrVar: ValOrVar,
             val typeParams: TypeParams?,
             val receiverTypeRef: TypeRef?,
+            val lPar: Keyword.LPar?,
             // Always at least one, more than one is destructuring
-            val variable: Variable,
+            val variables: List<Variable>,
+            val trailingComma: Keyword.Comma?,
+            val rPar: Keyword.RPar?,
             val typeConstraints: PostModifier.TypeConstraints?,
             val equals: Keyword.Equal?,
             val initializer: Expression?,
@@ -288,6 +286,12 @@ sealed class Node {
                 }
                 require((equals == null && initializer == null) || (equals != null && initializer != null)) {
                     "equals and initializer must be both null or both non-null"
+                }
+                if (variables.size >= 2) {
+                    require(lPar != null && rPar != null) { "lPar and rPar are required when there are multiple variables" }
+                }
+                if (trailingComma != null) {
+                    require(lPar != null && rPar != null) { "lPar and rPar are required when trailing comma exists" }
                 }
             }
 
@@ -307,27 +311,12 @@ sealed class Node {
             }
 
             /**
-             * Virtual AST node corresponds a part of KtProperty,
-             * virtual AST node corresponds to a list of KtDestructuringDeclarationEntry or
-             * AST node corresponds to KtDestructuringDeclarationEntry.
+             * Virtual AST node corresponds a part of KtProperty or AST node corresponds to KtDestructuringDeclarationEntry.
              */
-            sealed class Variable : Node() {
-                /**
-                 * Virtual AST node corresponds a part of KtProperty or AST node corresponds to KtDestructuringDeclarationEntry.
-                 */
-                data class Single(
-                    val name: Expression.Name,
-                    val typeRef: TypeRef?
-                ) : Variable()
-
-                /**
-                 * Virtual AST node corresponds to a list of KtDestructuringDeclarationEntry.
-                 */
-                data class Multi(
-                    val vars: List<Single>,
-                    val trailingComma: Keyword.Comma?,
-                ) : Variable()
-            }
+            data class Variable(
+                val name: Expression.Name,
+                val typeRef: TypeRef?
+            ) : Node()
 
             /**
              * AST node corresponds to KtPropertyDelegate.
@@ -340,33 +329,25 @@ sealed class Node {
             /**
              * AST node corresponds to KtPropertyAccessor.
              */
-            sealed class Accessor : Node(), WithModifiers, WithPostModifiers {
-                abstract val body: Function.Body?
+            sealed class Accessor : Node(), WithModifiers, WithPostModifiers, WithFunctionBody {
 
                 data class Getter(
                     override val modifiers: Modifiers?,
                     val getKeyword: Keyword.Get,
                     val typeRef: TypeRef?,
                     override val postModifiers: List<PostModifier>,
-                    override val body: Function.Body?
+                    override val equals: Keyword.Equal?,
+                    override val body: Expression?,
                 ) : Accessor()
 
                 data class Setter(
                     override val modifiers: Modifiers?,
                     val setKeyword: Keyword.Set,
-                    val params: Params?,
+                    val params: Expression.Lambda.Params?,
                     override val postModifiers: List<PostModifier>,
-                    override val body: Function.Body?
+                    override val equals: Keyword.Equal?,
+                    override val body: Expression?,
                 ) : Accessor()
-
-                /**
-                 * AST node corresponds to KtParameterList under KtPropertyAccessor.
-                 * Unlike [Function.Params], it does not contain parentheses.
-                 */
-                data class Params(
-                    override val elements: List<Function.Param>,
-                    override val trailingComma: Keyword.Comma?,
-                ) : CommaSeparatedNodeList<Function.Param>("", "")
             }
         }
 
@@ -386,7 +367,7 @@ sealed class Node {
         data class SecondaryConstructor(
             override val modifiers: Modifiers?,
             val constructorKeyword: Keyword.Constructor,
-            val params: Declaration.Function.Params?,
+            val params: Function.Params?,
             val delegationCall: DelegationCall?,
             val block: Expression.Block?
         ) : Declaration(), WithModifiers {
@@ -476,7 +457,7 @@ sealed class Node {
             ) : Node()
 
             /**
-             * AST node corresponds to KtParameterList.
+             * AST node corresponds to KtParameterList under KtFunctionType.
              */
             data class Params(
                 override val elements: List<Param>,
@@ -484,7 +465,7 @@ sealed class Node {
             ) : CommaSeparatedNodeList<Param>("(", ")")
 
             /**
-             * AST node corresponds to KtParameter.
+             * AST node corresponds to KtParameter inside KtFunctionType.
              */
             data class Param(
                 val name: Expression.Name?,
@@ -620,11 +601,10 @@ sealed class Node {
          */
         data class For(
             val forKeyword: Keyword.For,
-            override val annotationSets: List<Modifier.AnnotationSet>,
             val loopParam: Lambda.Param,
             val loopRange: ExpressionContainer,
             val body: ExpressionContainer,
-        ) : Expression(), WithAnnotationSets
+        ) : Expression()
 
         /**
          * AST node corresponds to KtWhileExpressionBase.
@@ -800,32 +780,33 @@ sealed class Node {
             ) : CommaSeparatedNodeList<Param>("", "")
 
             /**
-             * AST node corresponds to KtParameter or KtDestructuringDeclarationEntry in lambda arguments or for statement.
+             * AST node corresponds to KtParameter under KtLambdaExpression.
              */
-            sealed class Param : Node() {
-                /**
-                 * AST node corresponds to KtParameter whose child is IDENTIFIER or KtDestructuringDeclarationEntry.
-                 */
-                data class Single(
-                    val name: Name,
-                    val typeRef: TypeRef?
-                ) : Param()
+            data class Param(
+                val lPar: Keyword.LPar?,
+                val variables: List<Variable>,
+                val trailingComma: Keyword.Comma?,
+                val rPar: Keyword.RPar?,
+                val colon: Keyword.Colon?,
+                val destructTypeRef: TypeRef?,
+            ) : Node() {
+                init {
+                    if (variables.size >= 2) {
+                        require(lPar != null && rPar != null) { "lPar and rPar are required when there are multiple variables" }
+                    }
+                    if (trailingComma != null) {
+                        require(lPar != null && rPar != null) { "lPar and rPar are required when trailing comma exists" }
+                    }
+                }
 
                 /**
-                 * AST node corresponds to KtParameter whose child is KtDestructuringDeclaration.
+                 * AST node corresponds to KtDestructuringDeclarationEntry or virtual AST node corresponds to KtParameter whose child is IDENTIFIER.
                  */
-                data class Multi(
-                    val vars: Variables,
-                    val destructTypeRef: TypeRef?
-                ) : Param() {
-                    /**
-                     * AST node corresponds to KtDestructuringDeclaration in lambda arguments.
-                     */
-                    data class Variables(
-                        override val elements: List<Single>,
-                        override val trailingComma: Keyword.Comma?,
-                    ) : CommaSeparatedNodeList<Single>("(", ")")
-                }
+                data class Variable(
+                    override val modifiers: Modifiers?,
+                    val name: Name,
+                    val typeRef: TypeRef?,
+                ) : Node(), WithModifiers
             }
 
             /**
@@ -860,22 +841,22 @@ sealed class Node {
             val lPar: Keyword.LPar,
             val expression: Expression?,
             val rPar: Keyword.RPar,
-            val entries: List<Entry>
+            val branches: List<Branch>
         ) : Expression() {
             /**
              * AST node corresponds to KtWhenEntry.
              */
-            sealed class Entry : Node() {
-                data class Conditions(
+            sealed class Branch : Node() {
+                data class Conditional(
                     val conditions: List<Condition>,
                     val trailingComma: Keyword.Comma?,
                     val body: Expression,
-                ) : Entry()
+                ) : Branch()
 
                 data class Else(
                     val elseKeyword: Keyword.Else,
                     val body: Expression,
-                ) : Entry()
+                ) : Branch()
             }
 
             /**

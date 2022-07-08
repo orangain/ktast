@@ -84,6 +84,7 @@ open class Visitor {
                 visitChildren(params)
                 visitChildren(typeRef)
                 visitChildren(postModifiers)
+                visitChildren(equals)
                 visitChildren(body)
             }
             is Node.Declaration.Function.Param -> {
@@ -94,19 +95,15 @@ open class Visitor {
                 visitChildren(equals)
                 visitChildren(defaultValue)
             }
-            is Node.Declaration.Function.Body.Block -> {
-                visitChildren(block)
-            }
-            is Node.Declaration.Function.Body.Expr -> {
-                visitChildren(equals)
-                visitChildren(expression)
-            }
             is Node.Declaration.Property -> {
                 visitChildren(modifiers)
                 visitChildren(valOrVar)
                 visitChildren(typeParams)
                 visitChildren(receiverTypeRef)
-                visitChildren(variable)
+                visitChildren(lPar)
+                visitChildren(variables)
+                visitChildren(trailingComma)
+                visitChildren(rPar)
                 visitChildren(typeConstraints)
                 visitChildren(equals)
                 visitChildren(initializer)
@@ -117,19 +114,16 @@ open class Visitor {
                 visitChildren(byKeyword)
                 visitChildren(expression)
             }
-            is Node.Declaration.Property.Variable.Single -> {
+            is Node.Declaration.Property.Variable -> {
                 visitChildren(name)
                 visitChildren(typeRef)
-            }
-            is Node.Declaration.Property.Variable.Multi -> {
-                visitChildren(vars)
-                visitChildren(trailingComma)
             }
             is Node.Declaration.Property.Accessor.Getter -> {
                 visitChildren(modifiers)
                 visitChildren(getKeyword)
                 visitChildren(typeRef)
                 visitChildren(postModifiers)
+                visitChildren(equals)
                 visitChildren(body)
             }
             is Node.Declaration.Property.Accessor.Setter -> {
@@ -137,6 +131,7 @@ open class Visitor {
                 visitChildren(setKeyword)
                 visitChildren(params)
                 visitChildren(postModifiers)
+                visitChildren(equals)
                 visitChildren(body)
             }
             is Node.Declaration.TypeAlias -> {
@@ -235,7 +230,6 @@ open class Visitor {
             }
             is Node.Expression.For -> {
                 visitChildren(forKeyword)
-                visitChildren(annotationSets)
                 visitChildren(loopParam)
                 visitChildren(loopRange)
                 visitChildren(body)
@@ -296,13 +290,18 @@ open class Visitor {
                 visitChildren(params)
                 visitChildren(body)
             }
-            is Node.Expression.Lambda.Param.Single -> {
+            is Node.Expression.Lambda.Param -> {
+                visitChildren(lPar)
+                visitChildren(variables)
+                visitChildren(trailingComma)
+                visitChildren(rPar)
+                visitChildren(colon)
+                visitChildren(destructTypeRef)
+            }
+            is Node.Expression.Lambda.Param.Variable -> {
+                visitChildren(modifiers)
                 visitChildren(name)
                 visitChildren(typeRef)
-            }
-            is Node.Expression.Lambda.Param.Multi -> {
-                visitChildren(vars)
-                visitChildren(destructTypeRef)
             }
             is Node.Expression.Lambda.Body -> {
                 visitChildren(statements)
@@ -315,14 +314,14 @@ open class Visitor {
                 visitChildren(lPar)
                 visitChildren(expression)
                 visitChildren(rPar)
-                visitChildren(entries)
+                visitChildren(branches)
             }
-            is Node.Expression.When.Entry.Conditions -> {
+            is Node.Expression.When.Branch.Conditional -> {
                 visitChildren(conditions)
                 visitChildren(trailingComma)
                 visitChildren(body)
             }
-            is Node.Expression.When.Entry.Else -> {
+            is Node.Expression.When.Branch.Else -> {
                 visitChildren(elseKeyword)
                 visitChildren(body)
             }
