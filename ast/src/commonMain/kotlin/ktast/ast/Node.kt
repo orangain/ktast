@@ -968,7 +968,7 @@ sealed class Node {
             data class LambdaArg(
                 override val annotationSets: List<Modifier.AnnotationSet>,
                 val label: String?,
-                val func: Lambda
+                val expression: Lambda
             ) : Node(), WithAnnotationSets
         }
 

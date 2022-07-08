@@ -844,7 +844,7 @@ open class Converter {
         return Node.Expression.Call.LambdaArg(
             annotationSets = annotationSets,
             label = label,
-            func = convertLambda(expr)
+            expression = convertLambda(expr)
         ).map(v)
     }
 

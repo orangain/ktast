@@ -365,7 +365,7 @@ open class Visitor {
             }
             is Node.Expression.Call.LambdaArg -> {
                 visitChildren(annotationSets)
-                visitChildren(func)
+                visitChildren(expression)
             }
             is Node.Expression.ArrayAccess -> {
                 visitChildren(expression)

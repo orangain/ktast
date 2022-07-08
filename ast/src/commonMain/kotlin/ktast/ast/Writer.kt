@@ -487,7 +487,7 @@ open class Writer(
                 is Node.Expression.Call.LambdaArg -> {
                     children(annotationSets)
                     if (label != null) append(label).append("@")
-                    children(func)
+                    children(expression)
                 }
                 is Node.Expression.ArrayAccess -> {
                     children(expression)
