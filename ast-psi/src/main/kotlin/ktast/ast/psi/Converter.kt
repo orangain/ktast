@@ -86,6 +86,9 @@ open class Converter {
         body = v.body?.let(::convertClassBody),
     ).map(v)
 
+    open fun convertDeclarationKeyword(v: PsiElement) = Node.Declaration.Class.DeclarationKeyword.of(v.text)
+        .map(v)
+
     open fun convertParents(v: KtSuperTypeList) = Node.Declaration.Class.Parents(
         elements = v.entries.map(::convertParent),
     ).map(v)
@@ -154,7 +157,7 @@ open class Converter {
 
     open fun convertFuncParam(v: KtParameter) = Node.Declaration.Function.Param(
         modifiers = v.modifierList?.let(::convertModifiers),
-        valOrVar = v.valOrVarKeyword?.let(::convertValOrVarKeyword),
+        valOrVar = v.valOrVarKeyword?.let(::convertValOrVar),
         name = v.nameIdentifier?.let(::convertName) ?: error("No param name"),
         typeRef = v.typeReference?.let(::convertTypeRef),
         equals = v.equalsToken?.let { convertKeyword(it, Node.Keyword::Equal) },
@@ -177,7 +180,7 @@ open class Converter {
 
     open fun convertProperty(v: KtProperty) = Node.Declaration.Property(
         modifiers = v.modifierList?.let(::convertModifiers),
-        valOrVar = convertValOrVarKeyword(v.valOrVarKeyword),
+        valOrVar = convertValOrVar(v.valOrVarKeyword),
         typeParams = v.typeParameterList?.let(::convertTypeParams),
         receiverTypeRef = v.receiverTypeReference?.let(::convertTypeRef),
         variable = Node.Declaration.Property.Variable.Single(
@@ -198,7 +201,7 @@ open class Converter {
 
     open fun convertProperty(v: KtDestructuringDeclaration) = Node.Declaration.Property(
         modifiers = v.modifierList?.let(::convertModifiers),
-        valOrVar = v.valOrVarKeyword?.let(::convertValOrVarKeyword) ?: error("Missing valOrVarKeyword"),
+        valOrVar = v.valOrVarKeyword?.let(::convertValOrVar) ?: error("Missing valOrVarKeyword"),
         typeParams = null,
         receiverTypeRef = null,
         variable = Node.Declaration.Property.Variable.Multi(
@@ -211,6 +214,9 @@ open class Converter {
         delegate = null,
         accessors = listOf(),
     ).map(v)
+
+    open fun convertValOrVar(v: PsiElement) = Node.Declaration.Property.ValOrVar.of(v.text)
+        .map(v)
 
     open fun convertPropertyVariable(v: KtDestructuringDeclarationEntry) = Node.Declaration.Property.Variable.Single(
         name = v.nameIdentifier?.let(::convertName) ?: error("No property name on $v"),
@@ -259,10 +265,13 @@ open class Converter {
 
     open fun convertSecondaryConstructorDelegationCall(v: KtConstructorDelegationCall) =
         Node.Declaration.SecondaryConstructor.DelegationCall(
-            target = if (v.isCallToThis)
-                Node.Declaration.SecondaryConstructor.DelegationTarget.THIS
-            else
-                Node.Declaration.SecondaryConstructor.DelegationTarget.SUPER,
+            target = Node.Declaration.SecondaryConstructor.DelegationTarget(
+                if (v.isCallToThis) {
+                    Node.Declaration.SecondaryConstructor.DelegationTarget.Token.THIS
+                } else {
+                    Node.Declaration.SecondaryConstructor.DelegationTarget.Token.SUPER
+                }
+            ),
             args = v.valueArgumentList?.let(::convertValueArgs)
         ).map(v)
 
@@ -520,48 +529,59 @@ open class Converter {
         doWhile = v is KtDoWhileExpression
     ).map(v)
 
-    open fun convertBinary(v: KtBinaryExpression) = Node.Expression.Binary(
-        lhs = convertExpression(v.left ?: error("No binary lhs for $v")),
-        operator = binaryTokensByText[v.operationReference.text].let {
-            if (it != null) Node.Expression.Binary.Operator.Token(it).map(v.operationReference)
-            else Node.Expression.Binary.Operator.Infix(v.operationReference.text).map(v.operationReference)
-        },
-        rhs = convertExpression(v.right ?: error("No binary rhs for $v"))
-    ).map(v)
+    open fun convertBinary(v: KtBinaryExpression): Node.Expression.BaseBinary =
+        if (v.operationReference.isConventionOperator()) {
+            Node.Expression.Binary(
+                lhs = convertExpression(v.left ?: error("No binary lhs for $v")),
+                operator = convertBinaryOperator(v.operationReference),
+                rhs = convertExpression(v.right ?: error("No binary rhs for $v"))
+            ).map(v)
+        } else {
+            Node.Expression.BinaryInfix(
+                lhs = convertExpression(v.left ?: error("No binary lhs for $v")),
+                operator = convertName(v.operationReference.firstChild),
+                rhs = convertExpression(v.right ?: error("No binary rhs for $v"))
+            ).map(v)
+        }
 
     open fun convertBinary(v: KtQualifiedExpression) = Node.Expression.Binary(
         lhs = convertExpression(v.receiverExpression),
-        operator = Node.Expression.Binary.Operator.Token(
-            if (v is KtDotQualifiedExpression) Node.Expression.Binary.Token.DOT else Node.Expression.Binary.Token.DOT_SAFE
+        operator = Node.Expression.Binary.Operator(
+            if (v is KtDotQualifiedExpression) {
+                Node.Expression.Binary.Operator.Token.DOT
+            } else {
+                Node.Expression.Binary.Operator.Token.DOT_SAFE
+            }
         ),
         rhs = convertExpression(v.selectorExpression ?: error("No qualified rhs for $v"))
     ).map(v)
 
+    open fun convertBinaryOperator(v: PsiElement) = Node.Expression.Binary.Operator.of(v.text)
+        .map(v)
+
     open fun convertUnary(v: KtUnaryExpression) = Node.Expression.Unary(
         expression = convertExpression(v.baseExpression ?: error("No unary expr for $v")),
-        operator = v.operationReference.let {
-            Node.Expression.Unary.Operator(unaryTokensByText[it.text] ?: error("Unable to find op ref $it")).map(it)
-        },
+        operator = convertUnaryOperator(v.operationReference),
         prefix = v is KtPrefixExpression
     ).map(v)
 
+    open fun convertUnaryOperator(v: PsiElement) = Node.Expression.Unary.Operator.of(v.text)
+        .map(v)
+
     open fun convertBinaryType(v: KtBinaryExpressionWithTypeRHS) = Node.Expression.BinaryType(
         lhs = convertExpression(v.left),
-        operator = v.operationReference.let {
-            Node.Expression.BinaryType.Operator(binaryTypeTokensByText[it.text] ?: error("Unable to find op ref $it"))
-                .map(it)
-        },
+        operator = convertBinaryTypeOperator(v.operationReference),
         rhs = convertTypeRef(v.right ?: error("No type op rhs for $v"))
     ).map(v)
 
     open fun convertBinaryType(v: KtIsExpression) = Node.Expression.BinaryType(
         lhs = convertExpression(v.leftHandSide),
-        operator = v.operationReference.let {
-            Node.Expression.BinaryType.Operator(binaryTypeTokensByText[it.text] ?: error("Unable to find op ref $it"))
-                .map(it)
-        },
+        operator = convertBinaryTypeOperator(v.operationReference),
         rhs = convertTypeRef(v.typeReference ?: error("No type op rhs for $v"))
     ).map(v)
+
+    open fun convertBinaryTypeOperator(v: PsiElement) = Node.Expression.BinaryType.Operator.of(v.text)
+        .map(v)
 
     open fun convertCallableReference(v: KtCallableReferenceExpression) = Node.Expression.CallableReference(
         lhs = v.receiverExpression?.let { expr ->
@@ -895,17 +915,19 @@ open class Converter {
         rBracket = null,
     ).map(v)
 
-    open fun convertAnnotationSetTarget(v: KtAnnotationUseSiteTarget) = when (v.getAnnotationUseSiteTarget()) {
-        AnnotationUseSiteTarget.FIELD -> Node.Modifier.AnnotationSet.Target.FIELD
-        AnnotationUseSiteTarget.FILE -> Node.Modifier.AnnotationSet.Target.FILE
-        AnnotationUseSiteTarget.PROPERTY -> Node.Modifier.AnnotationSet.Target.PROPERTY
-        AnnotationUseSiteTarget.PROPERTY_GETTER -> Node.Modifier.AnnotationSet.Target.GET
-        AnnotationUseSiteTarget.PROPERTY_SETTER -> Node.Modifier.AnnotationSet.Target.SET
-        AnnotationUseSiteTarget.RECEIVER -> Node.Modifier.AnnotationSet.Target.RECEIVER
-        AnnotationUseSiteTarget.CONSTRUCTOR_PARAMETER -> Node.Modifier.AnnotationSet.Target.PARAM
-        AnnotationUseSiteTarget.SETTER_PARAMETER -> Node.Modifier.AnnotationSet.Target.SETPARAM
-        AnnotationUseSiteTarget.PROPERTY_DELEGATE_FIELD -> Node.Modifier.AnnotationSet.Target.DELEGATE
-    }
+    open fun convertAnnotationSetTarget(v: KtAnnotationUseSiteTarget) = Node.Modifier.AnnotationSet.Target(
+        when (v.getAnnotationUseSiteTarget()) {
+            AnnotationUseSiteTarget.FIELD -> Node.Modifier.AnnotationSet.Target.Token.FIELD
+            AnnotationUseSiteTarget.FILE -> Node.Modifier.AnnotationSet.Target.Token.FILE
+            AnnotationUseSiteTarget.PROPERTY -> Node.Modifier.AnnotationSet.Target.Token.PROPERTY
+            AnnotationUseSiteTarget.PROPERTY_GETTER -> Node.Modifier.AnnotationSet.Target.Token.GET
+            AnnotationUseSiteTarget.PROPERTY_SETTER -> Node.Modifier.AnnotationSet.Target.Token.SET
+            AnnotationUseSiteTarget.RECEIVER -> Node.Modifier.AnnotationSet.Target.Token.RECEIVER
+            AnnotationUseSiteTarget.CONSTRUCTOR_PARAMETER -> Node.Modifier.AnnotationSet.Target.Token.PARAM
+            AnnotationUseSiteTarget.SETTER_PARAMETER -> Node.Modifier.AnnotationSet.Target.Token.SETPARAM
+            AnnotationUseSiteTarget.PROPERTY_DELEGATE_FIELD -> Node.Modifier.AnnotationSet.Target.Token.DELEGATE
+        }
+    )
 
     open fun convertAnnotationWithoutMapping(v: KtAnnotationEntry) = Node.Modifier.AnnotationSet.Annotation(
         type = convertType(
@@ -923,15 +945,14 @@ open class Converter {
                     is KtAnnotationEntry -> convertAnnotationSet(psi)
                     is KtAnnotation -> convertAnnotationSet(psi)
                     is PsiWhiteSpace -> null
-                    else -> (
-                            modifiersByText[node.text]?.let { keyword ->
-                                Node.Modifier.Literal(keyword)
-                            } ?: error("Unrecognized modifier: ${node.text}")
-                            ).map(psi)
+                    else -> convertKeywordModifier(psi)
                 }
             }
         }.toList(),
     ).map(v)
+
+    open fun convertKeywordModifier(v: PsiElement) = Node.Modifier.Keyword.of(v.text)
+        .map(v)
 
     open fun convertPostModifiers(v: KtElement): List<Node.PostModifier> {
         val nonExtraChildren = v.allChildren.filterNot { it is PsiComment || it is PsiWhiteSpace }.toList()
@@ -956,17 +977,11 @@ open class Converter {
         }
     }
 
-    open fun convertValOrVarKeyword(v: PsiElement) = Node.Keyword.ValOrVar.of(v.text)
-        .map(v)
-
-    open fun convertDeclarationKeyword(v: PsiElement) = Node.Keyword.Declaration.of(v.text)
-        .map(v)
-
     open fun convertComma(v: PsiElement): Node.Keyword.Comma = convertKeyword(v, Node.Keyword::Comma)
 
     open fun <T : Node.Keyword> convertKeyword(v: PsiElement, factory: () -> T): T =
         factory().also {
-            check(v.text == it.value) { "Unexpected keyword: ${v.text}" }
+            check(v.text == it.string) { "Unexpected keyword: ${v.text}" }
         }.map(v)
 
     protected open fun <T : Node> T.map(v: PsiElement) = also { onNode(it, v) }
@@ -975,11 +990,6 @@ open class Converter {
     class Unsupported(message: String) : UnsupportedOperationException(message)
 
     companion object : Converter() {
-        internal val modifiersByText = Node.Modifier.Keyword.values().associateBy { it.name.lowercase() }
-        internal val binaryTokensByText = Node.Expression.Binary.Token.values().associateBy { it.str }
-        internal val unaryTokensByText = Node.Expression.Unary.Token.values().associateBy { it.str }
-        internal val binaryTypeTokensByText = Node.Expression.BinaryType.Token.values().associateBy { it.str }
-
         internal val KtImportDirective.importKeyword: PsiElement
             get() = findChildByType(this, KtTokens.IMPORT_KEYWORD) ?: error("Missing import keyword for $this")
         internal val KtImportDirective.asterisk: PsiElement?

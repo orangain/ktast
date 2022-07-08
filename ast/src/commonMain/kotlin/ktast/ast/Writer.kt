@@ -59,6 +59,9 @@ open class Writer(
                 is Node.NodeList<*> -> {
                     children(elements, prefix = prefix, suffix = suffix)
                 }
+                is Node.HasSimpleStringRepresentation -> {
+                    append(string)
+                }
                 is Node.KotlinFile -> {
                     children(annotationSets, skipWritingExtrasWithin = true)
                     children(packageDirective)
@@ -201,8 +204,10 @@ open class Writer(
                     if (delegationCall != null) append(":").also { children(delegationCall) }
                     children(block)
                 }
-                is Node.Declaration.SecondaryConstructor.DelegationCall ->
-                    append(target.name.lowercase()).also { children(args) }
+                is Node.Declaration.SecondaryConstructor.DelegationCall -> {
+                    children(target)
+                    children(args)
+                }
                 is Node.EnumEntry -> {
                     children(modifiers)
                     children(name)
@@ -337,33 +342,15 @@ open class Writer(
                     }
                 }
                 is Node.Expression.Binary -> {
-                    children(listOf(lhs, operator, rhs))
+                    children(lhs, operator, rhs)
                 }
-                is Node.Expression.Binary.Operator.Infix ->
-                    append(str)
-                is Node.Expression.Binary.Operator.Token ->
-                    if (token == Node.Expression.Binary.Token.IN || token == Node.Expression.Binary.Token.NOT_IN) {
-                        // Using appendNonSymbol may cause insertion of unneeded space before !in.
-                        // However, we ignore them as it is rare case for now.
-                        append(token.str)
-                    } else {
-                        append(token.str)
-                    }
+                is Node.Expression.BinaryInfix -> {
+                    children(lhs, operator, rhs)
+                }
                 is Node.Expression.Unary ->
                     if (prefix) children(operator, expression) else children(expression, operator)
-                is Node.Expression.Unary.Operator ->
-                    append(token.str)
                 is Node.Expression.BinaryType ->
                     children(listOf(lhs, operator, rhs), "")
-                is Node.Expression.BinaryType.Operator -> {
-                    if (token == Node.Expression.BinaryType.Token.COL) {
-                        append(token.str)
-                    } else {
-                        // Using appendNonSymbol may cause insertion of unneeded spaces before or after symbols.
-                        // However, we ignore them as it is rare case for now.
-                        append(token.str)
-                    }
-                }
                 is Node.Expression.CallableReference -> {
                     if (lhs != null) children(lhs)
                     append("::")
@@ -515,7 +502,7 @@ open class Writer(
                 }
                 is Node.Modifier.AnnotationSet -> {
                     children(atSymbol)
-                    if (target != null) append(target.name.lowercase())
+                    children(target)
                     children(colon)
                     children(lBracket)
                     children(annotations)
@@ -528,8 +515,6 @@ open class Writer(
                         nextHeuristicWhitespace = " " // Insert heuristic space after annotation if single form
                     }
                 }
-                is Node.Modifier.Literal ->
-                    append(keyword.name.lowercase())
                 is Node.PostModifier.TypeConstraints -> {
                     children(whereKeyword)
                     children(constraints)
@@ -547,7 +532,6 @@ open class Writer(
                 is Node.PostModifier.Contract.ContractEffect -> {
                     children(expression)
                 }
-                is Node.Keyword -> append(value)
                 else ->
                     error("Unrecognized node type: $this")
             }
@@ -605,7 +589,7 @@ open class Writer(
                 append("\n")
             }
         }
-        if (parent is Node.Expression.Annotated && (this is Node.Expression.Binary || this is Node.Expression.BinaryType)) {
+        if (parent is Node.Expression.Annotated && (this is Node.Expression.BaseBinary || this is Node.Expression.BinaryType)) {
             // Annotated expression requires newline between annotation and expression when expression is a binary operation.
             // This is because, without newline, annotated expression of binary expression is ambiguous with binary expression of annotated expression.
             if (!containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
@@ -625,7 +609,7 @@ open class Writer(
     protected open fun writeHeuristicExtraAfterChild(v: Node, next: Node?, parent: Node?) {
         if (v is Node.Expression.Name && next is Node.Declaration && parent is Node.StatementsContainer) {
             val upperCasedName = v.name.uppercase()
-            if (Node.Modifier.Keyword.values().any { it.name == upperCasedName } &&
+            if (Node.Modifier.Keyword.Token.values().any { it.name == upperCasedName } &&
                 !containsSemicolon(extrasSinceLastNonSymbol)
             ) {
                 append(";")

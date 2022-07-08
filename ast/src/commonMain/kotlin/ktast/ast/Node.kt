@@ -47,6 +47,16 @@ sealed class Node {
         val declarations: List<Declaration>
     }
 
+    interface HasSimpleStringRepresentation {
+        val string: String
+    }
+
+    interface TokenContainer<T : HasSimpleStringRepresentation> : HasSimpleStringRepresentation {
+        val token: T
+        override val string: String
+            get() = token.string
+    }
+
     /**
      * AST node corresponds to KtFile.
      */
@@ -108,7 +118,7 @@ sealed class Node {
          */
         data class Class(
             override val modifiers: Modifiers?,
-            val declarationKeyword: Keyword.Declaration,
+            val declarationKeyword: DeclarationKeyword,
             val name: Expression.Name?,
             val typeParams: TypeParams?,
             val primaryConstructor: PrimaryConstructor?,
@@ -117,11 +127,27 @@ sealed class Node {
             val body: Body?,
         ) : Declaration(), WithModifiers {
 
-            val isClass = declarationKeyword.token == Keyword.DeclarationToken.CLASS
-            val isObject = declarationKeyword.token == Keyword.DeclarationToken.OBJECT
-            val isInterface = declarationKeyword.token == Keyword.DeclarationToken.INTERFACE
-            val isCompanion = modifiers?.elements.orEmpty().contains(Modifier.Literal(Modifier.Keyword.COMPANION))
-            val isEnum = modifiers?.elements.orEmpty().contains(Modifier.Literal(Modifier.Keyword.ENUM))
+            val isClass = declarationKeyword.token == DeclarationKeyword.Token.CLASS
+            val isObject = declarationKeyword.token == DeclarationKeyword.Token.OBJECT
+            val isInterface = declarationKeyword.token == DeclarationKeyword.Token.INTERFACE
+            val isCompanion = modifiers?.elements.orEmpty().contains(Modifier.Keyword(Modifier.Keyword.Token.COMPANION))
+            val isEnum = modifiers?.elements.orEmpty().contains(Modifier.Keyword(Modifier.Keyword.Token.ENUM))
+
+            data class DeclarationKeyword(override val token: Token) : Node(),
+                TokenContainer<DeclarationKeyword.Token> {
+                companion object {
+                    private val mapStringToToken = Token.values().associateBy { it.string }
+                    fun of(value: String): DeclarationKeyword =
+                        mapStringToToken[value]?.let(::DeclarationKeyword) ?: error("Unknown value: $value")
+                }
+
+                enum class Token : HasSimpleStringRepresentation {
+                    INTERFACE, CLASS, OBJECT;
+
+                    override val string: String
+                        get() = name.lowercase()
+                }
+            }
 
             /**
              * AST node corresponds to KtSuperTypeList.
@@ -218,7 +244,7 @@ sealed class Node {
              */
             data class Param(
                 override val modifiers: Modifiers?,
-                val valOrVar: Keyword.ValOrVar?,
+                val valOrVar: Property.ValOrVar?,
                 val name: Expression.Name,
                 // Type can be null for anon functions
                 val typeRef: TypeRef?,
@@ -243,7 +269,7 @@ sealed class Node {
          */
         data class Property(
             override val modifiers: Modifiers?,
-            val valOrVar: Keyword.ValOrVar,
+            val valOrVar: ValOrVar,
             val typeParams: TypeParams?,
             val receiverTypeRef: TypeRef?,
             // Always at least one, more than one is destructuring
@@ -262,6 +288,21 @@ sealed class Node {
                 }
                 require((equals == null && initializer == null) || (equals != null && initializer != null)) {
                     "equals and initializer must be both null or both non-null"
+                }
+            }
+
+            data class ValOrVar(override val token: Token) : Node(), TokenContainer<ValOrVar.Token> {
+                companion object {
+                    private val mapStringToToken = Token.values().associateBy { it.string }
+                    fun of(value: String): ValOrVar =
+                        mapStringToToken[value]?.let(::ValOrVar) ?: error("Unknown value: $value")
+                }
+
+                enum class Token : HasSimpleStringRepresentation {
+                    VAL, VAR;
+
+                    override val string: String
+                        get() = name.lowercase()
                 }
             }
 
@@ -357,7 +398,20 @@ sealed class Node {
                 val args: ValueArgs?
             ) : Node()
 
-            enum class DelegationTarget { THIS, SUPER }
+            data class DelegationTarget(override val token: Token) : Node(), TokenContainer<DelegationTarget.Token> {
+                companion object {
+                    private val mapStringToToken = Token.values().associateBy { it.string }
+                    fun of(value: String): DelegationTarget = mapStringToToken[value]?.let(::DelegationTarget)
+                        ?: error("Unknown value: $value")
+                }
+
+                enum class Token : HasSimpleStringRepresentation {
+                    THIS, SUPER;
+
+                    override val string: String
+                        get() = name.lowercase()
+                }
+            }
         }
 
     }
@@ -582,29 +636,43 @@ sealed class Node {
             val doWhile: Boolean
         ) : Expression()
 
+        sealed class BaseBinary : Expression() {
+            abstract val lhs: Expression
+            abstract val rhs: Expression
+        }
+
         /**
          * AST node corresponds to KtBinaryExpression or KtQualifiedExpression.
          */
         data class Binary(
-            val lhs: Expression,
+            override val lhs: Expression,
             val operator: Operator,
-            val rhs: Expression
-        ) : Expression() {
-            sealed class Operator : Node() {
-                data class Infix(val str: String) : Operator()
-                data class Token(val token: Binary.Token) : Operator()
-            }
+            override val rhs: Expression
+        ) : BaseBinary() {
+            data class Operator(override val token: Token) : Node(), TokenContainer<Operator.Token> {
+                companion object {
+                    private val mapStringToToken = Token.values().associateBy { it.string }
+                    fun of(value: String): Operator = mapStringToToken[value]?.let(::Operator)
+                        ?: error("Unknown value: $value")
+                }
 
-            enum class Token(val str: String) {
-                MUL("*"), DIV("/"), MOD("%"), ADD("+"), SUB("-"),
-                IN("in"), NOT_IN("!in"),
-                GT(">"), GTE(">="), LT("<"), LTE("<="),
-                EQ("=="), NEQ("!="),
-                ASSN("="), MUL_ASSN("*="), DIV_ASSN("/="), MOD_ASSN("%="), ADD_ASSN("+="), SUB_ASSN("-="),
-                OR("||"), AND("&&"), ELVIS("?:"), RANGE(".."),
-                DOT("."), DOT_SAFE("?."), SAFE("?")
+                enum class Token(override val string: String) : HasSimpleStringRepresentation {
+                    MUL("*"), DIV("/"), MOD("%"), ADD("+"), SUB("-"),
+                    IN("in"), NOT_IN("!in"),
+                    GT(">"), GTE(">="), LT("<"), LTE("<="),
+                    EQ("=="), NEQ("!="),
+                    ASSN("="), MUL_ASSN("*="), DIV_ASSN("/="), MOD_ASSN("%="), ADD_ASSN("+="), SUB_ASSN("-="),
+                    OR("||"), AND("&&"), ELVIS("?:"), RANGE(".."),
+                    DOT("."), DOT_SAFE("?."), SAFE("?")
+                }
             }
         }
+
+        data class BinaryInfix(
+            override val lhs: Expression,
+            val operator: Name,
+            override val rhs: Expression
+        ) : BaseBinary()
 
         /**
          * AST node corresponds to KtUnaryExpression.
@@ -614,9 +682,16 @@ sealed class Node {
             val operator: Operator,
             val prefix: Boolean
         ) : Expression() {
-            data class Operator(val token: Token) : Node()
-            enum class Token(val str: String) {
-                NEG("-"), POS("+"), INC("++"), DEC("--"), NOT("!"), NULL_DEREF("!!")
+            data class Operator(override val token: Token) : Node(), TokenContainer<Operator.Token> {
+                companion object {
+                    private val mapStringToToken = Token.values().associateBy { it.string }
+                    fun of(value: String): Operator =
+                        mapStringToToken[value]?.let(::Operator) ?: error("Unknown value: $value")
+                }
+
+                enum class Token(override val string: String) : HasSimpleStringRepresentation {
+                    NEG("-"), POS("+"), INC("++"), DEC("--"), NOT("!"), NULL_DEREF("!!")
+                }
             }
         }
 
@@ -628,10 +703,18 @@ sealed class Node {
             val operator: Operator,
             val rhs: TypeRef
         ) : Expression() {
-            data class Operator(val token: Token) : Node()
-            enum class Token(val str: String) {
-                AS("as"), AS_SAFE("as?"), COL(":"), IS("is"), NOT_IS("!is")
+            data class Operator(override val token: Token) : Node(), TokenContainer<Operator.Token> {
+                companion object {
+                    private val mapStringToToken = Token.values().associateBy { it.string }
+                    fun of(value: String): Operator =
+                        mapStringToToken[value]?.let(::Operator) ?: error("Unknown value: $value")
+                }
+
+                enum class Token(override val string: String) : HasSimpleStringRepresentation {
+                    AS("as"), AS_SAFE("as?"), COL(":"), IS("is"), NOT_IS("!is")
+                }
             }
+
         }
 
         /**
@@ -957,8 +1040,20 @@ sealed class Node {
             val annotations: List<Annotation>,
             val rBracket: Node.Keyword.RBracket?,
         ) : Modifier() {
-            enum class Target {
-                FIELD, FILE, PROPERTY, GET, SET, RECEIVER, PARAM, SETPARAM, DELEGATE
+
+            data class Target(override val token: Token) : Node(), TokenContainer<Target.Token> {
+                companion object {
+                    private val mapStringToToken = Token.values().associateBy { it.string }
+                    fun of(value: String): Target = mapStringToToken[value]?.let(::Target)
+                        ?: error("Unknown value: $value")
+                }
+
+                enum class Token : HasSimpleStringRepresentation {
+                    FIELD, FILE, PROPERTY, GET, SET, RECEIVER, PARAM, SETPARAM, DELEGATE;
+
+                    override val string: String
+                        get() = name.lowercase()
+                }
             }
 
             /**
@@ -970,13 +1065,23 @@ sealed class Node {
             ) : Node()
         }
 
-        data class Literal(val keyword: Keyword) : Modifier()
-        enum class Keyword {
-            ABSTRACT, FINAL, OPEN, ANNOTATION, SEALED, DATA, OVERRIDE, LATEINIT, INNER, ENUM, COMPANION,
-            PRIVATE, PROTECTED, PUBLIC, INTERNAL,
-            IN, OUT, NOINLINE, CROSSINLINE, VARARG, REIFIED,
-            TAILREC, OPERATOR, INFIX, INLINE, EXTERNAL, SUSPEND, CONST, FUN,
-            ACTUAL, EXPECT
+        data class Keyword(override val token: Token) : Modifier(), TokenContainer<Keyword.Token> {
+            companion object {
+                private val mapStringToToken = Token.values().associateBy { it.string }
+                fun of(value: String): Keyword =
+                    mapStringToToken[value]?.let(::Keyword) ?: error("Unknown value: $value")
+            }
+
+            enum class Token : HasSimpleStringRepresentation {
+                ABSTRACT, FINAL, OPEN, ANNOTATION, SEALED, DATA, OVERRIDE, LATEINIT, INNER, ENUM, COMPANION,
+                PRIVATE, PROTECTED, PUBLIC, INTERNAL,
+                IN, OUT, NOINLINE, CROSSINLINE, VARARG, REIFIED,
+                TAILREC, OPERATOR, INFIX, INLINE, EXTERNAL, SUSPEND, CONST, FUN,
+                ACTUAL, EXPECT;
+
+                override val string: String
+                    get() = name.lowercase()
+            }
         }
     }
 
@@ -1031,7 +1136,7 @@ sealed class Node {
         }
     }
 
-    sealed class Keyword(val value: String) : Node() {
+    sealed class Keyword(override val string: String) : Node(), HasSimpleStringRepresentation {
         override fun toString(): String {
             return javaClass.simpleName
         }
@@ -1042,39 +1147,13 @@ sealed class Node {
 
             other as Keyword
 
-            if (value != other.value) return false
+            if (string != other.string) return false
 
             return true
         }
 
         override fun hashCode(): Int {
-            return value.hashCode()
-        }
-
-        data class ValOrVar(val token: ValOrVarToken) : Keyword(token.name.lowercase()) {
-            companion object {
-                private val valOrVarValues = ValOrVarToken.values().associateBy { it.name.lowercase() }
-
-                fun of(value: String) = valOrVarValues[value]?.let { ValOrVar(it) }
-                    ?: error("Unknown value: $value")
-            }
-        }
-
-        enum class ValOrVarToken {
-            VAL, VAR,
-        }
-
-        data class Declaration(val token: DeclarationToken) : Keyword(token.name.lowercase()) {
-            companion object {
-                private val declarationValues = DeclarationToken.values().associateBy { it.name.lowercase() }
-
-                fun of(value: String) = declarationValues[value]?.let { Declaration(it) }
-                    ?: error("Unknown value: $value")
-            }
-        }
-
-        enum class DeclarationToken {
-            INTERFACE, CLASS, OBJECT,
+            return string.hashCode()
         }
 
         class Package : Keyword("package")

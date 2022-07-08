@@ -12,6 +12,7 @@ open class MutableVisitor(
         ch.sub { newCh ->
             preVisit(this, parent).run {
                 val new: Node = when (this) {
+                    is Node.HasSimpleStringRepresentation -> this
                     is Node.KotlinFile -> copy(
                         annotationSets = visitChildren(annotationSets, newCh),
                         packageDirective = visitChildren(packageDirective, newCh),
@@ -166,7 +167,8 @@ open class MutableVisitor(
                         block = visitChildren(block, newCh)
                     )
                     is Node.Declaration.SecondaryConstructor.DelegationCall -> copy(
-                        args = visitChildren(args, newCh)
+                        target = visitChildren(target, newCh),
+                        args = visitChildren(args, newCh),
                     )
                     is Node.EnumEntry -> copy(
                         modifiers = visitChildren(modifiers, newCh),
@@ -282,19 +284,20 @@ open class MutableVisitor(
                         operator = visitChildren(operator, newCh),
                         rhs = visitChildren(rhs, newCh)
                     )
-                    is Node.Expression.Binary.Operator.Infix -> this
-                    is Node.Expression.Binary.Operator.Token -> this
+                    is Node.Expression.BinaryInfix -> copy(
+                        lhs = visitChildren(lhs, newCh),
+                        operator = visitChildren(operator, newCh),
+                        rhs = visitChildren(rhs, newCh)
+                    )
                     is Node.Expression.Unary -> copy(
                         expression = visitChildren(expression, newCh),
                         operator = visitChildren(operator, newCh)
                     )
-                    is Node.Expression.Unary.Operator -> this
                     is Node.Expression.BinaryType -> copy(
                         lhs = visitChildren(lhs, newCh),
                         operator = visitChildren(operator, newCh),
                         rhs = visitChildren(rhs, newCh)
                     )
-                    is Node.Expression.BinaryType.Operator -> this
                     is Node.Expression.CallableReference -> copy(
                         lhs = visitChildren(lhs, newCh),
                         rhs = visitChildren(rhs, newCh),
@@ -426,6 +429,7 @@ open class MutableVisitor(
                     )
                     is Node.Modifier.AnnotationSet -> copy(
                         atSymbol = visitChildren(atSymbol, newCh),
+                        target = visitChildren(target, newCh),
                         colon = visitChildren(colon, newCh),
                         lBracket = visitChildren(lBracket, newCh),
                         annotations = visitChildren(annotations, newCh),
@@ -435,7 +439,6 @@ open class MutableVisitor(
                         type = visitChildren(type, newCh),
                         args = visitChildren(args, newCh),
                     )
-                    is Node.Modifier.Literal -> this
                     is Node.PostModifier.TypeConstraints -> copy(
                         whereKeyword = visitChildren(whereKeyword, newCh),
                         constraints = visitChildren(constraints, newCh),
@@ -459,7 +462,6 @@ open class MutableVisitor(
                     is Node.PostModifier.Contract.ContractEffect -> copy(
                         expression = visitChildren(expression, newCh),
                     )
-                    is Node.Keyword -> this
                     is Node.Extra -> this
                     // Currently, else branch is required even when sealed classes are exhaustive.
                     // See: https://youtrack.jetbrains.com/issue/KT-21908

@@ -12,6 +12,7 @@ open class Visitor {
             is Node.NodeList<*> -> {
                 visitChildren(elements)
             }
+            is Node.HasSimpleStringRepresentation -> {}
             is Node.KotlinFile -> {
                 visitChildren(annotationSets)
                 visitChildren(packageDirective)
@@ -138,10 +139,6 @@ open class Visitor {
                 visitChildren(postModifiers)
                 visitChildren(body)
             }
-            is Node.Declaration.Property.Accessor.Params -> {
-                visitChildren(elements)
-                visitChildren(trailingComma)
-            }
             is Node.Declaration.TypeAlias -> {
                 visitChildren(modifiers)
                 visitChildren(name)
@@ -156,6 +153,7 @@ open class Visitor {
                 visitChildren(block)
             }
             is Node.Declaration.SecondaryConstructor.DelegationCall -> {
+                visitChildren(target)
                 visitChildren(args)
             }
             is Node.EnumEntry -> {
@@ -252,19 +250,20 @@ open class Visitor {
                 visitChildren(operator)
                 visitChildren(rhs)
             }
-            is Node.Expression.Binary.Operator.Infix -> {}
-            is Node.Expression.Binary.Operator.Token -> {}
+            is Node.Expression.BinaryInfix -> {
+                visitChildren(lhs)
+                visitChildren(operator)
+                visitChildren(rhs)
+            }
             is Node.Expression.Unary -> {
                 visitChildren(expression)
                 visitChildren(operator)
             }
-            is Node.Expression.Unary.Operator -> {}
             is Node.Expression.BinaryType -> {
                 visitChildren(lhs)
                 visitChildren(operator)
                 visitChildren(rhs)
             }
-            is Node.Expression.BinaryType.Operator -> {}
             is Node.Expression.CallableReference -> {
                 visitChildren(lhs)
                 visitChildren(rhs)
@@ -385,6 +384,7 @@ open class Visitor {
             }
             is Node.Modifier.AnnotationSet -> {
                 visitChildren(atSymbol)
+                visitChildren(target)
                 visitChildren(colon)
                 visitChildren(lBracket)
                 visitChildren(annotations)
@@ -394,7 +394,6 @@ open class Visitor {
                 visitChildren(type)
                 visitChildren(args)
             }
-            is Node.Modifier.Literal -> {}
             is Node.PostModifier.TypeConstraints -> {
                 visitChildren(whereKeyword)
                 visitChildren(constraints)
@@ -411,8 +410,8 @@ open class Visitor {
             is Node.PostModifier.Contract.ContractEffect -> {
                 visitChildren(expression)
             }
-            is Node.Keyword -> {}
             is Node.Extra -> {}
+            else -> error("Expected to be unreachable here. Missing visitor implementation for $this.")
         }
     }
 
