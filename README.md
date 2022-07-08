@@ -37,7 +37,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.orangain.ktast:ast-psi:0.7.0")
+    implementation("com.github.orangain.ktast:ast-psi:0.8.0")
 }
 ```
 
@@ -48,7 +48,7 @@ multiplatform projects. If you need the AST only, instead use:
 
 ```kts
 dependencies {
-    implementation("com.github.orangain.ktast:ast:0.7.0")
+    implementation("com.github.orangain.ktast:ast:0.8.0")
 }
 ```
 
