@@ -126,7 +126,7 @@ import ktast.ast.Visitor
 
 var strings = emptyList<String>()
 Visitor.visit(file) { v, _ ->
-    if (v is Node.Expr.StringTmpl.Elem.Regular) strings += v.str
+    if (v is Node.Expression.StringTemplate.Entry.Regular) strings += v.str
 }
 // Prints [Hello, World!, Hello, again!]
 println(strings)
@@ -145,7 +145,7 @@ import ktast.ast.MutableVisitor
 // ...
 
 val newFile = MutableVisitor.preVisit(file) { v, _ ->
-    if (v !is Node.Expr.StringTmpl.Elem.Regular) v
+    if (v !is Node.Expression.StringTemplate.Entry.Regular) v
     else v.copy(str = v.str.replace("Hello", "Howdy"))
 }
 ```
