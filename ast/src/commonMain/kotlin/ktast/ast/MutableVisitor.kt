@@ -399,7 +399,7 @@ open class MutableVisitor(
                     )
                     is Node.Expression.Call.LambdaArg -> copy(
                         annotationSets = visitChildren(annotationSets, newCh),
-                        func = visitChildren(func, newCh)
+                        expression = visitChildren(expression, newCh)
                     )
                     is Node.Expression.ArrayAccess -> copy(
                         expression = visitChildren(expression, newCh),

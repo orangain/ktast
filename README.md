@@ -37,7 +37,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.orangain.ktast:ast-psi:0.7.0")
+    implementation("com.github.orangain.ktast:ast-psi:0.8.0")
 }
 ```
 
@@ -48,7 +48,7 @@ multiplatform projects. If you need the AST only, instead use:
 
 ```kts
 dependencies {
-    implementation("com.github.orangain.ktast:ast:0.7.0")
+    implementation("com.github.orangain.ktast:ast:0.8.0")
 }
 ```
 
@@ -126,7 +126,7 @@ import ktast.ast.Visitor
 
 var strings = emptyList<String>()
 Visitor.visit(file) { v, _ ->
-    if (v is Node.Expr.StringTmpl.Elem.Regular) strings += v.str
+    if (v is Node.Expression.StringTemplate.Entry.Regular) strings += v.str
 }
 // Prints [Hello, World!, Hello, again!]
 println(strings)
@@ -145,7 +145,7 @@ import ktast.ast.MutableVisitor
 // ...
 
 val newFile = MutableVisitor.preVisit(file) { v, _ ->
-    if (v !is Node.Expr.StringTmpl.Elem.Regular) v
+    if (v !is Node.Expression.StringTemplate.Entry.Regular) v
     else v.copy(str = v.str.replace("Hello", "Howdy"))
 }
 ```
