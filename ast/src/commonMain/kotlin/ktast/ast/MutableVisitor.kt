@@ -218,11 +218,13 @@ open class MutableVisitor(
                         typeRef = visitChildren(typeRef, newCh),
                     )
                     is Node.Type.Simple -> copy(
-                        pieces = visitChildren(pieces, newCh)
-                    )
-                    is Node.Type.Simple.Piece -> copy(
+                        qualifiers = visitChildren(qualifiers, newCh),
                         name = visitChildren(name, newCh),
-                        typeArgs = visitChildren(typeArgs, newCh)
+                        typeArgs = visitChildren(typeArgs, newCh),
+                    )
+                    is Node.Type.Simple.Qualifier -> copy(
+                        name = visitChildren(name, newCh),
+                        typeArgs = visitChildren(typeArgs, newCh),
                     )
                     is Node.Type.Nullable -> copy(
                         lPar = visitChildren(lPar, newCh),

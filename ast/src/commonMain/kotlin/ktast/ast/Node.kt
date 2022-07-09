@@ -473,16 +473,23 @@ sealed class Node {
             ) : Node()
         }
 
+        interface NameWithTypeArgs {
+            val name: Expression.Name
+            val typeArgs: TypeArgs?
+        }
+
         /**
          * AST node corresponds to KtUserType.
          */
         data class Simple(
-            val pieces: List<Piece>
-        ) : Type() {
-            data class Piece(
-                val name: Expression.Name,
-                val typeArgs: TypeArgs?
-            ) : Node()
+            val qualifiers: List<Qualifier>,
+            override val name: Expression.Name,
+            override val typeArgs: TypeArgs?,
+        ) : Type(), NameWithTypeArgs {
+            data class Qualifier(
+                override val name: Expression.Name,
+                override val typeArgs: TypeArgs?,
+            ) : Node(), NameWithTypeArgs
         }
 
         /**
