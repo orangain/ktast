@@ -269,9 +269,15 @@ open class Writer(
                     if (name != null) children(name).append(":")
                     children(typeRef)
                 }
-                is Node.Type.Simple ->
-                    children(pieces, ".")
-                is Node.Type.Simple.Piece -> {
+                is Node.Type.Simple -> {
+                    if (qualifiers.isNotEmpty()) {
+                        children(qualifiers, ".")
+                        append(".")
+                    }
+                    children(name)
+                    children(typeArgs)
+                }
+                is Node.Type.Simple.Qualifier -> {
                     children(name)
                     children(typeArgs)
                 }

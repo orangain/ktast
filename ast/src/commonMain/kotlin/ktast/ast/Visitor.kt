@@ -192,9 +192,11 @@ open class Visitor {
                 visitChildren(typeRef)
             }
             is Node.Type.Simple -> {
-                visitChildren(pieces)
+                visitChildren(qualifiers)
+                visitChildren(name)
+                visitChildren(typeArgs)
             }
-            is Node.Type.Simple.Piece -> {
+            is Node.Type.Simple.Qualifier -> {
                 visitChildren(name)
                 visitChildren(typeArgs)
             }
