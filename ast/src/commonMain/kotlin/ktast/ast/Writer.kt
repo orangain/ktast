@@ -250,9 +250,7 @@ open class Writer(
                     }
                     if (receiver != null) {
                         children(receiver)
-                        if (receiver.typeRef.type != null) {
-                            append('.')
-                        }
+                        append('.')
                     }
                     if (params != null) {
                         children(params).append("->")

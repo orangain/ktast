@@ -545,7 +545,7 @@ sealed class Node {
         override val modifiers: Modifiers?,
         val innerLPar: Keyword.LPar?,
         val innerMods: Modifiers?,
-        val type: Type?,
+        val type: Type,
         val innerRPar: Keyword.RPar?,
         val rPar: Keyword.RPar?,
     ) : Node(), WithModifiers

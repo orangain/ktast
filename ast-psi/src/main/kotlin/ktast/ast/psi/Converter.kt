@@ -340,7 +340,7 @@ open class Converter {
             modifiers = mods?.let { convertModifiers(it) },
             innerLPar = innerLPar?.let { convertKeyword(it, Node.Keyword::LPar) },
             innerMods = innerMods?.let { convertModifiers(it) },
-            type = v.typeElement?.let { convertType(it) }, // v.typeElement is null when the type reference has only context receivers.
+            type = convertType(v.typeElement ?: error("No type element for $v")),
             innerRPar = innerRPar?.let { convertKeyword(it, Node.Keyword::RPar) },
             rPar = rPar?.let { convertKeyword(it, Node.Keyword::RPar) },
         ).map(v)
