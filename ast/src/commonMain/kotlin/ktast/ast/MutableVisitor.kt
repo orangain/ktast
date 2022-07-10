@@ -187,17 +187,17 @@ open class MutableVisitor(
                     is Node.TypeRef -> copy(
                         lPar = visitChildren(lPar, newCh),
                         modifiers = visitChildren(modifiers, newCh),
-                        innerLPar = visitChildren(innerLPar, newCh),
-                        innerMods = visitChildren(innerMods, newCh),
                         type = visitChildren(type, newCh),
-                        innerRPar = visitChildren(innerRPar, newCh),
                         rPar = visitChildren(rPar, newCh),
                     )
                     is Node.Type.Function -> copy(
+                        lPar = visitChildren(lPar, newCh),
+                        modifiers = visitChildren(modifiers, newCh),
                         contextReceivers = visitChildren(contextReceivers, newCh),
                         receiver = visitChildren(receiver, newCh),
                         params = visitChildren(params, newCh),
-                        typeRef = visitChildren(typeRef, newCh),
+                        returnTypeRef = visitChildren(returnTypeRef, newCh),
+                        rPar = visitChildren(rPar, newCh),
                     )
                     is Node.Type.Function.ContextReceivers -> copy(
                         elements = visitChildren(elements, newCh),
@@ -218,11 +218,13 @@ open class MutableVisitor(
                         typeRef = visitChildren(typeRef, newCh),
                     )
                     is Node.Type.Simple -> copy(
-                        pieces = visitChildren(pieces, newCh)
-                    )
-                    is Node.Type.Simple.Piece -> copy(
+                        qualifiers = visitChildren(qualifiers, newCh),
                         name = visitChildren(name, newCh),
-                        typeArgs = visitChildren(typeArgs, newCh)
+                        typeArgs = visitChildren(typeArgs, newCh),
+                    )
+                    is Node.Type.Simple.Qualifier -> copy(
+                        name = visitChildren(name, newCh),
+                        typeArgs = visitChildren(typeArgs, newCh),
                     )
                     is Node.Type.Nullable -> copy(
                         lPar = visitChildren(lPar, newCh),

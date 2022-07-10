@@ -314,15 +314,15 @@ open class Converter {
         }
         var innerLPar: PsiElement? = null
         var innerRPar: PsiElement? = null
-        var mods: KtModifierList? = null
-        var innerMods: KtModifierList? = null
+        var modifierList: KtModifierList? = null
+        var innerModifierList: KtModifierList? = null
         allChildren.forEach {
             when (it) {
                 is KtModifierList -> {
                     if (innerLPar == null) {
-                        mods = it
+                        modifierList = it
                     } else {
-                        innerMods = it
+                        innerModifierList = it
                     }
                 }
                 else -> {
@@ -337,11 +337,13 @@ open class Converter {
 
         return Node.TypeRef(
             lPar = lPar?.let { convertKeyword(it, Node.Keyword::LPar) },
-            modifiers = mods?.let { convertModifiers(it) },
-            innerLPar = innerLPar?.let { convertKeyword(it, Node.Keyword::LPar) },
-            innerMods = innerMods?.let { convertModifiers(it) },
-            type = v.typeElement?.let { convertType(it) }, // v.typeElement is null when the type reference has only context receivers.
-            innerRPar = innerRPar?.let { convertKeyword(it, Node.Keyword::RPar) },
+            modifiers = modifierList?.let { convertModifiers(it) },
+            type = convertType(
+                v.typeElement ?: error("No type element for $v"),
+                innerLPar,
+                innerModifierList,
+                innerRPar
+            ),
             rPar = rPar?.let { convertKeyword(it, Node.Keyword::RPar) },
         ).map(v)
     }
@@ -362,20 +364,26 @@ open class Converter {
         typeRef = convertTypeRef(v.boundTypeReference ?: error("No type constraint type for $v"))
     ).map(v)
 
-    open fun convertType(v: KtTypeElement): Node.Type = when (v) {
+    open fun convertType(
+        v: KtTypeElement,
+        lPar: PsiElement? = null,
+        modifierList: KtModifierList? = null,
+        rPar: PsiElement? = null,
+    ): Node.Type = when (v) {
         is KtFunctionType -> Node.Type.Function(
+            lPar = lPar?.let { convertKeyword(it, Node.Keyword::LPar) },
+            modifiers = modifierList?.let(::convertModifiers),
             contextReceivers = v.contextReceiverList?.let { convertContextReceivers(it) },
             receiver = v.receiver?.let(::convertTypeFunctionReceiver),
             params = v.parameterList?.let(::convertTypeFunctionParams),
-            typeRef = convertTypeRef(v.returnTypeReference ?: error("No return type"))
+            returnTypeRef = convertTypeRef(v.returnTypeReference ?: error("No return type")),
+            rPar = rPar?.let { convertKeyword(it, Node.Keyword::RPar) },
         ).map(v)
         is KtUserType -> Node.Type.Simple(
-            pieces = generateSequence(v) { it.qualifier }.toList().reversed().map { type ->
-                Node.Type.Simple.Piece(
-                    name = type.referenceExpression?.let(::convertName) ?: error("No type name for $type"),
-                    typeArgs = type.typeArgumentList?.let(::convertTypeArgs),
-                ).mapNotCorrespondsPsiElement(type)
-            }
+            qualifiers = generateSequence(v.qualifier) { it.qualifier }.toList().reversed()
+                .map(::convertTypeSimpleQualifier),
+            name = convertName(v.referenceExpression ?: error("No type name for $v")),
+            typeArgs = v.typeArgumentList?.let(::convertTypeArgs),
         ).map(v)
         is KtNullableType -> Node.Type.Nullable(
             lPar = v.leftParenthesis?.let { convertKeyword(it, Node.Keyword::LPar) },
@@ -386,20 +394,6 @@ open class Converter {
         is KtDynamicType -> Node.Type.Dynamic().map(v)
         else -> error("Unrecognized type of $v")
     }
-
-    open fun convertTypeFunctionReceiver(v: KtFunctionTypeReceiver) = Node.Type.Function.Receiver(
-        typeRef = convertTypeRef(v.typeReference),
-    ).map(v)
-
-    open fun convertTypeFunctionParams(v: KtParameterList) = Node.Type.Function.Params(
-        elements = v.parameters.map(::convertTypeFunctionParam),
-        trailingComma = v.trailingComma?.let(::convertComma)
-    ).map(v)
-
-    open fun convertTypeFunctionParam(v: KtParameter) = Node.Type.Function.Param(
-        name = v.nameIdentifier?.let(::convertName),
-        typeRef = convertTypeRef(v.typeReference ?: error("No param type"))
-    ).map(v)
 
     open fun convertContextReceivers(v: KtContextReceiverList) = Node.Type.Function.ContextReceivers(
         elements = v.contextReceivers().map(::convertContextReceiver),
@@ -417,6 +411,25 @@ open class Converter {
 
     open fun convertContractEffect(v: KtContractEffect) = Node.PostModifier.Contract.ContractEffect(
         expression = convertExpression(v.getExpression()),
+    ).map(v)
+
+    open fun convertTypeFunctionReceiver(v: KtFunctionTypeReceiver) = Node.Type.Function.Receiver(
+        typeRef = convertTypeRef(v.typeReference),
+    ).map(v)
+
+    open fun convertTypeFunctionParams(v: KtParameterList) = Node.Type.Function.Params(
+        elements = v.parameters.map(::convertTypeFunctionParam),
+        trailingComma = v.trailingComma?.let(::convertComma)
+    ).map(v)
+
+    open fun convertTypeFunctionParam(v: KtParameter) = Node.Type.Function.Param(
+        name = v.nameIdentifier?.let(::convertName),
+        typeRef = convertTypeRef(v.typeReference ?: error("No param type"))
+    ).map(v)
+
+    open fun convertTypeSimpleQualifier(v: KtUserType) = Node.Type.Simple.Qualifier(
+        name = convertName(v.referenceExpression ?: error("No type name for $v")),
+        typeArgs = v.typeArgumentList?.let(::convertTypeArgs),
     ).map(v)
 
     open fun convertValueArgs(v: KtValueArgumentList) = Node.ValueArgs(
@@ -596,25 +609,23 @@ open class Converter {
     ): Node.Expression.DoubleColon.Receiver = when (v) {
         is KtSimpleNameExpression -> Node.Expression.DoubleColon.Receiver.Type(
             type = Node.Type.Simple(
-                listOf(
-                    Node.Type.Simple.Piece(
-                        convertName(v.getReferencedNameElement()),
-                        null,
-                    ).map(v)
-                )
+                qualifiers = listOf(),
+                name = convertName(v.getReferencedNameElement()),
+                typeArgs = null,
             ).mapNotCorrespondsPsiElement(v),
             questionMarks = questionMarks,
         ).map(v)
         is KtCallExpression ->
             if (v.valueArgumentList == null && v.lambdaArguments.isEmpty())
                 Node.Expression.DoubleColon.Receiver.Type(
-                    type = Node.Type.Simple(listOf(
-                        Node.Type.Simple.Piece(
-                            name = v.calleeExpression?.let { (it as? KtSimpleNameExpression)?.let(::convertName) }
-                                ?: error("Missing text for call ref type of $v"),
-                            typeArgs = v.typeArgumentList?.let(::convertTypeArgs)
-                        ).mapNotCorrespondsPsiElement(v)
-                    )).mapNotCorrespondsPsiElement(v),
+                    type = Node.Type.Simple(
+                        qualifiers = listOf(),
+                        name = convertName(
+                            v.calleeExpression as? KtSimpleNameExpression
+                                ?: error("Missing text for call ref type of $v")
+                        ),
+                        typeArgs = v.typeArgumentList?.let(::convertTypeArgs)
+                    ).mapNotCorrespondsPsiElement(v),
                     questionMarks = questionMarks,
                 ).map(v)
             else Node.Expression.DoubleColon.Receiver.Expression(convertExpression(v)).map(v)
@@ -623,7 +634,11 @@ open class Converter {
             val rhs = v.selectorExpression?.let { convertDoubleColonReceiver(it, questionMarks) }
             if (lhs is Node.Expression.DoubleColon.Receiver.Type && rhs is Node.Expression.DoubleColon.Receiver.Type)
                 Node.Expression.DoubleColon.Receiver.Type(
-                    type = Node.Type.Simple(lhs.type.pieces + rhs.type.pieces).map(v),
+                    type = Node.Type.Simple(
+                        qualifiers = lhs.type.qualifiers + Node.Type.Simple.Qualifier(lhs.type.name, lhs.type.typeArgs),
+                        name = rhs.type.name,
+                        typeArgs = rhs.type.typeArgs,
+                    ).mapNotCorrespondsPsiElement(v),
                     questionMarks = listOf(),
                 ).map(v)
             else Node.Expression.DoubleColon.Receiver.Expression(convertExpression(v)).map(v)

@@ -427,13 +427,17 @@ sealed class Node {
     sealed class Type : Node() {
         /**
          * AST node corresponds to KtFunctionType.
+         * Note that properties [lPar], [modifiers] and [rPar] correspond to those of parent KtTypeReference.
          */
         data class Function(
+            val lPar: Keyword.LPar?,
+            override val modifiers: Modifiers?,
             val contextReceivers: ContextReceivers?,
             val receiver: Receiver?,
             val params: Params?,
-            val typeRef: TypeRef
-        ) : Type() {
+            val returnTypeRef: TypeRef,
+            val rPar: Keyword.RPar?,
+        ) : Type(), WithModifiers {
             /**
              * AST node corresponds to KtContextReceiverList.
              */
@@ -473,16 +477,23 @@ sealed class Node {
             ) : Node()
         }
 
+        interface NameWithTypeArgs {
+            val name: Expression.Name
+            val typeArgs: TypeArgs?
+        }
+
         /**
          * AST node corresponds to KtUserType.
          */
         data class Simple(
-            val pieces: List<Piece>
-        ) : Type() {
-            data class Piece(
-                val name: Expression.Name,
-                val typeArgs: TypeArgs?
-            ) : Node()
+            val qualifiers: List<Qualifier>,
+            override val name: Expression.Name,
+            override val typeArgs: TypeArgs?,
+        ) : Type(), NameWithTypeArgs {
+            data class Qualifier(
+                override val name: Expression.Name,
+                override val typeArgs: TypeArgs?,
+            ) : Node(), NameWithTypeArgs
         }
 
         /**
@@ -536,10 +547,7 @@ sealed class Node {
     data class TypeRef(
         val lPar: Keyword.LPar?,
         override val modifiers: Modifiers?,
-        val innerLPar: Keyword.LPar?,
-        val innerMods: Modifiers?,
-        val type: Type?,
-        val innerRPar: Keyword.RPar?,
+        val type: Type,
         val rPar: Keyword.RPar?,
     ) : Node(), WithModifiers
 

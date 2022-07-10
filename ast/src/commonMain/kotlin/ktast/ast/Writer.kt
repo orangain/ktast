@@ -237,27 +237,25 @@ open class Writer(
                 is Node.TypeRef -> {
                     children(lPar)
                     children(modifiers)
-                    children(innerLPar)
-                    children(innerMods)
                     children(type)
-                    children(innerRPar)
                     children(rPar)
                 }
                 is Node.Type.Function -> {
+                    children(lPar)
+                    children(modifiers)
                     if (contextReceivers != null) {
                         append("context")
                         children(contextReceivers)
                     }
                     if (receiver != null) {
                         children(receiver)
-                        if (receiver.typeRef.type != null) {
-                            append('.')
-                        }
+                        append('.')
                     }
                     if (params != null) {
                         children(params).append("->")
                     }
-                    children(typeRef)
+                    children(returnTypeRef)
+                    children(rPar)
                 }
                 is Node.Type.Function.ContextReceiver -> {
                     children(typeRef)
@@ -269,9 +267,15 @@ open class Writer(
                     if (name != null) children(name).append(":")
                     children(typeRef)
                 }
-                is Node.Type.Simple ->
-                    children(pieces, ".")
-                is Node.Type.Simple.Piece -> {
+                is Node.Type.Simple -> {
+                    if (qualifiers.isNotEmpty()) {
+                        children(qualifiers, ".")
+                        append(".")
+                    }
+                    children(name)
+                    children(typeArgs)
+                }
+                is Node.Type.Simple.Qualifier -> {
                     children(name)
                     children(typeArgs)
                 }

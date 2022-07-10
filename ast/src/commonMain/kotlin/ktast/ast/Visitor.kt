@@ -169,17 +169,17 @@ open class Visitor {
             is Node.TypeRef -> {
                 visitChildren(lPar)
                 visitChildren(modifiers)
-                visitChildren(innerLPar)
-                visitChildren(innerMods)
                 visitChildren(type)
-                visitChildren(innerRPar)
                 visitChildren(rPar)
             }
             is Node.Type.Function -> {
+                visitChildren(lPar)
+                visitChildren(modifiers)
                 visitChildren(contextReceivers)
                 visitChildren(receiver)
                 visitChildren(params)
-                visitChildren(typeRef)
+                visitChildren(returnTypeRef)
+                visitChildren(rPar)
             }
             is Node.Type.Function.ContextReceiver -> {
                 visitChildren(typeRef)
@@ -192,9 +192,11 @@ open class Visitor {
                 visitChildren(typeRef)
             }
             is Node.Type.Simple -> {
-                visitChildren(pieces)
+                visitChildren(qualifiers)
+                visitChildren(name)
+                visitChildren(typeArgs)
             }
-            is Node.Type.Simple.Piece -> {
+            is Node.Type.Simple.Qualifier -> {
                 visitChildren(name)
                 visitChildren(typeArgs)
             }
