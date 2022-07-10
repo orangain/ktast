@@ -196,7 +196,7 @@ open class MutableVisitor(
                         contextReceivers = visitChildren(contextReceivers, newCh),
                         receiver = visitChildren(receiver, newCh),
                         params = visitChildren(params, newCh),
-                        typeRef = visitChildren(typeRef, newCh),
+                        returnTypeRef = visitChildren(returnTypeRef, newCh),
                         rPar = visitChildren(rPar, newCh),
                     )
                     is Node.Type.Function.ContextReceivers -> copy(

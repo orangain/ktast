@@ -434,7 +434,7 @@ sealed class Node {
             val contextReceivers: ContextReceivers?,
             val receiver: Receiver?,
             val params: Params?,
-            val typeRef: TypeRef,
+            val returnTypeRef: TypeRef,
             val rPar: Keyword.RPar?,
         ) : Type(), WithModifiers {
             /**

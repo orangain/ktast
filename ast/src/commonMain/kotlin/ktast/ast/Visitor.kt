@@ -178,7 +178,7 @@ open class Visitor {
                 visitChildren(contextReceivers)
                 visitChildren(receiver)
                 visitChildren(params)
-                visitChildren(typeRef)
+                visitChildren(returnTypeRef)
                 visitChildren(rPar)
             }
             is Node.Type.Function.ContextReceiver -> {

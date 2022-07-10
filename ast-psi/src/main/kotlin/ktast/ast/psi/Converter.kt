@@ -371,7 +371,7 @@ open class Converter {
             contextReceivers = v.contextReceiverList?.let { convertContextReceivers(it) },
             receiver = v.receiver?.let(::convertTypeFunctionReceiver),
             params = v.parameterList?.let(::convertTypeFunctionParams),
-            typeRef = convertTypeRef(v.returnTypeReference ?: error("No return type")),
+            returnTypeRef = convertTypeRef(v.returnTypeReference ?: error("No return type")),
             rPar = rPar?.let { convertKeyword(it, Node.Keyword::RPar) },
         ).map(v)
         is KtUserType -> Node.Type.Simple(

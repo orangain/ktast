@@ -254,7 +254,7 @@ open class Writer(
                     if (params != null) {
                         children(params).append("->")
                     }
-                    children(typeRef)
+                    children(returnTypeRef)
                     children(rPar)
                 }
                 is Node.Type.Function.ContextReceiver -> {
