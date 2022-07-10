@@ -426,14 +426,17 @@ sealed class Node {
 
     sealed class Type : Node() {
         /**
-         * AST node corresponds to KtFunctionType.
+         * AST node corresponds to KtFunctionType. Properties [lPar], [modifiers] and [rPar] correspond to that of parent type.
          */
         data class Function(
+            val lPar: Keyword.LPar?,
+            override val modifiers: Modifiers?,
             val contextReceivers: ContextReceivers?,
             val receiver: Receiver?,
             val params: Params?,
-            val typeRef: TypeRef
-        ) : Type() {
+            val typeRef: TypeRef,
+            val rPar: Keyword.RPar?,
+        ) : Type(), WithModifiers {
             /**
              * AST node corresponds to KtContextReceiverList.
              */
@@ -543,10 +546,7 @@ sealed class Node {
     data class TypeRef(
         val lPar: Keyword.LPar?,
         override val modifiers: Modifiers?,
-        val innerLPar: Keyword.LPar?,
-        val innerMods: Modifiers?,
         val type: Type,
-        val innerRPar: Keyword.RPar?,
         val rPar: Keyword.RPar?,
     ) : Node(), WithModifiers
 

@@ -187,17 +187,17 @@ open class MutableVisitor(
                     is Node.TypeRef -> copy(
                         lPar = visitChildren(lPar, newCh),
                         modifiers = visitChildren(modifiers, newCh),
-                        innerLPar = visitChildren(innerLPar, newCh),
-                        innerMods = visitChildren(innerMods, newCh),
                         type = visitChildren(type, newCh),
-                        innerRPar = visitChildren(innerRPar, newCh),
                         rPar = visitChildren(rPar, newCh),
                     )
                     is Node.Type.Function -> copy(
+                        lPar = visitChildren(lPar, newCh),
+                        modifiers = visitChildren(modifiers, newCh),
                         contextReceivers = visitChildren(contextReceivers, newCh),
                         receiver = visitChildren(receiver, newCh),
                         params = visitChildren(params, newCh),
                         typeRef = visitChildren(typeRef, newCh),
+                        rPar = visitChildren(rPar, newCh),
                     )
                     is Node.Type.Function.ContextReceivers -> copy(
                         elements = visitChildren(elements, newCh),

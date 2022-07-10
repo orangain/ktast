@@ -338,10 +338,7 @@ open class Converter {
         return Node.TypeRef(
             lPar = lPar?.let { convertKeyword(it, Node.Keyword::LPar) },
             modifiers = mods?.let { convertModifiers(it) },
-            innerLPar = innerLPar?.let { convertKeyword(it, Node.Keyword::LPar) },
-            innerMods = innerMods?.let { convertModifiers(it) },
-            type = convertType(v.typeElement ?: error("No type element for $v")),
-            innerRPar = innerRPar?.let { convertKeyword(it, Node.Keyword::RPar) },
+            type = convertType(v.typeElement ?: error("No type element for $v"), innerLPar, innerMods, innerRPar),
             rPar = rPar?.let { convertKeyword(it, Node.Keyword::RPar) },
         ).map(v)
     }
@@ -362,12 +359,20 @@ open class Converter {
         typeRef = convertTypeRef(v.boundTypeReference ?: error("No type constraint type for $v"))
     ).map(v)
 
-    open fun convertType(v: KtTypeElement): Node.Type = when (v) {
+    open fun convertType(
+        v: KtTypeElement,
+        lPar: PsiElement? = null,
+        modifiers: KtModifierList? = null,
+        rPar: PsiElement? = null,
+    ): Node.Type = when (v) {
         is KtFunctionType -> Node.Type.Function(
+            lPar = lPar?.let { convertKeyword(it, Node.Keyword::LPar) },
+            modifiers = modifiers?.let(::convertModifiers),
             contextReceivers = v.contextReceiverList?.let { convertContextReceivers(it) },
             receiver = v.receiver?.let(::convertTypeFunctionReceiver),
             params = v.parameterList?.let(::convertTypeFunctionParams),
-            typeRef = convertTypeRef(v.returnTypeReference ?: error("No return type"))
+            typeRef = convertTypeRef(v.returnTypeReference ?: error("No return type")),
+            rPar = rPar?.let { convertKeyword(it, Node.Keyword::RPar) },
         ).map(v)
         is KtUserType -> Node.Type.Simple(
             qualifiers = generateSequence(v.qualifier) { it.qualifier }.toList().reversed()
