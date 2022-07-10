@@ -426,7 +426,8 @@ sealed class Node {
 
     sealed class Type : Node() {
         /**
-         * AST node corresponds to KtFunctionType. Properties [lPar], [modifiers] and [rPar] correspond to that of parent type.
+         * AST node corresponds to KtFunctionType.
+         * Note that properties [lPar], [modifiers] and [rPar] correspond to those of parent KtTypeReference.
          */
         data class Function(
             val lPar: Keyword.LPar?,
