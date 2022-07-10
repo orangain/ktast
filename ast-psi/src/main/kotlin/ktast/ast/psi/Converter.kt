@@ -314,15 +314,15 @@ open class Converter {
         }
         var innerLPar: PsiElement? = null
         var innerRPar: PsiElement? = null
-        var mods: KtModifierList? = null
-        var innerMods: KtModifierList? = null
+        var modifierList: KtModifierList? = null
+        var innerModifierList: KtModifierList? = null
         allChildren.forEach {
             when (it) {
                 is KtModifierList -> {
                     if (innerLPar == null) {
-                        mods = it
+                        modifierList = it
                     } else {
-                        innerMods = it
+                        innerModifierList = it
                     }
                 }
                 else -> {
@@ -337,8 +337,13 @@ open class Converter {
 
         return Node.TypeRef(
             lPar = lPar?.let { convertKeyword(it, Node.Keyword::LPar) },
-            modifiers = mods?.let { convertModifiers(it) },
-            type = convertType(v.typeElement ?: error("No type element for $v"), innerLPar, innerMods, innerRPar),
+            modifiers = modifierList?.let { convertModifiers(it) },
+            type = convertType(
+                v.typeElement ?: error("No type element for $v"),
+                innerLPar,
+                innerModifierList,
+                innerRPar
+            ),
             rPar = rPar?.let { convertKeyword(it, Node.Keyword::RPar) },
         ).map(v)
     }
@@ -362,12 +367,12 @@ open class Converter {
     open fun convertType(
         v: KtTypeElement,
         lPar: PsiElement? = null,
-        modifiers: KtModifierList? = null,
+        modifierList: KtModifierList? = null,
         rPar: PsiElement? = null,
     ): Node.Type = when (v) {
         is KtFunctionType -> Node.Type.Function(
             lPar = lPar?.let { convertKeyword(it, Node.Keyword::LPar) },
-            modifiers = modifiers?.let(::convertModifiers),
+            modifiers = modifierList?.let(::convertModifiers),
             contextReceivers = v.contextReceiverList?.let { convertContextReceivers(it) },
             receiver = v.receiver?.let(::convertTypeFunctionReceiver),
             params = v.parameterList?.let(::convertTypeFunctionParams),
