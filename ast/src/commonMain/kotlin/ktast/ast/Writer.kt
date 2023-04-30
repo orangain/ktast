@@ -23,21 +23,26 @@ open class Writer(
 
     protected fun append(ch: Char) = append(ch.toString())
     protected fun append(str: String) = also {
-        if (str == "") return@also
-        if (lastAppendedToken.endsWith(">") && str.startsWith("=")) {
-            doAppend(" ") // Insert heuristic space between '>' and '=' not to be confused with '>='
-        }
-        if (lastAppendedToken != "" && isNonSymbol(lastAppendedToken.last()) && isNonSymbol(str.first())) {
-            doAppend(" ") // Insert heuristic space between two non-symbols
+        if (heuristicSpaceInsertionCriteria.any { it(lastAppendedToken.lastOrNull(), str.firstOrNull()) }) {
+            doAppend(" ")
         }
         doAppend(str)
-        lastAppendedToken = str
     }
 
-    protected fun isNonSymbol(ch: Char) = ch == '_' || nonSymbolCategories.contains(ch.category)
+    protected val heuristicSpaceInsertionCriteria: List<(Char?, Char?) -> Boolean> = listOf(
+        // Insert heuristic space between '>' and '=' not to be confused with '>='
+        { last, next -> last == '>' && next == '=' },
+        // Insert heuristic space between two non-symbols
+        { last, next -> isNonSymbol(last) && isNonSymbol(next) },
+    )
+
+    protected fun isNonSymbol(ch: Char?) =
+        ch != null && (ch == '_' || nonSymbolCategories.contains(ch.category))
 
     protected fun doAppend(str: String) {
+        if (str == "") return
         app.append(str)
+        lastAppendedToken = str
     }
 
     fun write(v: Node) {
@@ -371,25 +376,40 @@ open class Writer(
                 }
                 is Node.Expression.Parenthesized ->
                     append('(').also { children(expression) }.append(')')
-                is Node.Expression.StringTemplate ->
-                    if (raw) append("\"\"\"").also { children(entries) }.append("\"\"\"")
-                    else append('"').also { children(entries) }.append('"')
+                is Node.Expression.StringTemplate -> {
+                    if (raw) {
+                        append("\"\"\"")
+                        children(entries)
+                        append("\"\"\"")
+                    } else {
+                        append('"')
+                        children(entries)
+                        append('"')
+                    }
+                }
                 is Node.Expression.StringTemplate.Entry.Regular ->
-                    append(str)
-                is Node.Expression.StringTemplate.Entry.ShortTemplate ->
-                    append('$').append(str)
-                is Node.Expression.StringTemplate.Entry.UnicodeEscape ->
-                    append("\\u").append(digits)
-                is Node.Expression.StringTemplate.Entry.RegularEscape ->
-                    append('\\').append(
-                        when (char) {
-                            '\b' -> 'b'
-                            '\n' -> 'n'
-                            '\t' -> 't'
-                            '\r' -> 'r'
-                            else -> char
-                        }
+                    doAppend(str)
+                is Node.Expression.StringTemplate.Entry.ShortTemplate -> {
+                    doAppend("$")
+                    doAppend(str)
+                }
+                is Node.Expression.StringTemplate.Entry.UnicodeEscape -> {
+                    doAppend("\\u")
+                    doAppend(digits)
+                }
+                is Node.Expression.StringTemplate.Entry.RegularEscape -> {
+                    doAppend(
+                        "\\${
+                            when (char) {
+                                '\b' -> 'b'
+                                '\n' -> 'n'
+                                '\t' -> 't'
+                                '\r' -> 'r'
+                                else -> char
+                            }
+                        }"
                     )
+                }
                 is Node.Expression.StringTemplate.Entry.LongTemplate ->
                     append("\${").also { children(expression) }.append('}')
                 is Node.Expression.Constant ->

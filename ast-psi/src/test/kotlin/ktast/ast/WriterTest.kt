@@ -25,7 +25,7 @@ class WriterTest {
 
     @Test
     fun testSimpleCharacterEscaping() {
-        assertParseAndWriteExact("""val x = "input\b\n\t\r\'\"\\\${'$'}"""")
+        assertParseAndWriteExact("""val x = "input\b\nTest\t\r\u3000\'\"\\\${'$'}"""")
     }
 
     @Test
