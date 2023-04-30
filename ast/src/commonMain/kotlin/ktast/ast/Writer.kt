@@ -376,25 +376,40 @@ open class Writer(
                 }
                 is Node.Expression.Parenthesized ->
                     append('(').also { children(expression) }.append(')')
-                is Node.Expression.StringTemplate ->
-                    if (raw) append("\"\"\"").also { children(entries) }.append("\"\"\"")
-                    else append('"').also { children(entries) }.append('"')
+                is Node.Expression.StringTemplate -> {
+                    if (raw) {
+                        append("\"\"\"")
+                        children(entries)
+                        append("\"\"\"")
+                    } else {
+                        append('"')
+                        children(entries)
+                        append('"')
+                    }
+                }
                 is Node.Expression.StringTemplate.Entry.Regular ->
                     append(str)
-                is Node.Expression.StringTemplate.Entry.ShortTemplate ->
-                    append('$').append(str)
-                is Node.Expression.StringTemplate.Entry.UnicodeEscape ->
-                    append("\\u").append(digits)
-                is Node.Expression.StringTemplate.Entry.RegularEscape ->
-                    append('\\').append(
-                        when (char) {
-                            '\b' -> 'b'
-                            '\n' -> 'n'
-                            '\t' -> 't'
-                            '\r' -> 'r'
-                            else -> char
-                        }
+                is Node.Expression.StringTemplate.Entry.ShortTemplate -> {
+                    append("$")
+                    append(str)
+                }
+                is Node.Expression.StringTemplate.Entry.UnicodeEscape -> {
+                    append("\\u")
+                    append(digits)
+                }
+                is Node.Expression.StringTemplate.Entry.RegularEscape -> {
+                    append(
+                        "\\${
+                            when (char) {
+                                '\b' -> 'b'
+                                '\n' -> 'n'
+                                '\t' -> 't'
+                                '\r' -> 'r'
+                                else -> char
+                            }
+                        }"
                     )
+                }
                 is Node.Expression.StringTemplate.Entry.LongTemplate ->
                     append("\${").also { children(expression) }.append('}')
                 is Node.Expression.Constant ->
