@@ -452,8 +452,7 @@ open class Writer(
                     appendLabel(label)
                 }
                 is Node.Expression.When -> {
-                    append("when")
-                    children(lPar, expression, rPar)
+                    children(whenKeyword, lPar, expression, rPar)
                     append("{")
                     children(branches)
                     append("}")

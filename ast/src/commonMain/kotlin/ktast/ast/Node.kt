@@ -650,7 +650,7 @@ sealed class Node {
                     GT(">"), GTE(">="), LT("<"), LTE("<="),
                     EQ("=="), NEQ("!="),
                     ASSN("="), MUL_ASSN("*="), DIV_ASSN("/="), MOD_ASSN("%="), ADD_ASSN("+="), SUB_ASSN("-="),
-                    OR("||"), AND("&&"), ELVIS("?:"), RANGE(".."),
+                    OR("||"), AND("&&"), ELVIS("?:"), RANGE(".."), UNTIL("..<"),
                     DOT("."), DOT_SAFE("?."), SAFE("?")
                 }
             }
@@ -846,9 +846,10 @@ sealed class Node {
          * AST node corresponds to KtWhenExpression.
          */
         data class When(
-            val lPar: Keyword.LPar,
+            val whenKeyword: Keyword.When,
+            val lPar: Keyword.LPar?,
             val expression: Expression?,
-            val rPar: Keyword.RPar,
+            val rPar: Keyword.RPar?,
             val branches: List<Branch>
         ) : Expression() {
             /**
@@ -1154,6 +1155,7 @@ sealed class Node {
         class If : Keyword("if")
         class Else : Keyword("else")
         class Catch : Keyword("catch")
+        class When : Keyword("when")
         class By : Keyword("by")
         class Contract : Keyword("contract")
         class Where : Keyword("where")

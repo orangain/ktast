@@ -313,6 +313,7 @@ open class Visitor {
                 visitChildren(typeArg)
             }
             is Node.Expression.When -> {
+                visitChildren(whenKeyword)
                 visitChildren(lPar)
                 visitChildren(expression)
                 visitChildren(rPar)
