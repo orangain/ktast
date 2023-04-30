@@ -23,21 +23,26 @@ open class Writer(
 
     protected fun append(ch: Char) = append(ch.toString())
     protected fun append(str: String) = also {
-        if (str == "") return@also
-        if (lastAppendedToken.endsWith(">") && str.startsWith("=")) {
-            doAppend(" ") // Insert heuristic space between '>' and '=' not to be confused with '>='
-        }
-        if (lastAppendedToken != "" && isNonSymbol(lastAppendedToken.last()) && isNonSymbol(str.first())) {
-            doAppend(" ") // Insert heuristic space between two non-symbols
+        if (heuristicSpaceInsertionCriteria.any { it(lastAppendedToken.lastOrNull(), str.firstOrNull()) }) {
+            doAppend(" ")
         }
         doAppend(str)
-        lastAppendedToken = str
     }
 
-    protected fun isNonSymbol(ch: Char) = ch == '_' || nonSymbolCategories.contains(ch.category)
+    protected val heuristicSpaceInsertionCriteria: List<(Char?, Char?) -> Boolean> = listOf(
+        // Insert heuristic space between '>' and '=' not to be confused with '>='
+        { last, next -> last == '>' && next == '=' },
+        // Insert heuristic space between two non-symbols
+        { last, next -> isNonSymbol(last) && isNonSymbol(next) },
+    )
+
+    protected fun isNonSymbol(ch: Char?) =
+        ch != null && (ch == '_' || nonSymbolCategories.contains(ch.category))
 
     protected fun doAppend(str: String) {
+        if (str == "") return
         app.append(str)
+        lastAppendedToken = str
     }
 
     fun write(v: Node) {
