@@ -7,11 +7,12 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
         # See: https://adoptium.net/temurin/releases/
         java: [ 8, 11, 17, 20 ]
         # See: https://github.com/JetBrains/kotlin/releases
-        kotlin: [ v1.7.22, v1.8.21 ]
+        kotlin: [ v1.7.0, v1.8.21 ]
 
     steps:
       - uses: actions/checkout@v3
