@@ -34,3 +34,8 @@ jobs:
           arguments: build
         env:
           KOTLIN_REPO: ${{ github.workspace }}/kotlin
+      - name: Test Summary
+        uses: test-summary/action@v2
+        with:
+          paths: "**/build/test-results/**/TEST-*.xml"
+        if: always()
