@@ -650,7 +650,7 @@ sealed class Node {
                     GT(">"), GTE(">="), LT("<"), LTE("<="),
                     EQ("=="), NEQ("!="),
                     ASSN("="), MUL_ASSN("*="), DIV_ASSN("/="), MOD_ASSN("%="), ADD_ASSN("+="), SUB_ASSN("-="),
-                    OR("||"), AND("&&"), ELVIS("?:"), RANGE(".."),
+                    OR("||"), AND("&&"), ELVIS("?:"), RANGE(".."), UNTIL("..<"),
                     DOT("."), DOT_SAFE("?."), SAFE("?")
                 }
             }
