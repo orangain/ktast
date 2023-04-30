@@ -388,17 +388,17 @@ open class Writer(
                     }
                 }
                 is Node.Expression.StringTemplate.Entry.Regular ->
-                    append(str)
+                    doAppend(str)
                 is Node.Expression.StringTemplate.Entry.ShortTemplate -> {
-                    append("$")
-                    append(str)
+                    doAppend("$")
+                    doAppend(str)
                 }
                 is Node.Expression.StringTemplate.Entry.UnicodeEscape -> {
-                    append("\\u")
-                    append(digits)
+                    doAppend("\\u")
+                    doAppend(digits)
                 }
                 is Node.Expression.StringTemplate.Entry.RegularEscape -> {
-                    append(
+                    doAppend(
                         "\\${
                             when (char) {
                                 '\b' -> 'b'
