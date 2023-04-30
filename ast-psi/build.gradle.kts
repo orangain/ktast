@@ -16,7 +16,7 @@ tasks.withType<KotlinCompile> {
 dependencies {
     api(project(":ast"))
     implementation("org.jetbrains.kotlin:kotlin-compiler-embeddable:$kotlinVersion")
-    testImplementation("junit:junit:4.12")
+    testImplementation("junit:junit:4.13.2")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
     testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlinVersion")
 }
