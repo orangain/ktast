@@ -13,6 +13,12 @@ tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
 }
 
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(8))
+    }
+}
+
 dependencies {
     api(project(":ast"))
     implementation("org.jetbrains.kotlin:kotlin-compiler-embeddable:$kotlinVersion")
