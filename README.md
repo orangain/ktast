@@ -161,10 +161,10 @@ the extra map becomes invalid on this step. This is not solved in the library ye
 
 The tests rely on a checked out version of the [Kotlin source repository](https://github.com/JetBrains/kotlin) since it
 uses the test data there to build a corpus to test against. The path to the base of the repo needs to be set as the
-`KOTLIN_REPO` environment variable. Once set, run:
+`KOTLIN_REPO` environment variable. For example, run:
 
 ```
-./gradlew :ast-psi:test
+KOTLIN_REPO=~/kotlin ./gradlew :ast-psi:test
 ```
 
 This will ignore all Kotlin files with expected parse errors and only test against the ones that are valid (178 as of
