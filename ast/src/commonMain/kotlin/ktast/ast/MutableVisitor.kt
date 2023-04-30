@@ -347,6 +347,7 @@ open class MutableVisitor(
                         typeArg = visitChildren(typeArg, newCh)
                     )
                     is Node.Expression.When -> copy(
+                        whenKeyword = visitChildren(whenKeyword, newCh),
                         lPar = visitChildren(lPar, newCh),
                         expression = visitChildren(expression, newCh),
                         rPar = visitChildren(rPar, newCh),
