@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="ast-jvm-0.6.0">
-    <output-path>$PROJECT_DIR$/ast/build/libs</output-path>
-    <root id="archive" name="ast-jvm-0.6.0.jar">
-      <element id="module-output" name="ktast.ast.jvmMain" />
-    </root>
-  </artifact>
-</component>
