@@ -1,0 +1,604 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>Node</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../../index.html">
+<span>ktast</span>            </a>    </div>
+    <div>2b41009
+    </div>
+    <div class="pull-right d-flex">
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":ast:dokkaHtmlPartial/commonMain">common</button>
+        </div>
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="ast::ktast.ast/Node///PointingToDeclaration//-1242834013">
+  <div class="breadcrumbs"><a href="../../index.html">ast</a><span class="delimiter">/</span><a href="../index.html">ktast.ast</a><span class="delimiter">/</span><span class="current">Node</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Node</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="index.html">Node</a></div><p class="paragraph">Base class of all AST nodes.</p><h4 class="">Inheritors</h4><div class="table"><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-node-list/index.html">NodeList</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-kotlin-file/index.html">KotlinFile</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-kotlin-script/index.html">KotlinScript</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-package-directive/index.html">PackageDirective</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-import-directive/index.html">ImportDirective</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-import-directive/-alias/index.html">Alias</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-statement/index.html">Statement</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-declaration/-class/-declaration-keyword/index.html">DeclarationKeyword</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-declaration/-class/-parent/index.html">Parent</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-declaration/-class/-primary-constructor/index.html">PrimaryConstructor</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-declaration/-class/-body/index.html">Body</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-declaration/-function/-param/index.html">Param</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-declaration/-property/-val-or-var/index.html">ValOrVar</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-declaration/-property/-variable/index.html">Variable</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-declaration/-property/-delegate/index.html">Delegate</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-declaration/-property/-accessor/index.html">Accessor</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-declaration/-secondary-constructor/-delegation-call/index.html">DelegationCall</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-declaration/-secondary-constructor/-delegation-target/index.html">DelegationTarget</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-enum-entry/index.html">EnumEntry</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-type-param/index.html">TypeParam</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-type/index.html">Type</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-type/-function/-context-receiver/index.html">ContextReceiver</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-type/-function/-receiver/index.html">Receiver</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-type/-function/-param/index.html">Param</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-type/-simple/-qualifier/index.html">Qualifier</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-type-arg/index.html">TypeArg</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-type-ref/index.html">TypeRef</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-value-arg/index.html">ValueArg</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-expression-container/index.html">ExpressionContainer</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-expression/-try/-catch/index.html">Catch</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-expression/-binary/-operator/index.html">Operator</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-expression/-unary/-operator/index.html">Operator</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-expression/-binary-type/-operator/index.html">Operator</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-expression/-double-colon/-receiver/index.html">Receiver</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-expression/-string-template/-entry/index.html">Entry</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-expression/-lambda/-param/index.html">Param</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-expression/-lambda/-param/-variable/index.html">Variable</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-expression/-when/-branch/index.html">Branch</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-expression/-when/-condition/index.html">Condition</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-expression/-call/-lambda-arg/index.html">LambdaArg</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-modifier/index.html">Modifier</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-modifier/-annotation-set/-target/index.html">Target</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-modifier/-annotation-set/-annotation/index.html">Annotation</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-post-modifier/index.html">PostModifier</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-post-modifier/-type-constraints/-type-constraint/index.html">TypeConstraint</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-post-modifier/-contract/-contract-effect/index.html">ContractEffect</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-keyword/index.html">Keyword</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-extra/index.html">Extra</a></div></span></div><div></div></div></div></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,FUNCTION,PROPERTY">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="261892315%2FClasslikes%2F-1242834013" anchor-label="CommaSeparatedNodeList" id="261892315%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-comma-separated-node-list/index.html"><span>Comma</span><wbr><span>Separated</span><wbr><span>Node</span><wbr><span><span>List</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="261892315%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="-comma-separated-node-list/index.html">CommaSeparatedNodeList</a><span class="token operator">&lt;</span><span class="token keyword">out </span><a href="-comma-separated-node-list/index.html">E</a><span class="token operator"> : </span><a href="index.html">Node</a><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">prefix<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">suffix<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="-node-list/index.html">Node.NodeList</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-comma-separated-node-list/index.html">E</a><span class="token operator">&gt; </span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="949978721%2FClasslikes%2F-1242834013" anchor-label="Declaration" id="949978721%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-declaration/index.html"><span><span>Declaration</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="949978721%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="-declaration/index.html">Declaration</a> : <a href="-statement/index.html">Node.Statement</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-990265133%2FClasslikes%2F-1242834013" anchor-label="DeclarationsContainer" id="-990265133%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-declarations-container/index.html"><span>Declarations</span><wbr><span><span>Container</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-990265133%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-declarations-container/index.html">DeclarationsContainer</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1639451062%2FClasslikes%2F-1242834013" anchor-label="EnumEntry" id="-1639451062%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-enum-entry/index.html"><span>Enum</span><wbr><span><span>Entry</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1639451062%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-enum-entry/index.html">EnumEntry</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>modifiers<span class="token operator">: </span><a href="-modifiers/index.html">Node.Modifiers</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>name<span class="token operator">: </span><a href="-expression/-name/index.html">Node.Expression.Name</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>args<span class="token operator">: </span><a href="-value-args/index.html">Node.ValueArgs</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>body<span class="token operator">: </span><a href="-declaration/-class/-body/index.html">Node.Declaration.Class.Body</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span> : <a href="index.html">Node</a>, <a href="-with-modifiers/index.html">Node.WithModifiers</a></div><div class="brief "><p class="paragraph">AST node corresponds to KtEnumEntry.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1983856879%2FClasslikes%2F-1242834013" anchor-label="Expression" id="1983856879%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-expression/index.html"><span><span>Expression</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1983856879%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="-expression/index.html">Expression</a> : <a href="-statement/index.html">Node.Statement</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1495976974%2FClasslikes%2F-1242834013" anchor-label="ExpressionContainer" id="-1495976974%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-expression-container/index.html"><span>Expression</span><wbr><span><span>Container</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1495976974%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-expression-container/index.html">ExpressionContainer</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>expression<span class="token operator">: </span><a href="-expression/index.html">Node.Expression</a></span></span><span class="token punctuation">)</span> : <a href="index.html">Node</a></div><div class="brief "><p class="paragraph">AST node corresponds to KtContainerNode.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="934081547%2FClasslikes%2F-1242834013" anchor-label="Extra" id="934081547%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-extra/index.html"><span><span>Extra</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="934081547%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="-extra/index.html">Extra</a> : <a href="index.html">Node</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1444998895%2FClasslikes%2F-1242834013" anchor-label="HasSimpleStringRepresentation" id="-1444998895%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-has-simple-string-representation/index.html"><span>Has</span><wbr><span>Simple</span><wbr><span>String</span><wbr><span><span>Representation</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1444998895%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-has-simple-string-representation/index.html">HasSimpleStringRepresentation</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1798495921%2FClasslikes%2F-1242834013" anchor-label="ImportDirective" id="1798495921%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-import-directive/index.html"><span>Import</span><wbr><span><span>Directive</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1798495921%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-import-directive/index.html">ImportDirective</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>importKeyword<span class="token operator">: </span><a href="-keyword/-import/index.html">Node.Keyword.Import</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>names<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-expression/-name/index.html">Node.Expression.Name</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>alias<span class="token operator">: </span><a href="-import-directive/-alias/index.html">Node.ImportDirective.Alias</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span> : <a href="index.html">Node</a></div><div class="brief "><p class="paragraph">AST node corresponds to KtImportDirective.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-162319202%2FClasslikes%2F-1242834013" anchor-label="ImportDirectives" id="-162319202%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-import-directives/index.html"><span>Import</span><wbr><span><span>Directives</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-162319202%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-import-directives/index.html">ImportDirectives</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>elements<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-import-directive/index.html">Node.ImportDirective</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span> : <a href="-node-list/index.html">Node.NodeList</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-import-directive/index.html">Node.ImportDirective</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">AST node corresponds to KtImportList.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1313690158%2FClasslikes%2F-1242834013" anchor-label="Keyword" id="-1313690158%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-keyword/index.html"><span><span>Keyword</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1313690158%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="-keyword/index.html">Keyword</a> : <a href="index.html">Node</a>, <a href="-has-simple-string-representation/index.html">Node.HasSimpleStringRepresentation</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1984915402%2FClasslikes%2F-1242834013" anchor-label="KotlinEntry" id="1984915402%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-kotlin-entry/index.html"><span>Kotlin</span><wbr><span><span>Entry</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1984915402%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-kotlin-entry/index.html">KotlinEntry</a> : <a href="-with-annotation-sets/index.html">Node.WithAnnotationSets</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-803944182%2FClasslikes%2F-1242834013" anchor-label="KotlinFile" id="-803944182%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-kotlin-file/index.html"><span>Kotlin</span><wbr><span><span>File</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-803944182%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-kotlin-file/index.html">KotlinFile</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>annotationSets<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-modifier/-annotation-set/index.html">Node.Modifier.AnnotationSet</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>packageDirective<span class="token operator">: </span><a href="-package-directive/index.html">Node.PackageDirective</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>importDirectives<span class="token operator">: </span><a href="-import-directives/index.html">Node.ImportDirectives</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>declarations<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-declaration/index.html">Node.Declaration</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span> : <a href="index.html">Node</a>, <a href="-kotlin-entry/index.html">Node.KotlinEntry</a>, <a href="-declarations-container/index.html">Node.DeclarationsContainer</a></div><div class="brief "><p class="paragraph">AST node corresponds to KtFile.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1608641701%2FClasslikes%2F-1242834013" anchor-label="KotlinScript" id="-1608641701%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-kotlin-script/index.html"><span>Kotlin</span><wbr><span><span>Script</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1608641701%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-kotlin-script/index.html">KotlinScript</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>annotationSets<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-modifier/-annotation-set/index.html">Node.Modifier.AnnotationSet</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>packageDirective<span class="token operator">: </span><a href="-package-directive/index.html">Node.PackageDirective</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>importDirectives<span class="token operator">: </span><a href="-import-directives/index.html">Node.ImportDirectives</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>expressions<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-expression/index.html">Node.Expression</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span> : <a href="index.html">Node</a>, <a href="-kotlin-entry/index.html">Node.KotlinEntry</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1495589648%2FClasslikes%2F-1242834013" anchor-label="Modifier" id="1495589648%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-modifier/index.html"><span><span>Modifier</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1495589648%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="-modifier/index.html">Modifier</a> : <a href="index.html">Node</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-962479073%2FClasslikes%2F-1242834013" anchor-label="Modifiers" id="-962479073%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-modifiers/index.html"><span><span>Modifiers</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-962479073%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-modifiers/index.html">Modifiers</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>elements<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-modifier/index.html">Node.Modifier</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span> : <a href="-node-list/index.html">Node.NodeList</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-modifier/index.html">Node.Modifier</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">AST node corresponds to KtModifierList.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-934392761%2FClasslikes%2F-1242834013" anchor-label="NodeList" id="-934392761%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-node-list/index.html"><span>Node</span><wbr><span><span>List</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-934392761%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="-node-list/index.html">NodeList</a><span class="token operator">&lt;</span><span class="token keyword">out </span><a href="-node-list/index.html">E</a><span class="token operator"> : </span><a href="index.html">Node</a><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>prefix<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span><span class="token string">""</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>suffix<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span><span class="token string">""</span></span></span><span class="token punctuation">)</span> : <a href="index.html">Node</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="310205822%2FClasslikes%2F-1242834013" anchor-label="PackageDirective" id="310205822%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-package-directive/index.html"><span>Package</span><wbr><span><span>Directive</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="310205822%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-package-directive/index.html">PackageDirective</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>modifiers<span class="token operator">: </span><a href="-modifiers/index.html">Node.Modifiers</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>packageKeyword<span class="token operator">: </span><a href="-keyword/-package/index.html">Node.Keyword.Package</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>names<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-expression/-name/index.html">Node.Expression.Name</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span> : <a href="index.html">Node</a>, <a href="-with-modifiers/index.html">Node.WithModifiers</a></div><div class="brief "><p class="paragraph">AST node corresponds to KtPackageDirective.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1186366288%2FClasslikes%2F-1242834013" anchor-label="PostModifier" id="1186366288%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-post-modifier/index.html"><span>Post</span><wbr><span><span>Modifier</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1186366288%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="-post-modifier/index.html">PostModifier</a> : <a href="index.html">Node</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1188113780%2FClasslikes%2F-1242834013" anchor-label="Statement" id="-1188113780%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-statement/index.html"><span><span>Statement</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1188113780%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="-statement/index.html">Statement</a> : <a href="index.html">Node</a></div><div class="brief "><p class="paragraph">Base class of <a href="-declaration/index.html">Node.Declaration</a> and <a href="-expression/index.html">Node.Expression</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="105124670%2FClasslikes%2F-1242834013" anchor-label="StatementsContainer" id="105124670%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-statements-container/index.html"><span>Statements</span><wbr><span><span>Container</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="105124670%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-statements-container/index.html">StatementsContainer</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1043704831%2FClasslikes%2F-1242834013" anchor-label="TokenContainer" id="1043704831%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-token-container/index.html"><span>Token</span><wbr><span><span>Container</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1043704831%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-token-container/index.html">TokenContainer</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-token-container/index.html">T</a><span class="token operator"> : </span><a href="-has-simple-string-representation/index.html">Node.HasSimpleStringRepresentation</a><span class="token operator">&gt;</span> : <a href="-has-simple-string-representation/index.html">Node.HasSimpleStringRepresentation</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1370773261%2FClasslikes%2F-1242834013" anchor-label="Type" id="1370773261%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-type/index.html"><span><span>Type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1370773261%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="-type/index.html">Type</a> : <a href="index.html">Node</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-270459297%2FClasslikes%2F-1242834013" anchor-label="TypeArg" id="-270459297%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-type-arg/index.html"><span>Type</span><wbr><span><span>Arg</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-270459297%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-type-arg/index.html">TypeArg</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>modifiers<span class="token operator">: </span><a href="-modifiers/index.html">Node.Modifiers</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>typeRef<span class="token operator">: </span><a href="-type-ref/index.html">Node.TypeRef</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>asterisk<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span> : <a href="index.html">Node</a>, <a href="-with-modifiers/index.html">Node.WithModifiers</a></div><div class="brief "><p class="paragraph">AST node corresponds to KtTypeProjection.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="124578480%2FClasslikes%2F-1242834013" anchor-label="TypeArgs" id="124578480%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-type-args/index.html"><span>Type</span><wbr><span><span>Args</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="124578480%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-type-args/index.html">TypeArgs</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>elements<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-type-arg/index.html">Node.TypeArg</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>trailingComma<span class="token operator">: </span><a href="-keyword/-comma/index.html">Node.Keyword.Comma</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span> : <a href="-comma-separated-node-list/index.html">Node.CommaSeparatedNodeList</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-type-arg/index.html">Node.TypeArg</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">AST node corresponds to KtTypeArgumentList.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1935325960%2FClasslikes%2F-1242834013" anchor-label="TypeParam" id="1935325960%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-type-param/index.html"><span>Type</span><wbr><span><span>Param</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1935325960%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-type-param/index.html">TypeParam</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>modifiers<span class="token operator">: </span><a href="-modifiers/index.html">Node.Modifiers</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>name<span class="token operator">: </span><a href="-expression/-name/index.html">Node.Expression.Name</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>typeRef<span class="token operator">: </span><a href="-type-ref/index.html">Node.TypeRef</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span> : <a href="index.html">Node</a>, <a href="-with-modifiers/index.html">Node.WithModifiers</a></div><div class="brief "><p class="paragraph">AST node corresponds to KtTypeParameter.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-215555289%2FClasslikes%2F-1242834013" anchor-label="TypeParams" id="-215555289%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-type-params/index.html"><span>Type</span><wbr><span><span>Params</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-215555289%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-type-params/index.html">TypeParams</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>elements<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-type-param/index.html">Node.TypeParam</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>trailingComma<span class="token operator">: </span><a href="-keyword/-comma/index.html">Node.Keyword.Comma</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span> : <a href="-comma-separated-node-list/index.html">Node.CommaSeparatedNodeList</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-type-param/index.html">Node.TypeParam</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">AST node corresponds to KtTypeParameterList.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="46886594%2FClasslikes%2F-1242834013" anchor-label="TypeRef" id="46886594%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-type-ref/index.html"><span>Type</span><wbr><span><span>Ref</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="46886594%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-type-ref/index.html">TypeRef</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>lPar<span class="token operator">: </span><a href="-keyword/-l-par/index.html">Node.Keyword.LPar</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>modifiers<span class="token operator">: </span><a href="-modifiers/index.html">Node.Modifiers</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>type<span class="token operator">: </span><a href="-type/index.html">Node.Type</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>rPar<span class="token operator">: </span><a href="-keyword/-r-par/index.html">Node.Keyword.RPar</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span> : <a href="index.html">Node</a>, <a href="-with-modifiers/index.html">Node.WithModifiers</a></div><div class="brief "><p class="paragraph">AST node corresponds to KtTypeReference.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="222530178%2FClasslikes%2F-1242834013" anchor-label="ValueArg" id="222530178%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-value-arg/index.html"><span>Value</span><wbr><span><span>Arg</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="222530178%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-value-arg/index.html">ValueArg</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>name<span class="token operator">: </span><a href="-expression/-name/index.html">Node.Expression.Name</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>asterisk<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>expression<span class="token operator">: </span><a href="-expression/index.html">Node.Expression</a></span></span><span class="token punctuation">)</span> : <a href="index.html">Node</a></div><div class="brief "><p class="paragraph">AST node corresponds to KtValueArgument.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1772616979%2FClasslikes%2F-1242834013" anchor-label="ValueArgs" id="-1772616979%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-value-args/index.html"><span>Value</span><wbr><span><span>Args</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1772616979%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-value-args/index.html">ValueArgs</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>elements<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-value-arg/index.html">Node.ValueArg</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>trailingComma<span class="token operator">: </span><a href="-keyword/-comma/index.html">Node.Keyword.Comma</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span> : <a href="-comma-separated-node-list/index.html">Node.CommaSeparatedNodeList</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-value-arg/index.html">Node.ValueArg</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">AST node corresponds to KtValueArgumentList or KtInitializerList.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2063243969%2FClasslikes%2F-1242834013" anchor-label="WithAnnotationSets" id="2063243969%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-with-annotation-sets/index.html"><span>With</span><wbr><span>Annotation</span><wbr><span><span>Sets</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2063243969%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-with-annotation-sets/index.html">WithAnnotationSets</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1305005703%2FClasslikes%2F-1242834013" anchor-label="WithFunctionBody" id="1305005703%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-with-function-body/index.html"><span>With</span><wbr><span>Function</span><wbr><span><span>Body</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1305005703%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-with-function-body/index.html">WithFunctionBody</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1621996165%2FClasslikes%2F-1242834013" anchor-label="WithModifiers" id="1621996165%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-with-modifiers/index.html"><span>With</span><wbr><span><span>Modifiers</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1621996165%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-with-modifiers/index.html">WithModifiers</a> : <a href="-with-annotation-sets/index.html">Node.WithAnnotationSets</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1207797947%2FClasslikes%2F-1242834013" anchor-label="WithPostModifiers" id="-1207797947%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-with-post-modifiers/index.html"><span>With</span><wbr><span>Post</span><wbr><span><span>Modifiers</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1207797947%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-with-post-modifiers/index.html">WithPostModifiers</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="113313838%2FProperties%2F-1242834013" anchor-label="tag" id="113313838%2FProperties%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="tag.html"><span><span>tag</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="113313838%2FProperties%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="tag.html">tag</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+</body>
+</html>
+
