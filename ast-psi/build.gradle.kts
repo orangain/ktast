@@ -3,8 +3,9 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent.*
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.8.21"
+    kotlin("jvm")
     `maven-publish`
+    id("org.jetbrains.dokka")
 }
 
 val kotlinVersion: String by rootProject.extra
