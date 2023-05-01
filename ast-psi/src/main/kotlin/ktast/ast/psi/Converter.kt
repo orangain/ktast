@@ -10,7 +10,6 @@ import org.jetbrains.kotlin.descriptors.annotations.AnnotationUseSiteTarget
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
-import org.jetbrains.kotlin.psi.psiUtil.children
 import org.jetbrains.kotlin.psi.psiUtil.siblings
 
 open class Converter {
@@ -950,19 +949,20 @@ open class Converter {
         args = v.valueArgumentList?.let(::convertValueArgs),
     )
 
-    open fun convertModifiers(v: KtModifierList) = Node.Modifiers(
-        elements = v.node.children().mapNotNull { node ->
-            // We go over the node children because we want to preserve order
-            node.psi.let { psi ->
+    open fun convertModifiers(v: KtModifierList): Node.Modifiers {
+        val nonExtraChildren = v.allChildren.filterNot { it is PsiComment || it is PsiWhiteSpace }.toList()
+        return Node.Modifiers(
+            elements = nonExtraChildren.mapNotNull { psi ->
+                // We go over the node children because we want to preserve order
                 when (psi) {
                     is KtAnnotationEntry -> convertAnnotationSet(psi)
                     is KtAnnotation -> convertAnnotationSet(psi)
                     is PsiWhiteSpace -> null
                     else -> convertKeywordModifier(psi)
                 }
-            }
-        }.toList(),
-    ).map(v)
+            }.toList(),
+        ).map(v)
+    }
 
     open fun convertKeywordModifier(v: PsiElement) = Node.Modifier.Keyword.of(v.text)
         .map(v)
