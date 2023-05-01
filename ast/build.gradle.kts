@@ -1,8 +1,9 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("multiplatform") version "1.8.21"
+    kotlin("multiplatform")
     `maven-publish`
+    id("org.jetbrains.dokka")
 }
 
 val kotlinVersion: String by rootProject.extra
