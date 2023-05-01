@@ -25,6 +25,9 @@ Another kotlin AST parsing library is [kotlinx.ast](https://github.com/kotlinx/a
 Compiler, but uses ANTLR and official Kotlin Grammar. Currently, it seems that the library's summary AST classes are
 limited.
 
+[ktcodeshift](https://github.com/orangain/ktcodeshift) is a toolkit for running codemods over multiple Kotlin files
+built on top of ktast. It is useful when modifying Kotlin source codes.
+
 ## Usage
 
 ### Getting started
@@ -37,7 +40,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.orangain.ktast:ast-psi:0.8.2")
+    implementation("com.github.orangain.ktast:ast-psi:0.8.3")
 }
 ```
 
@@ -48,9 +51,15 @@ multiplatform projects. If you need the AST only, instead use:
 
 ```kts
 dependencies {
-    implementation("com.github.orangain.ktast:ast:0.8.2")
+    implementation("com.github.orangain.ktast:ast:0.8.3")
 }
 ```
+
+### Documentation
+
+API document is available at:
+
+https://orangain.github.io/ktast/0.8.3/api/
 
 ### Examples
 
@@ -161,10 +170,10 @@ the extra map becomes invalid on this step. This is not solved in the library ye
 
 The tests rely on a checked out version of the [Kotlin source repository](https://github.com/JetBrains/kotlin) since it
 uses the test data there to build a corpus to test against. The path to the base of the repo needs to be set as the
-`KOTLIN_REPO` environment variable. Once set, run:
+`KOTLIN_REPO` environment variable. For example, run:
 
 ```
-./gradlew :ast-psi:test
+KOTLIN_REPO=~/kotlin ./gradlew :ast-psi:test
 ```
 
 This will ignore all Kotlin files with expected parse errors and only test against the ones that are valid (178 as of
