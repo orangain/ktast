@@ -55,6 +55,12 @@ dependencies {
 }
 ```
 
+### Documentation
+
+API document is available at:
+
+https://orangain.github.io/ktast/0.8.2/api/
+
 ### Examples
 
 Examples below are simple Kotlin scripts.
