@@ -6,7 +6,7 @@ on:
       - "**"
     branches:
       - main
-      - dokka
+#      - dokka
 
 jobs:
   build:
