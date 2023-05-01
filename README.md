@@ -25,6 +25,9 @@ Another kotlin AST parsing library is [kotlinx.ast](https://github.com/kotlinx/a
 Compiler, but uses ANTLR and official Kotlin Grammar. Currently, it seems that the library's summary AST classes are
 limited.
 
+[ktcodeshift](https://github.com/orangain/ktcodeshift) is a toolkit for running codemods over multiple Kotlin files
+built on top of ktast. It is useful when modifying Kotlin source codes.
+
 ## Usage
 
 ### Getting started
