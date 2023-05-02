@@ -821,7 +821,7 @@ sealed class Node {
 
         /**
          * AST node corresponds to KtBlockExpression in lambda body.
-         * In lambda expression, left and right braces are not included in Lambda.Body, but are included in Lambda.
+         * In lambda expression, left and right braces are not included in [LambdaExpression.Body], but are included in Lambda.
          * This means:
          *
          * <Lambda> = { <Param>, <Param> -> <Body> }
