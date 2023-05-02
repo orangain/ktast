@@ -541,21 +541,21 @@ open class Writer(
                         nextHeuristicWhitespace = " " // Insert heuristic space after annotation if single form
                     }
                 }
-                is Node.PostModifier.TypeConstraints -> {
+                is Node.TypeConstraints -> {
                     children(whereKeyword)
                     children(constraints)
                 }
-                is Node.PostModifier.TypeConstraints.TypeConstraint -> {
+                is Node.TypeConstraints.TypeConstraint -> {
                     children(annotationSets)
                     children(name)
                     append(":")
                     children(typeRef)
                 }
-                is Node.PostModifier.Contract -> {
+                is Node.Contract -> {
                     children(contractKeyword)
                     children(contractEffects)
                 }
-                is Node.PostModifier.Contract.ContractEffect -> {
+                is Node.Contract.ContractEffect -> {
                     children(expression)
                 }
                 else ->

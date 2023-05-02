@@ -433,27 +433,27 @@ open class MutableVisitor(
                         type = visitChildren(type, newCh),
                         args = visitChildren(args, newCh),
                     )
-                    is Node.PostModifier.TypeConstraints -> copy(
+                    is Node.TypeConstraints -> copy(
                         whereKeyword = visitChildren(whereKeyword, newCh),
                         constraints = visitChildren(constraints, newCh),
                     )
-                    is Node.PostModifier.TypeConstraints.TypeConstraintList -> copy(
+                    is Node.TypeConstraints.TypeConstraintList -> copy(
                         elements = visitChildren(elements, newCh),
                     )
-                    is Node.PostModifier.TypeConstraints.TypeConstraint -> copy(
+                    is Node.TypeConstraints.TypeConstraint -> copy(
                         annotationSets = visitChildren(annotationSets, newCh),
                         name = visitChildren(name, newCh),
                         typeRef = visitChildren(typeRef, newCh)
                     )
-                    is Node.PostModifier.Contract -> copy(
+                    is Node.Contract -> copy(
                         contractKeyword = visitChildren(contractKeyword, newCh),
                         contractEffects = visitChildren(contractEffects, newCh),
                     )
-                    is Node.PostModifier.Contract.ContractEffects -> copy(
+                    is Node.Contract.ContractEffects -> copy(
                         elements = visitChildren(elements, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
-                    is Node.PostModifier.Contract.ContractEffect -> copy(
+                    is Node.Contract.ContractEffect -> copy(
                         expression = visitChildren(expression, newCh),
                     )
                     is Node.Extra -> this

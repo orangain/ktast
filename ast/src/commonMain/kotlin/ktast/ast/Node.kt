@@ -129,7 +129,7 @@ sealed class Node {
         val typeParams: TypeParams?,
         val primaryConstructor: PrimaryConstructor?,
         val parents: Parents?,
-        val typeConstraints: PostModifier.TypeConstraints?,
+        val typeConstraints: TypeConstraints?,
         val body: Body?,
     ) : Declaration(), WithModifiers {
 
@@ -273,7 +273,7 @@ sealed class Node {
         val variables: List<Variable>,
         val trailingComma: Keyword.Comma?,
         val rPar: Keyword.RPar?,
-        val typeConstraints: PostModifier.TypeConstraints?,
+        val typeConstraints: TypeConstraints?,
         val equals: Keyword.Equal?,
         val initializer: Expression?,
         val delegate: Delegate?,
@@ -1076,55 +1076,55 @@ sealed class Node {
         }
     }
 
-    sealed class PostModifier : Node() {
-        /**
-         * Virtual AST node corresponds to a pair of "where" keyword and KtTypeConstraintList.
-         */
-        data class TypeConstraints(
-            val whereKeyword: Keyword.Where,
-            val constraints: TypeConstraintList,
-        ) : PostModifier() {
-            /**
-             * AST node corresponds to KtTypeConstraintList.
-             */
-            data class TypeConstraintList(
-                override val elements: List<TypeConstraint>,
-            ) : CommaSeparatedNodeList<TypeConstraint>("", "") {
-                override val trailingComma: Keyword.Comma? = null // Trailing comma is not allowed.
-            }
+    sealed class PostModifier : Node()
 
-            /**
-             * AST node corresponds to KtTypeConstraint.
-             */
-            data class TypeConstraint(
-                override val annotationSets: List<AnnotationSetModifier>,
-                val name: NameExpression,
-                val typeRef: TypeRef
-            ) : Node(), WithAnnotationSets
+    /**
+     * Virtual AST node corresponds to a pair of "where" keyword and KtTypeConstraintList.
+     */
+    data class TypeConstraints(
+        val whereKeyword: Keyword.Where,
+        val constraints: TypeConstraintList,
+    ) : PostModifier() {
+        /**
+         * AST node corresponds to KtTypeConstraintList.
+         */
+        data class TypeConstraintList(
+            override val elements: List<TypeConstraint>,
+        ) : CommaSeparatedNodeList<TypeConstraint>("", "") {
+            override val trailingComma: Keyword.Comma? = null // Trailing comma is not allowed.
         }
 
         /**
-         * Virtual AST node corresponds to a pair of "contract" keyword and KtContractEffectList.
+         * AST node corresponds to KtTypeConstraint.
          */
-        data class Contract(
-            val contractKeyword: Keyword.Contract,
-            val contractEffects: ContractEffects,
-        ) : PostModifier() {
-            /**
-             * AST node corresponds to KtContractEffectList.
-             */
-            data class ContractEffects(
-                override val elements: List<ContractEffect>,
-                override val trailingComma: Keyword.Comma?,
-            ) : CommaSeparatedNodeList<ContractEffect>("[", "]")
+        data class TypeConstraint(
+            override val annotationSets: List<AnnotationSetModifier>,
+            val name: NameExpression,
+            val typeRef: TypeRef
+        ) : Node(), WithAnnotationSets
+    }
 
-            /**
-             * AST node corresponds to KtContractEffect.
-             */
-            data class ContractEffect(
-                val expression: Expression,
-            ) : Node()
-        }
+    /**
+     * Virtual AST node corresponds to a pair of "contract" keyword and KtContractEffectList.
+     */
+    data class Contract(
+        val contractKeyword: Keyword.Contract,
+        val contractEffects: ContractEffects,
+    ) : PostModifier() {
+        /**
+         * AST node corresponds to KtContractEffectList.
+         */
+        data class ContractEffects(
+            override val elements: List<ContractEffect>,
+            override val trailingComma: Keyword.Comma?,
+        ) : CommaSeparatedNodeList<ContractEffect>("[", "]")
+
+        /**
+         * AST node corresponds to KtContractEffect.
+         */
+        data class ContractEffect(
+            val expression: Expression,
+        ) : Node()
     }
 
     sealed class Keyword(override val string: String) : Node(), HasSimpleStringRepresentation {

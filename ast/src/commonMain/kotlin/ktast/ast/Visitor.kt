@@ -396,20 +396,20 @@ open class Visitor {
                 visitChildren(type)
                 visitChildren(args)
             }
-            is Node.PostModifier.TypeConstraints -> {
+            is Node.TypeConstraints -> {
                 visitChildren(whereKeyword)
                 visitChildren(constraints)
             }
-            is Node.PostModifier.TypeConstraints.TypeConstraint -> {
+            is Node.TypeConstraints.TypeConstraint -> {
                 visitChildren(annotationSets)
                 visitChildren(name)
                 visitChildren(typeRef)
             }
-            is Node.PostModifier.Contract -> {
+            is Node.Contract -> {
                 visitChildren(contractKeyword)
                 visitChildren(contractEffects)
             }
-            is Node.PostModifier.Contract.ContractEffect -> {
+            is Node.Contract.ContractEffect -> {
                 visitChildren(expression)
             }
             is Node.Extra -> {}
