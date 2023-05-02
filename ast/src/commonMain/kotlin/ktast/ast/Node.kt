@@ -21,13 +21,13 @@ sealed class Node {
     }
 
     interface WithAnnotationSets {
-        val annotationSets: List<Modifier.AnnotationSet>
+        val annotationSets: List<AnnotationSetModifier>
     }
 
     interface WithModifiers : WithAnnotationSets {
         val modifiers: Modifiers?
-        override val annotationSets: List<Modifier.AnnotationSet>
-            get() = modifiers?.elements.orEmpty().mapNotNull { it as? Modifier.AnnotationSet }
+        override val annotationSets: List<AnnotationSetModifier>
+            get() = modifiers?.elements.orEmpty().mapNotNull { it as? AnnotationSetModifier }
     }
 
     interface KotlinEntry : WithAnnotationSets {
@@ -66,14 +66,14 @@ sealed class Node {
      * AST node corresponds to KtFile.
      */
     data class KotlinFile(
-        override val annotationSets: List<Modifier.AnnotationSet>,
+        override val annotationSets: List<AnnotationSetModifier>,
         override val packageDirective: PackageDirective?,
         override val importDirectives: ImportDirectives?,
         override val declarations: List<Declaration>
     ) : Node(), KotlinEntry, DeclarationsContainer
 
     data class KotlinScript(
-        override val annotationSets: List<Modifier.AnnotationSet>,
+        override val annotationSets: List<AnnotationSetModifier>,
         override val packageDirective: PackageDirective?,
         override val importDirectives: ImportDirectives?,
         val expressions: List<Expression>
@@ -136,8 +136,8 @@ sealed class Node {
         val isClass = declarationKeyword.token == DeclarationKeyword.Token.CLASS
         val isObject = declarationKeyword.token == DeclarationKeyword.Token.OBJECT
         val isInterface = declarationKeyword.token == DeclarationKeyword.Token.INTERFACE
-        val isCompanion = modifiers?.elements.orEmpty().contains(Modifier.Keyword(Modifier.Keyword.Token.COMPANION))
-        val isEnum = modifiers?.elements.orEmpty().contains(Modifier.Keyword(Modifier.Keyword.Token.ENUM))
+        val isCompanion = modifiers?.elements.orEmpty().contains(KeywordModifier(KeywordModifier.Token.COMPANION))
+        val isEnum = modifiers?.elements.orEmpty().contains(KeywordModifier(KeywordModifier.Token.ENUM))
 
         data class DeclarationKeyword(override val token: Token) : Node(),
             TokenContainer<DeclarationKeyword.Token> {
@@ -960,7 +960,7 @@ sealed class Node {
      * AST node corresponds to KtAnnotatedExpression.
      */
     data class AnnotatedExpression(
-        override val annotationSets: List<Modifier.AnnotationSet>,
+        override val annotationSets: List<AnnotationSetModifier>,
         val expression: Expression
     ) : Expression(), WithAnnotationSets
 
@@ -977,7 +977,7 @@ sealed class Node {
          * AST node corresponds to KtLambdaArgument.
          */
         data class LambdaArg(
-            override val annotationSets: List<Modifier.AnnotationSet>,
+            override val annotationSets: List<AnnotationSetModifier>,
             val label: String?,
             val expression: LambdaExpression
         ) : Node(), WithAnnotationSets
@@ -1019,60 +1019,60 @@ sealed class Node {
         override val elements: List<Modifier>,
     ) : NodeList<Modifier>()
 
-    sealed class Modifier : Node() {
-        /**
-         * AST node corresponds to KtAnnotation or KtAnnotationEntry not under KtAnnotation.
-         */
-        data class AnnotationSet(
-            val atSymbol: Node.Keyword.At?,
-            val target: Target?,
-            val colon: Node.Keyword.Colon?,
-            val lBracket: Node.Keyword.LBracket?,
-            val annotations: List<Annotation>,
-            val rBracket: Node.Keyword.RBracket?,
-        ) : Modifier() {
+    sealed class Modifier : Node()
 
-            data class Target(override val token: Token) : Node(), TokenContainer<Target.Token> {
-                companion object {
-                    private val mapStringToToken = Token.values().associateBy { it.string }
-                    fun of(value: String): Target = mapStringToToken[value]?.let(::Target)
-                        ?: error("Unknown value: $value")
-                }
+    /**
+     * AST node corresponds to KtAnnotation or KtAnnotationEntry not under KtAnnotation.
+     */
+    data class AnnotationSetModifier(
+        val atSymbol: Node.Keyword.At?,
+        val target: Target?,
+        val colon: Node.Keyword.Colon?,
+        val lBracket: Node.Keyword.LBracket?,
+        val annotations: List<Annotation>,
+        val rBracket: Node.Keyword.RBracket?,
+    ) : Modifier() {
 
-                enum class Token : HasSimpleStringRepresentation {
-                    FIELD, FILE, PROPERTY, GET, SET, RECEIVER, PARAM, SETPARAM, DELEGATE;
-
-                    override val string: String
-                        get() = name.lowercase()
-                }
-            }
-
-            /**
-             * AST node corresponds to KtAnnotationEntry under KtAnnotation or virtual AST node corresponds to KtAnnotationEntry not under KtAnnotation.
-             */
-            data class Annotation(
-                val type: SimpleType,
-                val args: ValueArgs?
-            ) : Node()
-        }
-
-        data class Keyword(override val token: Token) : Modifier(), TokenContainer<Keyword.Token> {
+        data class Target(override val token: Token) : Node(), TokenContainer<Target.Token> {
             companion object {
                 private val mapStringToToken = Token.values().associateBy { it.string }
-                fun of(value: String): Keyword =
-                    mapStringToToken[value]?.let(::Keyword) ?: error("Unknown value: $value")
+                fun of(value: String): Target = mapStringToToken[value]?.let(::Target)
+                    ?: error("Unknown value: $value")
             }
 
             enum class Token : HasSimpleStringRepresentation {
-                ABSTRACT, FINAL, OPEN, ANNOTATION, SEALED, DATA, OVERRIDE, LATEINIT, INNER, ENUM, COMPANION, VALUE,
-                PRIVATE, PROTECTED, PUBLIC, INTERNAL,
-                IN, OUT, NOINLINE, CROSSINLINE, VARARG, REIFIED,
-                TAILREC, OPERATOR, INFIX, INLINE, EXTERNAL, SUSPEND, CONST, FUN,
-                ACTUAL, EXPECT;
+                FIELD, FILE, PROPERTY, GET, SET, RECEIVER, PARAM, SETPARAM, DELEGATE;
 
                 override val string: String
                     get() = name.lowercase()
             }
+        }
+
+        /**
+         * AST node corresponds to KtAnnotationEntry under KtAnnotation or virtual AST node corresponds to KtAnnotationEntry not under KtAnnotation.
+         */
+        data class Annotation(
+            val type: SimpleType,
+            val args: ValueArgs?
+        ) : Node()
+    }
+
+    data class KeywordModifier(override val token: Token) : Modifier(), TokenContainer<KeywordModifier.Token> {
+        companion object {
+            private val mapStringToToken = Token.values().associateBy { it.string }
+            fun of(value: String): KeywordModifier =
+                mapStringToToken[value]?.let(Node::KeywordModifier) ?: error("Unknown value: $value")
+        }
+
+        enum class Token : HasSimpleStringRepresentation {
+            ABSTRACT, FINAL, OPEN, ANNOTATION, SEALED, DATA, OVERRIDE, LATEINIT, INNER, ENUM, COMPANION, VALUE,
+            PRIVATE, PROTECTED, PUBLIC, INTERNAL,
+            IN, OUT, NOINLINE, CROSSINLINE, VARARG, REIFIED,
+            TAILREC, OPERATOR, INFIX, INLINE, EXTERNAL, SUSPEND, CONST, FUN,
+            ACTUAL, EXPECT;
+
+            override val string: String
+                get() = name.lowercase()
         }
     }
 
@@ -1097,7 +1097,7 @@ sealed class Node {
              * AST node corresponds to KtTypeConstraint.
              */
             data class TypeConstraint(
-                override val annotationSets: List<Modifier.AnnotationSet>,
+                override val annotationSets: List<AnnotationSetModifier>,
                 val name: NameExpression,
                 val typeRef: TypeRef
             ) : Node(), WithAnnotationSets

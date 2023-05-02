@@ -526,7 +526,7 @@ open class Writer(
                     }
                     append("}")
                 }
-                is Node.Modifier.AnnotationSet -> {
+                is Node.AnnotationSetModifier -> {
                     children(atSymbol)
                     children(target)
                     children(colon)
@@ -534,10 +534,10 @@ open class Writer(
                     children(annotations)
                     children(rBracket)
                 }
-                is Node.Modifier.AnnotationSet.Annotation -> {
+                is Node.AnnotationSetModifier.Annotation -> {
                     children(type)
                     children(args)
-                    if (parent is Node.Modifier.AnnotationSet && parent.rBracket == null) {
+                    if (parent is Node.AnnotationSetModifier && parent.rBracket == null) {
                         nextHeuristicWhitespace = " " // Insert heuristic space after annotation if single form
                     }
                 }
@@ -635,7 +635,7 @@ open class Writer(
     protected open fun writeHeuristicExtraAfterChild(v: Node, next: Node?, parent: Node?) {
         if (v is Node.NameExpression && next is Node.Declaration && parent is Node.StatementsContainer) {
             val upperCasedName = v.name.uppercase()
-            if (Node.Modifier.Keyword.Token.values().any { it.name == upperCasedName } &&
+            if (Node.KeywordModifier.Token.values().any { it.name == upperCasedName } &&
                 !containsSemicolon(extrasSinceLastNonSymbol)
             ) {
                 append(";")
