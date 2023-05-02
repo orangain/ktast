@@ -245,7 +245,7 @@ open class Writer(
                     children(type)
                     children(rPar)
                 }
-                is Node.Type.Function -> {
+                is Node.FunctionType -> {
                     children(lPar)
                     children(modifiers)
                     if (contextReceivers != null) {
@@ -262,17 +262,17 @@ open class Writer(
                     children(returnTypeRef)
                     children(rPar)
                 }
-                is Node.Type.Function.ContextReceiver -> {
+                is Node.FunctionType.ContextReceiver -> {
                     children(typeRef)
                 }
-                is Node.Type.Function.Receiver -> {
+                is Node.FunctionType.Receiver -> {
                     children(typeRef)
                 }
-                is Node.Type.Function.Param -> {
+                is Node.FunctionType.Param -> {
                     if (name != null) children(name).append(":")
                     children(typeRef)
                 }
-                is Node.Type.Simple -> {
+                is Node.SimpleType -> {
                     if (qualifiers.isNotEmpty()) {
                         children(qualifiers, ".")
                         append(".")
@@ -280,18 +280,18 @@ open class Writer(
                     children(name)
                     children(typeArgs)
                 }
-                is Node.Type.Simple.Qualifier -> {
+                is Node.SimpleType.Qualifier -> {
                     children(name)
                     children(typeArgs)
                 }
-                is Node.Type.Nullable -> {
+                is Node.NullableType -> {
                     children(lPar)
                     children(modifiers)
                     children(type)
                     children(rPar)
                     append('?')
                 }
-                is Node.Type.Dynamic ->
+                is Node.DynamicType ->
                     append("dynamic")
                 is Node.ExpressionContainer -> {
                     children(expression)
