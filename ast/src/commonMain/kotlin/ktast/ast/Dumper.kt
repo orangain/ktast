@@ -70,7 +70,7 @@ class Dumper(
         if (verbose) {
             when (this) {
                 is Node.HasSimpleStringRepresentation -> mapOf("str" to string)
-                is Node.Declaration.SecondaryConstructor.DelegationCall -> mapOf("target" to target)
+                is Node.SecondaryConstructorDeclaration.DelegationCall -> mapOf("target" to target)
                 is Node.Expression.Unary -> mapOf("prefix" to prefix)
                 is Node.Modifier.AnnotationSet -> mapOf("target" to target)
                 is Node.Expression.Name -> mapOf("name" to name)
