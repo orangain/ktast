@@ -75,7 +75,7 @@ class Dumper(
                 is Node.AnnotationSetModifier -> mapOf("target" to target)
                 is Node.NameExpression -> mapOf("name" to name)
                 is Node.ConstantExpression -> mapOf("value" to value, "form" to form)
-                is Node.Extra.Comment -> mapOf("text" to text)
+                is Node.Comment -> mapOf("text" to text)
                 is Node.StringTemplateExpression.Entry.Regular -> mapOf("str" to str)
                 is Node.StringTemplateExpression.Entry.ShortTemplate -> mapOf("str" to str)
                 is Node.StringTemplateExpression.Entry.UnicodeEscape -> mapOf("digits" to digits)

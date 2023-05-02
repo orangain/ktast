@@ -1175,26 +1175,26 @@ sealed class Node {
 
     sealed class Extra : Node() {
         abstract val text: String
-
-        /**
-         * AST node corresponds to PsiWhiteSpace.
-         */
-        data class Whitespace(
-            override val text: String,
-        ) : Extra()
-
-        /**
-         * AST node corresponds to PsiComment.
-         */
-        data class Comment(
-            override val text: String,
-        ) : Extra()
-
-        /**
-         * AST node corresponds to PsiElement whose elementType is SEMICOLON.
-         */
-        data class Semicolon(
-            override val text: String
-        ) : Extra()
     }
+
+    /**
+     * AST node corresponds to PsiWhiteSpace.
+     */
+    data class Whitespace(
+        override val text: String,
+    ) : Extra()
+
+    /**
+     * AST node corresponds to PsiComment.
+     */
+    data class Comment(
+        override val text: String,
+    ) : Extra()
+
+    /**
+     * AST node corresponds to PsiElement whose elementType is SEMICOLON.
+     */
+    data class Semicolon(
+        override val text: String
+    ) : Extra()
 }
