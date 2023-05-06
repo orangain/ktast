@@ -253,7 +253,7 @@ sealed class Node {
             override val modifiers: Modifiers?,
             val valOrVar: PropertyDeclaration.ValOrVar?,
             val name: NameExpression,
-            // Type can be null for anon functions
+            // typeRef can be null for anon functions
             val typeRef: TypeRef?,
             val equals: Keyword.Equal?,
             val defaultValue: Expression?,
