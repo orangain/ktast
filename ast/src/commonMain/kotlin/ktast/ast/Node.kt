@@ -159,15 +159,15 @@ sealed class Node {
          * AST node corresponds to KtSuperTypeList.
          */
         data class ClassParents(
-            override val elements: List<Parent>,
-        ) : CommaSeparatedNodeList<Parent>("", "") {
+            override val elements: List<ClassParent>,
+        ) : CommaSeparatedNodeList<ClassParent>("", "") {
             override val trailingComma: Keyword.Comma? = null
         }
 
         /**
          * AST node corresponds to KtSuperTypeListEntry.
          */
-        sealed class Parent : Node() {
+        sealed class ClassParent : Node() {
             /**
              * AST node corresponds to KtSuperTypeCallEntry.
              */
@@ -176,7 +176,7 @@ sealed class Node {
                 val typeArgs: TypeArgs?,
                 val args: ValueArgs?,
                 val lambda: CallExpression.LambdaArg?
-            ) : Parent()
+            ) : ClassParent()
 
             /**
              * AST node corresponds to KtDelegatedSuperTypeEntry.
@@ -185,14 +185,14 @@ sealed class Node {
                 val type: SimpleType,
                 val byKeyword: Keyword.By,
                 val expression: Expression
-            ) : Parent()
+            ) : ClassParent()
 
             /**
              * AST node corresponds to KtSuperTypeEntry.
              */
             data class Type(
                 val type: SimpleType,
-            ) : Parent()
+            ) : ClassParent()
         }
 
         /**

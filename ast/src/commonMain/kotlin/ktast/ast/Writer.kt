@@ -100,16 +100,16 @@ open class Writer(
                     children(typeConstraints)
                     children(body)
                 }
-                is Node.ClassDeclaration.Parent.CallConstructor -> {
+                is Node.ClassDeclaration.ClassParent.CallConstructor -> {
                     children(type)
                     children(args)
                 }
-                is Node.ClassDeclaration.Parent.DelegatedType -> {
+                is Node.ClassDeclaration.ClassParent.DelegatedType -> {
                     children(type)
                     children(byKeyword)
                     children(expression)
                 }
-                is Node.ClassDeclaration.Parent.Type -> {
+                is Node.ClassDeclaration.ClassParent.Type -> {
                     children(type)
                 }
                 is Node.ClassDeclaration.PrimaryConstructor -> {

@@ -54,18 +54,18 @@ open class MutableVisitor(
                     is Node.ClassDeclaration.ClassParents -> copy(
                         elements = visitChildren(elements, newCh),
                     )
-                    is Node.ClassDeclaration.Parent.CallConstructor -> copy(
+                    is Node.ClassDeclaration.ClassParent.CallConstructor -> copy(
                         type = visitChildren(type, newCh),
                         typeArgs = visitChildren(typeArgs, newCh),
                         args = visitChildren(args, newCh),
                         lambda = visitChildren(lambda, newCh)
                     )
-                    is Node.ClassDeclaration.Parent.DelegatedType -> copy(
+                    is Node.ClassDeclaration.ClassParent.DelegatedType -> copy(
                         type = visitChildren(type, newCh),
                         byKeyword = visitChildren(byKeyword, newCh),
                         expression = visitChildren(expression, newCh),
                     )
-                    is Node.ClassDeclaration.Parent.Type -> copy(
+                    is Node.ClassDeclaration.ClassParent.Type -> copy(
                         type = visitChildren(type, newCh),
                     )
                     is Node.ClassDeclaration.PrimaryConstructor -> copy(

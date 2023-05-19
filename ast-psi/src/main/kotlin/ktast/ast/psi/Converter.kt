@@ -93,7 +93,7 @@ open class Converter {
     ).map(v)
 
     open fun convertParent(v: KtSuperTypeListEntry) = when (v) {
-        is KtSuperTypeCallEntry -> Node.ClassDeclaration.Parent.CallConstructor(
+        is KtSuperTypeCallEntry -> Node.ClassDeclaration.ClassParent.CallConstructor(
             type = v.typeReference?.typeElement?.let(::convertType) as? Node.SimpleType
                 ?: error("Bad type on super call $v"),
             typeArgs = v.typeArgumentList?.let(::convertTypeArgs),
@@ -101,13 +101,13 @@ open class Converter {
             // TODO
             lambda = null
         ).map(v)
-        is KtDelegatedSuperTypeEntry -> Node.ClassDeclaration.Parent.DelegatedType(
+        is KtDelegatedSuperTypeEntry -> Node.ClassDeclaration.ClassParent.DelegatedType(
             type = v.typeReference?.typeElement?.let(::convertType) as? Node.SimpleType
                 ?: error("Bad type on super call $v"),
             byKeyword = convertKeyword(v.byKeywordNode.psi, Node.Keyword::By),
             expression = convertExpression(v.delegateExpression ?: error("Missing delegateExpression for $v")),
         ).map(v)
-        is KtSuperTypeEntry -> Node.ClassDeclaration.Parent.Type(
+        is KtSuperTypeEntry -> Node.ClassDeclaration.ClassParent.Type(
             type = v.typeReference?.typeElement?.let(::convertType) as? Node.SimpleType
                 ?: error("Bad type on super call $v"),
         ).map(v)
