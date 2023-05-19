@@ -47,11 +47,11 @@ open class MutableVisitor(
                         name = visitChildren(name, newCh),
                         typeParams = visitChildren(typeParams, newCh),
                         primaryConstructor = visitChildren(primaryConstructor, newCh),
-                        parents = visitChildren(parents, newCh),
+                        classParents = visitChildren(classParents, newCh),
                         typeConstraints = visitChildren(typeConstraints, newCh),
                         body = visitChildren(body, newCh)
                     )
-                    is Node.ClassDeclaration.Parents -> copy(
+                    is Node.ClassDeclaration.ClassParents -> copy(
                         elements = visitChildren(elements, newCh),
                     )
                     is Node.ClassDeclaration.Parent.CallConstructor -> copy(

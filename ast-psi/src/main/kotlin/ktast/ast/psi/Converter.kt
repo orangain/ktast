@@ -75,7 +75,7 @@ open class Converter {
         name = v.nameIdentifier?.let(::convertName),
         typeParams = v.typeParameterList?.let(::convertTypeParams),
         primaryConstructor = v.primaryConstructor?.let(::convertPrimaryConstructor),
-        parents = v.getSuperTypeList()?.let(::convertParents),
+        classParents = v.getSuperTypeList()?.let(::convertParents),
         typeConstraints = v.typeConstraintList?.let { typeConstraintList ->
             Node.TypeConstraints(
                 whereKeyword = convertKeyword(v.whereKeyword, Node.Keyword::Where),
@@ -88,7 +88,7 @@ open class Converter {
     open fun convertDeclarationKeyword(v: PsiElement) = Node.ClassDeclaration.DeclarationKeyword.of(v.text)
         .map(v)
 
-    open fun convertParents(v: KtSuperTypeList) = Node.ClassDeclaration.Parents(
+    open fun convertParents(v: KtSuperTypeList) = Node.ClassDeclaration.ClassParents(
         elements = v.entries.map(::convertParent),
     ).map(v)
 

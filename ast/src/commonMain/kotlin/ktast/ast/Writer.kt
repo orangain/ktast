@@ -93,9 +93,9 @@ open class Writer(
                     children(name)
                     children(typeParams)
                     children(primaryConstructor)
-                    if (parents != null) {
+                    if (classParents != null) {
                         append(":")
-                        children(parents)
+                        children(classParents)
                     }
                     children(typeConstraints)
                     children(body)

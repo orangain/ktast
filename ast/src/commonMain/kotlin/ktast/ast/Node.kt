@@ -128,7 +128,7 @@ sealed class Node {
         val name: NameExpression?,
         val typeParams: TypeParams?,
         val primaryConstructor: PrimaryConstructor?,
-        val parents: Parents?,
+        val classParents: ClassParents?,
         val typeConstraints: TypeConstraints?,
         val body: Body?,
     ) : Declaration(), WithModifiers {
@@ -158,7 +158,7 @@ sealed class Node {
         /**
          * AST node corresponds to KtSuperTypeList.
          */
-        data class Parents(
+        data class ClassParents(
             override val elements: List<Parent>,
         ) : CommaSeparatedNodeList<Parent>("", "") {
             override val trailingComma: Keyword.Comma? = null

@@ -44,7 +44,7 @@ open class Visitor {
                 visitChildren(name)
                 visitChildren(typeParams)
                 visitChildren(primaryConstructor)
-                visitChildren(parents)
+                visitChildren(classParents)
                 visitChildren(typeConstraints)
                 visitChildren(body)
             }
