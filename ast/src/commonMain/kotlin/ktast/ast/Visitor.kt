@@ -87,7 +87,7 @@ open class Visitor {
                 visitChildren(equals)
                 visitChildren(body)
             }
-            is Node.FunctionDeclaration.Param -> {
+            is Node.FunctionParam -> {
                 visitChildren(modifiers)
                 visitChildren(valOrVar)
                 visitChildren(name)

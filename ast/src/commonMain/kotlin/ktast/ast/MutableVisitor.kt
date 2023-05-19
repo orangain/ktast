@@ -97,7 +97,7 @@ open class MutableVisitor(
                         elements = visitChildren(elements, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
-                    is Node.FunctionDeclaration.Param -> copy(
+                    is Node.FunctionParam -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         valOrVar = visitChildren(valOrVar, newCh),
                         name = visitChildren(name, newCh),

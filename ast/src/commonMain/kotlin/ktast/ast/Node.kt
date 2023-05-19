@@ -239,27 +239,28 @@ sealed class Node {
         override val body: Expression?,
     ) : Declaration(), WithModifiers, WithPostModifiers, WithFunctionBody {
 
-        /**
-         * AST node corresponds to KtParameter inside KtNamedFunction.
-         */
-        data class Param(
-            override val modifiers: Modifiers?,
-            val valOrVar: PropertyDeclaration.ValOrVar?,
-            val name: NameExpression,
-            // typeRef can be null for anon functions
-            val typeRef: TypeRef?,
-            val equals: Keyword.Equal?,
-            val defaultValue: Expression?,
-        ) : Node(), WithModifiers
     }
 
     /**
      * AST node corresponds to KtParameterList under KtNamedFunction.
      */
     data class FunctionParams(
-        override val elements: List<FunctionDeclaration.Param>,
+        override val elements: List<FunctionParam>,
         override val trailingComma: Keyword.Comma?,
-    ) : CommaSeparatedNodeList<FunctionDeclaration.Param>("(", ")")
+    ) : CommaSeparatedNodeList<FunctionParam>("(", ")")
+
+    /**
+     * AST node corresponds to KtParameter inside KtNamedFunction.
+     */
+    data class FunctionParam(
+        override val modifiers: Modifiers?,
+        val valOrVar: PropertyDeclaration.ValOrVar?,
+        val name: NameExpression,
+        // typeRef can be null for anon functions
+        val typeRef: TypeRef?,
+        val equals: Keyword.Equal?,
+        val defaultValue: Expression?,
+    ) : Node(), WithModifiers
 
     /**
      * AST node corresponds to KtProperty or KtDestructuringDeclaration.

@@ -155,7 +155,7 @@ open class Converter {
         trailingComma = v.trailingComma?.let(::convertComma),
     ).map(v)
 
-    open fun convertFuncParam(v: KtParameter) = Node.FunctionDeclaration.Param(
+    open fun convertFuncParam(v: KtParameter) = Node.FunctionParam(
         modifiers = v.modifierList?.let(::convertModifiers),
         valOrVar = v.valOrVarKeyword?.let(::convertValOrVar),
         name = v.nameIdentifier?.let(::convertName) ?: error("No param name"),

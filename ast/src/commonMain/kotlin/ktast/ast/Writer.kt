@@ -140,7 +140,7 @@ open class Writer(
                     children(equals)
                     children(body)
                 }
-                is Node.FunctionDeclaration.Param -> {
+                is Node.FunctionParam -> {
                     children(modifiers)
                     children(valOrVar)
                     children(name)
