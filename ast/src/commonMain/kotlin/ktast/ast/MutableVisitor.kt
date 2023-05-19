@@ -421,7 +421,7 @@ open class MutableVisitor(
                     is Node.Modifiers -> copy(
                         elements = visitChildren(elements, newCh),
                     )
-                    is Node.AnnotationSetModifier -> copy(
+                    is Node.AnnotationSet -> copy(
                         atSymbol = visitChildren(atSymbol, newCh),
                         target = visitChildren(target, newCh),
                         colon = visitChildren(colon, newCh),
@@ -429,7 +429,7 @@ open class MutableVisitor(
                         annotations = visitChildren(annotations, newCh),
                         rBracket = visitChildren(rBracket, newCh),
                     )
-                    is Node.AnnotationSetModifier.Annotation -> copy(
+                    is Node.AnnotationSet.Annotation -> copy(
                         type = visitChildren(type, newCh),
                         args = visitChildren(args, newCh),
                     )

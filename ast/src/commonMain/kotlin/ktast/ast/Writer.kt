@@ -526,7 +526,7 @@ open class Writer(
                     }
                     append("}")
                 }
-                is Node.AnnotationSetModifier -> {
+                is Node.AnnotationSet -> {
                     children(atSymbol)
                     children(target)
                     children(colon)
@@ -534,10 +534,10 @@ open class Writer(
                     children(annotations)
                     children(rBracket)
                 }
-                is Node.AnnotationSetModifier.Annotation -> {
+                is Node.AnnotationSet.Annotation -> {
                     children(type)
                     children(args)
-                    if (parent is Node.AnnotationSetModifier && parent.rBracket == null) {
+                    if (parent is Node.AnnotationSet && parent.rBracket == null) {
                         nextHeuristicWhitespace = " " // Insert heuristic space after annotation if single form
                     }
                 }

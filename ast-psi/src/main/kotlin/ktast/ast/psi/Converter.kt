@@ -844,7 +844,7 @@ open class Converter {
 
     open fun convertCallLambdaArg(v: KtLambdaArgument): Node.CallExpression.LambdaArg {
         var label: String? = null
-        var annotationSets: List<Node.AnnotationSetModifier> = emptyList()
+        var annotationSets: List<Node.AnnotationSet> = emptyList()
         fun KtExpression.extractLambda(): KtLambdaExpression? = when (this) {
             is KtLambdaExpression -> this
             is KtLabeledExpression -> baseExpression?.extractLambda().also {
@@ -890,7 +890,7 @@ open class Converter {
         else
             convertExpression(v)
 
-    open fun convertAnnotationSets(v: KtElement): List<Node.AnnotationSetModifier> = v.children.flatMap { elem ->
+    open fun convertAnnotationSets(v: KtElement): List<Node.AnnotationSet> = v.children.flatMap { elem ->
         // We go over the node children because we want to preserve order
         when (elem) {
             is KtAnnotationEntry ->
@@ -904,7 +904,7 @@ open class Converter {
         }
     }
 
-    open fun convertAnnotationSet(v: KtAnnotation) = Node.AnnotationSetModifier(
+    open fun convertAnnotationSet(v: KtAnnotation) = Node.AnnotationSet(
         atSymbol = v.atSymbol?.let { convertKeyword(it, Node.Keyword::At) },
         target = v.useSiteTarget?.let(::convertAnnotationSetTarget),
         colon = v.colon?.let { convertKeyword(it, Node.Keyword::Colon) },
@@ -916,7 +916,7 @@ open class Converter {
         rBracket = v.rBracket?.let { convertKeyword(it, Node.Keyword::RBracket) },
     ).map(v)
 
-    open fun convertAnnotationSet(v: KtAnnotationEntry) = Node.AnnotationSetModifier(
+    open fun convertAnnotationSet(v: KtAnnotationEntry) = Node.AnnotationSet(
         atSymbol = v.atSymbol?.let { convertKeyword(it, Node.Keyword::At) },
         target = v.useSiteTarget?.let(::convertAnnotationSetTarget),
         colon = v.colon?.let { convertKeyword(it, Node.Keyword::Colon) },
@@ -928,21 +928,21 @@ open class Converter {
         rBracket = null,
     ).map(v)
 
-    open fun convertAnnotationSetTarget(v: KtAnnotationUseSiteTarget) = Node.AnnotationSetModifier.Target(
+    open fun convertAnnotationSetTarget(v: KtAnnotationUseSiteTarget) = Node.AnnotationSet.Target(
         when (v.getAnnotationUseSiteTarget()) {
-            AnnotationUseSiteTarget.FIELD -> Node.AnnotationSetModifier.Target.Token.FIELD
-            AnnotationUseSiteTarget.FILE -> Node.AnnotationSetModifier.Target.Token.FILE
-            AnnotationUseSiteTarget.PROPERTY -> Node.AnnotationSetModifier.Target.Token.PROPERTY
-            AnnotationUseSiteTarget.PROPERTY_GETTER -> Node.AnnotationSetModifier.Target.Token.GET
-            AnnotationUseSiteTarget.PROPERTY_SETTER -> Node.AnnotationSetModifier.Target.Token.SET
-            AnnotationUseSiteTarget.RECEIVER -> Node.AnnotationSetModifier.Target.Token.RECEIVER
-            AnnotationUseSiteTarget.CONSTRUCTOR_PARAMETER -> Node.AnnotationSetModifier.Target.Token.PARAM
-            AnnotationUseSiteTarget.SETTER_PARAMETER -> Node.AnnotationSetModifier.Target.Token.SETPARAM
-            AnnotationUseSiteTarget.PROPERTY_DELEGATE_FIELD -> Node.AnnotationSetModifier.Target.Token.DELEGATE
+            AnnotationUseSiteTarget.FIELD -> Node.AnnotationSet.Target.Token.FIELD
+            AnnotationUseSiteTarget.FILE -> Node.AnnotationSet.Target.Token.FILE
+            AnnotationUseSiteTarget.PROPERTY -> Node.AnnotationSet.Target.Token.PROPERTY
+            AnnotationUseSiteTarget.PROPERTY_GETTER -> Node.AnnotationSet.Target.Token.GET
+            AnnotationUseSiteTarget.PROPERTY_SETTER -> Node.AnnotationSet.Target.Token.SET
+            AnnotationUseSiteTarget.RECEIVER -> Node.AnnotationSet.Target.Token.RECEIVER
+            AnnotationUseSiteTarget.CONSTRUCTOR_PARAMETER -> Node.AnnotationSet.Target.Token.PARAM
+            AnnotationUseSiteTarget.SETTER_PARAMETER -> Node.AnnotationSet.Target.Token.SETPARAM
+            AnnotationUseSiteTarget.PROPERTY_DELEGATE_FIELD -> Node.AnnotationSet.Target.Token.DELEGATE
         }
     )
 
-    open fun convertAnnotationWithoutMapping(v: KtAnnotationEntry) = Node.AnnotationSetModifier.Annotation(
+    open fun convertAnnotationWithoutMapping(v: KtAnnotationEntry) = Node.AnnotationSet.Annotation(
         type = convertType(
             v.calleeExpression?.typeReference?.typeElement
                 ?: error("No callee expression, type reference or type element for $v")

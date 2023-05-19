@@ -72,7 +72,7 @@ class Dumper(
                 is Node.HasSimpleStringRepresentation -> mapOf("str" to string)
                 is Node.SecondaryConstructorDeclaration.DelegationCall -> mapOf("target" to target)
                 is Node.UnaryExpression -> mapOf("prefix" to prefix)
-                is Node.AnnotationSetModifier -> mapOf("target" to target)
+                is Node.AnnotationSet -> mapOf("target" to target)
                 is Node.NameExpression -> mapOf("name" to name)
                 is Node.ConstantLiteralExpression -> mapOf("value" to value, "form" to form)
                 is Node.Comment -> mapOf("text" to text)

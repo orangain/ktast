@@ -384,7 +384,7 @@ open class Visitor {
             is Node.BlockExpression -> {
                 visitChildren(statements)
             }
-            is Node.AnnotationSetModifier -> {
+            is Node.AnnotationSet -> {
                 visitChildren(atSymbol)
                 visitChildren(target)
                 visitChildren(colon)
@@ -392,7 +392,7 @@ open class Visitor {
                 visitChildren(annotations)
                 visitChildren(rBracket)
             }
-            is Node.AnnotationSetModifier.Annotation -> {
+            is Node.AnnotationSet.Annotation -> {
                 visitChildren(type)
                 visitChildren(args)
             }

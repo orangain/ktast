@@ -21,13 +21,13 @@ sealed class Node {
     }
 
     interface WithAnnotationSets {
-        val annotationSets: List<AnnotationSetModifier>
+        val annotationSets: List<AnnotationSet>
     }
 
     interface WithModifiers : WithAnnotationSets {
         val modifiers: Modifiers?
-        override val annotationSets: List<AnnotationSetModifier>
-            get() = modifiers?.elements.orEmpty().mapNotNull { it as? AnnotationSetModifier }
+        override val annotationSets: List<AnnotationSet>
+            get() = modifiers?.elements.orEmpty().mapNotNull { it as? AnnotationSet }
     }
 
     interface KotlinEntry : WithAnnotationSets {
@@ -66,14 +66,14 @@ sealed class Node {
      * AST node corresponds to KtFile.
      */
     data class KotlinFile(
-        override val annotationSets: List<AnnotationSetModifier>,
+        override val annotationSets: List<AnnotationSet>,
         override val packageDirective: PackageDirective?,
         override val importDirectives: ImportDirectives?,
         override val declarations: List<Declaration>
     ) : Node(), KotlinEntry, DeclarationsContainer
 
     data class KotlinScript(
-        override val annotationSets: List<AnnotationSetModifier>,
+        override val annotationSets: List<AnnotationSet>,
         override val packageDirective: PackageDirective?,
         override val importDirectives: ImportDirectives?,
         val expressions: List<Expression>
@@ -963,7 +963,7 @@ sealed class Node {
      * AST node corresponds to KtAnnotatedExpression.
      */
     data class AnnotatedExpression(
-        override val annotationSets: List<AnnotationSetModifier>,
+        override val annotationSets: List<AnnotationSet>,
         val expression: Expression
     ) : Expression(), WithAnnotationSets
 
@@ -980,7 +980,7 @@ sealed class Node {
          * AST node corresponds to KtLambdaArgument.
          */
         data class LambdaArg(
-            override val annotationSets: List<AnnotationSetModifier>,
+            override val annotationSets: List<AnnotationSet>,
             val label: String?,
             val expression: LambdaExpression
         ) : Node(), WithAnnotationSets
@@ -1027,7 +1027,7 @@ sealed class Node {
     /**
      * AST node corresponds to KtAnnotation or KtAnnotationEntry not under KtAnnotation.
      */
-    data class AnnotationSetModifier(
+    data class AnnotationSet(
         val atSymbol: Node.Keyword.At?,
         val target: Target?,
         val colon: Node.Keyword.Colon?,
@@ -1101,7 +1101,7 @@ sealed class Node {
          * AST node corresponds to KtTypeConstraint.
          */
         data class TypeConstraint(
-            override val annotationSets: List<AnnotationSetModifier>,
+            override val annotationSets: List<AnnotationSet>,
             val name: NameExpression,
             val typeRef: TypeRef
         ) : Node(), WithAnnotationSets
