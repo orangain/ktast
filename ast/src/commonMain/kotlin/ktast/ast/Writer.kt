@@ -420,7 +420,7 @@ open class Writer(
                         children(params)
                         append("->")
                     }
-                    children(body)
+                    children(lambdaBody)
                     append("}")
                 }
                 is Node.LambdaParam -> {
@@ -439,7 +439,7 @@ open class Writer(
                         children(typeRef)
                     }
                 }
-                is Node.LambdaExpression.Body -> {
+                is Node.LambdaExpression.LambdaBody -> {
                     children(statements)
                 }
                 is Node.ThisExpression -> {

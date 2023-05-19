@@ -290,7 +290,7 @@ open class Visitor {
             is Node.ConstantLiteralExpression -> {}
             is Node.LambdaExpression -> {
                 visitChildren(params)
-                visitChildren(body)
+                visitChildren(lambdaBody)
             }
             is Node.LambdaParam -> {
                 visitChildren(lPar)
@@ -305,7 +305,7 @@ open class Visitor {
                 visitChildren(name)
                 visitChildren(typeRef)
             }
-            is Node.LambdaExpression.Body -> {
+            is Node.LambdaExpression.LambdaBody -> {
                 visitChildren(statements)
             }
             is Node.ThisExpression -> {}

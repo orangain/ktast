@@ -686,7 +686,7 @@ open class Converter {
 
     open fun convertLambda(v: KtLambdaExpression) = Node.LambdaExpression(
         params = v.functionLiteral.valueParameterList?.let(::convertLambdaParams),
-        body = v.bodyExpression?.let(::convertLambdaBody)
+        lambdaBody = v.bodyExpression?.let(::convertLambdaBody)
     ).map(v)
 
     open fun convertLambdaParams(v: KtParameterList) = Node.LambdaParams(
@@ -729,7 +729,7 @@ open class Converter {
         typeRef = v.typeReference?.let(::convertTypeRef),
     ).map(v)
 
-    open fun convertLambdaBody(v: KtBlockExpression) = Node.LambdaExpression.Body(
+    open fun convertLambdaBody(v: KtBlockExpression) = Node.LambdaExpression.LambdaBody(
         statements = v.statements.map(::convertStatement)
     ).map(v)
 

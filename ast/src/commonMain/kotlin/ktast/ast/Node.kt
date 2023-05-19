@@ -781,17 +781,17 @@ sealed class Node {
      */
     data class LambdaExpression(
         val params: LambdaParams?,
-        val body: Body?
+        val lambdaBody: LambdaBody?
     ) : Expression() {
 
         /**
          * AST node corresponds to KtBlockExpression in lambda body.
-         * In lambda expression, left and right braces are not included in [LambdaExpression.Body], but are included in Lambda.
+         * In lambda expression, left and right braces are not included in [LambdaExpression.LambdaBody], but are included in Lambda.
          * This means:
          *
          * <Lambda> = { <Param>, <Param> -> <Body> }
          */
-        data class Body(override val statements: List<Statement>) : Expression(), StatementsContainer
+        data class LambdaBody(override val statements: List<Statement>) : Expression(), StatementsContainer
     }
 
     /**

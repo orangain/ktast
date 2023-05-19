@@ -320,7 +320,7 @@ open class MutableVisitor(
                     is Node.ConstantLiteralExpression -> this
                     is Node.LambdaExpression -> copy(
                         params = visitChildren(params, newCh),
-                        body = visitChildren(body, newCh)
+                        lambdaBody = visitChildren(lambdaBody, newCh)
                     )
                     is Node.LambdaParams -> copy(
                         elements = visitChildren(elements, newCh),
@@ -339,7 +339,7 @@ open class MutableVisitor(
                         name = visitChildren(name, newCh),
                         typeRef = visitChildren(typeRef, newCh),
                     )
-                    is Node.LambdaExpression.Body -> copy(
+                    is Node.LambdaExpression.LambdaBody -> copy(
                         statements = visitChildren(statements, newCh)
                     )
                     is Node.ThisExpression -> this
