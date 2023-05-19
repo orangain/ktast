@@ -18,12 +18,12 @@ class ConverterTest {
                   Node.PropertyDeclaration
                     Node.PropertyDeclaration.ValOrVar
                     AFTER: Node.Whitespace
-                    Node.PropertyDeclaration.Variable
+                    Node.Variable
                       Node.NameExpression
                       AFTER: Node.Whitespace
                     Node.Keyword.Equal
                     AFTER: Node.Whitespace
-                    Node.StringTemplateExpression
+                    Node.StringLiteralExpression
             """.trimIndent()
         )
     }
@@ -39,12 +39,12 @@ class ConverterTest {
                   Node.PropertyDeclaration
                     Node.PropertyDeclaration.ValOrVar
                     AFTER: Node.Whitespace
-                    Node.PropertyDeclaration.Variable
+                    Node.Variable
                       Node.NameExpression
                       AFTER: Node.Whitespace
                     Node.Keyword.Equal
                     AFTER: Node.Whitespace
-                    Node.StringTemplateExpression
+                    Node.StringLiteralExpression
                     AFTER: Node.Whitespace
                     AFTER: Node.Comment
             """.trimIndent()
