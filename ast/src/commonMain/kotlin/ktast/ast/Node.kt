@@ -613,7 +613,7 @@ sealed class Node {
      */
     data class ForExpression(
         val forKeyword: Keyword.For,
-        val loopParam: LambdaExpression.Param,
+        val loopParam: LambdaParam,
         val loopRange: ExpressionContainer,
         val body: ExpressionContainer,
     ) : Expression()
@@ -785,36 +785,6 @@ sealed class Node {
     ) : Expression() {
 
         /**
-         * AST node corresponds to KtParameter under KtLambdaExpression.
-         */
-        data class Param(
-            val lPar: Keyword.LPar?,
-            val variables: List<Variable>,
-            val trailingComma: Keyword.Comma?,
-            val rPar: Keyword.RPar?,
-            val colon: Keyword.Colon?,
-            val destructTypeRef: TypeRef?,
-        ) : Node() {
-            init {
-                if (variables.size >= 2) {
-                    require(lPar != null && rPar != null) { "lPar and rPar are required when there are multiple variables" }
-                }
-                if (trailingComma != null) {
-                    require(lPar != null && rPar != null) { "lPar and rPar are required when trailing comma exists" }
-                }
-            }
-
-            /**
-             * AST node corresponds to KtDestructuringDeclarationEntry or virtual AST node corresponds to KtParameter whose child is IDENTIFIER.
-             */
-            data class Variable(
-                override val modifiers: Modifiers?,
-                val name: NameExpression,
-                val typeRef: TypeRef?,
-            ) : Node(), WithModifiers
-        }
-
-        /**
          * AST node corresponds to KtBlockExpression in lambda body.
          * In lambda expression, left and right braces are not included in [LambdaExpression.Body], but are included in Lambda.
          * This means:
@@ -828,9 +798,39 @@ sealed class Node {
      * AST node corresponds to KtParameterList under KtLambdaExpression.
      */
     data class LambdaParams(
-        override val elements: List<LambdaExpression.Param>,
+        override val elements: List<LambdaParam>,
         override val trailingComma: Keyword.Comma?,
-    ) : CommaSeparatedNodeList<LambdaExpression.Param>("", "")
+    ) : CommaSeparatedNodeList<LambdaParam>("", "")
+
+    /**
+     * AST node corresponds to KtParameter under KtLambdaExpression.
+     */
+    data class LambdaParam(
+        val lPar: Keyword.LPar?,
+        val variables: List<Variable>,
+        val trailingComma: Keyword.Comma?,
+        val rPar: Keyword.RPar?,
+        val colon: Keyword.Colon?,
+        val destructTypeRef: TypeRef?,
+    ) : Node() {
+        init {
+            if (variables.size >= 2) {
+                require(lPar != null && rPar != null) { "lPar and rPar are required when there are multiple variables" }
+            }
+            if (trailingComma != null) {
+                require(lPar != null && rPar != null) { "lPar and rPar are required when trailing comma exists" }
+            }
+        }
+
+        /**
+         * AST node corresponds to KtDestructuringDeclarationEntry or virtual AST node corresponds to KtParameter whose child is IDENTIFIER.
+         */
+        data class Variable(
+            override val modifiers: Modifiers?,
+            val name: NameExpression,
+            val typeRef: TypeRef?,
+        ) : Node(), WithModifiers
+    }
 
     /**
      * AST node corresponds to KtThisExpression.

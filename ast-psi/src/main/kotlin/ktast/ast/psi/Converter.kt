@@ -694,10 +694,10 @@ open class Converter {
         trailingComma = v.trailingComma?.let(::convertComma),
     ).map(v)
 
-    open fun convertLambdaParam(v: KtParameter): Node.LambdaExpression.Param {
+    open fun convertLambdaParam(v: KtParameter): Node.LambdaParam {
         val destructuringDeclaration = v.destructuringDeclaration
         return if (destructuringDeclaration != null) {
-            Node.LambdaExpression.Param(
+            Node.LambdaParam(
                 lPar = destructuringDeclaration.lPar?.let { convertKeyword(it, Node.Keyword::LPar) },
                 variables = destructuringDeclaration.entries.map(::convertLambdaParamVariable),
                 trailingComma = destructuringDeclaration.trailingComma?.let(::convertComma),
@@ -706,10 +706,10 @@ open class Converter {
                 destructTypeRef = v.typeReference?.let(::convertTypeRef),
             ).map(v)
         } else {
-            Node.LambdaExpression.Param(
+            Node.LambdaParam(
                 lPar = null,
                 variables = listOf(
-                    Node.LambdaExpression.Param.Variable(
+                    Node.LambdaParam.Variable(
                         modifiers = v.modifierList?.let(::convertModifiers),
                         name = v.nameIdentifier?.let(::convertName) ?: error("No lambda param name on $v"),
                         typeRef = v.typeReference?.let(::convertTypeRef),
@@ -723,7 +723,7 @@ open class Converter {
         }
     }
 
-    open fun convertLambdaParamVariable(v: KtDestructuringDeclarationEntry) = Node.LambdaExpression.Param.Variable(
+    open fun convertLambdaParamVariable(v: KtDestructuringDeclarationEntry) = Node.LambdaParam.Variable(
         modifiers = v.modifierList?.let(::convertModifiers),
         name = v.nameIdentifier?.let(::convertName) ?: error("No lambda param name on $v"),
         typeRef = v.typeReference?.let(::convertTypeRef),

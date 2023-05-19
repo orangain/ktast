@@ -292,7 +292,7 @@ open class Visitor {
                 visitChildren(params)
                 visitChildren(body)
             }
-            is Node.LambdaExpression.Param -> {
+            is Node.LambdaParam -> {
                 visitChildren(lPar)
                 visitChildren(variables)
                 visitChildren(trailingComma)
@@ -300,7 +300,7 @@ open class Visitor {
                 visitChildren(colon)
                 visitChildren(destructTypeRef)
             }
-            is Node.LambdaExpression.Param.Variable -> {
+            is Node.LambdaParam.Variable -> {
                 visitChildren(modifiers)
                 visitChildren(name)
                 visitChildren(typeRef)

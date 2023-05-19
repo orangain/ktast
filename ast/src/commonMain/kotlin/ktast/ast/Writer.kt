@@ -423,7 +423,7 @@ open class Writer(
                     children(body)
                     append("}")
                 }
-                is Node.LambdaExpression.Param -> {
+                is Node.LambdaParam -> {
                     children(lPar)
                     children(variables, ",")
                     children(trailingComma)
@@ -431,7 +431,7 @@ open class Writer(
                     children(colon)
                     children(destructTypeRef)
                 }
-                is Node.LambdaExpression.Param.Variable -> {
+                is Node.LambdaParam.Variable -> {
                     children(modifiers)
                     children(name)
                     if (typeRef != null) {
