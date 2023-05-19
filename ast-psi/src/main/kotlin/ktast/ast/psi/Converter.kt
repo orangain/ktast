@@ -374,7 +374,7 @@ open class Converter {
             lPar = lPar?.let { convertKeyword(it, Node.Keyword::LPar) },
             modifiers = modifierList?.let(::convertModifiers),
             contextReceivers = v.contextReceiverList?.let { convertContextReceivers(it) },
-            receiver = v.receiver?.let(::convertTypeFunctionReceiver),
+            functionTypeReceiver = v.receiver?.let(::convertTypeFunctionReceiver),
             params = v.parameterList?.let(::convertTypeFunctionParams),
             returnTypeRef = convertTypeRef(v.returnTypeReference ?: error("No return type")),
             rPar = rPar?.let { convertKeyword(it, Node.Keyword::RPar) },
@@ -413,7 +413,7 @@ open class Converter {
         expression = convertExpression(v.getExpression()),
     ).map(v)
 
-    open fun convertTypeFunctionReceiver(v: KtFunctionTypeReceiver) = Node.FunctionType.Receiver(
+    open fun convertTypeFunctionReceiver(v: KtFunctionTypeReceiver) = Node.FunctionType.FunctionTypeReceiver(
         typeRef = convertTypeRef(v.typeReference),
     ).map(v)
 

@@ -442,7 +442,7 @@ sealed class Node {
         val lPar: Keyword.LPar?,
         override val modifiers: Modifiers?,
         val contextReceivers: ContextReceivers?,
-        val receiver: Receiver?,
+        val functionTypeReceiver: FunctionTypeReceiver?,
         val params: Params?,
         val returnTypeRef: TypeRef,
         val rPar: Keyword.RPar?,
@@ -465,7 +465,7 @@ sealed class Node {
         /**
          * AST node corresponds KtFunctionTypeReceiver.
          */
-        data class Receiver(
+        data class FunctionTypeReceiver(
             val typeRef: TypeRef,
         ) : Node()
 
