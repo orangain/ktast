@@ -114,7 +114,7 @@ open class Visitor {
                 visitChildren(byKeyword)
                 visitChildren(expression)
             }
-            is Node.PropertyDeclaration.Variable -> {
+            is Node.Variable -> {
                 visitChildren(name)
                 visitChildren(typeRef)
             }

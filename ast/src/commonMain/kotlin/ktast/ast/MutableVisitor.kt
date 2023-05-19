@@ -124,7 +124,7 @@ open class MutableVisitor(
                         byKeyword = visitChildren(byKeyword, newCh),
                         expression = visitChildren(expression, newCh),
                     )
-                    is Node.PropertyDeclaration.Variable -> copy(
+                    is Node.Variable -> copy(
                         name = visitChildren(name, newCh),
                         typeRef = visitChildren(typeRef, newCh)
                     )

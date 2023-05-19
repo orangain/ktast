@@ -171,7 +171,7 @@ open class Converter {
         receiverTypeRef = v.receiverTypeReference?.let(::convertTypeRef),
         lPar = null,
         variables = listOf(
-            Node.PropertyDeclaration.Variable(
+            Node.Variable(
                 name = v.nameIdentifier?.let(::convertName) ?: error("No property name on $v"),
                 typeRef = v.typeReference?.let(::convertTypeRef)
             ).mapNotCorrespondsPsiElement(v)
@@ -209,7 +209,7 @@ open class Converter {
     open fun convertValOrVar(v: PsiElement) = Node.PropertyDeclaration.ValOrVar.of(v.text)
         .map(v)
 
-    open fun convertPropertyVariable(v: KtDestructuringDeclarationEntry) = Node.PropertyDeclaration.Variable(
+    open fun convertPropertyVariable(v: KtDestructuringDeclarationEntry) = Node.Variable(
         name = v.nameIdentifier?.let(::convertName) ?: error("No property name on $v"),
         typeRef = v.typeReference?.let(::convertTypeRef)
     ).map(v)

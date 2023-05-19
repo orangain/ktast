@@ -314,14 +314,6 @@ sealed class Node {
         }
 
         /**
-         * Virtual AST node corresponds a part of KtProperty or AST node corresponds to KtDestructuringDeclarationEntry.
-         */
-        data class Variable(
-            val name: NameExpression,
-            val typeRef: TypeRef?
-        ) : Node()
-
-        /**
          * AST node corresponds to KtPropertyDelegate.
          */
         data class Delegate(
@@ -353,6 +345,14 @@ sealed class Node {
             ) : Accessor()
         }
     }
+
+    /**
+     * Virtual AST node corresponds a part of KtProperty or AST node corresponds to KtDestructuringDeclarationEntry.
+     */
+    data class Variable(
+        val name: NameExpression,
+        val typeRef: TypeRef?
+    ) : Node()
 
     /**
      * AST node corresponds to KtTypeAlias.

@@ -167,7 +167,7 @@ open class Writer(
                     children(byKeyword)
                     children(expression)
                 }
-                is Node.PropertyDeclaration.Variable -> {
+                is Node.Variable -> {
                     children(name)
                     if (typeRef != null) append(":").also { children(typeRef) }
                 }
