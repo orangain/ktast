@@ -81,9 +81,9 @@ open class Writer(
                 is Node.ImportDirective -> {
                     children(importKeyword)
                     children(names, ".")
-                    children(alias)
+                    children(importAlias)
                 }
-                is Node.ImportDirective.Alias -> {
+                is Node.ImportDirective.ImportAlias -> {
                     append("as")
                     children(name)
                 }

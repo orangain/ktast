@@ -33,9 +33,9 @@ open class Visitor {
             is Node.ImportDirective -> {
                 visitChildren(importKeyword)
                 visitChildren(names)
-                visitChildren(alias)
+                visitChildren(importAlias)
             }
-            is Node.ImportDirective.Alias -> {
+            is Node.ImportDirective.ImportAlias -> {
                 visitChildren(name)
             }
             is Node.ClassDeclaration -> {

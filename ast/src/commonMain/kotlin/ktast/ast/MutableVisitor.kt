@@ -36,9 +36,9 @@ open class MutableVisitor(
                     is Node.ImportDirective -> copy(
                         importKeyword = visitChildren(importKeyword, newCh),
                         names = visitChildren(names, newCh),
-                        alias = visitChildren(alias, newCh),
+                        importAlias = visitChildren(importAlias, newCh),
                     )
-                    is Node.ImportDirective.Alias -> copy(
+                    is Node.ImportDirective.ImportAlias -> copy(
                         name = visitChildren(name, newCh),
                     )
                     is Node.ClassDeclaration -> copy(

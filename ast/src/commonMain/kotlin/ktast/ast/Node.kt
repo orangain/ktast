@@ -101,13 +101,13 @@ sealed class Node {
     data class ImportDirective(
         val importKeyword: Keyword.Import,
         val names: List<NameExpression>,
-        val alias: Alias?
+        val importAlias: ImportAlias?
     ) : Node() {
 
         /**
          * AST node corresponds to KtImportAlias.
          */
-        data class Alias(
+        data class ImportAlias(
             val name: NameExpression,
         ) : Node()
     }

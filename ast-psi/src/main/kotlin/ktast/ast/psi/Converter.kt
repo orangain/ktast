@@ -39,7 +39,7 @@ open class Converter {
         importKeyword = convertKeyword(v.importKeyword, Node.Keyword::Import),
         names = convertImportNames(v.importedReference ?: error("No imported reference for $v"))
                 + listOfNotNull(v.asterisk?.let(::convertName)),
-        alias = v.alias?.let(::convertImportAlias)
+        importAlias = v.alias?.let(::convertImportAlias)
     ).map(v)
 
     open fun convertImportNames(v: KtExpression): List<Node.NameExpression> = when (v) {
@@ -52,7 +52,7 @@ open class Converter {
         else -> error("Unexpected type $v")
     }
 
-    open fun convertImportAlias(v: KtImportAlias) = Node.ImportDirective.Alias(
+    open fun convertImportAlias(v: KtImportAlias) = Node.ImportDirective.ImportAlias(
         name = convertName(v.nameIdentifier ?: error("No name identifier for $v")),
     ).map(v)
 
