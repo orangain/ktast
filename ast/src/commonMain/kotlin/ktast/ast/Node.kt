@@ -595,13 +595,13 @@ sealed class Node {
      */
     data class TryExpression(
         val block: BlockExpression,
-        val catches: List<Catch>,
+        val catchClauses: List<CatchClause>,
         val finallyBlock: BlockExpression?
     ) : Expression() {
         /**
          * AST node corresponds to KtCatchClause.
          */
-        data class Catch(
+        data class CatchClause(
             val catchKeyword: Keyword.Catch,
             val params: FunctionParams,
             val block: BlockExpression

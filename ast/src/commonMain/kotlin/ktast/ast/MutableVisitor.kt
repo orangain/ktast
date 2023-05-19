@@ -252,10 +252,10 @@ open class MutableVisitor(
                     )
                     is Node.TryExpression -> copy(
                         block = visitChildren(block, newCh),
-                        catches = visitChildren(catches, newCh),
+                        catchClauses = visitChildren(catchClauses, newCh),
                         finallyBlock = visitChildren(finallyBlock, newCh)
                     )
-                    is Node.TryExpression.Catch -> copy(
+                    is Node.TryExpression.CatchClause -> copy(
                         catchKeyword = visitChildren(catchKeyword, newCh),
                         params = visitChildren(params, newCh),
                         block = visitChildren(block, newCh),

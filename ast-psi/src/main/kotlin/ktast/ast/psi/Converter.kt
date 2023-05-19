@@ -506,11 +506,11 @@ open class Converter {
 
     open fun convertTry(v: KtTryExpression) = Node.TryExpression(
         block = convertBlock(v.tryBlock),
-        catches = v.catchClauses.map(::convertTryCatch),
+        catchClauses = v.catchClauses.map(::convertTryCatch),
         finallyBlock = v.finallyBlock?.finalExpression?.let(::convertBlock)
     ).map(v)
 
-    open fun convertTryCatch(v: KtCatchClause) = Node.TryExpression.Catch(
+    open fun convertTryCatch(v: KtCatchClause) = Node.TryExpression.CatchClause(
         catchKeyword = convertKeyword(v.catchKeyword, Node.Keyword::Catch),
         params = convertFuncParams(v.parameterList ?: error("No catch params for $v")),
         block = convertBlock(v.catchBody as? KtBlockExpression ?: error("No catch block for $v")),

@@ -315,10 +315,10 @@ open class Writer(
                 is Node.TryExpression -> {
                     append("try")
                     children(block)
-                    if (catches.isNotEmpty()) children(catches)
+                    if (catchClauses.isNotEmpty()) children(catchClauses)
                     if (finallyBlock != null) append("finally").also { children(finallyBlock) }
                 }
-                is Node.TryExpression.Catch -> {
+                is Node.TryExpression.CatchClause -> {
                     children(catchKeyword)
                     children(params)
                     children(block)

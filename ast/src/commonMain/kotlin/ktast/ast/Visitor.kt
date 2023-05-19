@@ -222,10 +222,10 @@ open class Visitor {
             }
             is Node.TryExpression -> {
                 visitChildren(block)
-                visitChildren(catches)
+                visitChildren(catchClauses)
                 visitChildren(finallyBlock)
             }
-            is Node.TryExpression.Catch -> {
+            is Node.TryExpression.CatchClause -> {
                 visitChildren(catchKeyword)
                 visitChildren(params)
                 visitChildren(block)
