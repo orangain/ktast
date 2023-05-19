@@ -351,14 +351,14 @@ open class MutableVisitor(
                         lPar = visitChildren(lPar, newCh),
                         expression = visitChildren(expression, newCh),
                         rPar = visitChildren(rPar, newCh),
-                        branches = visitChildren(branches, newCh),
+                        whenBranches = visitChildren(whenBranches, newCh),
                     )
-                    is Node.WhenExpression.Branch.Conditional -> copy(
+                    is Node.WhenExpression.WhenBranch.Conditional -> copy(
                         conditions = visitChildren(conditions, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
                         body = visitChildren(body, newCh),
                     )
-                    is Node.WhenExpression.Branch.Else -> copy(
+                    is Node.WhenExpression.WhenBranch.Else -> copy(
                         elseKeyword = visitChildren(elseKeyword, newCh),
                         body = visitChildren(body, newCh),
                     )

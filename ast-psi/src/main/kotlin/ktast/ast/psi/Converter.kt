@@ -747,19 +747,19 @@ open class Converter {
         lPar = v.leftParenthesis?.let { convertKeyword(it, Node.Keyword::LPar) },
         expression = v.subjectExpression?.let(::convertExpression),
         rPar = v.rightParenthesis?.let { convertKeyword(it, Node.Keyword::RPar) },
-        branches = v.entries.map(::convertWhenEntry),
+        whenBranches = v.entries.map(::convertWhenEntry),
     ).map(v)
 
-    open fun convertWhenEntry(v: KtWhenEntry): Node.WhenExpression.Branch {
+    open fun convertWhenEntry(v: KtWhenEntry): Node.WhenExpression.WhenBranch {
         val elseKeyword = v.elseKeyword
         return if (elseKeyword == null) {
-            Node.WhenExpression.Branch.Conditional(
+            Node.WhenExpression.WhenBranch.Conditional(
                 conditions = v.conditions.map(::convertWhenCondition),
                 trailingComma = v.trailingComma?.let(::convertComma),
                 body = convertExpression(v.expression ?: error("No when entry body for $v"))
             ).map(v)
         } else {
-            Node.WhenExpression.Branch.Else(
+            Node.WhenExpression.WhenBranch.Else(
                 elseKeyword = convertKeyword(elseKeyword, Node.Keyword::Else),
                 body = convertExpression(v.expression ?: error("No when entry body for $v")),
             ).map(v)
