@@ -348,7 +348,7 @@ open class Converter {
         ).map(v)
     }
 
-    open fun convertTypeConstraints(v: KtTypeConstraintList) = Node.TypeConstraintSet.TypeConstraintList(
+    open fun convertTypeConstraints(v: KtTypeConstraintList) = Node.TypeConstraintSet.TypeConstraints(
         elements = v.constraints.map(::convertTypeConstraint),
     ).map(v)
 

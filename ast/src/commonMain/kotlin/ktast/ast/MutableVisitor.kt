@@ -437,7 +437,7 @@ open class MutableVisitor(
                         whereKeyword = visitChildren(whereKeyword, newCh),
                         constraints = visitChildren(constraints, newCh),
                     )
-                    is Node.TypeConstraintSet.TypeConstraintList -> copy(
+                    is Node.TypeConstraintSet.TypeConstraints -> copy(
                         elements = visitChildren(elements, newCh),
                     )
                     is Node.TypeConstraintSet.TypeConstraint -> copy(
