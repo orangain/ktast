@@ -337,7 +337,7 @@ open class Visitor {
             is Node.WhenExpression.WhenCondition.Is -> {
                 visitChildren(typeRef)
             }
-            is Node.ObjectExpression -> {
+            is Node.ObjectLiteralExpression -> {
                 visitChildren(declaration)
             }
             is Node.ThrowExpression -> {

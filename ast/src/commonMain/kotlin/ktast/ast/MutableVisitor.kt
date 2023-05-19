@@ -371,7 +371,7 @@ open class MutableVisitor(
                     is Node.WhenExpression.WhenCondition.Is -> copy(
                         typeRef = visitChildren(typeRef, newCh)
                     )
-                    is Node.ObjectExpression -> copy(
+                    is Node.ObjectLiteralExpression -> copy(
                         declaration = visitChildren(declaration, newCh),
                     )
                     is Node.ThrowExpression -> copy(

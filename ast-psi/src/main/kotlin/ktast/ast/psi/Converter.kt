@@ -781,7 +781,7 @@ open class Converter {
         else -> error("Unrecognized when cond of $v")
     }
 
-    open fun convertObject(v: KtObjectLiteralExpression) = Node.ObjectExpression(
+    open fun convertObject(v: KtObjectLiteralExpression) = Node.ObjectLiteralExpression(
         declaration = convertClass(v.objectDeclaration),
     ).map(v)
 

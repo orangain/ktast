@@ -903,7 +903,7 @@ sealed class Node {
     /**
      * AST node corresponds to KtObjectLiteralExpression.
      */
-    data class ObjectExpression(
+    data class ObjectLiteralExpression(
         val declaration: ClassDeclaration,
     ) : Expression()
 

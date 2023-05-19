@@ -475,7 +475,7 @@ open class Writer(
                     if (not) append('!')
                     append("is").also { children(typeRef) }
                 }
-                is Node.ObjectExpression -> {
+                is Node.ObjectLiteralExpression -> {
                     children(declaration)
                 }
                 is Node.ThrowExpression ->
