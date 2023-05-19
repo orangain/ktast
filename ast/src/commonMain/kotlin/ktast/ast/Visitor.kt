@@ -277,14 +277,14 @@ open class Visitor {
             is Node.ParenthesizedExpression -> {
                 visitChildren(expression)
             }
-            is Node.StringTemplateExpression -> {
+            is Node.StringLiteralExpression -> {
                 visitChildren(entries)
             }
-            is Node.StringTemplateExpression.Entry.Regular -> {}
-            is Node.StringTemplateExpression.Entry.ShortTemplate -> {}
-            is Node.StringTemplateExpression.Entry.UnicodeEscape -> {}
-            is Node.StringTemplateExpression.Entry.RegularEscape -> {}
-            is Node.StringTemplateExpression.Entry.LongTemplate -> {
+            is Node.StringLiteralExpression.Entry.Regular -> {}
+            is Node.StringLiteralExpression.Entry.ShortTemplate -> {}
+            is Node.StringLiteralExpression.Entry.UnicodeEscape -> {}
+            is Node.StringLiteralExpression.Entry.RegularEscape -> {}
+            is Node.StringLiteralExpression.Entry.LongTemplate -> {
                 visitChildren(expression)
             }
             is Node.ConstantExpression -> {}

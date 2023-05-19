@@ -650,24 +650,24 @@ open class Converter {
         expression = convertExpression(v.expression ?: error("No expression for $v"))
     ).map(v)
 
-    open fun convertStringTemplate(v: KtStringTemplateExpression) = Node.StringTemplateExpression(
+    open fun convertStringTemplate(v: KtStringTemplateExpression) = Node.StringLiteralExpression(
         entries = v.entries.map(::convertStringTemplateEntry),
         raw = v.text.startsWith("\"\"\"")
     ).map(v)
 
     open fun convertStringTemplateEntry(v: KtStringTemplateEntry) = when (v) {
         is KtLiteralStringTemplateEntry ->
-            Node.StringTemplateExpression.Entry.Regular(v.text).map(v)
+            Node.StringLiteralExpression.Entry.Regular(v.text).map(v)
         is KtSimpleNameStringTemplateEntry ->
-            Node.StringTemplateExpression.Entry.ShortTemplate(v.expression?.text ?: error("No short tmpl text")).map(v)
+            Node.StringLiteralExpression.Entry.ShortTemplate(v.expression?.text ?: error("No short tmpl text")).map(v)
         is KtBlockStringTemplateEntry ->
-            Node.StringTemplateExpression.Entry.LongTemplate(convertExpression(v.expression ?: error("No expr tmpl")))
+            Node.StringLiteralExpression.Entry.LongTemplate(convertExpression(v.expression ?: error("No expr tmpl")))
                 .map(v)
         is KtEscapeStringTemplateEntry ->
             if (v.text.startsWith("\\u"))
-                Node.StringTemplateExpression.Entry.UnicodeEscape(v.text.substring(2)).map(v)
+                Node.StringLiteralExpression.Entry.UnicodeEscape(v.text.substring(2)).map(v)
             else
-                Node.StringTemplateExpression.Entry.RegularEscape(v.unescapedValue.first()).map(v)
+                Node.StringLiteralExpression.Entry.RegularEscape(v.unescapedValue.first()).map(v)
         else ->
             error("Unrecognized string template type for $v")
     }

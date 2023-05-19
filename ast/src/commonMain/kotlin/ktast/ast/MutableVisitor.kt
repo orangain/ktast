@@ -307,14 +307,14 @@ open class MutableVisitor(
                     is Node.ParenthesizedExpression -> copy(
                         expression = visitChildren(expression, newCh)
                     )
-                    is Node.StringTemplateExpression -> copy(
+                    is Node.StringLiteralExpression -> copy(
                         entries = visitChildren(entries, newCh)
                     )
-                    is Node.StringTemplateExpression.Entry.Regular -> this
-                    is Node.StringTemplateExpression.Entry.ShortTemplate -> this
-                    is Node.StringTemplateExpression.Entry.UnicodeEscape -> this
-                    is Node.StringTemplateExpression.Entry.RegularEscape -> this
-                    is Node.StringTemplateExpression.Entry.LongTemplate -> copy(
+                    is Node.StringLiteralExpression.Entry.Regular -> this
+                    is Node.StringLiteralExpression.Entry.ShortTemplate -> this
+                    is Node.StringLiteralExpression.Entry.UnicodeEscape -> this
+                    is Node.StringLiteralExpression.Entry.RegularEscape -> this
+                    is Node.StringLiteralExpression.Entry.LongTemplate -> copy(
                         expression = visitChildren(expression, newCh)
                     )
                     is Node.ConstantExpression -> this

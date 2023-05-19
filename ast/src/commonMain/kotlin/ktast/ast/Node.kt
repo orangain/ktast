@@ -750,7 +750,7 @@ sealed class Node {
     /**
      * AST node corresponds to KtStringTemplateExpression.
      */
-    data class StringTemplateExpression(
+    data class StringLiteralExpression(
         val entries: List<Entry>,
         val raw: Boolean
     ) : Expression() {

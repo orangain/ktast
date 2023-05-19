@@ -376,7 +376,7 @@ open class Writer(
                 }
                 is Node.ParenthesizedExpression ->
                     append('(').also { children(expression) }.append(')')
-                is Node.StringTemplateExpression -> {
+                is Node.StringLiteralExpression -> {
                     if (raw) {
                         append("\"\"\"")
                         children(entries)
@@ -387,17 +387,17 @@ open class Writer(
                         append('"')
                     }
                 }
-                is Node.StringTemplateExpression.Entry.Regular ->
+                is Node.StringLiteralExpression.Entry.Regular ->
                     doAppend(str)
-                is Node.StringTemplateExpression.Entry.ShortTemplate -> {
+                is Node.StringLiteralExpression.Entry.ShortTemplate -> {
                     doAppend("$")
                     doAppend(str)
                 }
-                is Node.StringTemplateExpression.Entry.UnicodeEscape -> {
+                is Node.StringLiteralExpression.Entry.UnicodeEscape -> {
                     doAppend("\\u")
                     doAppend(digits)
                 }
-                is Node.StringTemplateExpression.Entry.RegularEscape -> {
+                is Node.StringLiteralExpression.Entry.RegularEscape -> {
                     doAppend(
                         "\\${
                             when (char) {
@@ -410,7 +410,7 @@ open class Writer(
                         }"
                     )
                 }
-                is Node.StringTemplateExpression.Entry.LongTemplate ->
+                is Node.StringLiteralExpression.Entry.LongTemplate ->
                     append("\${").also { children(expression) }.append('}')
                 is Node.ConstantExpression ->
                     append(value)
