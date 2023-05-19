@@ -349,7 +349,7 @@ sealed class Node {
         data class Setter(
             override val modifiers: Modifiers?,
             val setKeyword: Keyword.Set,
-            val params: LambdaExpression.Params?,
+            val params: LambdaParams?,
             override val postModifiers: List<PostModifier>,
             override val equals: Keyword.Equal?,
             override val body: Expression?,
@@ -780,16 +780,9 @@ sealed class Node {
      * AST node corresponds to KtLambdaExpression.
      */
     data class LambdaExpression(
-        val params: Params?,
+        val params: LambdaParams?,
         val body: Body?
     ) : Expression() {
-        /**
-         * AST node corresponds to KtParameterList under KtLambdaExpression.
-         */
-        data class Params(
-            override val elements: List<Param>,
-            override val trailingComma: Keyword.Comma?,
-        ) : CommaSeparatedNodeList<Param>("", "")
 
         /**
          * AST node corresponds to KtParameter under KtLambdaExpression.
@@ -830,6 +823,14 @@ sealed class Node {
          */
         data class Body(override val statements: List<Statement>) : Expression(), StatementsContainer
     }
+
+    /**
+     * AST node corresponds to KtParameterList under KtLambdaExpression.
+     */
+    data class LambdaParams(
+        override val elements: List<LambdaExpression.Param>,
+        override val trailingComma: Keyword.Comma?,
+    ) : CommaSeparatedNodeList<LambdaExpression.Param>("", "")
 
     /**
      * AST node corresponds to KtThisExpression.
