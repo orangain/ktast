@@ -49,7 +49,7 @@ open class MutableVisitor(
                         primaryConstructor = visitChildren(primaryConstructor, newCh),
                         classParents = visitChildren(classParents, newCh),
                         typeConstraints = visitChildren(typeConstraints, newCh),
-                        body = visitChildren(body, newCh)
+                        classBody = visitChildren(classBody, newCh)
                     )
                     is Node.ClassDeclaration.ClassParents -> copy(
                         elements = visitChildren(elements, newCh),
@@ -73,7 +73,7 @@ open class MutableVisitor(
                         constructorKeyword = visitChildren(constructorKeyword, newCh),
                         params = visitChildren(params, newCh)
                     )
-                    is Node.ClassDeclaration.Body -> copy(
+                    is Node.ClassDeclaration.ClassBody -> copy(
                         enumEntries = visitChildren(enumEntries, newCh),
                         declarations = visitChildren(declarations, newCh),
                     )
@@ -165,7 +165,7 @@ open class MutableVisitor(
                         modifiers = visitChildren(modifiers, newCh),
                         name = visitChildren(name, newCh),
                         args = visitChildren(args, newCh),
-                        body = visitChildren(body, newCh)
+                        classBody = visitChildren(classBody, newCh)
                     )
                     is Node.TypeParams -> copy(
                         elements = visitChildren(elements, newCh),

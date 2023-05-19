@@ -130,7 +130,7 @@ sealed class Node {
         val primaryConstructor: PrimaryConstructor?,
         val classParents: ClassParents?,
         val typeConstraints: TypeConstraints?,
-        val body: Body?,
+        val classBody: ClassBody?,
     ) : Declaration(), WithModifiers {
 
         val isClass = declarationKeyword.token == DeclarationKeyword.Token.CLASS
@@ -207,7 +207,7 @@ sealed class Node {
         /**
          * AST node corresponds to KtClassBody.
          */
-        data class Body(
+        data class ClassBody(
             val enumEntries: List<EnumEntry>,
             val hasTrailingCommaInEnumEntries: Boolean,
             override val declarations: List<Declaration>,
@@ -403,7 +403,7 @@ sealed class Node {
         override val modifiers: Modifiers?,
         val name: NameExpression,
         val args: ValueArgs?,
-        val body: ClassDeclaration.Body?,
+        val classBody: ClassDeclaration.ClassBody?,
     ) : Node(), WithModifiers
 
     /**

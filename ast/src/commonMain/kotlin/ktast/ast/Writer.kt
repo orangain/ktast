@@ -98,7 +98,7 @@ open class Writer(
                         children(classParents)
                     }
                     children(typeConstraints)
-                    children(body)
+                    children(classBody)
                 }
                 is Node.ClassDeclaration.ClassParent.CallConstructor -> {
                     children(type)
@@ -117,7 +117,7 @@ open class Writer(
                     children(constructorKeyword)
                     children(params)
                 }
-                is Node.ClassDeclaration.Body -> {
+                is Node.ClassDeclaration.ClassBody -> {
                     append("{")
                     children(enumEntries, skipWritingExtrasWithin = true)
                     children(declarations)
@@ -216,8 +216,8 @@ open class Writer(
                     children(modifiers)
                     children(name)
                     children(args)
-                    children(body)
-                    check(parent is Node.ClassDeclaration.Body) // condition should always be true
+                    children(classBody)
+                    check(parent is Node.ClassDeclaration.ClassBody) // condition should always be true
                     val isLastEntry = parent.enumEntries.last() === this
                     if (!isLastEntry || parent.hasTrailingCommaInEnumEntries) {
                         append(",")

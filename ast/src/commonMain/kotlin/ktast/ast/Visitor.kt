@@ -46,7 +46,7 @@ open class Visitor {
                 visitChildren(primaryConstructor)
                 visitChildren(classParents)
                 visitChildren(typeConstraints)
-                visitChildren(body)
+                visitChildren(classBody)
             }
             is Node.ClassDeclaration.ClassParent.CallConstructor -> {
                 visitChildren(type)
@@ -67,7 +67,7 @@ open class Visitor {
                 visitChildren(constructorKeyword)
                 visitChildren(params)
             }
-            is Node.ClassDeclaration.Body -> {
+            is Node.ClassDeclaration.ClassBody -> {
                 visitChildren(enumEntries)
                 visitChildren(declarations)
             }
@@ -155,7 +155,7 @@ open class Visitor {
                 visitChildren(modifiers)
                 visitChildren(name)
                 visitChildren(args)
-                visitChildren(body)
+                visitChildren(classBody)
             }
             is Node.TypeParam -> {
                 visitChildren(modifiers)

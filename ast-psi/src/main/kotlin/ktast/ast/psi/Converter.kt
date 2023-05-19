@@ -82,7 +82,7 @@ open class Converter {
                 constraints = convertTypeConstraints(typeConstraintList),
             ).mapNotCorrespondsPsiElement(v)
         },
-        body = v.body?.let(::convertClassBody),
+        classBody = v.body?.let(::convertClassBody),
     ).map(v)
 
     open fun convertDeclarationKeyword(v: PsiElement) = Node.ClassDeclaration.DeclarationKeyword.of(v.text)
@@ -267,13 +267,13 @@ open class Converter {
         modifiers = v.modifierList?.let(::convertModifiers),
         name = v.nameIdentifier?.let(::convertName) ?: error("Unnamed enum"),
         args = v.initializerList?.let(::convertValueArgs),
-        body = v.body?.let(::convertClassBody),
+        classBody = v.body?.let(::convertClassBody),
     ).map(v)
 
-    open fun convertClassBody(v: KtClassBody): Node.ClassDeclaration.Body {
+    open fun convertClassBody(v: KtClassBody): Node.ClassDeclaration.ClassBody {
         val ktEnumEntries = v.declarations.filterIsInstance<KtEnumEntry>()
         val declarationsExcludingKtEnumEntry = v.declarations.filter { it !is KtEnumEntry }
-        return Node.ClassDeclaration.Body(
+        return Node.ClassDeclaration.ClassBody(
             enumEntries = ktEnumEntries.map(::convertEnumEntry),
             hasTrailingCommaInEnumEntries = ktEnumEntries.lastOrNull()?.comma != null,
             declarations = declarationsExcludingKtEnumEntry.map(::convertDeclaration),
