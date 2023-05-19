@@ -757,13 +757,13 @@ sealed class Node {
         /**
          * AST node corresponds to KtStringTemplateEntry.
          */
-        sealed class Entry : Node() {
-            data class Regular(val str: String) : Entry()
-            data class ShortTemplate(val str: String) : Entry()
-            data class UnicodeEscape(val digits: String) : Entry()
-            data class RegularEscape(val char: Char) : Entry()
-            data class LongTemplate(val expression: Expression) : Entry()
-        }
+        sealed class Entry : Node()
+
+        data class LiteralStringEntry(val str: String) : Entry()
+        data class ShortTemplateEntry(val str: String) : Entry()
+        data class UnicodeEscapeEntry(val digits: String) : Entry()
+        data class RegularEscapeEntry(val char: Char) : Entry()
+        data class LongTemplateEntry(val expression: Expression) : Entry()
     }
 
     /**

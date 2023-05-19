@@ -280,11 +280,11 @@ open class Visitor {
             is Node.StringLiteralExpression -> {
                 visitChildren(entries)
             }
-            is Node.StringLiteralExpression.Entry.Regular -> {}
-            is Node.StringLiteralExpression.Entry.ShortTemplate -> {}
-            is Node.StringLiteralExpression.Entry.UnicodeEscape -> {}
-            is Node.StringLiteralExpression.Entry.RegularEscape -> {}
-            is Node.StringLiteralExpression.Entry.LongTemplate -> {
+            is Node.StringLiteralExpression.LiteralStringEntry -> {}
+            is Node.StringLiteralExpression.ShortTemplateEntry -> {}
+            is Node.StringLiteralExpression.UnicodeEscapeEntry -> {}
+            is Node.StringLiteralExpression.RegularEscapeEntry -> {}
+            is Node.StringLiteralExpression.LongTemplateEntry -> {
                 visitChildren(expression)
             }
             is Node.ConstantExpression -> {}

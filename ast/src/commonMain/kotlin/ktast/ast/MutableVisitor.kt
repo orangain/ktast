@@ -310,11 +310,11 @@ open class MutableVisitor(
                     is Node.StringLiteralExpression -> copy(
                         entries = visitChildren(entries, newCh)
                     )
-                    is Node.StringLiteralExpression.Entry.Regular -> this
-                    is Node.StringLiteralExpression.Entry.ShortTemplate -> this
-                    is Node.StringLiteralExpression.Entry.UnicodeEscape -> this
-                    is Node.StringLiteralExpression.Entry.RegularEscape -> this
-                    is Node.StringLiteralExpression.Entry.LongTemplate -> copy(
+                    is Node.StringLiteralExpression.LiteralStringEntry -> this
+                    is Node.StringLiteralExpression.ShortTemplateEntry -> this
+                    is Node.StringLiteralExpression.UnicodeEscapeEntry -> this
+                    is Node.StringLiteralExpression.RegularEscapeEntry -> this
+                    is Node.StringLiteralExpression.LongTemplateEntry -> copy(
                         expression = visitChildren(expression, newCh)
                     )
                     is Node.ConstantExpression -> this

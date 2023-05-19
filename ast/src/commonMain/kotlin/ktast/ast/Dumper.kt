@@ -76,10 +76,10 @@ class Dumper(
                 is Node.NameExpression -> mapOf("name" to name)
                 is Node.ConstantExpression -> mapOf("value" to value, "form" to form)
                 is Node.Comment -> mapOf("text" to text)
-                is Node.StringLiteralExpression.Entry.Regular -> mapOf("str" to str)
-                is Node.StringLiteralExpression.Entry.ShortTemplate -> mapOf("str" to str)
-                is Node.StringLiteralExpression.Entry.UnicodeEscape -> mapOf("digits" to digits)
-                is Node.StringLiteralExpression.Entry.RegularEscape -> mapOf("char" to char.toEscapedString())
+                is Node.StringLiteralExpression.LiteralStringEntry -> mapOf("str" to str)
+                is Node.StringLiteralExpression.ShortTemplateEntry -> mapOf("str" to str)
+                is Node.StringLiteralExpression.UnicodeEscapeEntry -> mapOf("digits" to digits)
+                is Node.StringLiteralExpression.RegularEscapeEntry -> mapOf("char" to char.toEscapedString())
                 else -> null
             }?.let {
                 app.append(it.toString())

@@ -387,17 +387,17 @@ open class Writer(
                         append('"')
                     }
                 }
-                is Node.StringLiteralExpression.Entry.Regular ->
+                is Node.StringLiteralExpression.LiteralStringEntry ->
                     doAppend(str)
-                is Node.StringLiteralExpression.Entry.ShortTemplate -> {
+                is Node.StringLiteralExpression.ShortTemplateEntry -> {
                     doAppend("$")
                     doAppend(str)
                 }
-                is Node.StringLiteralExpression.Entry.UnicodeEscape -> {
+                is Node.StringLiteralExpression.UnicodeEscapeEntry -> {
                     doAppend("\\u")
                     doAppend(digits)
                 }
-                is Node.StringLiteralExpression.Entry.RegularEscape -> {
+                is Node.StringLiteralExpression.RegularEscapeEntry -> {
                     doAppend(
                         "\\${
                             when (char) {
@@ -410,7 +410,7 @@ open class Writer(
                         }"
                     )
                 }
-                is Node.StringLiteralExpression.Entry.LongTemplate ->
+                is Node.StringLiteralExpression.LongTemplateEntry ->
                     append("\${").also { children(expression) }.append('}')
                 is Node.ConstantExpression ->
                     append(value)
