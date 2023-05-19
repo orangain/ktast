@@ -150,7 +150,7 @@ open class Converter {
         ).map(v)
     }
 
-    open fun convertFuncParams(v: KtParameterList) = Node.FunctionDeclaration.Params(
+    open fun convertFuncParams(v: KtParameterList) = Node.FunctionParams(
         elements = v.parameters.map(::convertFuncParam),
         trailingComma = v.trailingComma?.let(::convertComma),
     ).map(v)

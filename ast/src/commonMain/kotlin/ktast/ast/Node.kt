@@ -201,7 +201,7 @@ sealed class Node {
         data class PrimaryConstructor(
             override val modifiers: Modifiers?,
             val constructorKeyword: Keyword.Constructor?,
-            val params: FunctionDeclaration.Params?
+            val params: FunctionParams?
         ) : Node(), WithModifiers
 
         /**
@@ -232,19 +232,12 @@ sealed class Node {
         val receiverTypeRef: TypeRef?,
         // Name not present on anonymous functions
         val name: NameExpression?,
-        val params: Params?,
+        val params: FunctionParams?,
         val typeRef: TypeRef?,
         override val postModifiers: List<PostModifier>,
         override val equals: Keyword.Equal?,
         override val body: Expression?,
     ) : Declaration(), WithModifiers, WithPostModifiers, WithFunctionBody {
-        /**
-         * AST node corresponds to KtParameterList under KtNamedFunction.
-         */
-        data class Params(
-            override val elements: List<Param>,
-            override val trailingComma: Keyword.Comma?,
-        ) : CommaSeparatedNodeList<Param>("(", ")")
 
         /**
          * AST node corresponds to KtParameter inside KtNamedFunction.
@@ -259,6 +252,14 @@ sealed class Node {
             val defaultValue: Expression?,
         ) : Node(), WithModifiers
     }
+
+    /**
+     * AST node corresponds to KtParameterList under KtNamedFunction.
+     */
+    data class FunctionParams(
+        override val elements: List<FunctionDeclaration.Param>,
+        override val trailingComma: Keyword.Comma?,
+    ) : CommaSeparatedNodeList<FunctionDeclaration.Param>("(", ")")
 
     /**
      * AST node corresponds to KtProperty or KtDestructuringDeclaration.
@@ -368,7 +369,7 @@ sealed class Node {
     data class SecondaryConstructorDeclaration(
         override val modifiers: Modifiers?,
         val constructorKeyword: Keyword.Constructor,
-        val params: FunctionDeclaration.Params?,
+        val params: FunctionParams?,
         val delegationCall: DelegationCall?,
         val block: BlockExpression?
     ) : Declaration(), WithModifiers {
@@ -601,7 +602,7 @@ sealed class Node {
          */
         data class Catch(
             val catchKeyword: Keyword.Catch,
-            val params: FunctionDeclaration.Params,
+            val params: FunctionParams,
             val block: BlockExpression
         ) : Node()
     }
