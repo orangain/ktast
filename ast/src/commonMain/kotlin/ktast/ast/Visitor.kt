@@ -287,7 +287,7 @@ open class Visitor {
             is Node.StringLiteralExpression.LongTemplateEntry -> {
                 visitChildren(expression)
             }
-            is Node.ConstantExpression -> {}
+            is Node.ConstantLiteralExpression -> {}
             is Node.LambdaExpression -> {
                 visitChildren(params)
                 visitChildren(body)

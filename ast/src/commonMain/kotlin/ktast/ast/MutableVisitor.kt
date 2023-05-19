@@ -317,7 +317,7 @@ open class MutableVisitor(
                     is Node.StringLiteralExpression.LongTemplateEntry -> copy(
                         expression = visitChildren(expression, newCh)
                     )
-                    is Node.ConstantExpression -> this
+                    is Node.ConstantLiteralExpression -> this
                     is Node.LambdaExpression -> copy(
                         params = visitChildren(params, newCh),
                         body = visitChildren(body, newCh)

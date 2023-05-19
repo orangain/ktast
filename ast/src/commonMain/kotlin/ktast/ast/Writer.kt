@@ -412,7 +412,7 @@ open class Writer(
                 }
                 is Node.StringLiteralExpression.LongTemplateEntry ->
                     append("\${").also { children(expression) }.append('}')
-                is Node.ConstantExpression ->
+                is Node.ConstantLiteralExpression ->
                     append(value)
                 is Node.LambdaExpression -> {
                     append("{")

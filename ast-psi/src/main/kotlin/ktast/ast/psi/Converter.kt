@@ -672,14 +672,14 @@ open class Converter {
             error("Unrecognized string template type for $v")
     }
 
-    open fun convertConst(v: KtConstantExpression) = Node.ConstantExpression(
+    open fun convertConst(v: KtConstantExpression) = Node.ConstantLiteralExpression(
         value = v.text,
         form = when (v.node.elementType) {
-            KtNodeTypes.BOOLEAN_CONSTANT -> Node.ConstantExpression.Form.BOOLEAN
-            KtNodeTypes.CHARACTER_CONSTANT -> Node.ConstantExpression.Form.CHAR
-            KtNodeTypes.INTEGER_CONSTANT -> Node.ConstantExpression.Form.INT
-            KtNodeTypes.FLOAT_CONSTANT -> Node.ConstantExpression.Form.FLOAT
-            KtNodeTypes.NULL -> Node.ConstantExpression.Form.NULL
+            KtNodeTypes.BOOLEAN_CONSTANT -> Node.ConstantLiteralExpression.Form.BOOLEAN
+            KtNodeTypes.CHARACTER_CONSTANT -> Node.ConstantLiteralExpression.Form.CHAR
+            KtNodeTypes.INTEGER_CONSTANT -> Node.ConstantLiteralExpression.Form.INT
+            KtNodeTypes.FLOAT_CONSTANT -> Node.ConstantLiteralExpression.Form.FLOAT
+            KtNodeTypes.NULL -> Node.ConstantLiteralExpression.Form.NULL
             else -> error("Unrecognized const type for $v")
         }
     ).map(v)

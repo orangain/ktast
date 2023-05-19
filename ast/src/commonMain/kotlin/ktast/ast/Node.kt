@@ -769,7 +769,7 @@ sealed class Node {
     /**
      * AST node corresponds to KtConstantExpression.
      */
-    data class ConstantExpression(
+    data class ConstantLiteralExpression(
         val value: String,
         val form: Form
     ) : Expression() {
