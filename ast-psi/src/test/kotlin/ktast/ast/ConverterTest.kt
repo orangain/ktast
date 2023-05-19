@@ -15,15 +15,15 @@ class ConverterTest {
             """.trimIndent(),
             """
                 Node.KotlinFile
-                  Node.Declaration.Property
-                    Node.Declaration.Property.ValOrVar
-                    AFTER: Node.Extra.Whitespace
-                    Node.Declaration.Property.Variable
-                      Node.Expression.Name
-                      AFTER: Node.Extra.Whitespace
+                  Node.PropertyDeclaration
+                    Node.PropertyDeclaration.ValOrVar
+                    AFTER: Node.Whitespace
+                    Node.PropertyDeclaration.Variable
+                      Node.NameExpression
+                      AFTER: Node.Whitespace
                     Node.Keyword.Equal
-                    AFTER: Node.Extra.Whitespace
-                    Node.Expression.StringTemplate
+                    AFTER: Node.Whitespace
+                    Node.StringTemplateExpression
             """.trimIndent()
         )
     }
@@ -36,17 +36,17 @@ class ConverterTest {
             """.trimIndent(),
             """
                 Node.KotlinFile
-                  Node.Declaration.Property
-                    Node.Declaration.Property.ValOrVar
-                    AFTER: Node.Extra.Whitespace
-                    Node.Declaration.Property.Variable
-                      Node.Expression.Name
-                      AFTER: Node.Extra.Whitespace
+                  Node.PropertyDeclaration
+                    Node.PropertyDeclaration.ValOrVar
+                    AFTER: Node.Whitespace
+                    Node.PropertyDeclaration.Variable
+                      Node.NameExpression
+                      AFTER: Node.Whitespace
                     Node.Keyword.Equal
-                    AFTER: Node.Extra.Whitespace
-                    Node.Expression.StringTemplate
-                    AFTER: Node.Extra.Whitespace
-                    AFTER: Node.Extra.Comment
+                    AFTER: Node.Whitespace
+                    Node.StringTemplateExpression
+                    AFTER: Node.Whitespace
+                    AFTER: Node.Comment
             """.trimIndent()
         )
     }

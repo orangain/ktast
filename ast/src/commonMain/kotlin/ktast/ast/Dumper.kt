@@ -70,16 +70,16 @@ class Dumper(
         if (verbose) {
             when (this) {
                 is Node.HasSimpleStringRepresentation -> mapOf("str" to string)
-                is Node.Declaration.SecondaryConstructor.DelegationCall -> mapOf("target" to target)
-                is Node.Expression.Unary -> mapOf("prefix" to prefix)
-                is Node.Modifier.AnnotationSet -> mapOf("target" to target)
-                is Node.Expression.Name -> mapOf("name" to name)
-                is Node.Expression.Constant -> mapOf("value" to value, "form" to form)
-                is Node.Extra.Comment -> mapOf("text" to text)
-                is Node.Expression.StringTemplate.Entry.Regular -> mapOf("str" to str)
-                is Node.Expression.StringTemplate.Entry.ShortTemplate -> mapOf("str" to str)
-                is Node.Expression.StringTemplate.Entry.UnicodeEscape -> mapOf("digits" to digits)
-                is Node.Expression.StringTemplate.Entry.RegularEscape -> mapOf("char" to char.toEscapedString())
+                is Node.SecondaryConstructorDeclaration.DelegationCall -> mapOf("target" to target)
+                is Node.UnaryExpression -> mapOf("prefix" to prefix)
+                is Node.AnnotationSetModifier -> mapOf("target" to target)
+                is Node.NameExpression -> mapOf("name" to name)
+                is Node.ConstantExpression -> mapOf("value" to value, "form" to form)
+                is Node.Comment -> mapOf("text" to text)
+                is Node.StringTemplateExpression.Entry.Regular -> mapOf("str" to str)
+                is Node.StringTemplateExpression.Entry.ShortTemplate -> mapOf("str" to str)
+                is Node.StringTemplateExpression.Entry.UnicodeEscape -> mapOf("digits" to digits)
+                is Node.StringTemplateExpression.Entry.RegularEscape -> mapOf("char" to char.toEscapedString())
                 else -> null
             }?.let {
                 app.append(it.toString())
