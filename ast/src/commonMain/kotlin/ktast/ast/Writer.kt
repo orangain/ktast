@@ -160,10 +160,10 @@ open class Writer(
                     children(typeConstraints)
                     children(equals)
                     children(initializer)
-                    children(delegate)
+                    children(propertyDelegate)
                     children(accessors)
                 }
-                is Node.PropertyDeclaration.Delegate -> {
+                is Node.PropertyDeclaration.PropertyDelegate -> {
                     children(byKeyword)
                     children(expression)
                 }
@@ -602,7 +602,7 @@ open class Writer(
         }
         if (parent is Node.PropertyDeclaration && this is Node.PropertyDeclaration.Accessor) {
             // Property accessors require newline when the previous element is expression
-            if ((parent.accessors.first() === this && (parent.delegate != null || parent.initializer != null)) ||
+            if ((parent.accessors.first() === this && (parent.propertyDelegate != null || parent.initializer != null)) ||
                 (parent.accessors.size == 2 && parent.accessors.last() === this && parent.accessors[0].equals != null)
             ) {
                 if (!containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {

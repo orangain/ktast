@@ -117,10 +117,10 @@ open class MutableVisitor(
                         typeConstraints = visitChildren(typeConstraints, newCh),
                         equals = visitChildren(equals, newCh),
                         initializer = visitChildren(initializer, newCh),
-                        delegate = visitChildren(delegate, newCh),
+                        propertyDelegate = visitChildren(propertyDelegate, newCh),
                         accessors = visitChildren(accessors, newCh)
                     )
-                    is Node.PropertyDeclaration.Delegate -> copy(
+                    is Node.PropertyDeclaration.PropertyDelegate -> copy(
                         byKeyword = visitChildren(byKeyword, newCh),
                         expression = visitChildren(expression, newCh),
                     )

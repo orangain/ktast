@@ -186,7 +186,7 @@ open class Converter {
         },
         equals = v.equalsToken?.let { convertKeyword(it, Node.Keyword::Equal) },
         initializer = v.initializer?.let(::convertExpression),
-        delegate = v.delegate?.let(::convertPropertyDelegate),
+        propertyDelegate = v.delegate?.let(::convertPropertyDelegate),
         accessors = v.accessors.map(::convertPropertyAccessor),
     ).map(v)
 
@@ -202,7 +202,7 @@ open class Converter {
         typeConstraints = null,
         equals = convertKeyword(v.equalsToken, Node.Keyword::Equal),
         initializer = v.initializer?.let(::convertExpression),
-        delegate = null,
+        propertyDelegate = null,
         accessors = listOf(),
     ).map(v)
 
@@ -214,7 +214,7 @@ open class Converter {
         typeRef = v.typeReference?.let(::convertTypeRef)
     ).map(v)
 
-    open fun convertPropertyDelegate(v: KtPropertyDelegate) = Node.PropertyDeclaration.Delegate(
+    open fun convertPropertyDelegate(v: KtPropertyDelegate) = Node.PropertyDeclaration.PropertyDelegate(
         byKeyword = convertKeyword(v.byKeyword, Node.Keyword::By),
         expression = convertExpression(v.expression ?: error("Missing expression for $v")),
     ).map(v)

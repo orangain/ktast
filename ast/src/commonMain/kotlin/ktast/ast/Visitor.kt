@@ -107,10 +107,10 @@ open class Visitor {
                 visitChildren(typeConstraints)
                 visitChildren(equals)
                 visitChildren(initializer)
-                visitChildren(delegate)
+                visitChildren(propertyDelegate)
                 visitChildren(accessors)
             }
-            is Node.PropertyDeclaration.Delegate -> {
+            is Node.PropertyDeclaration.PropertyDelegate -> {
                 visitChildren(byKeyword)
                 visitChildren(expression)
             }

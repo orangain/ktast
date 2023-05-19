@@ -278,11 +278,11 @@ sealed class Node {
         val typeConstraints: TypeConstraints?,
         val equals: Keyword.Equal?,
         val initializer: Expression?,
-        val delegate: Delegate?,
+        val propertyDelegate: PropertyDelegate?,
         val accessors: List<Accessor>
     ) : Declaration(), WithModifiers {
         init {
-            if (delegate != null) {
+            if (propertyDelegate != null) {
                 require(equals == null && initializer == null) {
                     "equals and initializer must be null when delegate is not null"
                 }
@@ -316,7 +316,7 @@ sealed class Node {
         /**
          * AST node corresponds to KtPropertyDelegate.
          */
-        data class Delegate(
+        data class PropertyDelegate(
             val byKeyword: Keyword.By,
             val expression: Expression,
         ) : Node()
