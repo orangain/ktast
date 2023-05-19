@@ -128,7 +128,7 @@ open class MutableVisitor(
                         name = visitChildren(name, newCh),
                         typeRef = visitChildren(typeRef, newCh)
                     )
-                    is Node.PropertyDeclaration.Accessor.Getter -> copy(
+                    is Node.PropertyDeclaration.Getter -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         getKeyword = visitChildren(getKeyword, newCh),
                         typeRef = visitChildren(typeRef, newCh),
@@ -136,7 +136,7 @@ open class MutableVisitor(
                         equals = visitChildren(equals, newCh),
                         body = visitChildren(body, newCh),
                     )
-                    is Node.PropertyDeclaration.Accessor.Setter -> copy(
+                    is Node.PropertyDeclaration.Setter -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         setKeyword = visitChildren(setKeyword, newCh),
                         params = visitChildren(params, newCh),

@@ -324,26 +324,25 @@ sealed class Node {
         /**
          * AST node corresponds to KtPropertyAccessor.
          */
-        sealed class Accessor : Node(), WithModifiers, WithPostModifiers, WithFunctionBody {
+        sealed class Accessor : Node(), WithModifiers, WithPostModifiers, WithFunctionBody
 
-            data class Getter(
-                override val modifiers: Modifiers?,
-                val getKeyword: Keyword.Get,
-                val typeRef: TypeRef?,
-                override val postModifiers: List<PostModifier>,
-                override val equals: Keyword.Equal?,
-                override val body: Expression?,
-            ) : Accessor()
+        data class Getter(
+            override val modifiers: Modifiers?,
+            val getKeyword: Keyword.Get,
+            val typeRef: TypeRef?,
+            override val postModifiers: List<PostModifier>,
+            override val equals: Keyword.Equal?,
+            override val body: Expression?,
+        ) : Accessor()
 
-            data class Setter(
-                override val modifiers: Modifiers?,
-                val setKeyword: Keyword.Set,
-                val params: LambdaExpression.Params?,
-                override val postModifiers: List<PostModifier>,
-                override val equals: Keyword.Equal?,
-                override val body: Expression?,
-            ) : Accessor()
-        }
+        data class Setter(
+            override val modifiers: Modifiers?,
+            val setKeyword: Keyword.Set,
+            val params: LambdaExpression.Params?,
+            override val postModifiers: List<PostModifier>,
+            override val equals: Keyword.Equal?,
+            override val body: Expression?,
+        ) : Accessor()
     }
 
     /**

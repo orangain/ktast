@@ -171,7 +171,7 @@ open class Writer(
                     children(name)
                     if (typeRef != null) append(":").also { children(typeRef) }
                 }
-                is Node.PropertyDeclaration.Accessor.Getter -> {
+                is Node.PropertyDeclaration.Getter -> {
                     children(modifiers)
                     children(getKeyword)
                     if (body != null) {
@@ -182,7 +182,7 @@ open class Writer(
                         children(body)
                     }
                 }
-                is Node.PropertyDeclaration.Accessor.Setter -> {
+                is Node.PropertyDeclaration.Setter -> {
                     children(modifiers)
                     children(setKeyword)
                     if (body != null) {

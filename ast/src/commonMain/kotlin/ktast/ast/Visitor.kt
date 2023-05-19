@@ -118,7 +118,7 @@ open class Visitor {
                 visitChildren(name)
                 visitChildren(typeRef)
             }
-            is Node.PropertyDeclaration.Accessor.Getter -> {
+            is Node.PropertyDeclaration.Getter -> {
                 visitChildren(modifiers)
                 visitChildren(getKeyword)
                 visitChildren(typeRef)
@@ -126,7 +126,7 @@ open class Visitor {
                 visitChildren(equals)
                 visitChildren(body)
             }
-            is Node.PropertyDeclaration.Accessor.Setter -> {
+            is Node.PropertyDeclaration.Setter -> {
                 visitChildren(modifiers)
                 visitChildren(setKeyword)
                 visitChildren(params)
