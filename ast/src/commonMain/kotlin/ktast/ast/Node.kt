@@ -129,7 +129,7 @@ sealed class Node {
         val typeParams: TypeParams?,
         val primaryConstructor: PrimaryConstructor?,
         val classParents: ClassParents?,
-        val typeConstraints: TypeConstraints?,
+        val typeConstraintSet: TypeConstraintSet?,
         val classBody: ClassBody?,
     ) : Declaration(), WithModifiers {
 
@@ -286,7 +286,7 @@ sealed class Node {
         val variables: List<Variable>,
         val trailingComma: Keyword.Comma?,
         val rPar: Keyword.RPar?,
-        val typeConstraints: TypeConstraints?,
+        val typeConstraintSet: TypeConstraintSet?,
         val equals: Keyword.Equal?,
         val initializer: Expression?,
         val propertyDelegate: PropertyDelegate?,
@@ -1084,7 +1084,7 @@ sealed class Node {
     /**
      * Virtual AST node corresponds to a pair of "where" keyword and KtTypeConstraintList.
      */
-    data class TypeConstraints(
+    data class TypeConstraintSet(
         val whereKeyword: Keyword.Where,
         val constraints: TypeConstraintList,
     ) : PostModifier() {

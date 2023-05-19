@@ -97,7 +97,7 @@ open class Writer(
                         append(":")
                         children(classParents)
                     }
-                    children(typeConstraints)
+                    children(typeConstraintSet)
                     children(classBody)
                 }
                 is Node.ClassDeclaration.ClassParent.CallConstructor -> {
@@ -157,7 +157,7 @@ open class Writer(
                     children(variables, ",")
                     children(trailingComma)
                     children(rPar)
-                    children(typeConstraints)
+                    children(typeConstraintSet)
                     children(equals)
                     children(initializer)
                     children(propertyDelegate)
@@ -541,11 +541,11 @@ open class Writer(
                         nextHeuristicWhitespace = " " // Insert heuristic space after annotation if single form
                     }
                 }
-                is Node.TypeConstraints -> {
+                is Node.TypeConstraintSet -> {
                     children(whereKeyword)
                     children(constraints)
                 }
-                is Node.TypeConstraints.TypeConstraint -> {
+                is Node.TypeConstraintSet.TypeConstraint -> {
                     children(annotationSets)
                     children(name)
                     append(":")

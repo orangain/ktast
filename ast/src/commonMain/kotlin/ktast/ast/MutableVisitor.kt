@@ -48,7 +48,7 @@ open class MutableVisitor(
                         typeParams = visitChildren(typeParams, newCh),
                         primaryConstructor = visitChildren(primaryConstructor, newCh),
                         classParents = visitChildren(classParents, newCh),
-                        typeConstraints = visitChildren(typeConstraints, newCh),
+                        typeConstraintSet = visitChildren(typeConstraintSet, newCh),
                         classBody = visitChildren(classBody, newCh)
                     )
                     is Node.ClassDeclaration.ClassParents -> copy(
@@ -114,7 +114,7 @@ open class MutableVisitor(
                         variables = visitChildren(variables, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
                         rPar = visitChildren(rPar, newCh),
-                        typeConstraints = visitChildren(typeConstraints, newCh),
+                        typeConstraintSet = visitChildren(typeConstraintSet, newCh),
                         equals = visitChildren(equals, newCh),
                         initializer = visitChildren(initializer, newCh),
                         propertyDelegate = visitChildren(propertyDelegate, newCh),
@@ -433,14 +433,14 @@ open class MutableVisitor(
                         type = visitChildren(type, newCh),
                         args = visitChildren(args, newCh),
                     )
-                    is Node.TypeConstraints -> copy(
+                    is Node.TypeConstraintSet -> copy(
                         whereKeyword = visitChildren(whereKeyword, newCh),
                         constraints = visitChildren(constraints, newCh),
                     )
-                    is Node.TypeConstraints.TypeConstraintList -> copy(
+                    is Node.TypeConstraintSet.TypeConstraintList -> copy(
                         elements = visitChildren(elements, newCh),
                     )
-                    is Node.TypeConstraints.TypeConstraint -> copy(
+                    is Node.TypeConstraintSet.TypeConstraint -> copy(
                         annotationSets = visitChildren(annotationSets, newCh),
                         name = visitChildren(name, newCh),
                         typeRef = visitChildren(typeRef, newCh)

@@ -76,8 +76,8 @@ open class Converter {
         typeParams = v.typeParameterList?.let(::convertTypeParams),
         primaryConstructor = v.primaryConstructor?.let(::convertPrimaryConstructor),
         classParents = v.getSuperTypeList()?.let(::convertParents),
-        typeConstraints = v.typeConstraintList?.let { typeConstraintList ->
-            Node.TypeConstraints(
+        typeConstraintSet = v.typeConstraintList?.let { typeConstraintList ->
+            Node.TypeConstraintSet(
                 whereKeyword = convertKeyword(v.whereKeyword, Node.Keyword::Where),
                 constraints = convertTypeConstraints(typeConstraintList),
             ).mapNotCorrespondsPsiElement(v)
@@ -178,8 +178,8 @@ open class Converter {
         ),
         trailingComma = null,
         rPar = null,
-        typeConstraints = v.typeConstraintList?.let { typeConstraintList ->
-            Node.TypeConstraints(
+        typeConstraintSet = v.typeConstraintList?.let { typeConstraintList ->
+            Node.TypeConstraintSet(
                 whereKeyword = convertKeyword(v.whereKeyword, Node.Keyword::Where),
                 constraints = convertTypeConstraints(typeConstraintList),
             ).mapNotCorrespondsPsiElement(v)
@@ -199,7 +199,7 @@ open class Converter {
         variables = v.entries.map(::convertPropertyVariable),
         trailingComma = v.trailingComma?.let(::convertComma),
         rPar = v.rPar?.let { convertKeyword(it, Node.Keyword::RPar) },
-        typeConstraints = null,
+        typeConstraintSet = null,
         equals = convertKeyword(v.equalsToken, Node.Keyword::Equal),
         initializer = v.initializer?.let(::convertExpression),
         propertyDelegate = null,
@@ -348,11 +348,11 @@ open class Converter {
         ).map(v)
     }
 
-    open fun convertTypeConstraints(v: KtTypeConstraintList) = Node.TypeConstraints.TypeConstraintList(
+    open fun convertTypeConstraints(v: KtTypeConstraintList) = Node.TypeConstraintSet.TypeConstraintList(
         elements = v.constraints.map(::convertTypeConstraint),
     ).map(v)
 
-    open fun convertTypeConstraint(v: KtTypeConstraint) = Node.TypeConstraints.TypeConstraint(
+    open fun convertTypeConstraint(v: KtTypeConstraint) = Node.TypeConstraintSet.TypeConstraint(
         annotationSets = v.children.mapNotNull {
             when (it) {
                 is KtAnnotationEntry -> convertAnnotationSet(it)
@@ -978,7 +978,7 @@ open class Converter {
         var prevPsi = nonExtraChildren[0]
         return nonExtraChildren.drop(1).mapNotNull { psi ->
             when (psi) {
-                is KtTypeConstraintList -> Node.TypeConstraints(
+                is KtTypeConstraintList -> Node.TypeConstraintSet(
                     whereKeyword = convertKeyword(prevPsi, Node.Keyword::Where),
                     constraints = convertTypeConstraints(psi),
                 ).mapNotCorrespondsPsiElement(v)

@@ -45,7 +45,7 @@ open class Visitor {
                 visitChildren(typeParams)
                 visitChildren(primaryConstructor)
                 visitChildren(classParents)
-                visitChildren(typeConstraints)
+                visitChildren(typeConstraintSet)
                 visitChildren(classBody)
             }
             is Node.ClassDeclaration.ClassParent.CallConstructor -> {
@@ -104,7 +104,7 @@ open class Visitor {
                 visitChildren(variables)
                 visitChildren(trailingComma)
                 visitChildren(rPar)
-                visitChildren(typeConstraints)
+                visitChildren(typeConstraintSet)
                 visitChildren(equals)
                 visitChildren(initializer)
                 visitChildren(propertyDelegate)
@@ -396,11 +396,11 @@ open class Visitor {
                 visitChildren(type)
                 visitChildren(args)
             }
-            is Node.TypeConstraints -> {
+            is Node.TypeConstraintSet -> {
                 visitChildren(whereKeyword)
                 visitChildren(constraints)
             }
-            is Node.TypeConstraints.TypeConstraint -> {
+            is Node.TypeConstraintSet.TypeConstraint -> {
                 visitChildren(annotationSets)
                 visitChildren(name)
                 visitChildren(typeRef)
