@@ -151,7 +151,7 @@ open class Visitor {
                 visitChildren(target)
                 visitChildren(args)
             }
-            is Node.EnumEntry -> {
+            is Node.ClassDeclaration.ClassBody.EnumEntry -> {
                 visitChildren(modifiers)
                 visitChildren(name)
                 visitChildren(args)

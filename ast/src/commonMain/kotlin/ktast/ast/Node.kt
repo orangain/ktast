@@ -211,7 +211,18 @@ sealed class Node {
             val enumEntries: List<EnumEntry>,
             val hasTrailingCommaInEnumEntries: Boolean,
             override val declarations: List<Declaration>,
-        ) : Node(), DeclarationsContainer
+        ) : Node(), DeclarationsContainer {
+
+            /**
+             * AST node corresponds to KtEnumEntry.
+             */
+            data class EnumEntry(
+                override val modifiers: Modifiers?,
+                val name: NameExpression,
+                val args: ValueArgs?,
+                val classBody: ClassBody?,
+            ) : Node(), WithModifiers
+        }
     }
 
     /**
@@ -396,16 +407,6 @@ sealed class Node {
             }
         }
     }
-
-    /**
-     * AST node corresponds to KtEnumEntry.
-     */
-    data class EnumEntry(
-        override val modifiers: Modifiers?,
-        val name: NameExpression,
-        val args: ValueArgs?,
-        val classBody: ClassDeclaration.ClassBody?,
-    ) : Node(), WithModifiers
 
     /**
      * AST node corresponds to KtTypeParameterList.

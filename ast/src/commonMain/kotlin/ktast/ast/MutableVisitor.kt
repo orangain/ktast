@@ -161,7 +161,7 @@ open class MutableVisitor(
                         target = visitChildren(target, newCh),
                         args = visitChildren(args, newCh),
                     )
-                    is Node.EnumEntry -> copy(
+                    is Node.ClassDeclaration.ClassBody.EnumEntry -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         name = visitChildren(name, newCh),
                         args = visitChildren(args, newCh),

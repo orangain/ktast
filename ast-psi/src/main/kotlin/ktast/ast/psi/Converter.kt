@@ -263,12 +263,13 @@ open class Converter {
             args = v.valueArgumentList?.let(::convertValueArgs)
         ).map(v)
 
-    open fun convertEnumEntry(v: KtEnumEntry): Node.EnumEntry = Node.EnumEntry(
-        modifiers = v.modifierList?.let(::convertModifiers),
-        name = v.nameIdentifier?.let(::convertName) ?: error("Unnamed enum"),
-        args = v.initializerList?.let(::convertValueArgs),
-        classBody = v.body?.let(::convertClassBody),
-    ).map(v)
+    open fun convertEnumEntry(v: KtEnumEntry): Node.ClassDeclaration.ClassBody.EnumEntry =
+        Node.ClassDeclaration.ClassBody.EnumEntry(
+            modifiers = v.modifierList?.let(::convertModifiers),
+            name = v.nameIdentifier?.let(::convertName) ?: error("Unnamed enum"),
+            args = v.initializerList?.let(::convertValueArgs),
+            classBody = v.body?.let(::convertClassBody),
+        ).map(v)
 
     open fun convertClassBody(v: KtClassBody): Node.ClassDeclaration.ClassBody {
         val ktEnumEntries = v.declarations.filterIsInstance<KtEnumEntry>()

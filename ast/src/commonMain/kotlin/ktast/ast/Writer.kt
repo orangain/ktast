@@ -212,7 +212,7 @@ open class Writer(
                     children(target)
                     children(args)
                 }
-                is Node.EnumEntry -> {
+                is Node.ClassDeclaration.ClassBody.EnumEntry -> {
                     children(modifiers)
                     children(name)
                     children(args)
