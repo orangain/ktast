@@ -354,7 +354,7 @@ open class MutableVisitor(
                         whenBranches = visitChildren(whenBranches, newCh),
                     )
                     is Node.WhenExpression.WhenBranch.Conditional -> copy(
-                        conditions = visitChildren(conditions, newCh),
+                        whenConditions = visitChildren(whenConditions, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
                         body = visitChildren(body, newCh),
                     )
@@ -362,13 +362,13 @@ open class MutableVisitor(
                         elseKeyword = visitChildren(elseKeyword, newCh),
                         body = visitChildren(body, newCh),
                     )
-                    is Node.WhenExpression.Condition.Expression -> copy(
+                    is Node.WhenExpression.WhenCondition.Expression -> copy(
                         expression = visitChildren(expression, newCh)
                     )
-                    is Node.WhenExpression.Condition.In -> copy(
+                    is Node.WhenExpression.WhenCondition.In -> copy(
                         expression = visitChildren(expression, newCh)
                     )
-                    is Node.WhenExpression.Condition.Is -> copy(
+                    is Node.WhenExpression.WhenCondition.Is -> copy(
                         typeRef = visitChildren(typeRef, newCh)
                     )
                     is Node.ObjectExpression -> copy(

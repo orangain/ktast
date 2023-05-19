@@ -458,20 +458,20 @@ open class Writer(
                     append("}")
                 }
                 is Node.WhenExpression.WhenBranch.Conditional -> {
-                    children(conditions, ",", trailingSeparator = trailingComma)
+                    children(whenConditions, ",", trailingSeparator = trailingComma)
                     append("->").also { children(body) }
                 }
                 is Node.WhenExpression.WhenBranch.Else -> {
                     children(elseKeyword)
                     append("->").also { children(body) }
                 }
-                is Node.WhenExpression.Condition.Expression ->
+                is Node.WhenExpression.WhenCondition.Expression ->
                     children(expression)
-                is Node.WhenExpression.Condition.In -> {
+                is Node.WhenExpression.WhenCondition.In -> {
                     if (not) append('!')
                     append("in").also { children(expression) }
                 }
-                is Node.WhenExpression.Condition.Is -> {
+                is Node.WhenExpression.WhenCondition.Is -> {
                     if (not) append('!')
                     append("is").also { children(typeRef) }
                 }

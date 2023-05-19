@@ -862,7 +862,7 @@ sealed class Node {
          */
         sealed class WhenBranch : Node() {
             data class Conditional(
-                val conditions: List<Condition>,
+                val whenConditions: List<WhenCondition>,
                 val trailingComma: Keyword.Comma?,
                 val body: Expression,
             ) : WhenBranch()
@@ -876,11 +876,11 @@ sealed class Node {
         /**
          * AST node corresponds to KtWhenCondition.
          */
-        sealed class Condition : Node() {
+        sealed class WhenCondition : Node() {
             /**
              * AST node corresponds to KtWhenConditionWithExpression.
              */
-            data class Expression(val expression: Node.Expression) : Condition()
+            data class Expression(val expression: Node.Expression) : WhenCondition()
 
             /**
              * AST node corresponds to KtWhenConditionInRange.
@@ -888,7 +888,7 @@ sealed class Node {
             data class In(
                 val expression: Node.Expression,
                 val not: Boolean
-            ) : Condition()
+            ) : WhenCondition()
 
             /**
              * AST node corresponds to KtWhenConditionIsPattern.
@@ -896,7 +896,7 @@ sealed class Node {
             data class Is(
                 val typeRef: TypeRef,
                 val not: Boolean
-            ) : Condition()
+            ) : WhenCondition()
         }
     }
 

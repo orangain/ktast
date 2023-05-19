@@ -320,7 +320,7 @@ open class Visitor {
                 visitChildren(whenBranches)
             }
             is Node.WhenExpression.WhenBranch.Conditional -> {
-                visitChildren(conditions)
+                visitChildren(whenConditions)
                 visitChildren(trailingComma)
                 visitChildren(body)
             }
@@ -328,13 +328,13 @@ open class Visitor {
                 visitChildren(elseKeyword)
                 visitChildren(body)
             }
-            is Node.WhenExpression.Condition.Expression -> {
+            is Node.WhenExpression.WhenCondition.Expression -> {
                 visitChildren(expression)
             }
-            is Node.WhenExpression.Condition.In -> {
+            is Node.WhenExpression.WhenCondition.In -> {
                 visitChildren(expression)
             }
-            is Node.WhenExpression.Condition.Is -> {
+            is Node.WhenExpression.WhenCondition.Is -> {
                 visitChildren(typeRef)
             }
             is Node.ObjectExpression -> {
