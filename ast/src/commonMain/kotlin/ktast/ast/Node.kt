@@ -1,15 +1,15 @@
 package ktast.ast
 
 /**
- * Base class of all AST nodes.
+ * Common interface of all AST nodes.
  */
-sealed class Node {
-    var tag: Any? = null
+sealed interface Node {
+    var tag: Any?
 
     abstract class NodeList<out E : Node>(
         val prefix: String = "",
         val suffix: String = "",
-    ) : Node() {
+    ) : Node {
         abstract val elements: List<E>
     }
 
@@ -69,15 +69,17 @@ sealed class Node {
         override val annotationSets: List<AnnotationSet>,
         override val packageDirective: PackageDirective?,
         override val importDirectives: ImportDirectives?,
-        override val declarations: List<Declaration>
-    ) : Node(), KotlinEntry, DeclarationsContainer
+        override val declarations: List<Declaration>,
+        override var tag: Any? = null,
+    ) : Node, KotlinEntry, DeclarationsContainer
 
     data class KotlinScript(
         override val annotationSets: List<AnnotationSet>,
         override val packageDirective: PackageDirective?,
         override val importDirectives: ImportDirectives?,
-        val expressions: List<Expression>
-    ) : Node(), KotlinEntry
+        val expressions: List<Expression>,
+        override var tag: Any? = null,
+    ) : Node, KotlinEntry
 
     /**
      * AST node corresponds to KtPackageDirective.
@@ -86,13 +88,15 @@ sealed class Node {
         override val modifiers: Modifiers?,
         val packageKeyword: Keyword.Package,
         val names: List<NameExpression>,
-    ) : Node(), WithModifiers
+        override var tag: Any? = null,
+    ) : Node, WithModifiers
 
     /**
      * AST node corresponds to KtImportList.
      */
     data class ImportDirectives(
         override val elements: List<ImportDirective>,
+        override var tag: Any? = null,
     ) : NodeList<ImportDirective>()
 
     /**
@@ -101,21 +105,23 @@ sealed class Node {
     data class ImportDirective(
         val importKeyword: Keyword.Import,
         val names: List<NameExpression>,
-        val importAlias: ImportAlias?
-    ) : Node() {
+        val importAlias: ImportAlias?,
+        override var tag: Any? = null,
+    ) : Node {
 
         /**
          * AST node corresponds to KtImportAlias.
          */
         data class ImportAlias(
             val name: NameExpression,
-        ) : Node()
+            override var tag: Any? = null,
+        ) : Node
     }
 
     /**
      * Base class of [Node.Declaration] and [Node.Expression].
      */
-    sealed class Statement : Node()
+    sealed class Statement : Node
 
     sealed class Declaration : Statement()
 
@@ -131,6 +137,7 @@ sealed class Node {
         val classParents: ClassParents?,
         val typeConstraintSet: TypeConstraintSet?,
         val classBody: ClassBody?,
+        override var tag: Any? = null,
     ) : Declaration(), WithModifiers {
 
         val isClass = declarationKeyword.token == DeclarationKeyword.Token.CLASS
@@ -139,7 +146,10 @@ sealed class Node {
         val isCompanion = modifiers?.elements.orEmpty().contains(KeywordModifier(KeywordModifier.Token.COMPANION))
         val isEnum = modifiers?.elements.orEmpty().contains(KeywordModifier(KeywordModifier.Token.ENUM))
 
-        data class DeclarationKeyword(override val token: Token) : Node(),
+        data class DeclarationKeyword(
+            override val token: Token,
+            override var tag: Any? = null,
+        ) : Node,
             TokenContainer<DeclarationKeyword.Token> {
             companion object {
                 private val mapStringToToken = Token.values().associateBy { it.string }
@@ -160,6 +170,7 @@ sealed class Node {
          */
         data class ClassParents(
             override val elements: List<ClassParent>,
+            override var tag: Any? = null,
         ) : CommaSeparatedNodeList<ClassParent>("", "") {
             override val trailingComma: Keyword.Comma? = null
         }
@@ -167,7 +178,7 @@ sealed class Node {
         /**
          * AST node corresponds to KtSuperTypeListEntry.
          */
-        sealed class ClassParent : Node() {
+        sealed class ClassParent : Node {
             /**
              * AST node corresponds to KtSuperTypeCallEntry.
              */
@@ -175,7 +186,8 @@ sealed class Node {
                 val type: SimpleType,
                 val typeArgs: TypeArgs?,
                 val args: ValueArgs?,
-                val lambda: CallExpression.LambdaArg?
+                val lambda: CallExpression.LambdaArg?,
+                override var tag: Any? = null,
             ) : ClassParent()
 
             /**
@@ -184,7 +196,8 @@ sealed class Node {
             data class DelegatedType(
                 val type: SimpleType,
                 val byKeyword: Keyword.By,
-                val expression: Expression
+                val expression: Expression,
+                override var tag: Any? = null,
             ) : ClassParent()
 
             /**
@@ -192,6 +205,7 @@ sealed class Node {
              */
             data class Type(
                 val type: SimpleType,
+                override var tag: Any? = null,
             ) : ClassParent()
         }
 
@@ -201,8 +215,9 @@ sealed class Node {
         data class PrimaryConstructor(
             override val modifiers: Modifiers?,
             val constructorKeyword: Keyword.Constructor?,
-            val params: FunctionParams?
-        ) : Node(), WithModifiers
+            val params: FunctionParams?,
+            override var tag: Any? = null,
+        ) : Node, WithModifiers
 
         /**
          * AST node corresponds to KtClassBody.
@@ -211,7 +226,8 @@ sealed class Node {
             val enumEntries: List<EnumEntry>,
             val hasTrailingCommaInEnumEntries: Boolean,
             override val declarations: List<Declaration>,
-        ) : Node(), DeclarationsContainer {
+            override var tag: Any? = null,
+        ) : Node, DeclarationsContainer {
 
             /**
              * AST node corresponds to KtEnumEntry.
@@ -221,7 +237,8 @@ sealed class Node {
                 val name: NameExpression,
                 val args: ValueArgs?,
                 val classBody: ClassBody?,
-            ) : Node(), WithModifiers
+                override var tag: Any? = null,
+            ) : Node, WithModifiers
         }
     }
 
@@ -231,6 +248,7 @@ sealed class Node {
     data class InitDeclaration(
         override val modifiers: Modifiers?,
         val block: BlockExpression,
+        override var tag: Any? = null,
     ) : Declaration(), WithModifiers
 
     /**
@@ -248,6 +266,7 @@ sealed class Node {
         override val postModifiers: List<PostModifier>,
         override val equals: Keyword.Equal?,
         override val body: Expression?,
+        override var tag: Any? = null,
     ) : Declaration(), WithModifiers, WithPostModifiers, WithFunctionBody {
 
     }
@@ -258,6 +277,7 @@ sealed class Node {
     data class FunctionParams(
         override val elements: List<FunctionParam>,
         override val trailingComma: Keyword.Comma?,
+        override var tag: Any? = null,
     ) : CommaSeparatedNodeList<FunctionParam>("(", ")")
 
     /**
@@ -271,7 +291,8 @@ sealed class Node {
         val typeRef: TypeRef?,
         val equals: Keyword.Equal?,
         val defaultValue: Expression?,
-    ) : Node(), WithModifiers
+        override var tag: Any? = null,
+    ) : Node, WithModifiers
 
     /**
      * AST node corresponds to KtProperty or KtDestructuringDeclaration.
@@ -290,7 +311,8 @@ sealed class Node {
         val equals: Keyword.Equal?,
         val initializer: Expression?,
         val propertyDelegate: PropertyDelegate?,
-        val accessors: List<Accessor>
+        val accessors: List<Accessor>,
+        override var tag: Any? = null,
     ) : Declaration(), WithModifiers {
         init {
             if (propertyDelegate != null) {
@@ -309,7 +331,10 @@ sealed class Node {
             }
         }
 
-        data class ValOrVar(override val token: Token) : Node(), TokenContainer<ValOrVar.Token> {
+        data class ValOrVar(
+            override val token: Token,
+            override var tag: Any? = null,
+        ) : Node, TokenContainer<ValOrVar.Token> {
             companion object {
                 private val mapStringToToken = Token.values().associateBy { it.string }
                 fun of(value: String): ValOrVar =
@@ -330,12 +355,13 @@ sealed class Node {
         data class PropertyDelegate(
             val byKeyword: Keyword.By,
             val expression: Expression,
-        ) : Node()
+            override var tag: Any? = null,
+        ) : Node
 
         /**
          * AST node corresponds to KtPropertyAccessor.
          */
-        sealed class Accessor : Node(), WithModifiers, WithPostModifiers, WithFunctionBody
+        sealed class Accessor : Node, WithModifiers, WithPostModifiers, WithFunctionBody
 
         data class Getter(
             override val modifiers: Modifiers?,
@@ -344,6 +370,7 @@ sealed class Node {
             override val postModifiers: List<PostModifier>,
             override val equals: Keyword.Equal?,
             override val body: Expression?,
+            override var tag: Any? = null,
         ) : Accessor()
 
         data class Setter(
@@ -353,6 +380,7 @@ sealed class Node {
             override val postModifiers: List<PostModifier>,
             override val equals: Keyword.Equal?,
             override val body: Expression?,
+            override var tag: Any? = null,
         ) : Accessor()
     }
 
@@ -361,8 +389,9 @@ sealed class Node {
      */
     data class Variable(
         val name: NameExpression,
-        val typeRef: TypeRef?
-    ) : Node()
+        val typeRef: TypeRef?,
+        override var tag: Any? = null,
+    ) : Node
 
     /**
      * AST node corresponds to KtTypeAlias.
@@ -371,7 +400,8 @@ sealed class Node {
         override val modifiers: Modifiers?,
         val name: NameExpression,
         val typeParams: TypeParams?,
-        val typeRef: TypeRef
+        val typeRef: TypeRef,
+        override var tag: Any? = null,
     ) : Declaration(), WithModifiers
 
     /**
@@ -382,17 +412,22 @@ sealed class Node {
         val constructorKeyword: Keyword.Constructor,
         val params: FunctionParams?,
         val delegationCall: DelegationCall?,
-        val block: BlockExpression?
+        val block: BlockExpression?,
+        override var tag: Any? = null,
     ) : Declaration(), WithModifiers {
         /**
          * AST node corresponds to KtConstructorDelegationCall.
          */
         data class DelegationCall(
             val target: DelegationTarget,
-            val args: ValueArgs?
-        ) : Node()
+            val args: ValueArgs?,
+            override var tag: Any? = null,
+        ) : Node
 
-        data class DelegationTarget(override val token: Token) : Node(), TokenContainer<DelegationTarget.Token> {
+        data class DelegationTarget(
+            override val token: Token,
+            override var tag: Any? = null,
+        ) : Node, TokenContainer<DelegationTarget.Token> {
             companion object {
                 private val mapStringToToken = Token.values().associateBy { it.string }
                 fun of(value: String): DelegationTarget = mapStringToToken[value]?.let(::DelegationTarget)
@@ -414,6 +449,7 @@ sealed class Node {
     data class TypeParams(
         override val elements: List<TypeParam>,
         override val trailingComma: Keyword.Comma?,
+        override var tag: Any? = null,
     ) : CommaSeparatedNodeList<TypeParam>("<", ">")
 
     /**
@@ -422,10 +458,11 @@ sealed class Node {
     data class TypeParam(
         override val modifiers: Modifiers?,
         val name: NameExpression,
-        val typeRef: TypeRef?
-    ) : Node(), WithModifiers
+        val typeRef: TypeRef?,
+        override var tag: Any? = null,
+    ) : Node, WithModifiers
 
-    sealed class Type : Node() {
+    sealed class Type : Node {
 
         interface NameWithTypeArgs {
             val name: NameExpression
@@ -446,6 +483,7 @@ sealed class Node {
         val params: Params?,
         val returnTypeRef: TypeRef,
         val rPar: Keyword.RPar?,
+        override var tag: Any? = null,
     ) : Type(), WithModifiers {
         /**
          * AST node corresponds to KtContextReceiverList.
@@ -453,6 +491,7 @@ sealed class Node {
         data class ContextReceivers(
             override val elements: List<ContextReceiver>,
             override val trailingComma: Keyword.Comma?,
+            override var tag: Any? = null,
         ) : CommaSeparatedNodeList<ContextReceiver>("(", ")")
 
         /**
@@ -460,14 +499,16 @@ sealed class Node {
          */
         data class ContextReceiver(
             val typeRef: TypeRef,
-        ) : Node()
+            override var tag: Any? = null,
+        ) : Node
 
         /**
          * AST node corresponds KtFunctionTypeReceiver.
          */
         data class FunctionTypeReceiver(
             val typeRef: TypeRef,
-        ) : Node()
+            override var tag: Any? = null,
+        ) : Node
 
         /**
          * AST node corresponds to KtParameterList under KtFunctionType.
@@ -475,6 +516,7 @@ sealed class Node {
         data class Params(
             override val elements: List<Param>,
             override val trailingComma: Keyword.Comma?,
+            override var tag: Any? = null,
         ) : CommaSeparatedNodeList<Param>("(", ")")
 
         /**
@@ -482,8 +524,9 @@ sealed class Node {
          */
         data class Param(
             val name: NameExpression?,
-            val typeRef: TypeRef
-        ) : Node()
+            val typeRef: TypeRef,
+            override var tag: Any? = null,
+        ) : Node
     }
 
     /**
@@ -493,11 +536,13 @@ sealed class Node {
         val qualifiers: List<Qualifier>,
         override val name: NameExpression,
         override val typeArgs: TypeArgs?,
+        override var tag: Any? = null,
     ) : Type(), Type.NameWithTypeArgs {
         data class Qualifier(
             override val name: NameExpression,
             override val typeArgs: TypeArgs?,
-        ) : Node(), NameWithTypeArgs
+            override var tag: Any? = null,
+        ) : Node, NameWithTypeArgs
     }
 
     /**
@@ -508,12 +553,15 @@ sealed class Node {
         override val modifiers: Modifiers?,
         val type: Type,
         val rPar: Keyword.RPar?,
+        override var tag: Any? = null,
     ) : Type(), WithModifiers
 
     /**
      * AST node corresponds to KtDynamicType.
      */
-    data class DynamicType(val _unused_: Boolean = false) : Type()
+    data class DynamicType(
+        override var tag: Any? = null,
+    ) : Type()
 
     /**
      * AST node corresponds to KtTypeArgumentList.
@@ -521,6 +569,7 @@ sealed class Node {
     data class TypeArgs(
         override val elements: List<TypeArg>,
         override val trailingComma: Keyword.Comma?,
+        override var tag: Any? = null,
     ) : CommaSeparatedNodeList<TypeArg>("<", ">")
 
     /**
@@ -530,7 +579,8 @@ sealed class Node {
         override val modifiers: Modifiers?,
         val typeRef: TypeRef?,
         val asterisk: Boolean,
-    ) : Node(), WithModifiers {
+        override var tag: Any? = null,
+    ) : Node, WithModifiers {
         init {
             if (asterisk) {
                 require(modifiers == null && typeRef == null) {
@@ -552,7 +602,8 @@ sealed class Node {
         override val modifiers: Modifiers?,
         val type: Type,
         val rPar: Keyword.RPar?,
-    ) : Node(), WithModifiers
+        override var tag: Any? = null,
+    ) : Node, WithModifiers
 
     /**
      * AST node corresponds to KtValueArgumentList or KtInitializerList.
@@ -560,6 +611,7 @@ sealed class Node {
     data class ValueArgs(
         override val elements: List<ValueArg>,
         override val trailingComma: Keyword.Comma?,
+        override var tag: Any? = null,
     ) : CommaSeparatedNodeList<ValueArg>("(", ")")
 
     /**
@@ -568,15 +620,17 @@ sealed class Node {
     data class ValueArg(
         val name: NameExpression?,
         val asterisk: Boolean, // Array spread operator
-        val expression: Expression
-    ) : Node()
+        val expression: Expression,
+        override var tag: Any? = null,
+    ) : Node
 
     /**
      * AST node corresponds to KtContainerNode.
      */
     data class ExpressionContainer(
         val expression: Expression,
-    ) : Node()
+        override var tag: Any? = null,
+    ) : Node
 
     sealed class Expression : Statement()
 
@@ -587,7 +641,8 @@ sealed class Node {
         val ifKeyword: Keyword.If,
         val condition: Expression,
         val body: ExpressionContainer,
-        val elseBody: ExpressionContainer?
+        val elseBody: ExpressionContainer?,
+        override var tag: Any? = null,
     ) : Expression()
 
     /**
@@ -596,7 +651,8 @@ sealed class Node {
     data class TryExpression(
         val block: BlockExpression,
         val catchClauses: List<CatchClause>,
-        val finallyBlock: BlockExpression?
+        val finallyBlock: BlockExpression?,
+        override var tag: Any? = null,
     ) : Expression() {
         /**
          * AST node corresponds to KtCatchClause.
@@ -604,8 +660,9 @@ sealed class Node {
         data class CatchClause(
             val catchKeyword: Keyword.Catch,
             val params: FunctionParams,
-            val block: BlockExpression
-        ) : Node()
+            val block: BlockExpression,
+            override var tag: Any? = null,
+        ) : Node
     }
 
     /**
@@ -616,6 +673,7 @@ sealed class Node {
         val loopParam: LambdaParam,
         val loopRange: ExpressionContainer,
         val body: ExpressionContainer,
+        override var tag: Any? = null,
     ) : Expression()
 
     /**
@@ -625,7 +683,8 @@ sealed class Node {
         val whileKeyword: Keyword.While,
         val condition: ExpressionContainer,
         val body: ExpressionContainer,
-        val doWhile: Boolean
+        val doWhile: Boolean,
+        override var tag: Any? = null,
     ) : Expression()
 
     sealed class BaseBinaryExpression : Expression() {
@@ -639,9 +698,13 @@ sealed class Node {
     data class BinaryExpression(
         override val lhs: Expression,
         val operator: Operator,
-        override val rhs: Expression
+        override val rhs: Expression,
+        override var tag: Any? = null,
     ) : BaseBinaryExpression() {
-        data class Operator(override val token: Token) : Node(), TokenContainer<Operator.Token> {
+        data class Operator(
+            override val token: Token,
+            override var tag: Any? = null,
+        ) : Node, TokenContainer<Operator.Token> {
             companion object {
                 private val mapStringToToken = Token.values().associateBy { it.string }
                 fun of(value: String): Operator = mapStringToToken[value]?.let(::Operator)
@@ -663,7 +726,8 @@ sealed class Node {
     data class BinaryInfixExpression(
         override val lhs: Expression,
         val operator: NameExpression,
-        override val rhs: Expression
+        override val rhs: Expression,
+        override var tag: Any? = null,
     ) : BaseBinaryExpression()
 
     /**
@@ -672,9 +736,13 @@ sealed class Node {
     data class UnaryExpression(
         val expression: Expression,
         val operator: Operator,
-        val prefix: Boolean
+        val prefix: Boolean,
+        override var tag: Any? = null,
     ) : Expression() {
-        data class Operator(override val token: Token) : Node(), TokenContainer<Operator.Token> {
+        data class Operator(
+            override val token: Token,
+            override var tag: Any? = null,
+        ) : Node, TokenContainer<Operator.Token> {
             companion object {
                 private val mapStringToToken = Token.values().associateBy { it.string }
                 fun of(value: String): Operator =
@@ -693,9 +761,13 @@ sealed class Node {
     data class BinaryTypeExpression(
         val lhs: Expression,
         val operator: Operator,
-        val rhs: TypeRef
+        val rhs: TypeRef,
+        override var tag: Any? = null,
     ) : Expression() {
-        data class Operator(override val token: Token) : Node(), TokenContainer<Operator.Token> {
+        data class Operator(
+            override val token: Token,
+            override var tag: Any? = null,
+        ) : Node, TokenContainer<Operator.Token> {
             companion object {
                 private val mapStringToToken = Token.values().associateBy { it.string }
                 fun of(value: String): Operator =
@@ -715,11 +787,16 @@ sealed class Node {
     sealed class DoubleColonExpression : Expression() {
         abstract val lhs: Receiver?
 
-        sealed class Receiver : Node() {
-            data class Expression(val expression: Node.Expression) : Receiver()
+        sealed class Receiver : Node {
+            data class Expression(
+                val expression: Node.Expression,
+                override var tag: Any? = null,
+            ) : Receiver()
+
             data class Type(
                 val type: SimpleType,
                 val questionMarks: List<Keyword.Question>,
+                override var tag: Any? = null,
             ) : Receiver()
         }
     }
@@ -729,7 +806,8 @@ sealed class Node {
      */
     data class CallableReferenceExpression(
         override val lhs: Receiver?,
-        val rhs: NameExpression
+        val rhs: NameExpression,
+        override var tag: Any? = null,
     ) : DoubleColonExpression()
 
     /**
@@ -737,14 +815,16 @@ sealed class Node {
      */
     data class ClassLiteralExpression(
         // Class literal expression without lhs is not supported in Kotlin syntax, but Kotlin compiler does parse it.
-        override val lhs: Receiver?
+        override val lhs: Receiver?,
+        override var tag: Any? = null,
     ) : DoubleColonExpression()
 
     /**
      * AST node corresponds to KtParenthesizedExpression.
      */
     data class ParenthesizedExpression(
-        val expression: Expression
+        val expression: Expression,
+        override var tag: Any? = null,
     ) : Expression()
 
     /**
@@ -752,18 +832,38 @@ sealed class Node {
      */
     data class StringLiteralExpression(
         val entries: List<Entry>,
-        val raw: Boolean
+        val raw: Boolean,
+        override var tag: Any? = null,
     ) : Expression() {
         /**
          * AST node corresponds to KtStringTemplateEntry.
          */
-        sealed class Entry : Node()
+        sealed class Entry : Node
 
-        data class LiteralStringEntry(val str: String) : Entry()
-        data class ShortTemplateEntry(val str: String) : Entry()
-        data class UnicodeEscapeEntry(val digits: String) : Entry()
-        data class RegularEscapeEntry(val char: Char) : Entry()
-        data class LongTemplateEntry(val expression: Expression) : Entry()
+        data class LiteralStringEntry(
+            val str: String,
+            override var tag: Any? = null,
+        ) : Entry()
+
+        data class ShortTemplateEntry(
+            val str: String,
+            override var tag: Any? = null,
+        ) : Entry()
+
+        data class UnicodeEscapeEntry(
+            val digits: String,
+            override var tag: Any? = null,
+        ) : Entry()
+
+        data class RegularEscapeEntry(
+            val char: Char,
+            override var tag: Any? = null,
+        ) : Entry()
+
+        data class LongTemplateEntry(
+            val expression: Expression,
+            override var tag: Any? = null,
+        ) : Entry()
     }
 
     /**
@@ -771,7 +871,8 @@ sealed class Node {
      */
     data class ConstantLiteralExpression(
         val value: String,
-        val form: Form
+        val form: Form,
+        override var tag: Any? = null,
     ) : Expression() {
         enum class Form { BOOLEAN, CHAR, INT, FLOAT, NULL }
     }
@@ -781,7 +882,8 @@ sealed class Node {
      */
     data class LambdaExpression(
         val params: LambdaParams?,
-        val lambdaBody: LambdaBody?
+        val lambdaBody: LambdaBody?,
+        override var tag: Any? = null,
     ) : Expression() {
 
         /**
@@ -791,7 +893,10 @@ sealed class Node {
          *
          * <Lambda> = { <Param>, <Param> -> <Body> }
          */
-        data class LambdaBody(override val statements: List<Statement>) : Expression(), StatementsContainer
+        data class LambdaBody(
+            override val statements: List<Statement>,
+            override var tag: Any? = null,
+        ) : Expression(), StatementsContainer
     }
 
     /**
@@ -800,6 +905,7 @@ sealed class Node {
     data class LambdaParams(
         override val elements: List<LambdaParam>,
         override val trailingComma: Keyword.Comma?,
+        override var tag: Any? = null,
     ) : CommaSeparatedNodeList<LambdaParam>("", "")
 
     /**
@@ -812,7 +918,8 @@ sealed class Node {
         val rPar: Keyword.RPar?,
         val colon: Keyword.Colon?,
         val destructTypeRef: TypeRef?,
-    ) : Node() {
+        override var tag: Any? = null,
+    ) : Node {
         init {
             if (variables.size >= 2) {
                 require(lPar != null && rPar != null) { "lPar and rPar are required when there are multiple variables" }
@@ -829,14 +936,16 @@ sealed class Node {
             override val modifiers: Modifiers?,
             val name: NameExpression,
             val typeRef: TypeRef?,
-        ) : Node(), WithModifiers
+            override var tag: Any? = null,
+        ) : Node, WithModifiers
     }
 
     /**
      * AST node corresponds to KtThisExpression.
      */
     data class ThisExpression(
-        val label: String?
+        val label: String?,
+        override var tag: Any? = null,
     ) : Expression()
 
     /**
@@ -844,7 +953,8 @@ sealed class Node {
      */
     data class SuperExpression(
         val typeArg: TypeRef?,
-        val label: String?
+        val label: String?,
+        override var tag: Any? = null,
     ) : Expression()
 
     /**
@@ -855,39 +965,46 @@ sealed class Node {
         val lPar: Keyword.LPar?,
         val expression: Expression?,
         val rPar: Keyword.RPar?,
-        val whenBranches: List<WhenBranch>
+        val whenBranches: List<WhenBranch>,
+        override var tag: Any? = null,
     ) : Expression() {
         /**
          * AST node corresponds to KtWhenEntry.
          */
-        sealed class WhenBranch : Node() {
+        sealed class WhenBranch : Node {
             data class Conditional(
                 val whenConditions: List<WhenCondition>,
                 val trailingComma: Keyword.Comma?,
                 val body: Expression,
+                override var tag: Any? = null,
             ) : WhenBranch()
 
             data class Else(
                 val elseKeyword: Keyword.Else,
                 val body: Expression,
+                override var tag: Any? = null,
             ) : WhenBranch()
         }
 
         /**
          * AST node corresponds to KtWhenCondition.
          */
-        sealed class WhenCondition : Node() {
+        sealed class WhenCondition : Node {
             /**
              * AST node corresponds to KtWhenConditionWithExpression.
              */
-            data class Expression(val expression: Node.Expression) : WhenCondition()
+            data class Expression(
+                val expression: Node.Expression,
+                override var tag: Any? = null,
+            ) : WhenCondition()
 
             /**
              * AST node corresponds to KtWhenConditionInRange.
              */
             data class In(
                 val expression: Node.Expression,
-                val not: Boolean
+                val not: Boolean,
+                override var tag: Any? = null,
             ) : WhenCondition()
 
             /**
@@ -895,7 +1012,8 @@ sealed class Node {
              */
             data class Is(
                 val typeRef: TypeRef,
-                val not: Boolean
+                val not: Boolean,
+                override var tag: Any? = null,
             ) : WhenCondition()
         }
     }
@@ -905,13 +1023,15 @@ sealed class Node {
      */
     data class ObjectLiteralExpression(
         val declaration: ClassDeclaration,
+        override var tag: Any? = null,
     ) : Expression()
 
     /**
      * AST node corresponds to KtThrowExpression.
      */
     data class ThrowExpression(
-        val expression: Expression
+        val expression: Expression,
+        override var tag: Any? = null,
     ) : Expression()
 
     /**
@@ -919,21 +1039,24 @@ sealed class Node {
      */
     data class ReturnExpression(
         val label: String?,
-        val expression: Expression?
+        val expression: Expression?,
+        override var tag: Any? = null,
     ) : Expression()
 
     /**
      * AST node corresponds to KtContinueExpression.
      */
     data class ContinueExpression(
-        val label: String?
+        val label: String?,
+        override var tag: Any? = null,
     ) : Expression()
 
     /**
      * AST node corresponds to KtBreakExpression.
      */
     data class BreakExpression(
-        val label: String?
+        val label: String?,
+        override var tag: Any? = null,
     ) : Expression()
 
     /**
@@ -942,13 +1065,15 @@ sealed class Node {
     data class CollectionLiteralExpression(
         val expressions: List<Expression>,
         val trailingComma: Keyword.Comma?,
+        override var tag: Any? = null,
     ) : Expression()
 
     /**
      * AST node corresponds to KtValueArgumentName, KtSimpleNameExpression or PsiElement whose elementType is IDENTIFIER.
      */
     data class NameExpression(
-        val name: String
+        val name: String,
+        override var tag: Any? = null,
     ) : Expression()
 
     /**
@@ -956,7 +1081,8 @@ sealed class Node {
      */
     data class LabeledExpression(
         val label: String,
-        val expression: Expression
+        val expression: Expression,
+        override var tag: Any? = null,
     ) : Expression()
 
     /**
@@ -964,7 +1090,8 @@ sealed class Node {
      */
     data class AnnotatedExpression(
         override val annotationSets: List<AnnotationSet>,
-        val expression: Expression
+        val expression: Expression,
+        override var tag: Any? = null,
     ) : Expression(), WithAnnotationSets
 
     /**
@@ -975,6 +1102,7 @@ sealed class Node {
         val typeArgs: TypeArgs?,
         val args: ValueArgs?,
         val lambdaArg: LambdaArg?,
+        override var tag: Any? = null,
     ) : Expression() {
         /**
          * AST node corresponds to KtLambdaArgument.
@@ -982,8 +1110,9 @@ sealed class Node {
         data class LambdaArg(
             override val annotationSets: List<AnnotationSet>,
             val label: String?,
-            val expression: LambdaExpression
-        ) : Node(), WithAnnotationSets
+            val expression: LambdaExpression,
+            override var tag: Any? = null,
+        ) : Node, WithAnnotationSets
     }
 
     /**
@@ -993,13 +1122,15 @@ sealed class Node {
         val expression: Expression,
         val indices: List<Expression>,
         val trailingComma: Keyword.Comma?,
+        override var tag: Any? = null,
     ) : Expression()
 
     /**
      * Virtual AST node corresponds to KtNamedFunction in expression context.
      */
     data class AnonymousFunctionExpression(
-        val function: FunctionDeclaration
+        val function: FunctionDeclaration,
+        override var tag: Any? = null,
     ) : Expression()
 
     /**
@@ -1007,22 +1138,27 @@ sealed class Node {
      * This is only present for when expressions and labeled expressions.
      */
     data class PropertyExpression(
-        val declaration: PropertyDeclaration
+        val declaration: PropertyDeclaration,
+        override var tag: Any? = null,
     ) : Expression()
 
     /**
      * AST node corresponds to KtBlockExpression.
      */
-    data class BlockExpression(override val statements: List<Statement>) : Expression(), StatementsContainer
+    data class BlockExpression(
+        override val statements: List<Statement>,
+        override var tag: Any? = null,
+    ) : Expression(), StatementsContainer
 
     /**
      * AST node corresponds to KtModifierList.
      */
     data class Modifiers(
         override val elements: List<Modifier>,
+        override var tag: Any? = null,
     ) : NodeList<Modifier>()
 
-    sealed class Modifier : Node()
+    sealed class Modifier : Node
 
     /**
      * AST node corresponds to KtAnnotation or KtAnnotationEntry not under KtAnnotation.
@@ -1034,9 +1170,13 @@ sealed class Node {
         val lBracket: Node.Keyword.LBracket?,
         val annotations: List<Annotation>,
         val rBracket: Node.Keyword.RBracket?,
+        override var tag: Any? = null,
     ) : Modifier() {
 
-        data class Target(override val token: Token) : Node(), TokenContainer<Target.Token> {
+        data class Target(
+            override val token: Token,
+            override var tag: Any? = null,
+        ) : Node, TokenContainer<Target.Token> {
             companion object {
                 private val mapStringToToken = Token.values().associateBy { it.string }
                 fun of(value: String): Target = mapStringToToken[value]?.let(::Target)
@@ -1056,11 +1196,15 @@ sealed class Node {
          */
         data class Annotation(
             val type: SimpleType,
-            val args: ValueArgs?
-        ) : Node()
+            val args: ValueArgs?,
+            override var tag: Any? = null,
+        ) : Node
     }
 
-    data class KeywordModifier(override val token: Token) : Modifier(), TokenContainer<KeywordModifier.Token> {
+    data class KeywordModifier(
+        override val token: Token,
+        override var tag: Any? = null,
+    ) : Modifier(), TokenContainer<KeywordModifier.Token> {
         companion object {
             private val mapStringToToken = Token.values().associateBy { it.string }
             fun of(value: String): KeywordModifier =
@@ -1079,7 +1223,7 @@ sealed class Node {
         }
     }
 
-    sealed class PostModifier : Node()
+    sealed class PostModifier : Node
 
     /**
      * Virtual AST node corresponds to a pair of "where" keyword and KtTypeConstraintList.
@@ -1087,12 +1231,14 @@ sealed class Node {
     data class TypeConstraintSet(
         val whereKeyword: Keyword.Where,
         val constraints: TypeConstraints,
+        override var tag: Any? = null,
     ) : PostModifier() {
         /**
          * AST node corresponds to KtTypeConstraintList.
          */
         data class TypeConstraints(
             override val elements: List<TypeConstraint>,
+            override var tag: Any? = null,
         ) : CommaSeparatedNodeList<TypeConstraint>("", "") {
             override val trailingComma: Keyword.Comma? = null // Trailing comma is not allowed.
         }
@@ -1103,8 +1249,9 @@ sealed class Node {
         data class TypeConstraint(
             override val annotationSets: List<AnnotationSet>,
             val name: NameExpression,
-            val typeRef: TypeRef
-        ) : Node(), WithAnnotationSets
+            val typeRef: TypeRef,
+            override var tag: Any? = null,
+        ) : Node, WithAnnotationSets
     }
 
     /**
@@ -1113,6 +1260,7 @@ sealed class Node {
     data class Contract(
         val contractKeyword: Keyword.Contract,
         val contractEffects: ContractEffects,
+        override var tag: Any? = null,
     ) : PostModifier() {
         /**
          * AST node corresponds to KtContractEffectList.
@@ -1120,6 +1268,7 @@ sealed class Node {
         data class ContractEffects(
             override val elements: List<ContractEffect>,
             override val trailingComma: Keyword.Comma?,
+            override var tag: Any? = null,
         ) : CommaSeparatedNodeList<ContractEffect>("[", "]")
 
         /**
@@ -1127,56 +1276,38 @@ sealed class Node {
          */
         data class ContractEffect(
             val expression: Expression,
-        ) : Node()
+            override var tag: Any? = null,
+        ) : Node
     }
 
-    sealed class Keyword(override val string: String) : Node(), HasSimpleStringRepresentation {
-        override fun toString(): String {
-            return javaClass.simpleName
-        }
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (javaClass != other?.javaClass) return false
-
-            other as Keyword
-
-            if (string != other.string) return false
-
-            return true
-        }
-
-        override fun hashCode(): Int {
-            return string.hashCode()
-        }
-
-        class Package : Keyword("package")
-        class Import : Keyword("import")
-        class Fun : Keyword("fun")
-        class Constructor : Keyword("constructor")
-        class For : Keyword("for")
-        class While : Keyword("while")
-        class If : Keyword("if")
-        class Else : Keyword("else")
-        class Catch : Keyword("catch")
-        class When : Keyword("when")
-        class By : Keyword("by")
-        class Contract : Keyword("contract")
-        class Where : Keyword("where")
-        class Get : Keyword("get")
-        class Set : Keyword("set")
-        class Equal : Keyword("=")
-        class Comma : Keyword(",")
-        class Question : Keyword("?")
-        class LPar : Keyword("(")
-        class RPar : Keyword(")")
-        class LBracket : Keyword("[")
-        class RBracket : Keyword("]")
-        class At : Keyword("@")
-        class Colon : Keyword(":")
+    sealed class Keyword(override val string: String) : Node, HasSimpleStringRepresentation {
+        data class Package(override var tag: Any? = null) : Keyword("package")
+        data class Import(override var tag: Any? = null) : Keyword("import")
+        data class Fun(override var tag: Any? = null) : Keyword("fun")
+        data class Constructor(override var tag: Any? = null) : Keyword("constructor")
+        data class For(override var tag: Any? = null) : Keyword("for")
+        data class While(override var tag: Any? = null) : Keyword("while")
+        data class If(override var tag: Any? = null) : Keyword("if")
+        data class Else(override var tag: Any? = null) : Keyword("else")
+        data class Catch(override var tag: Any? = null) : Keyword("catch")
+        data class When(override var tag: Any? = null) : Keyword("when")
+        data class By(override var tag: Any? = null) : Keyword("by")
+        data class Contract(override var tag: Any? = null) : Keyword("contract")
+        data class Where(override var tag: Any? = null) : Keyword("where")
+        data class Get(override var tag: Any? = null) : Keyword("get")
+        data class Set(override var tag: Any? = null) : Keyword("set")
+        data class Equal(override var tag: Any? = null) : Keyword("=")
+        data class Comma(override var tag: Any? = null) : Keyword(",")
+        data class Question(override var tag: Any? = null) : Keyword("?")
+        data class LPar(override var tag: Any? = null) : Keyword("(")
+        data class RPar(override var tag: Any? = null) : Keyword(")")
+        data class LBracket(override var tag: Any? = null) : Keyword("[")
+        data class RBracket(override var tag: Any? = null) : Keyword("]")
+        data class At(override var tag: Any? = null) : Keyword("@")
+        data class Colon(override var tag: Any? = null) : Keyword(":")
     }
 
-    sealed class Extra : Node() {
+    sealed class Extra : Node {
         abstract val text: String
     }
 
@@ -1185,6 +1316,7 @@ sealed class Node {
      */
     data class Whitespace(
         override val text: String,
+        override var tag: Any? = null,
     ) : Extra()
 
     /**
@@ -1192,12 +1324,14 @@ sealed class Node {
      */
     data class Comment(
         override val text: String,
+        override var tag: Any? = null,
     ) : Extra()
 
     /**
      * AST node corresponds to PsiElement whose elementType is SEMICOLON.
      */
     data class Semicolon(
-        override val text: String
+        override val text: String,
+        override var tag: Any? = null,
     ) : Extra()
 }
