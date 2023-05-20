@@ -678,25 +678,11 @@ sealed interface Node {
      */
     data class BinaryTypeExpression(
         val lhs: Expression,
-        val operator: Operator,
+        val operator: BinaryTypeOperator,
         val rhs: TypeRef,
         override var tag: Any? = null,
     ) : Expression() {
-        data class Operator(
-            override val token: Token,
-            override var tag: Any? = null,
-        ) : Node, TokenContainer<Operator.Token> {
-            companion object {
-                private val mapStringToToken = Token.values().associateBy { it.string }
-                fun of(value: String): Operator =
-                    mapStringToToken[value]?.let(::Operator) ?: error("Unknown value: $value")
-            }
-
-            enum class Token(override val string: String) : HasSimpleStringRepresentation {
-                AS("as"), AS_SAFE("as?"), COL(":"), IS("is"), NOT_IS("!is")
-            }
-        }
-
+        sealed interface BinaryTypeOperator : SealedKeyword
     }
 
     /**
@@ -1236,7 +1222,6 @@ sealed interface Node {
         data class LBracket(override var tag: Any? = null) : Keyword("[")
         data class RBracket(override var tag: Any? = null) : Keyword("]")
         data class At(override var tag: Any? = null) : Keyword("@")
-        data class Colon(override var tag: Any? = null) : Keyword(":")
         data class Asterisk(override var tag: Any? = null) : Keyword("*"), BinaryExpression.BinaryOperator
         data class Slash(override var tag: Any? = null) : Keyword("/"), BinaryExpression.BinaryOperator
         data class Percent(override var tag: Any? = null) : Keyword("%"), BinaryExpression.BinaryOperator
@@ -1271,6 +1256,12 @@ sealed interface Node {
         data class MinusMinus(override var tag: Any? = null) : Keyword("--"), UnaryExpression.UnaryOperator
         data class Not(override var tag: Any? = null) : Keyword("!"), UnaryExpression.UnaryOperator
         data class NotNot(override var tag: Any? = null) : Keyword("!!"), UnaryExpression.UnaryOperator
+        data class As(override var tag: Any? = null) : Keyword("as"), BinaryTypeExpression.BinaryTypeOperator
+        data class AsQuestion(override var tag: Any? = null) : Keyword("as?"), BinaryTypeExpression.BinaryTypeOperator
+
+        data class Colon(override var tag: Any? = null) : Keyword(":"), BinaryTypeExpression.BinaryTypeOperator
+        data class Is(override var tag: Any? = null) : Keyword("is"), BinaryTypeExpression.BinaryTypeOperator
+        data class NotIs(override var tag: Any? = null) : Keyword("!is"), BinaryTypeExpression.BinaryTypeOperator
     }
 
     sealed class Extra : Node {

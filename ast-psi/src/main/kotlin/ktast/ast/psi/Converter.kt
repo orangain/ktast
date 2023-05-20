@@ -548,18 +548,15 @@ open class Converter {
 
     open fun convertBinaryType(v: KtBinaryExpressionWithTypeRHS) = Node.BinaryTypeExpression(
         lhs = convertExpression(v.left),
-        operator = convertBinaryTypeOperator(v.operationReference),
+        operator = convertSealedKeyword(v.operationReference),
         rhs = convertTypeRef(v.right ?: error("No type op rhs for $v"))
     ).map(v)
 
     open fun convertBinaryType(v: KtIsExpression) = Node.BinaryTypeExpression(
         lhs = convertExpression(v.leftHandSide),
-        operator = convertBinaryTypeOperator(v.operationReference),
+        operator = convertSealedKeyword(v.operationReference),
         rhs = convertTypeRef(v.typeReference ?: error("No type op rhs for $v"))
     ).map(v)
-
-    open fun convertBinaryTypeOperator(v: PsiElement) = Node.BinaryTypeExpression.Operator.of(v.text)
-        .map(v)
 
     open fun convertCallableReference(v: KtCallableReferenceExpression) = Node.CallableReferenceExpression(
         lhs = v.receiverExpression?.let { expr ->
@@ -974,6 +971,7 @@ open class Converter {
         Node.SecondaryConstructorDeclaration.DelegationTargetKeyword::class to buildMapTextToKClass<Node.SecondaryConstructorDeclaration.DelegationTargetKeyword>(),
         Node.BinaryExpression.BinaryOperator::class to buildMapTextToKClass<Node.BinaryExpression.BinaryOperator>(),
         Node.UnaryExpression.UnaryOperator::class to buildMapTextToKClass<Node.UnaryExpression.UnaryOperator>(),
+        Node.BinaryTypeExpression.BinaryTypeOperator::class to buildMapTextToKClass<Node.BinaryTypeExpression.BinaryTypeOperator>(),
     )
 
     protected inline fun <reified T : Node.SealedKeyword> buildMapTextToKClass() =
