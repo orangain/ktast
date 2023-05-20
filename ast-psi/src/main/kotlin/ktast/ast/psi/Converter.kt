@@ -149,7 +149,7 @@ open class Converter {
 
     open fun convertFuncParams(v: KtParameterList) = Node.FunctionParams(
         elements = v.parameters.map(::convertFuncParam),
-        trailingComma = v.trailingComma?.let(::convertComma),
+        trailingComma = v.trailingComma?.let(::convertKeyword),
     ).map(v)
 
     open fun convertFuncParam(v: KtParameter) = Node.FunctionParam(
@@ -194,7 +194,7 @@ open class Converter {
         receiverTypeRef = null,
         lPar = v.lPar?.let(::convertKeyword),
         variables = v.entries.map(::convertPropertyVariable),
-        trailingComma = v.trailingComma?.let(::convertComma),
+        trailingComma = v.trailingComma?.let(::convertKeyword),
         rPar = v.rPar?.let(::convertKeyword),
         typeConstraintSet = null,
         equals = convertKeyword(v.equalsToken),
@@ -271,7 +271,7 @@ open class Converter {
 
     open fun convertTypeParams(v: KtTypeParameterList) = Node.TypeParams(
         elements = v.parameters.map(::convertTypeParam),
-        trailingComma = v.trailingComma?.let(::convertComma),
+        trailingComma = v.trailingComma?.let(::convertKeyword),
     ).map(v)
 
     open fun convertTypeParam(v: KtTypeParameter) = Node.TypeParam(
@@ -282,7 +282,7 @@ open class Converter {
 
     open fun convertTypeArgs(v: KtTypeArgumentList) = Node.TypeArgs(
         elements = v.arguments.map(::convertTypeArg),
-        trailingComma = v.trailingComma?.let(::convertComma),
+        trailingComma = v.trailingComma?.let(::convertKeyword),
     ).map(v)
 
     open fun convertTypeArg(v: KtTypeProjection): Node.TypeArg = Node.TypeArg(
@@ -394,7 +394,7 @@ open class Converter {
 
     open fun convertContractEffects(v: KtContractEffectList) = Node.Contract.ContractEffects(
         elements = v.children.filterIsInstance<KtContractEffect>().map(::convertContractEffect),
-        trailingComma = findTrailingSeparator(v, KtTokens.COMMA)?.let(::convertComma),
+        trailingComma = findTrailingSeparator(v, KtTokens.COMMA)?.let(::convertKeyword),
     ).map(v)
 
     open fun convertContractEffect(v: KtContractEffect) = Node.Contract.ContractEffect(
@@ -407,7 +407,7 @@ open class Converter {
 
     open fun convertTypeFunctionParams(v: KtParameterList) = Node.FunctionType.Params(
         elements = v.parameters.map(::convertTypeFunctionParam),
-        trailingComma = v.trailingComma?.let(::convertComma)
+        trailingComma = v.trailingComma?.let(::convertKeyword)
     ).map(v)
 
     open fun convertTypeFunctionParam(v: KtParameter) = Node.FunctionType.Param(
@@ -422,7 +422,7 @@ open class Converter {
 
     open fun convertValueArgs(v: KtValueArgumentList) = Node.ValueArgs(
         elements = v.arguments.map(::convertValueArg),
-        trailingComma = v.trailingComma?.let(::convertComma),
+        trailingComma = v.trailingComma?.let(::convertKeyword),
     ).map(v)
 
     open fun convertValueArgs(v: KtInitializerList): Node.ValueArgs {
@@ -430,7 +430,7 @@ open class Converter {
             ?: error("No value arguments for $v")
         return Node.ValueArgs(
             elements = (valueArgumentList.arguments).map(::convertValueArg),
-            trailingComma = valueArgumentList.trailingComma?.let(::convertComma),
+            trailingComma = valueArgumentList.trailingComma?.let(::convertKeyword),
         ).map(v)
     }
 
@@ -664,7 +664,7 @@ open class Converter {
 
     open fun convertLambdaParams(v: KtParameterList) = Node.LambdaParams(
         elements = v.parameters.map(::convertLambdaParam),
-        trailingComma = v.trailingComma?.let(::convertComma),
+        trailingComma = v.trailingComma?.let(::convertKeyword),
     ).map(v)
 
     open fun convertLambdaParam(v: KtParameter): Node.LambdaParam {
@@ -673,7 +673,7 @@ open class Converter {
             Node.LambdaParam(
                 lPar = destructuringDeclaration.lPar?.let(::convertKeyword),
                 variables = destructuringDeclaration.entries.map(::convertLambdaParamVariable),
-                trailingComma = destructuringDeclaration.trailingComma?.let(::convertComma),
+                trailingComma = destructuringDeclaration.trailingComma?.let(::convertKeyword),
                 rPar = destructuringDeclaration.rPar?.let(::convertKeyword),
                 colon = v.colon?.let(::convertKeyword),
                 destructTypeRef = v.typeReference?.let(::convertTypeRef),
@@ -728,7 +728,7 @@ open class Converter {
         return if (elseKeyword == null) {
             Node.WhenExpression.WhenBranch.Conditional(
                 whenConditions = v.conditions.map(::convertWhenCondition),
-                trailingComma = v.trailingComma?.let(::convertComma),
+                trailingComma = v.trailingComma?.let(::convertKeyword),
                 body = convertExpression(v.expression ?: error("No when entry body for $v"))
             ).map(v)
         } else {
@@ -777,7 +777,7 @@ open class Converter {
 
     open fun convertCollLit(v: KtCollectionLiteralExpression) = Node.CollectionLiteralExpression(
         expressions = v.getInnerExpressions().map(::convertExpression),
-        trailingComma = v.trailingComma?.let(::convertComma),
+        trailingComma = v.trailingComma?.let(::convertKeyword),
     ).map(v)
 
     open fun convertValueArgName(v: KtValueArgumentName) = Node.NameExpression(
@@ -840,7 +840,7 @@ open class Converter {
     open fun convertArrayAccess(v: KtArrayAccessExpression) = Node.ArrayAccessExpression(
         expression = convertExpression(v.arrayExpression ?: error("No array expr for $v")),
         indices = v.indexExpressions.map(::convertExpression),
-        trailingComma = v.trailingComma?.let(::convertComma),
+        trailingComma = v.trailingComma?.let(::convertKeyword),
     ).map(v)
 
     open fun convertAnonymousFunction(v: KtNamedFunction) = Node.AnonymousFunctionExpression(convertFunction(v))
@@ -946,8 +946,6 @@ open class Converter {
             }.also { prevPsi = psi }
         }
     }
-
-    open fun convertComma(v: PsiElement): Node.Keyword.Comma = convertKeyword(v)
 
     protected val mapTextToKeywordKClass =
         Node.Keyword::class.sealedSubclasses.filter { it.isData }.associateBy { it.createInstance().string }
