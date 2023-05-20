@@ -373,12 +373,12 @@ sealed interface Node {
          * AST node corresponds to KtConstructorDelegationCall.
          */
         data class DelegationCall(
-            val target: DelegationTargetKeyword,
+            val target: DelegationTarget,
             val args: ValueArgs?,
             override var tag: Any? = null,
         ) : Node
 
-        sealed interface DelegationTargetKeyword : Keyword
+        sealed interface DelegationTarget : Keyword
     }
 
     /**
@@ -1172,13 +1172,11 @@ sealed interface Node {
             override val string: String; get() = "var"
         }
 
-        data class This(override var tag: Any? = null) : Keyword,
-            SecondaryConstructorDeclaration.DelegationTargetKeyword {
+        data class This(override var tag: Any? = null) : Keyword, SecondaryConstructorDeclaration.DelegationTarget {
             override val string: String; get() = "this"
         }
 
-        data class Super(override var tag: Any? = null) : Keyword,
-            SecondaryConstructorDeclaration.DelegationTargetKeyword {
+        data class Super(override var tag: Any? = null) : Keyword, SecondaryConstructorDeclaration.DelegationTarget {
             override val string: String; get() = "super"
         }
 
