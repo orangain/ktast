@@ -56,12 +56,6 @@ sealed interface Node {
         val string: String
     }
 
-    interface TokenContainer<T : HasSimpleStringRepresentation> : HasSimpleStringRepresentation {
-        val token: T
-        override val string: String
-            get() = token.string
-    }
-
     sealed interface SealedKeyword : Node, HasSimpleStringRepresentation
 
     /**
