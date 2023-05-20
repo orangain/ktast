@@ -121,7 +121,7 @@ sealed interface Node {
     }
 
     /**
-     * Base class of [Node.Declaration] and [Node.Expression].
+     * Base class of [Declaration] and [Expression].
      */
     sealed class Statement : Node
 
@@ -1068,12 +1068,12 @@ sealed interface Node {
      * AST node corresponds to KtAnnotation or KtAnnotationEntry not under KtAnnotation.
      */
     data class AnnotationSet(
-        val atSymbol: Node.Keyword.At?,
+        val atSymbol: Keyword.At?,
         val target: AnnotationTarget?,
-        val colon: Node.Keyword.Colon?,
-        val lBracket: Node.Keyword.LBracket?,
+        val colon: Keyword.Colon?,
+        val lBracket: Keyword.LBracket?,
         val annotations: List<Annotation>,
-        val rBracket: Node.Keyword.RBracket?,
+        val rBracket: Keyword.RBracket?,
         override var tag: Any? = null,
     ) : Modifier() {
         sealed interface AnnotationTarget : SealedKeyword
