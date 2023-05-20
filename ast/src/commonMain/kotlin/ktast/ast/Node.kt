@@ -267,7 +267,7 @@ sealed interface Node {
      */
     data class FunctionParam(
         override val modifiers: Modifiers?,
-        val valOrVar: PropertyDeclaration.ValOrVar?,
+        val valOrVarKeyword: ValOrVarKeyword?,
         val name: NameExpression,
         // typeRef can be null for anon functions
         val typeRef: TypeRef?,
@@ -281,7 +281,7 @@ sealed interface Node {
      */
     data class PropertyDeclaration(
         override val modifiers: Modifiers?,
-        val valOrVar: ValOrVar,
+        val valOrVarKeyword: ValOrVarKeyword,
         val typeParams: TypeParams?,
         val receiverTypeRef: TypeRef?,
         val lPar: Keyword.LPar?,
@@ -310,24 +310,6 @@ sealed interface Node {
             }
             if (trailingComma != null) {
                 require(lPar != null && rPar != null) { "lPar and rPar are required when trailing comma exists" }
-            }
-        }
-
-        data class ValOrVar(
-            override val token: Token,
-            override var tag: Any? = null,
-        ) : Node, TokenContainer<ValOrVar.Token> {
-            companion object {
-                private val mapStringToToken = Token.values().associateBy { it.string }
-                fun of(value: String): ValOrVar =
-                    mapStringToToken[value]?.let(::ValOrVar) ?: error("Unknown value: $value")
-            }
-
-            enum class Token : HasSimpleStringRepresentation {
-                VAL, VAR;
-
-                override val string: String
-                    get() = name.lowercase()
             }
         }
 
@@ -1262,6 +1244,8 @@ sealed interface Node {
         ) : Node
     }
 
+    sealed interface ValOrVarKeyword : Node
+
     sealed class Keyword(override val string: String) : Node, HasSimpleStringRepresentation {
         data class Package(override var tag: Any? = null) : Keyword("package")
         data class Import(override var tag: Any? = null) : Keyword("import")
@@ -1272,6 +1256,8 @@ sealed interface Node {
 
         data class Fun(override var tag: Any? = null) : Keyword("fun")
         data class Constructor(override var tag: Any? = null) : Keyword("constructor")
+        data class Val(override var tag: Any? = null) : Keyword("val"), ValOrVarKeyword
+        data class Var(override var tag: Any? = null) : Keyword("var"), ValOrVarKeyword
         data class For(override var tag: Any? = null) : Keyword("for")
         data class While(override var tag: Any? = null) : Keyword("while")
         data class If(override var tag: Any? = null) : Keyword("if")

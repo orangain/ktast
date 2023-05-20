@@ -71,7 +71,7 @@ open class Converter {
 
     open fun convertClass(v: KtClassOrObject) = Node.ClassDeclaration(
         modifiers = v.modifierList?.let(::convertModifiers),
-        classDeclarationKeyword = v.getDeclarationKeyword()?.let(::convertClassDeclarationKeyword)
+        classDeclarationKeyword = v.getDeclarationKeyword()?.let(::convertSealedKeyword)
             ?: error("declarationKeyword not found"),
         name = v.nameIdentifier?.let(::convertName),
         typeParams = v.typeParameterList?.let(::convertTypeParams),
@@ -85,14 +85,6 @@ open class Converter {
         },
         classBody = v.body?.let(::convertClassBody),
     ).map(v)
-
-    private val mapTextToClassDeclarationKeywordKClass by lazy {
-        Node.ClassDeclaration.ClassDeclarationKeyword::class.sealedSubclasses.associateBy { it.simpleName!!.lowercase() }
-    }
-
-    open fun convertClassDeclarationKeyword(v: PsiElement) =
-        (mapTextToClassDeclarationKeywordKClass[v.text]?.createInstance() ?: error("Unknown value: ${v.text}"))
-            .map(v)
 
     open fun convertParents(v: KtSuperTypeList) = Node.ClassDeclaration.ClassParents(
         elements = v.entries.map(::convertParent),
@@ -163,7 +155,7 @@ open class Converter {
 
     open fun convertFuncParam(v: KtParameter) = Node.FunctionParam(
         modifiers = v.modifierList?.let(::convertModifiers),
-        valOrVar = v.valOrVarKeyword?.let(::convertValOrVar),
+        valOrVarKeyword = v.valOrVarKeyword?.let(::convertSealedKeyword),
         name = v.nameIdentifier?.let(::convertName) ?: error("No param name"),
         typeRef = v.typeReference?.let(::convertTypeRef),
         equals = v.equalsToken?.let { convertKeyword(it, Node.Keyword::Equal) },
@@ -172,7 +164,7 @@ open class Converter {
 
     open fun convertProperty(v: KtProperty) = Node.PropertyDeclaration(
         modifiers = v.modifierList?.let(::convertModifiers),
-        valOrVar = convertValOrVar(v.valOrVarKeyword),
+        valOrVarKeyword = convertSealedKeyword(v.valOrVarKeyword),
         typeParams = v.typeParameterList?.let(::convertTypeParams),
         receiverTypeRef = v.receiverTypeReference?.let(::convertTypeRef),
         lPar = null,
@@ -198,7 +190,7 @@ open class Converter {
 
     open fun convertProperty(v: KtDestructuringDeclaration) = Node.PropertyDeclaration(
         modifiers = v.modifierList?.let(::convertModifiers),
-        valOrVar = v.valOrVarKeyword?.let(::convertValOrVar) ?: error("Missing valOrVarKeyword"),
+        valOrVarKeyword = v.valOrVarKeyword?.let(::convertSealedKeyword) ?: error("Missing valOrVarKeyword"),
         typeParams = null,
         receiverTypeRef = null,
         lPar = v.lPar?.let { convertKeyword(it, Node.Keyword::LPar) },
@@ -211,9 +203,6 @@ open class Converter {
         propertyDelegate = null,
         accessors = listOf(),
     ).map(v)
-
-    open fun convertValOrVar(v: PsiElement) = Node.PropertyDeclaration.ValOrVar.of(v.text)
-        .map(v)
 
     open fun convertPropertyVariable(v: KtDestructuringDeclarationEntry) = Node.Variable(
         name = v.nameIdentifier?.let(::convertName) ?: error("No property name on $v"),
@@ -995,6 +984,20 @@ open class Converter {
                 else -> null
             }.also { prevPsi = psi }
         }
+    }
+
+    protected val mapTextToKClassCache = mapOf(
+        Node.ClassDeclaration.ClassDeclarationKeyword::class to buildMapTextToKClass<Node.ClassDeclaration.ClassDeclarationKeyword>(),
+        Node.ValOrVarKeyword::class to buildMapTextToKClass<Node.ValOrVarKeyword>(),
+    )
+
+    protected inline fun <reified T : Node> buildMapTextToKClass() =
+        T::class.sealedSubclasses.associateBy { it.simpleName!!.lowercase() }
+
+    protected inline fun <reified T : Node> convertSealedKeyword(v: PsiElement): T {
+        val mapTextToKClass = mapTextToKClassCache[T::class] ?: error("Unknown type: ${T::class.qualifiedName}")
+        return (mapTextToKClass[v.text]?.createInstance() ?: error("Unknown value: ${v.text}"))
+            .map(v) as T
     }
 
     open fun convertComma(v: PsiElement): Node.Keyword.Comma = convertKeyword(v, Node.Keyword::Comma)

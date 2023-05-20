@@ -142,7 +142,7 @@ open class Writer(
                 }
                 is Node.FunctionParam -> {
                     children(modifiers)
-                    children(valOrVar)
+                    children(valOrVarKeyword)
                     children(name)
                     if (typeRef != null) append(":").also { children(typeRef) }
                     children(equals)
@@ -150,7 +150,7 @@ open class Writer(
                 }
                 is Node.PropertyDeclaration -> {
                     children(modifiers)
-                    children(valOrVar)
+                    children(valOrVarKeyword)
                     children(typeParams)
                     if (receiverTypeRef != null) children(receiverTypeRef).append('.')
                     children(lPar)

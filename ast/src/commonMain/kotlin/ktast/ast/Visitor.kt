@@ -89,7 +89,7 @@ open class Visitor {
             }
             is Node.FunctionParam -> {
                 visitChildren(modifiers)
-                visitChildren(valOrVar)
+                visitChildren(valOrVarKeyword)
                 visitChildren(name)
                 visitChildren(typeRef)
                 visitChildren(equals)
@@ -97,7 +97,7 @@ open class Visitor {
             }
             is Node.PropertyDeclaration -> {
                 visitChildren(modifiers)
-                visitChildren(valOrVar)
+                visitChildren(valOrVarKeyword)
                 visitChildren(typeParams)
                 visitChildren(receiverTypeRef)
                 visitChildren(lPar)
