@@ -144,8 +144,8 @@ sealed interface Node {
         val isClass = classDeclarationKeyword is Keyword.Class
         val isObject = classDeclarationKeyword is Keyword.Object
         val isInterface = classDeclarationKeyword is Keyword.Interface
-        val isCompanion = modifiers?.elements.orEmpty().contains(KeywordModifier(KeywordModifier.Token.COMPANION))
-        val isEnum = modifiers?.elements.orEmpty().contains(KeywordModifier(KeywordModifier.Token.ENUM))
+        val isCompanion = modifiers?.elements.orEmpty().any { it is Keyword.Companion }
+        val isEnum = modifiers?.elements.orEmpty().any { it is Keyword.Enum }
 
         sealed interface ClassDeclarationKeyword : SealedKeyword
 
@@ -1062,7 +1062,7 @@ sealed interface Node {
         override var tag: Any? = null,
     ) : NodeList<Modifier>()
 
-    sealed class Modifier : Node
+    sealed interface Modifier : Node
 
     /**
      * AST node corresponds to KtAnnotation or KtAnnotationEntry not under KtAnnotation.
@@ -1075,7 +1075,7 @@ sealed interface Node {
         val annotations: List<Annotation>,
         val rBracket: Keyword.RBracket?,
         override var tag: Any? = null,
-    ) : Modifier() {
+    ) : Modifier {
         sealed interface AnnotationTarget : SealedKeyword
 
         /**
@@ -1088,27 +1088,7 @@ sealed interface Node {
         ) : Node
     }
 
-    data class KeywordModifier(
-        override val token: Token,
-        override var tag: Any? = null,
-    ) : Modifier(), TokenContainer<KeywordModifier.Token> {
-        companion object {
-            private val mapStringToToken = Token.values().associateBy { it.string }
-            fun of(value: String): KeywordModifier =
-                mapStringToToken[value]?.let(Node::KeywordModifier) ?: error("Unknown value: $value")
-        }
-
-        enum class Token : HasSimpleStringRepresentation {
-            ABSTRACT, FINAL, OPEN, ANNOTATION, SEALED, DATA, OVERRIDE, LATEINIT, INNER, ENUM, COMPANION, VALUE,
-            PRIVATE, PROTECTED, PUBLIC, INTERNAL,
-            IN, OUT, NOINLINE, CROSSINLINE, VARARG, REIFIED,
-            TAILREC, OPERATOR, INFIX, INLINE, EXTERNAL, SUSPEND, CONST, FUN,
-            ACTUAL, EXPECT;
-
-            override val string: String
-                get() = name.lowercase()
-        }
-    }
+    sealed interface KeywordModifier : Modifier, SealedKeyword
 
     sealed class PostModifier : Node
 
@@ -1177,7 +1157,6 @@ sealed interface Node {
         data class Interface(override var tag: Any? = null) : Keyword("interface"),
             ClassDeclaration.ClassDeclarationKeyword
 
-        data class Fun(override var tag: Any? = null) : Keyword("fun")
         data class Constructor(override var tag: Any? = null) : Keyword("constructor")
         data class Val(override var tag: Any? = null) : Keyword("val"), ValOrVarKeyword
         data class Var(override var tag: Any? = null) : Keyword("var"), ValOrVarKeyword
@@ -1221,7 +1200,7 @@ sealed interface Node {
         data class Minus(override var tag: Any? = null) : Keyword("-"), BinaryExpression.BinaryOperator,
             UnaryExpression.UnaryOperator
 
-        data class In(override var tag: Any? = null) : Keyword("in"), BinaryExpression.BinaryOperator
+        data class In(override var tag: Any? = null) : Keyword("in"), BinaryExpression.BinaryOperator, KeywordModifier
         data class NotIn(override var tag: Any? = null) : Keyword("!in"), BinaryExpression.BinaryOperator
         data class Greater(override var tag: Any? = null) : Keyword(">"), BinaryExpression.BinaryOperator
         data class GreaterEqual(override var tag: Any? = null) : Keyword(">="), BinaryExpression.BinaryOperator
@@ -1252,6 +1231,37 @@ sealed interface Node {
         data class Colon(override var tag: Any? = null) : Keyword(":"), BinaryTypeExpression.BinaryTypeOperator
         data class Is(override var tag: Any? = null) : Keyword("is"), BinaryTypeExpression.BinaryTypeOperator
         data class NotIs(override var tag: Any? = null) : Keyword("!is"), BinaryTypeExpression.BinaryTypeOperator
+        data class Abstract(override var tag: Any? = null) : Keyword("abstract"), KeywordModifier
+        data class Final(override var tag: Any? = null) : Keyword("final"), KeywordModifier
+        data class Open(override var tag: Any? = null) : Keyword("open"), KeywordModifier
+        data class Annotation(override var tag: Any? = null) : Keyword("annotation"), KeywordModifier
+        data class Sealed(override var tag: Any? = null) : Keyword("sealed"), KeywordModifier
+        data class Data(override var tag: Any? = null) : Keyword("data"), KeywordModifier
+        data class Override(override var tag: Any? = null) : Keyword("override"), KeywordModifier
+        data class LateInit(override var tag: Any? = null) : Keyword("lateinit"), KeywordModifier
+        data class Inner(override var tag: Any? = null) : Keyword("inner"), KeywordModifier
+        data class Enum(override var tag: Any? = null) : Keyword("enum"), KeywordModifier
+        data class Companion(override var tag: Any? = null) : Keyword("companion"), KeywordModifier
+        data class Value(override var tag: Any? = null) : Keyword("value"), KeywordModifier
+        data class Private(override var tag: Any? = null) : Keyword("private"), KeywordModifier
+        data class Protected(override var tag: Any? = null) : Keyword("protected"), KeywordModifier
+        data class Public(override var tag: Any? = null) : Keyword("public"), KeywordModifier
+        data class Internal(override var tag: Any? = null) : Keyword("internal"), KeywordModifier
+        data class Out(override var tag: Any? = null) : Keyword("out"), KeywordModifier
+        data class Noinline(override var tag: Any? = null) : Keyword("noinline"), KeywordModifier
+        data class CrossInline(override var tag: Any? = null) : Keyword("crossinline"), KeywordModifier
+        data class Vararg(override var tag: Any? = null) : Keyword("vararg"), KeywordModifier
+        data class Reified(override var tag: Any? = null) : Keyword("reified"), KeywordModifier
+        data class TailRec(override var tag: Any? = null) : Keyword("tailrec"), KeywordModifier
+        data class Operator(override var tag: Any? = null) : Keyword("operator"), KeywordModifier
+        data class Infix(override var tag: Any? = null) : Keyword("infix"), KeywordModifier
+        data class Inline(override var tag: Any? = null) : Keyword("inline"), KeywordModifier
+        data class External(override var tag: Any? = null) : Keyword("external"), KeywordModifier
+        data class Suspend(override var tag: Any? = null) : Keyword("suspend"), KeywordModifier
+        data class Const(override var tag: Any? = null) : Keyword("const"), KeywordModifier
+        data class Fun(override var tag: Any? = null) : Keyword("fun"), KeywordModifier
+        data class Actual(override var tag: Any? = null) : Keyword("actual"), KeywordModifier
+        data class Expect(override var tag: Any? = null) : Keyword("expect"), KeywordModifier
     }
 
     sealed class Extra : Node {

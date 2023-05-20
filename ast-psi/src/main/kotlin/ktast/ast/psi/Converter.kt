@@ -918,14 +918,11 @@ open class Converter {
                     is KtAnnotationEntry -> convertAnnotationSet(psi)
                     is KtAnnotation -> convertAnnotationSet(psi)
                     is PsiWhiteSpace -> null
-                    else -> convertKeywordModifier(psi)
+                    else -> convertSealedKeyword<Node.KeywordModifier>(psi)
                 }
             }.toList(),
         ).map(v)
     }
-
-    open fun convertKeywordModifier(v: PsiElement) = Node.KeywordModifier.of(v.text)
-        .map(v)
 
     open fun convertPostModifiers(v: KtElement): List<Node.PostModifier> {
         val nonExtraChildren = v.allChildren.filterNot { it is PsiComment || it is PsiWhiteSpace }.toList()
@@ -958,6 +955,7 @@ open class Converter {
         Node.UnaryExpression.UnaryOperator::class to buildMapTextToKClass<Node.UnaryExpression.UnaryOperator>(),
         Node.BinaryTypeExpression.BinaryTypeOperator::class to buildMapTextToKClass<Node.BinaryTypeExpression.BinaryTypeOperator>(),
         Node.AnnotationSet.AnnotationTarget::class to buildMapTextToKClass<Node.AnnotationSet.AnnotationTarget>(),
+        Node.KeywordModifier::class to buildMapTextToKClass<Node.KeywordModifier>(),
     )
 
     protected inline fun <reified T : Node.SealedKeyword> buildMapTextToKClass() =
