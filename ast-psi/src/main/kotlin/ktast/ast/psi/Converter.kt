@@ -11,6 +11,7 @@ import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
 import org.jetbrains.kotlin.psi.psiUtil.siblings
+import kotlin.reflect.full.createInstance
 
 open class Converter {
     protected open fun onNode(node: Node, elem: PsiElement?) {}
@@ -85,8 +86,13 @@ open class Converter {
         classBody = v.body?.let(::convertClassBody),
     ).map(v)
 
-    open fun convertDeclarationKeyword(v: PsiElement) = Node.ClassDeclaration.DeclarationKeyword.of(v.text)
-        .map(v)
+    private val mapTextToDeclarationKeywordKClass by lazy {
+        Node.ClassDeclaration.DeclarationKeyword::class.sealedSubclasses.associateBy { it.simpleName!!.lowercase() }
+    }
+
+    open fun convertDeclarationKeyword(v: PsiElement) =
+        (mapTextToDeclarationKeywordKClass[v.text]?.createInstance() ?: error("Unknown value: ${v.text}"))
+            .map(v)
 
     open fun convertParents(v: KtSuperTypeList) = Node.ClassDeclaration.ClassParents(
         elements = v.entries.map(::convertParent),

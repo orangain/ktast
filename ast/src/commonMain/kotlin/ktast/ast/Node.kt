@@ -139,31 +139,13 @@ sealed interface Node {
         val classBody: ClassBody?,
         override var tag: Any? = null,
     ) : Declaration(), WithModifiers {
-
-        val isClass = declarationKeyword.token == DeclarationKeyword.Token.CLASS
-        val isObject = declarationKeyword.token == DeclarationKeyword.Token.OBJECT
-        val isInterface = declarationKeyword.token == DeclarationKeyword.Token.INTERFACE
+        val isClass = declarationKeyword is Keyword.Class
+        val isObject = declarationKeyword is Keyword.Object
+        val isInterface = declarationKeyword is Keyword.Interface
         val isCompanion = modifiers?.elements.orEmpty().contains(KeywordModifier(KeywordModifier.Token.COMPANION))
         val isEnum = modifiers?.elements.orEmpty().contains(KeywordModifier(KeywordModifier.Token.ENUM))
 
-        data class DeclarationKeyword(
-            override val token: Token,
-            override var tag: Any? = null,
-        ) : Node,
-            TokenContainer<DeclarationKeyword.Token> {
-            companion object {
-                private val mapStringToToken = Token.values().associateBy { it.string }
-                fun of(value: String): DeclarationKeyword =
-                    mapStringToToken[value]?.let(::DeclarationKeyword) ?: error("Unknown value: $value")
-            }
-
-            enum class Token : HasSimpleStringRepresentation {
-                INTERFACE, CLASS, OBJECT;
-
-                override val string: String
-                    get() = name.lowercase()
-            }
-        }
+        sealed interface DeclarationKeyword : Node
 
         /**
          * AST node corresponds to KtSuperTypeList.
@@ -1283,6 +1265,9 @@ sealed interface Node {
     sealed class Keyword(override val string: String) : Node, HasSimpleStringRepresentation {
         data class Package(override var tag: Any? = null) : Keyword("package")
         data class Import(override var tag: Any? = null) : Keyword("import")
+        data class Class(override var tag: Any? = null) : Keyword("class"), ClassDeclaration.DeclarationKeyword
+        data class Object(override var tag: Any? = null) : Keyword("object"), ClassDeclaration.DeclarationKeyword
+        data class Interface(override var tag: Any? = null) : Keyword("interface"), ClassDeclaration.DeclarationKeyword
         data class Fun(override var tag: Any? = null) : Keyword("fun")
         data class Constructor(override var tag: Any? = null) : Keyword("constructor")
         data class For(override var tag: Any? = null) : Keyword("for")
