@@ -43,7 +43,7 @@ open class MutableVisitor(
                     )
                     is Node.ClassDeclaration -> copy(
                         modifiers = visitChildren(modifiers, newCh),
-                        declarationKeyword = visitChildren(declarationKeyword, newCh),
+                        classDeclarationKeyword = visitChildren(classDeclarationKeyword, newCh),
                         name = visitChildren(name, newCh),
                         typeParams = visitChildren(typeParams, newCh),
                         primaryConstructor = visitChildren(primaryConstructor, newCh),
@@ -99,7 +99,7 @@ open class MutableVisitor(
                     )
                     is Node.FunctionParam -> copy(
                         modifiers = visitChildren(modifiers, newCh),
-                        valOrVar = visitChildren(valOrVar, newCh),
+                        valOrVarKeyword = visitChildren(valOrVarKeyword, newCh),
                         name = visitChildren(name, newCh),
                         typeRef = visitChildren(typeRef, newCh),
                         equals = visitChildren(equals, newCh),
@@ -107,7 +107,7 @@ open class MutableVisitor(
                     )
                     is Node.PropertyDeclaration -> copy(
                         modifiers = visitChildren(modifiers, newCh),
-                        valOrVar = visitChildren(valOrVar, newCh),
+                        valOrVarKeyword = visitChildren(valOrVarKeyword, newCh),
                         typeParams = visitChildren(typeParams, newCh),
                         receiverTypeRef = visitChildren(receiverTypeRef, newCh),
                         lPar = visitChildren(lPar, newCh),

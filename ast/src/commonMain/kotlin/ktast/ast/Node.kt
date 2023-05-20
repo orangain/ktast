@@ -56,11 +56,7 @@ sealed interface Node {
         val string: String
     }
 
-    interface TokenContainer<T : HasSimpleStringRepresentation> : HasSimpleStringRepresentation {
-        val token: T
-        override val string: String
-            get() = token.string
-    }
+    sealed interface SealedKeyword : Node, HasSimpleStringRepresentation
 
     /**
      * AST node corresponds to KtFile.
@@ -119,7 +115,7 @@ sealed interface Node {
     }
 
     /**
-     * Base class of [Node.Declaration] and [Node.Expression].
+     * Base class of [Declaration] and [Expression].
      */
     sealed class Statement : Node
 
@@ -130,7 +126,7 @@ sealed interface Node {
      */
     data class ClassDeclaration(
         override val modifiers: Modifiers?,
-        val declarationKeyword: DeclarationKeyword,
+        val classDeclarationKeyword: ClassDeclarationKeyword,
         val name: NameExpression?,
         val typeParams: TypeParams?,
         val primaryConstructor: PrimaryConstructor?,
@@ -139,31 +135,13 @@ sealed interface Node {
         val classBody: ClassBody?,
         override var tag: Any? = null,
     ) : Declaration(), WithModifiers {
+        val isClass = classDeclarationKeyword is Keyword.Class
+        val isObject = classDeclarationKeyword is Keyword.Object
+        val isInterface = classDeclarationKeyword is Keyword.Interface
+        val isCompanion = modifiers?.elements.orEmpty().any { it is Keyword.Companion }
+        val isEnum = modifiers?.elements.orEmpty().any { it is Keyword.Enum }
 
-        val isClass = declarationKeyword.token == DeclarationKeyword.Token.CLASS
-        val isObject = declarationKeyword.token == DeclarationKeyword.Token.OBJECT
-        val isInterface = declarationKeyword.token == DeclarationKeyword.Token.INTERFACE
-        val isCompanion = modifiers?.elements.orEmpty().contains(KeywordModifier(KeywordModifier.Token.COMPANION))
-        val isEnum = modifiers?.elements.orEmpty().contains(KeywordModifier(KeywordModifier.Token.ENUM))
-
-        data class DeclarationKeyword(
-            override val token: Token,
-            override var tag: Any? = null,
-        ) : Node,
-            TokenContainer<DeclarationKeyword.Token> {
-            companion object {
-                private val mapStringToToken = Token.values().associateBy { it.string }
-                fun of(value: String): DeclarationKeyword =
-                    mapStringToToken[value]?.let(::DeclarationKeyword) ?: error("Unknown value: $value")
-            }
-
-            enum class Token : HasSimpleStringRepresentation {
-                INTERFACE, CLASS, OBJECT;
-
-                override val string: String
-                    get() = name.lowercase()
-            }
-        }
+        sealed interface ClassDeclarationKeyword : SealedKeyword
 
         /**
          * AST node corresponds to KtSuperTypeList.
@@ -285,7 +263,7 @@ sealed interface Node {
      */
     data class FunctionParam(
         override val modifiers: Modifiers?,
-        val valOrVar: PropertyDeclaration.ValOrVar?,
+        val valOrVarKeyword: ValOrVarKeyword?,
         val name: NameExpression,
         // typeRef can be null for anon functions
         val typeRef: TypeRef?,
@@ -299,7 +277,7 @@ sealed interface Node {
      */
     data class PropertyDeclaration(
         override val modifiers: Modifiers?,
-        val valOrVar: ValOrVar,
+        val valOrVarKeyword: ValOrVarKeyword,
         val typeParams: TypeParams?,
         val receiverTypeRef: TypeRef?,
         val lPar: Keyword.LPar?,
@@ -328,24 +306,6 @@ sealed interface Node {
             }
             if (trailingComma != null) {
                 require(lPar != null && rPar != null) { "lPar and rPar are required when trailing comma exists" }
-            }
-        }
-
-        data class ValOrVar(
-            override val token: Token,
-            override var tag: Any? = null,
-        ) : Node, TokenContainer<ValOrVar.Token> {
-            companion object {
-                private val mapStringToToken = Token.values().associateBy { it.string }
-                fun of(value: String): ValOrVar =
-                    mapStringToToken[value]?.let(::ValOrVar) ?: error("Unknown value: $value")
-            }
-
-            enum class Token : HasSimpleStringRepresentation {
-                VAL, VAR;
-
-                override val string: String
-                    get() = name.lowercase()
             }
         }
 
@@ -419,28 +379,12 @@ sealed interface Node {
          * AST node corresponds to KtConstructorDelegationCall.
          */
         data class DelegationCall(
-            val target: DelegationTarget,
+            val target: DelegationTargetKeyword,
             val args: ValueArgs?,
             override var tag: Any? = null,
         ) : Node
 
-        data class DelegationTarget(
-            override val token: Token,
-            override var tag: Any? = null,
-        ) : Node, TokenContainer<DelegationTarget.Token> {
-            companion object {
-                private val mapStringToToken = Token.values().associateBy { it.string }
-                fun of(value: String): DelegationTarget = mapStringToToken[value]?.let(::DelegationTarget)
-                    ?: error("Unknown value: $value")
-            }
-
-            enum class Token : HasSimpleStringRepresentation {
-                THIS, SUPER;
-
-                override val string: String
-                    get() = name.lowercase()
-            }
-        }
+        sealed interface DelegationTargetKeyword : SealedKeyword
     }
 
     /**
@@ -697,30 +641,11 @@ sealed interface Node {
      */
     data class BinaryExpression(
         override val lhs: Expression,
-        val operator: Operator,
+        val operator: BinaryOperator,
         override val rhs: Expression,
         override var tag: Any? = null,
     ) : BaseBinaryExpression() {
-        data class Operator(
-            override val token: Token,
-            override var tag: Any? = null,
-        ) : Node, TokenContainer<Operator.Token> {
-            companion object {
-                private val mapStringToToken = Token.values().associateBy { it.string }
-                fun of(value: String): Operator = mapStringToToken[value]?.let(::Operator)
-                    ?: error("Unknown value: $value")
-            }
-
-            enum class Token(override val string: String) : HasSimpleStringRepresentation {
-                MUL("*"), DIV("/"), MOD("%"), ADD("+"), SUB("-"),
-                IN("in"), NOT_IN("!in"),
-                GT(">"), GTE(">="), LT("<"), LTE("<="),
-                EQ("=="), NEQ("!="),
-                ASSN("="), MUL_ASSN("*="), DIV_ASSN("/="), MOD_ASSN("%="), ADD_ASSN("+="), SUB_ASSN("-="),
-                OR("||"), AND("&&"), ELVIS("?:"), RANGE(".."), UNTIL("..<"),
-                DOT("."), DOT_SAFE("?."), SAFE("?")
-            }
-        }
+        sealed interface BinaryOperator : SealedKeyword
     }
 
     data class BinaryInfixExpression(
@@ -735,24 +660,11 @@ sealed interface Node {
      */
     data class UnaryExpression(
         val expression: Expression,
-        val operator: Operator,
+        val operator: UnaryOperator,
         val prefix: Boolean,
         override var tag: Any? = null,
     ) : Expression() {
-        data class Operator(
-            override val token: Token,
-            override var tag: Any? = null,
-        ) : Node, TokenContainer<Operator.Token> {
-            companion object {
-                private val mapStringToToken = Token.values().associateBy { it.string }
-                fun of(value: String): Operator =
-                    mapStringToToken[value]?.let(::Operator) ?: error("Unknown value: $value")
-            }
-
-            enum class Token(override val string: String) : HasSimpleStringRepresentation {
-                NEG("-"), POS("+"), INC("++"), DEC("--"), NOT("!"), NULL_DEREF("!!")
-            }
-        }
+        sealed interface UnaryOperator : SealedKeyword
     }
 
     /**
@@ -760,25 +672,11 @@ sealed interface Node {
      */
     data class BinaryTypeExpression(
         val lhs: Expression,
-        val operator: Operator,
+        val operator: BinaryTypeOperator,
         val rhs: TypeRef,
         override var tag: Any? = null,
     ) : Expression() {
-        data class Operator(
-            override val token: Token,
-            override var tag: Any? = null,
-        ) : Node, TokenContainer<Operator.Token> {
-            companion object {
-                private val mapStringToToken = Token.values().associateBy { it.string }
-                fun of(value: String): Operator =
-                    mapStringToToken[value]?.let(::Operator) ?: error("Unknown value: $value")
-            }
-
-            enum class Token(override val string: String) : HasSimpleStringRepresentation {
-                AS("as"), AS_SAFE("as?"), COL(":"), IS("is"), NOT_IS("!is")
-            }
-        }
-
+        sealed interface BinaryTypeOperator : SealedKeyword
     }
 
     /**
@@ -1158,38 +1056,21 @@ sealed interface Node {
         override var tag: Any? = null,
     ) : NodeList<Modifier>()
 
-    sealed class Modifier : Node
+    sealed interface Modifier : Node
 
     /**
      * AST node corresponds to KtAnnotation or KtAnnotationEntry not under KtAnnotation.
      */
     data class AnnotationSet(
-        val atSymbol: Node.Keyword.At?,
-        val target: Target?,
-        val colon: Node.Keyword.Colon?,
-        val lBracket: Node.Keyword.LBracket?,
+        val atSymbol: Keyword.At?,
+        val target: AnnotationTarget?,
+        val colon: Keyword.Colon?,
+        val lBracket: Keyword.LBracket?,
         val annotations: List<Annotation>,
-        val rBracket: Node.Keyword.RBracket?,
+        val rBracket: Keyword.RBracket?,
         override var tag: Any? = null,
-    ) : Modifier() {
-
-        data class Target(
-            override val token: Token,
-            override var tag: Any? = null,
-        ) : Node, TokenContainer<Target.Token> {
-            companion object {
-                private val mapStringToToken = Token.values().associateBy { it.string }
-                fun of(value: String): Target = mapStringToToken[value]?.let(::Target)
-                    ?: error("Unknown value: $value")
-            }
-
-            enum class Token : HasSimpleStringRepresentation {
-                FIELD, FILE, PROPERTY, GET, SET, RECEIVER, PARAM, SETPARAM, DELEGATE;
-
-                override val string: String
-                    get() = name.lowercase()
-            }
-        }
+    ) : Modifier {
+        sealed interface AnnotationTarget : SealedKeyword
 
         /**
          * AST node corresponds to KtAnnotationEntry under KtAnnotation or virtual AST node corresponds to KtAnnotationEntry not under KtAnnotation.
@@ -1201,27 +1082,7 @@ sealed interface Node {
         ) : Node
     }
 
-    data class KeywordModifier(
-        override val token: Token,
-        override var tag: Any? = null,
-    ) : Modifier(), TokenContainer<KeywordModifier.Token> {
-        companion object {
-            private val mapStringToToken = Token.values().associateBy { it.string }
-            fun of(value: String): KeywordModifier =
-                mapStringToToken[value]?.let(Node::KeywordModifier) ?: error("Unknown value: $value")
-        }
-
-        enum class Token : HasSimpleStringRepresentation {
-            ABSTRACT, FINAL, OPEN, ANNOTATION, SEALED, DATA, OVERRIDE, LATEINIT, INNER, ENUM, COMPANION, VALUE,
-            PRIVATE, PROTECTED, PUBLIC, INTERNAL,
-            IN, OUT, NOINLINE, CROSSINLINE, VARARG, REIFIED,
-            TAILREC, OPERATOR, INFIX, INLINE, EXTERNAL, SUSPEND, CONST, FUN,
-            ACTUAL, EXPECT;
-
-            override val string: String
-                get() = name.lowercase()
-        }
-    }
+    sealed interface KeywordModifier : Modifier, SealedKeyword
 
     sealed class PostModifier : Node
 
@@ -1280,11 +1141,25 @@ sealed interface Node {
         ) : Node
     }
 
+    sealed interface ValOrVarKeyword : SealedKeyword
+
     sealed class Keyword(override val string: String) : Node, HasSimpleStringRepresentation {
         data class Package(override var tag: Any? = null) : Keyword("package")
         data class Import(override var tag: Any? = null) : Keyword("import")
-        data class Fun(override var tag: Any? = null) : Keyword("fun")
+        data class Class(override var tag: Any? = null) : Keyword("class"), ClassDeclaration.ClassDeclarationKeyword
+        data class Object(override var tag: Any? = null) : Keyword("object"), ClassDeclaration.ClassDeclarationKeyword
+        data class Interface(override var tag: Any? = null) : Keyword("interface"),
+            ClassDeclaration.ClassDeclarationKeyword
+
         data class Constructor(override var tag: Any? = null) : Keyword("constructor")
+        data class Val(override var tag: Any? = null) : Keyword("val"), ValOrVarKeyword
+        data class Var(override var tag: Any? = null) : Keyword("var"), ValOrVarKeyword
+        data class This(override var tag: Any? = null) : Keyword("this"),
+            SecondaryConstructorDeclaration.DelegationTargetKeyword
+
+        data class Super(override var tag: Any? = null) : Keyword("super"),
+            SecondaryConstructorDeclaration.DelegationTargetKeyword
+
         data class For(override var tag: Any? = null) : Keyword("for")
         data class While(override var tag: Any? = null) : Keyword("while")
         data class If(override var tag: Any? = null) : Keyword("if")
@@ -1294,17 +1169,93 @@ sealed interface Node {
         data class By(override var tag: Any? = null) : Keyword("by")
         data class Contract(override var tag: Any? = null) : Keyword("contract")
         data class Where(override var tag: Any? = null) : Keyword("where")
-        data class Get(override var tag: Any? = null) : Keyword("get")
-        data class Set(override var tag: Any? = null) : Keyword("set")
+        data class Field(override var tag: Any? = null) : Keyword("field"), AnnotationSet.AnnotationTarget
+        data class File(override var tag: Any? = null) : Keyword("file"), AnnotationSet.AnnotationTarget
+        data class Property(override var tag: Any? = null) : Keyword("property"), AnnotationSet.AnnotationTarget
+        data class Get(override var tag: Any? = null) : Keyword("get"), AnnotationSet.AnnotationTarget
+        data class Set(override var tag: Any? = null) : Keyword("set"), AnnotationSet.AnnotationTarget
+        data class Receiver(override var tag: Any? = null) : Keyword("receiver"), AnnotationSet.AnnotationTarget
+        data class Param(override var tag: Any? = null) : Keyword("param"), AnnotationSet.AnnotationTarget
+        data class SetParam(override var tag: Any? = null) : Keyword("setparam"), AnnotationSet.AnnotationTarget
+        data class Delegate(override var tag: Any? = null) : Keyword("delegate"), AnnotationSet.AnnotationTarget
         data class Equal(override var tag: Any? = null) : Keyword("=")
         data class Comma(override var tag: Any? = null) : Keyword(",")
-        data class Question(override var tag: Any? = null) : Keyword("?")
         data class LPar(override var tag: Any? = null) : Keyword("(")
         data class RPar(override var tag: Any? = null) : Keyword(")")
         data class LBracket(override var tag: Any? = null) : Keyword("[")
         data class RBracket(override var tag: Any? = null) : Keyword("]")
         data class At(override var tag: Any? = null) : Keyword("@")
-        data class Colon(override var tag: Any? = null) : Keyword(":")
+        data class Asterisk(override var tag: Any? = null) : Keyword("*"), BinaryExpression.BinaryOperator
+        data class Slash(override var tag: Any? = null) : Keyword("/"), BinaryExpression.BinaryOperator
+        data class Percent(override var tag: Any? = null) : Keyword("%"), BinaryExpression.BinaryOperator
+        data class Plus(override var tag: Any? = null) : Keyword("+"), BinaryExpression.BinaryOperator,
+            UnaryExpression.UnaryOperator
+
+        data class Minus(override var tag: Any? = null) : Keyword("-"), BinaryExpression.BinaryOperator,
+            UnaryExpression.UnaryOperator
+
+        data class In(override var tag: Any? = null) : Keyword("in"), BinaryExpression.BinaryOperator, KeywordModifier
+        data class NotIn(override var tag: Any? = null) : Keyword("!in"), BinaryExpression.BinaryOperator
+        data class Greater(override var tag: Any? = null) : Keyword(">"), BinaryExpression.BinaryOperator
+        data class GreaterEqual(override var tag: Any? = null) : Keyword(">="), BinaryExpression.BinaryOperator
+        data class Less(override var tag: Any? = null) : Keyword("<"), BinaryExpression.BinaryOperator
+        data class LessEqual(override var tag: Any? = null) : Keyword("<="), BinaryExpression.BinaryOperator
+        data class EqualEqual(override var tag: Any? = null) : Keyword("=="), BinaryExpression.BinaryOperator
+        data class NotEqual(override var tag: Any? = null) : Keyword("!="), BinaryExpression.BinaryOperator
+        data class AsteriskEqual(override var tag: Any? = null) : Keyword("*="), BinaryExpression.BinaryOperator
+        data class SlashEqual(override var tag: Any? = null) : Keyword("/="), BinaryExpression.BinaryOperator
+        data class PercentEqual(override var tag: Any? = null) : Keyword("%="), BinaryExpression.BinaryOperator
+        data class PlusEqual(override var tag: Any? = null) : Keyword("+="), BinaryExpression.BinaryOperator
+        data class MinusEqual(override var tag: Any? = null) : Keyword("-="), BinaryExpression.BinaryOperator
+        data class OrOr(override var tag: Any? = null) : Keyword("||"), BinaryExpression.BinaryOperator
+        data class AndAnd(override var tag: Any? = null) : Keyword("&&"), BinaryExpression.BinaryOperator
+        data class QuestionColon(override var tag: Any? = null) : Keyword("?:"), BinaryExpression.BinaryOperator
+        data class DotDot(override var tag: Any? = null) : Keyword(".."), BinaryExpression.BinaryOperator
+        data class DotDotLess(override var tag: Any? = null) : Keyword("..<"), BinaryExpression.BinaryOperator
+        data class Dot(override var tag: Any? = null) : Keyword("."), BinaryExpression.BinaryOperator
+        data class QuestionDot(override var tag: Any? = null) : Keyword("?."), BinaryExpression.BinaryOperator
+        data class Question(override var tag: Any? = null) : Keyword("?"), BinaryExpression.BinaryOperator
+        data class PlusPlus(override var tag: Any? = null) : Keyword("++"), UnaryExpression.UnaryOperator
+        data class MinusMinus(override var tag: Any? = null) : Keyword("--"), UnaryExpression.UnaryOperator
+        data class Not(override var tag: Any? = null) : Keyword("!"), UnaryExpression.UnaryOperator
+        data class NotNot(override var tag: Any? = null) : Keyword("!!"), UnaryExpression.UnaryOperator
+        data class As(override var tag: Any? = null) : Keyword("as"), BinaryTypeExpression.BinaryTypeOperator
+        data class AsQuestion(override var tag: Any? = null) : Keyword("as?"), BinaryTypeExpression.BinaryTypeOperator
+
+        data class Colon(override var tag: Any? = null) : Keyword(":"), BinaryTypeExpression.BinaryTypeOperator
+        data class Is(override var tag: Any? = null) : Keyword("is"), BinaryTypeExpression.BinaryTypeOperator
+        data class NotIs(override var tag: Any? = null) : Keyword("!is"), BinaryTypeExpression.BinaryTypeOperator
+        data class Abstract(override var tag: Any? = null) : Keyword("abstract"), KeywordModifier
+        data class Final(override var tag: Any? = null) : Keyword("final"), KeywordModifier
+        data class Open(override var tag: Any? = null) : Keyword("open"), KeywordModifier
+        data class Annotation(override var tag: Any? = null) : Keyword("annotation"), KeywordModifier
+        data class Sealed(override var tag: Any? = null) : Keyword("sealed"), KeywordModifier
+        data class Data(override var tag: Any? = null) : Keyword("data"), KeywordModifier
+        data class Override(override var tag: Any? = null) : Keyword("override"), KeywordModifier
+        data class LateInit(override var tag: Any? = null) : Keyword("lateinit"), KeywordModifier
+        data class Inner(override var tag: Any? = null) : Keyword("inner"), KeywordModifier
+        data class Enum(override var tag: Any? = null) : Keyword("enum"), KeywordModifier
+        data class Companion(override var tag: Any? = null) : Keyword("companion"), KeywordModifier
+        data class Value(override var tag: Any? = null) : Keyword("value"), KeywordModifier
+        data class Private(override var tag: Any? = null) : Keyword("private"), KeywordModifier
+        data class Protected(override var tag: Any? = null) : Keyword("protected"), KeywordModifier
+        data class Public(override var tag: Any? = null) : Keyword("public"), KeywordModifier
+        data class Internal(override var tag: Any? = null) : Keyword("internal"), KeywordModifier
+        data class Out(override var tag: Any? = null) : Keyword("out"), KeywordModifier
+        data class Noinline(override var tag: Any? = null) : Keyword("noinline"), KeywordModifier
+        data class CrossInline(override var tag: Any? = null) : Keyword("crossinline"), KeywordModifier
+        data class Vararg(override var tag: Any? = null) : Keyword("vararg"), KeywordModifier
+        data class Reified(override var tag: Any? = null) : Keyword("reified"), KeywordModifier
+        data class TailRec(override var tag: Any? = null) : Keyword("tailrec"), KeywordModifier
+        data class Operator(override var tag: Any? = null) : Keyword("operator"), KeywordModifier
+        data class Infix(override var tag: Any? = null) : Keyword("infix"), KeywordModifier
+        data class Inline(override var tag: Any? = null) : Keyword("inline"), KeywordModifier
+        data class External(override var tag: Any? = null) : Keyword("external"), KeywordModifier
+        data class Suspend(override var tag: Any? = null) : Keyword("suspend"), KeywordModifier
+        data class Const(override var tag: Any? = null) : Keyword("const"), KeywordModifier
+        data class Fun(override var tag: Any? = null) : Keyword("fun"), KeywordModifier
+        data class Actual(override var tag: Any? = null) : Keyword("actual"), KeywordModifier
+        data class Expect(override var tag: Any? = null) : Keyword("expect"), KeywordModifier
     }
 
     sealed class Extra : Node {

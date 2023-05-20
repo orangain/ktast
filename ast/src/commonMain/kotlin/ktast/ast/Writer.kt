@@ -89,7 +89,7 @@ open class Writer(
                 }
                 is Node.ClassDeclaration -> {
                     children(modifiers)
-                    children(declarationKeyword)
+                    children(classDeclarationKeyword)
                     children(name)
                     children(typeParams)
                     children(primaryConstructor)
@@ -142,7 +142,7 @@ open class Writer(
                 }
                 is Node.FunctionParam -> {
                     children(modifiers)
-                    children(valOrVar)
+                    children(valOrVarKeyword)
                     children(name)
                     if (typeRef != null) append(":").also { children(typeRef) }
                     children(equals)
@@ -150,7 +150,7 @@ open class Writer(
                 }
                 is Node.PropertyDeclaration -> {
                     children(modifiers)
-                    children(valOrVar)
+                    children(valOrVarKeyword)
                     children(typeParams)
                     if (receiverTypeRef != null) children(receiverTypeRef).append('.')
                     children(lPar)
@@ -632,12 +632,44 @@ open class Writer(
         extrasSinceLastNonSymbol.clear()
     }
 
+    // See: https://kotlinlang.org/docs/keyword-reference.html#modifier-keywords
+    private val modifierKeywords = setOf(
+        "abstract",
+        "actual",
+        "annotation",
+        "companion",
+        "const",
+        "crossinline",
+        "data",
+        "enum",
+        "expect",
+        "external",
+        "final",
+        "infix",
+        "inline",
+        "inner",
+        "internal",
+        "lateinit",
+        "noinline",
+        "open",
+        "operator",
+        "out",
+        "override",
+        "private",
+        "protected",
+        "public",
+        "reified",
+        "sealed",
+        "suspend",
+        "tailrec",
+        "vararg",
+    )
+
     protected open fun writeHeuristicExtraAfterChild(v: Node, next: Node?, parent: Node?) {
-        if (v is Node.NameExpression && next is Node.Declaration && parent is Node.StatementsContainer) {
-            val upperCasedName = v.name.uppercase()
-            if (Node.KeywordModifier.Token.values().any { it.name == upperCasedName } &&
-                !containsSemicolon(extrasSinceLastNonSymbol)
-            ) {
+        if (v is Node.NameExpression && modifierKeywords.contains(v.name) && next is Node.Declaration && parent is Node.StatementsContainer) {
+            // Insert heuristic semicolon after name expression whose name is the same as the modifier keyword and next
+            // is declaration to avoid ambiguity with keyword modifier.
+            if (!containsSemicolon(extrasSinceLastNonSymbol)) {
                 append(";")
             }
         }
