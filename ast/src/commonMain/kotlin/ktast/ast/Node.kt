@@ -383,28 +383,12 @@ sealed interface Node {
          * AST node corresponds to KtConstructorDelegationCall.
          */
         data class DelegationCall(
-            val target: DelegationTarget,
+            val target: DelegationTargetKeyword,
             val args: ValueArgs?,
             override var tag: Any? = null,
         ) : Node
 
-        data class DelegationTarget(
-            override val token: Token,
-            override var tag: Any? = null,
-        ) : Node, TokenContainer<DelegationTarget.Token> {
-            companion object {
-                private val mapStringToToken = Token.values().associateBy { it.string }
-                fun of(value: String): DelegationTarget = mapStringToToken[value]?.let(::DelegationTarget)
-                    ?: error("Unknown value: $value")
-            }
-
-            enum class Token : HasSimpleStringRepresentation {
-                THIS, SUPER;
-
-                override val string: String
-                    get() = name.lowercase()
-            }
-        }
+        sealed interface DelegationTargetKeyword : Node
     }
 
     /**
@@ -1258,6 +1242,12 @@ sealed interface Node {
         data class Constructor(override var tag: Any? = null) : Keyword("constructor")
         data class Val(override var tag: Any? = null) : Keyword("val"), ValOrVarKeyword
         data class Var(override var tag: Any? = null) : Keyword("var"), ValOrVarKeyword
+        data class This(override var tag: Any? = null) : Keyword("this"),
+            SecondaryConstructorDeclaration.DelegationTargetKeyword
+
+        data class Super(override var tag: Any? = null) : Keyword("super"),
+            SecondaryConstructorDeclaration.DelegationTargetKeyword
+
         data class For(override var tag: Any? = null) : Keyword("for")
         data class While(override var tag: Any? = null) : Keyword("while")
         data class If(override var tag: Any? = null) : Keyword("if")

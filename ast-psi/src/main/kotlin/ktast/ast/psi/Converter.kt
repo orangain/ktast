@@ -248,13 +248,7 @@ open class Converter {
 
     open fun convertSecondaryConstructorDelegationCall(v: KtConstructorDelegationCall) =
         Node.SecondaryConstructorDeclaration.DelegationCall(
-            target = Node.SecondaryConstructorDeclaration.DelegationTarget(
-                if (v.isCallToThis) {
-                    Node.SecondaryConstructorDeclaration.DelegationTarget.Token.THIS
-                } else {
-                    Node.SecondaryConstructorDeclaration.DelegationTarget.Token.SUPER
-                }
-            ),
+            target = convertSealedKeyword(v.calleeExpression?.firstChild ?: error("No delegation target for $v")),
             args = v.valueArgumentList?.let(::convertValueArgs)
         ).map(v)
 
@@ -989,6 +983,7 @@ open class Converter {
     protected val mapTextToKClassCache = mapOf(
         Node.ClassDeclaration.ClassDeclarationKeyword::class to buildMapTextToKClass<Node.ClassDeclaration.ClassDeclarationKeyword>(),
         Node.ValOrVarKeyword::class to buildMapTextToKClass<Node.ValOrVarKeyword>(),
+        Node.SecondaryConstructorDeclaration.DelegationTargetKeyword::class to buildMapTextToKClass<Node.SecondaryConstructorDeclaration.DelegationTargetKeyword>(),
     )
 
     protected inline fun <reified T : Node> buildMapTextToKClass() =
