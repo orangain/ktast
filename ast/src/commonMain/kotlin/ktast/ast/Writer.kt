@@ -81,9 +81,9 @@ open class Writer(
                 is Node.ImportDirective -> {
                     children(importKeyword)
                     children(names, ".")
-                    children(alias)
+                    children(importAlias)
                 }
-                is Node.ImportDirective.Alias -> {
+                is Node.ImportDirective.ImportAlias -> {
                     append("as")
                     children(name)
                 }
@@ -93,23 +93,23 @@ open class Writer(
                     children(name)
                     children(typeParams)
                     children(primaryConstructor)
-                    if (parents != null) {
+                    if (classParents != null) {
                         append(":")
-                        children(parents)
+                        children(classParents)
                     }
-                    children(typeConstraints)
-                    children(body)
+                    children(typeConstraintSet)
+                    children(classBody)
                 }
-                is Node.ClassDeclaration.Parent.CallConstructor -> {
+                is Node.ClassDeclaration.ClassParent.CallConstructor -> {
                     children(type)
                     children(args)
                 }
-                is Node.ClassDeclaration.Parent.DelegatedType -> {
+                is Node.ClassDeclaration.ClassParent.DelegatedType -> {
                     children(type)
                     children(byKeyword)
                     children(expression)
                 }
-                is Node.ClassDeclaration.Parent.Type -> {
+                is Node.ClassDeclaration.ClassParent.Type -> {
                     children(type)
                 }
                 is Node.ClassDeclaration.PrimaryConstructor -> {
@@ -117,7 +117,7 @@ open class Writer(
                     children(constructorKeyword)
                     children(params)
                 }
-                is Node.ClassDeclaration.Body -> {
+                is Node.ClassDeclaration.ClassBody -> {
                     append("{")
                     children(enumEntries, skipWritingExtrasWithin = true)
                     children(declarations)
@@ -140,7 +140,7 @@ open class Writer(
                     children(equals)
                     children(body)
                 }
-                is Node.FunctionDeclaration.Param -> {
+                is Node.FunctionParam -> {
                     children(modifiers)
                     children(valOrVar)
                     children(name)
@@ -157,21 +157,21 @@ open class Writer(
                     children(variables, ",")
                     children(trailingComma)
                     children(rPar)
-                    children(typeConstraints)
+                    children(typeConstraintSet)
                     children(equals)
                     children(initializer)
-                    children(delegate)
+                    children(propertyDelegate)
                     children(accessors)
                 }
-                is Node.PropertyDeclaration.Delegate -> {
+                is Node.PropertyDeclaration.PropertyDelegate -> {
                     children(byKeyword)
                     children(expression)
                 }
-                is Node.PropertyDeclaration.Variable -> {
+                is Node.Variable -> {
                     children(name)
                     if (typeRef != null) append(":").also { children(typeRef) }
                 }
-                is Node.PropertyDeclaration.Accessor.Getter -> {
+                is Node.PropertyDeclaration.Getter -> {
                     children(modifiers)
                     children(getKeyword)
                     if (body != null) {
@@ -182,7 +182,7 @@ open class Writer(
                         children(body)
                     }
                 }
-                is Node.PropertyDeclaration.Accessor.Setter -> {
+                is Node.PropertyDeclaration.Setter -> {
                     children(modifiers)
                     children(setKeyword)
                     if (body != null) {
@@ -212,12 +212,12 @@ open class Writer(
                     children(target)
                     children(args)
                 }
-                is Node.EnumEntry -> {
+                is Node.ClassDeclaration.ClassBody.EnumEntry -> {
                     children(modifiers)
                     children(name)
                     children(args)
-                    children(body)
-                    check(parent is Node.ClassDeclaration.Body) // condition should always be true
+                    children(classBody)
+                    check(parent is Node.ClassDeclaration.ClassBody) // condition should always be true
                     val isLastEntry = parent.enumEntries.last() === this
                     if (!isLastEntry || parent.hasTrailingCommaInEnumEntries) {
                         append(",")
@@ -252,8 +252,8 @@ open class Writer(
                         append("context")
                         children(contextReceivers)
                     }
-                    if (receiver != null) {
-                        children(receiver)
+                    if (functionTypeReceiver != null) {
+                        children(functionTypeReceiver)
                         append('.')
                     }
                     if (params != null) {
@@ -265,7 +265,7 @@ open class Writer(
                 is Node.FunctionType.ContextReceiver -> {
                     children(typeRef)
                 }
-                is Node.FunctionType.Receiver -> {
+                is Node.FunctionType.FunctionTypeReceiver -> {
                     children(typeRef)
                 }
                 is Node.FunctionType.Param -> {
@@ -315,10 +315,10 @@ open class Writer(
                 is Node.TryExpression -> {
                     append("try")
                     children(block)
-                    if (catches.isNotEmpty()) children(catches)
+                    if (catchClauses.isNotEmpty()) children(catchClauses)
                     if (finallyBlock != null) append("finally").also { children(finallyBlock) }
                 }
-                is Node.TryExpression.Catch -> {
+                is Node.TryExpression.CatchClause -> {
                     children(catchKeyword)
                     children(params)
                     children(block)
@@ -376,7 +376,7 @@ open class Writer(
                 }
                 is Node.ParenthesizedExpression ->
                     append('(').also { children(expression) }.append(')')
-                is Node.StringTemplateExpression -> {
+                is Node.StringLiteralExpression -> {
                     if (raw) {
                         append("\"\"\"")
                         children(entries)
@@ -387,17 +387,17 @@ open class Writer(
                         append('"')
                     }
                 }
-                is Node.StringTemplateExpression.Entry.Regular ->
+                is Node.StringLiteralExpression.LiteralStringEntry ->
                     doAppend(str)
-                is Node.StringTemplateExpression.Entry.ShortTemplate -> {
+                is Node.StringLiteralExpression.ShortTemplateEntry -> {
                     doAppend("$")
                     doAppend(str)
                 }
-                is Node.StringTemplateExpression.Entry.UnicodeEscape -> {
+                is Node.StringLiteralExpression.UnicodeEscapeEntry -> {
                     doAppend("\\u")
                     doAppend(digits)
                 }
-                is Node.StringTemplateExpression.Entry.RegularEscape -> {
+                is Node.StringLiteralExpression.RegularEscapeEntry -> {
                     doAppend(
                         "\\${
                             when (char) {
@@ -410,9 +410,9 @@ open class Writer(
                         }"
                     )
                 }
-                is Node.StringTemplateExpression.Entry.LongTemplate ->
+                is Node.StringLiteralExpression.LongTemplateEntry ->
                     append("\${").also { children(expression) }.append('}')
-                is Node.ConstantExpression ->
+                is Node.ConstantLiteralExpression ->
                     append(value)
                 is Node.LambdaExpression -> {
                     append("{")
@@ -420,10 +420,10 @@ open class Writer(
                         children(params)
                         append("->")
                     }
-                    children(body)
+                    children(lambdaBody)
                     append("}")
                 }
-                is Node.LambdaExpression.Param -> {
+                is Node.LambdaParam -> {
                     children(lPar)
                     children(variables, ",")
                     children(trailingComma)
@@ -431,7 +431,7 @@ open class Writer(
                     children(colon)
                     children(destructTypeRef)
                 }
-                is Node.LambdaExpression.Param.Variable -> {
+                is Node.LambdaParam.Variable -> {
                     children(modifiers)
                     children(name)
                     if (typeRef != null) {
@@ -439,7 +439,7 @@ open class Writer(
                         children(typeRef)
                     }
                 }
-                is Node.LambdaExpression.Body -> {
+                is Node.LambdaExpression.LambdaBody -> {
                     children(statements)
                 }
                 is Node.ThisExpression -> {
@@ -454,28 +454,28 @@ open class Writer(
                 is Node.WhenExpression -> {
                     children(whenKeyword, lPar, expression, rPar)
                     append("{")
-                    children(branches)
+                    children(whenBranches)
                     append("}")
                 }
-                is Node.WhenExpression.Branch.Conditional -> {
-                    children(conditions, ",", trailingSeparator = trailingComma)
+                is Node.WhenExpression.WhenBranch.Conditional -> {
+                    children(whenConditions, ",", trailingSeparator = trailingComma)
                     append("->").also { children(body) }
                 }
-                is Node.WhenExpression.Branch.Else -> {
+                is Node.WhenExpression.WhenBranch.Else -> {
                     children(elseKeyword)
                     append("->").also { children(body) }
                 }
-                is Node.WhenExpression.Condition.Expression ->
+                is Node.WhenExpression.WhenCondition.Expression ->
                     children(expression)
-                is Node.WhenExpression.Condition.In -> {
+                is Node.WhenExpression.WhenCondition.In -> {
                     if (not) append('!')
                     append("in").also { children(expression) }
                 }
-                is Node.WhenExpression.Condition.Is -> {
+                is Node.WhenExpression.WhenCondition.Is -> {
                     if (not) append('!')
                     append("is").also { children(typeRef) }
                 }
-                is Node.ObjectExpression -> {
+                is Node.ObjectLiteralExpression -> {
                     children(declaration)
                 }
                 is Node.ThrowExpression ->
@@ -526,7 +526,7 @@ open class Writer(
                     }
                     append("}")
                 }
-                is Node.AnnotationSetModifier -> {
+                is Node.AnnotationSet -> {
                     children(atSymbol)
                     children(target)
                     children(colon)
@@ -534,18 +534,18 @@ open class Writer(
                     children(annotations)
                     children(rBracket)
                 }
-                is Node.AnnotationSetModifier.Annotation -> {
+                is Node.AnnotationSet.Annotation -> {
                     children(type)
                     children(args)
-                    if (parent is Node.AnnotationSetModifier && parent.rBracket == null) {
+                    if (parent is Node.AnnotationSet && parent.rBracket == null) {
                         nextHeuristicWhitespace = " " // Insert heuristic space after annotation if single form
                     }
                 }
-                is Node.TypeConstraints -> {
+                is Node.TypeConstraintSet -> {
                     children(whereKeyword)
                     children(constraints)
                 }
-                is Node.TypeConstraints.TypeConstraint -> {
+                is Node.TypeConstraintSet.TypeConstraint -> {
                     children(annotationSets)
                     children(name)
                     append(":")
@@ -602,7 +602,7 @@ open class Writer(
         }
         if (parent is Node.PropertyDeclaration && this is Node.PropertyDeclaration.Accessor) {
             // Property accessors require newline when the previous element is expression
-            if ((parent.accessors.first() === this && (parent.delegate != null || parent.initializer != null)) ||
+            if ((parent.accessors.first() === this && (parent.propertyDelegate != null || parent.initializer != null)) ||
                 (parent.accessors.size == 2 && parent.accessors.last() === this && parent.accessors[0].equals != null)
             ) {
                 if (!containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
@@ -610,8 +610,8 @@ open class Writer(
                 }
             }
         }
-        if (parent is Node.WhenExpression && this is Node.WhenExpression.Branch) {
-            if (parent.branches.first() !== this && !containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
+        if (parent is Node.WhenExpression && this is Node.WhenExpression.WhenBranch) {
+            if (parent.whenBranches.first() !== this && !containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
                 append("\n")
             }
         }
