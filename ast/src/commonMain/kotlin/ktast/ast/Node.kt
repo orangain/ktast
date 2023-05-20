@@ -1069,31 +1069,14 @@ sealed interface Node {
      */
     data class AnnotationSet(
         val atSymbol: Node.Keyword.At?,
-        val target: Target?,
+        val target: AnnotationTarget?,
         val colon: Node.Keyword.Colon?,
         val lBracket: Node.Keyword.LBracket?,
         val annotations: List<Annotation>,
         val rBracket: Node.Keyword.RBracket?,
         override var tag: Any? = null,
     ) : Modifier() {
-
-        data class Target(
-            override val token: Token,
-            override var tag: Any? = null,
-        ) : Node, TokenContainer<Target.Token> {
-            companion object {
-                private val mapStringToToken = Token.values().associateBy { it.string }
-                fun of(value: String): Target = mapStringToToken[value]?.let(::Target)
-                    ?: error("Unknown value: $value")
-            }
-
-            enum class Token : HasSimpleStringRepresentation {
-                FIELD, FILE, PROPERTY, GET, SET, RECEIVER, PARAM, SETPARAM, DELEGATE;
-
-                override val string: String
-                    get() = name.lowercase()
-            }
-        }
+        sealed interface AnnotationTarget : SealedKeyword
 
         /**
          * AST node corresponds to KtAnnotationEntry under KtAnnotation or virtual AST node corresponds to KtAnnotationEntry not under KtAnnotation.
@@ -1213,8 +1196,15 @@ sealed interface Node {
         data class By(override var tag: Any? = null) : Keyword("by")
         data class Contract(override var tag: Any? = null) : Keyword("contract")
         data class Where(override var tag: Any? = null) : Keyword("where")
-        data class Get(override var tag: Any? = null) : Keyword("get")
-        data class Set(override var tag: Any? = null) : Keyword("set")
+        data class Field(override var tag: Any? = null) : Keyword("field"), AnnotationSet.AnnotationTarget
+        data class File(override var tag: Any? = null) : Keyword("file"), AnnotationSet.AnnotationTarget
+        data class Property(override var tag: Any? = null) : Keyword("property"), AnnotationSet.AnnotationTarget
+        data class Get(override var tag: Any? = null) : Keyword("get"), AnnotationSet.AnnotationTarget
+        data class Set(override var tag: Any? = null) : Keyword("set"), AnnotationSet.AnnotationTarget
+        data class Receiver(override var tag: Any? = null) : Keyword("receiver"), AnnotationSet.AnnotationTarget
+        data class Param(override var tag: Any? = null) : Keyword("param"), AnnotationSet.AnnotationTarget
+        data class SetParam(override var tag: Any? = null) : Keyword("setparam"), AnnotationSet.AnnotationTarget
+        data class Delegate(override var tag: Any? = null) : Keyword("delegate"), AnnotationSet.AnnotationTarget
         data class Equal(override var tag: Any? = null) : Keyword("=")
         data class Comma(override var tag: Any? = null) : Keyword(",")
         data class LPar(override var tag: Any? = null) : Keyword("(")

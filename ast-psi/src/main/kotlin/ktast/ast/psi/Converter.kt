@@ -6,7 +6,6 @@ import org.jetbrains.kotlin.com.intellij.psi.PsiComment
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
 import org.jetbrains.kotlin.com.intellij.psi.tree.IElementType
-import org.jetbrains.kotlin.descriptors.annotations.AnnotationUseSiteTarget
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
@@ -880,7 +879,7 @@ open class Converter {
 
     open fun convertAnnotationSet(v: KtAnnotation) = Node.AnnotationSet(
         atSymbol = v.atSymbol?.let { convertKeyword(it, Node.Keyword::At) },
-        target = v.useSiteTarget?.let(::convertAnnotationSetTarget),
+        target = v.useSiteTarget?.let(::convertSealedKeyword),
         colon = v.colon?.let { convertKeyword(it, Node.Keyword::Colon) },
         lBracket = v.lBracket?.let { convertKeyword(it, Node.Keyword::LBracket) },
         annotations = v.entries.map {
@@ -892,7 +891,7 @@ open class Converter {
 
     open fun convertAnnotationSet(v: KtAnnotationEntry) = Node.AnnotationSet(
         atSymbol = v.atSymbol?.let { convertKeyword(it, Node.Keyword::At) },
-        target = v.useSiteTarget?.let(::convertAnnotationSetTarget),
+        target = v.useSiteTarget?.let(::convertSealedKeyword),
         colon = v.colon?.let { convertKeyword(it, Node.Keyword::Colon) },
         lBracket = null,
         annotations = listOf(
@@ -901,20 +900,6 @@ open class Converter {
         ),
         rBracket = null,
     ).map(v)
-
-    open fun convertAnnotationSetTarget(v: KtAnnotationUseSiteTarget) = Node.AnnotationSet.Target(
-        when (v.getAnnotationUseSiteTarget()) {
-            AnnotationUseSiteTarget.FIELD -> Node.AnnotationSet.Target.Token.FIELD
-            AnnotationUseSiteTarget.FILE -> Node.AnnotationSet.Target.Token.FILE
-            AnnotationUseSiteTarget.PROPERTY -> Node.AnnotationSet.Target.Token.PROPERTY
-            AnnotationUseSiteTarget.PROPERTY_GETTER -> Node.AnnotationSet.Target.Token.GET
-            AnnotationUseSiteTarget.PROPERTY_SETTER -> Node.AnnotationSet.Target.Token.SET
-            AnnotationUseSiteTarget.RECEIVER -> Node.AnnotationSet.Target.Token.RECEIVER
-            AnnotationUseSiteTarget.CONSTRUCTOR_PARAMETER -> Node.AnnotationSet.Target.Token.PARAM
-            AnnotationUseSiteTarget.SETTER_PARAMETER -> Node.AnnotationSet.Target.Token.SETPARAM
-            AnnotationUseSiteTarget.PROPERTY_DELEGATE_FIELD -> Node.AnnotationSet.Target.Token.DELEGATE
-        }
-    )
 
     open fun convertAnnotationWithoutMapping(v: KtAnnotationEntry) = Node.AnnotationSet.Annotation(
         type = convertType(
@@ -972,6 +957,7 @@ open class Converter {
         Node.BinaryExpression.BinaryOperator::class to buildMapTextToKClass<Node.BinaryExpression.BinaryOperator>(),
         Node.UnaryExpression.UnaryOperator::class to buildMapTextToKClass<Node.UnaryExpression.UnaryOperator>(),
         Node.BinaryTypeExpression.BinaryTypeOperator::class to buildMapTextToKClass<Node.BinaryTypeExpression.BinaryTypeOperator>(),
+        Node.AnnotationSet.AnnotationTarget::class to buildMapTextToKClass<Node.AnnotationSet.AnnotationTarget>(),
     )
 
     protected inline fun <reified T : Node.SealedKeyword> buildMapTextToKClass() =
