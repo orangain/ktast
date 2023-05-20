@@ -64,9 +64,6 @@ open class Writer(
                 is Node.NodeList<*> -> {
                     children(elements, prefix = prefix, suffix = suffix)
                 }
-                is Node.HasSimpleStringRepresentation -> {
-                    append(string)
-                }
                 is Node.KotlinFile -> {
                     children(annotationSets, skipWritingExtrasWithin = true)
                     children(packageDirective)
@@ -557,6 +554,9 @@ open class Writer(
                 }
                 is Node.Contract.ContractEffect -> {
                     children(expression)
+                }
+                is Node.Keyword -> {
+                    append(string)
                 }
                 else ->
                     error("Unrecognized node type: $this")

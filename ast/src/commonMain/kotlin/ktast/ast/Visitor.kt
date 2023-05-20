@@ -12,7 +12,6 @@ open class Visitor {
             is Node.NodeList<*> -> {
                 visitChildren(elements)
             }
-            is Node.HasSimpleStringRepresentation -> {}
             is Node.KotlinFile -> {
                 visitChildren(annotationSets)
                 visitChildren(packageDirective)
@@ -412,6 +411,7 @@ open class Visitor {
             is Node.Contract.ContractEffect -> {
                 visitChildren(expression)
             }
+            is Node.Keyword -> {}
             is Node.Extra -> {}
             else -> error("Expected to be unreachable here. Missing visitor implementation for $this.")
         }
