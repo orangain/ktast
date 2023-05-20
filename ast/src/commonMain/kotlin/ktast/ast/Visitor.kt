@@ -40,7 +40,7 @@ open class Visitor {
             }
             is Node.ClassDeclaration -> {
                 visitChildren(modifiers)
-                visitChildren(declarationKeyword)
+                visitChildren(classDeclarationKeyword)
                 visitChildren(name)
                 visitChildren(typeParams)
                 visitChildren(primaryConstructor)

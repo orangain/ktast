@@ -43,7 +43,7 @@ open class MutableVisitor(
                     )
                     is Node.ClassDeclaration -> copy(
                         modifiers = visitChildren(modifiers, newCh),
-                        declarationKeyword = visitChildren(declarationKeyword, newCh),
+                        classDeclarationKeyword = visitChildren(classDeclarationKeyword, newCh),
                         name = visitChildren(name, newCh),
                         typeParams = visitChildren(typeParams, newCh),
                         primaryConstructor = visitChildren(primaryConstructor, newCh),

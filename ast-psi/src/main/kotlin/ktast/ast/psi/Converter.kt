@@ -71,7 +71,7 @@ open class Converter {
 
     open fun convertClass(v: KtClassOrObject) = Node.ClassDeclaration(
         modifiers = v.modifierList?.let(::convertModifiers),
-        declarationKeyword = v.getDeclarationKeyword()?.let(::convertDeclarationKeyword)
+        classDeclarationKeyword = v.getDeclarationKeyword()?.let(::convertClassDeclarationKeyword)
             ?: error("declarationKeyword not found"),
         name = v.nameIdentifier?.let(::convertName),
         typeParams = v.typeParameterList?.let(::convertTypeParams),
@@ -86,12 +86,12 @@ open class Converter {
         classBody = v.body?.let(::convertClassBody),
     ).map(v)
 
-    private val mapTextToDeclarationKeywordKClass by lazy {
-        Node.ClassDeclaration.DeclarationKeyword::class.sealedSubclasses.associateBy { it.simpleName!!.lowercase() }
+    private val mapTextToClassDeclarationKeywordKClass by lazy {
+        Node.ClassDeclaration.ClassDeclarationKeyword::class.sealedSubclasses.associateBy { it.simpleName!!.lowercase() }
     }
 
-    open fun convertDeclarationKeyword(v: PsiElement) =
-        (mapTextToDeclarationKeywordKClass[v.text]?.createInstance() ?: error("Unknown value: ${v.text}"))
+    open fun convertClassDeclarationKeyword(v: PsiElement) =
+        (mapTextToClassDeclarationKeywordKClass[v.text]?.createInstance() ?: error("Unknown value: ${v.text}"))
             .map(v)
 
     open fun convertParents(v: KtSuperTypeList) = Node.ClassDeclaration.ClassParents(

@@ -89,7 +89,7 @@ open class Writer(
                 }
                 is Node.ClassDeclaration -> {
                     children(modifiers)
-                    children(declarationKeyword)
+                    children(classDeclarationKeyword)
                     children(name)
                     children(typeParams)
                     children(primaryConstructor)
