@@ -647,30 +647,11 @@ sealed interface Node {
      */
     data class BinaryExpression(
         override val lhs: Expression,
-        val operator: Operator,
+        val operator: BinaryOperator,
         override val rhs: Expression,
         override var tag: Any? = null,
     ) : BaseBinaryExpression() {
-        data class Operator(
-            override val token: Token,
-            override var tag: Any? = null,
-        ) : Node, TokenContainer<Operator.Token> {
-            companion object {
-                private val mapStringToToken = Token.values().associateBy { it.string }
-                fun of(value: String): Operator = mapStringToToken[value]?.let(::Operator)
-                    ?: error("Unknown value: $value")
-            }
-
-            enum class Token(override val string: String) : HasSimpleStringRepresentation {
-                MUL("*"), DIV("/"), MOD("%"), ADD("+"), SUB("-"),
-                IN("in"), NOT_IN("!in"),
-                GT(">"), GTE(">="), LT("<"), LTE("<="),
-                EQ("=="), NEQ("!="),
-                ASSN("="), MUL_ASSN("*="), DIV_ASSN("/="), MOD_ASSN("%="), ADD_ASSN("+="), SUB_ASSN("-="),
-                OR("||"), AND("&&"), ELVIS("?:"), RANGE(".."), UNTIL("..<"),
-                DOT("."), DOT_SAFE("?."), SAFE("?")
-            }
-        }
+        sealed interface BinaryOperator : SealedKeyword
     }
 
     data class BinaryInfixExpression(
@@ -1263,13 +1244,38 @@ sealed interface Node {
         data class Set(override var tag: Any? = null) : Keyword("set")
         data class Equal(override var tag: Any? = null) : Keyword("=")
         data class Comma(override var tag: Any? = null) : Keyword(",")
-        data class Question(override var tag: Any? = null) : Keyword("?")
         data class LPar(override var tag: Any? = null) : Keyword("(")
         data class RPar(override var tag: Any? = null) : Keyword(")")
         data class LBracket(override var tag: Any? = null) : Keyword("[")
         data class RBracket(override var tag: Any? = null) : Keyword("]")
         data class At(override var tag: Any? = null) : Keyword("@")
         data class Colon(override var tag: Any? = null) : Keyword(":")
+        data class Asterisk(override var tag: Any? = null) : Keyword("*"), BinaryExpression.BinaryOperator
+        data class Slash(override var tag: Any? = null) : Keyword("/"), BinaryExpression.BinaryOperator
+        data class Percent(override var tag: Any? = null) : Keyword("%"), BinaryExpression.BinaryOperator
+        data class Plus(override var tag: Any? = null) : Keyword("+"), BinaryExpression.BinaryOperator
+        data class Minus(override var tag: Any? = null) : Keyword("-"), BinaryExpression.BinaryOperator
+        data class In(override var tag: Any? = null) : Keyword("in"), BinaryExpression.BinaryOperator
+        data class NotIn(override var tag: Any? = null) : Keyword("!in"), BinaryExpression.BinaryOperator
+        data class Greater(override var tag: Any? = null) : Keyword(">"), BinaryExpression.BinaryOperator
+        data class GreaterEqual(override var tag: Any? = null) : Keyword(">="), BinaryExpression.BinaryOperator
+        data class Less(override var tag: Any? = null) : Keyword("<"), BinaryExpression.BinaryOperator
+        data class LessEqual(override var tag: Any? = null) : Keyword("<="), BinaryExpression.BinaryOperator
+        data class EqualEqual(override var tag: Any? = null) : Keyword("=="), BinaryExpression.BinaryOperator
+        data class NotEqual(override var tag: Any? = null) : Keyword("!="), BinaryExpression.BinaryOperator
+        data class AsteriskEqual(override var tag: Any? = null) : Keyword("*="), BinaryExpression.BinaryOperator
+        data class SlashEqual(override var tag: Any? = null) : Keyword("/="), BinaryExpression.BinaryOperator
+        data class PercentEqual(override var tag: Any? = null) : Keyword("%="), BinaryExpression.BinaryOperator
+        data class PlusEqual(override var tag: Any? = null) : Keyword("+="), BinaryExpression.BinaryOperator
+        data class MinusEqual(override var tag: Any? = null) : Keyword("-="), BinaryExpression.BinaryOperator
+        data class OrOr(override var tag: Any? = null) : Keyword("||"), BinaryExpression.BinaryOperator
+        data class AndAnd(override var tag: Any? = null) : Keyword("&&"), BinaryExpression.BinaryOperator
+        data class QuestionColon(override var tag: Any? = null) : Keyword("?:"), BinaryExpression.BinaryOperator
+        data class DotDot(override var tag: Any? = null) : Keyword(".."), BinaryExpression.BinaryOperator
+        data class DotDotLess(override var tag: Any? = null) : Keyword("..<"), BinaryExpression.BinaryOperator
+        data class Dot(override var tag: Any? = null) : Keyword("."), BinaryExpression.BinaryOperator
+        data class QuestionDot(override var tag: Any? = null) : Keyword("?."), BinaryExpression.BinaryOperator
+        data class Question(override var tag: Any? = null) : Keyword("?"), BinaryExpression.BinaryOperator
     }
 
     sealed class Extra : Node {

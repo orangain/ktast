@@ -523,7 +523,7 @@ open class Converter {
         if (v.operationReference.isConventionOperator()) {
             Node.BinaryExpression(
                 lhs = convertExpression(v.left ?: error("No binary lhs for $v")),
-                operator = convertBinaryOperator(v.operationReference),
+                operator = convertSealedKeyword(v.operationReference),
                 rhs = convertExpression(v.right ?: error("No binary rhs for $v"))
             ).map(v)
         } else {
@@ -536,18 +536,9 @@ open class Converter {
 
     open fun convertBinary(v: KtQualifiedExpression) = Node.BinaryExpression(
         lhs = convertExpression(v.receiverExpression),
-        operator = Node.BinaryExpression.Operator(
-            if (v is KtDotQualifiedExpression) {
-                Node.BinaryExpression.Operator.Token.DOT
-            } else {
-                Node.BinaryExpression.Operator.Token.DOT_SAFE
-            }
-        ),
+        operator = convertSealedKeyword(v.operationTokenNode.psi),
         rhs = convertExpression(v.selectorExpression ?: error("No qualified rhs for $v"))
     ).map(v)
-
-    open fun convertBinaryOperator(v: PsiElement) = Node.BinaryExpression.Operator.of(v.text)
-        .map(v)
 
     open fun convertUnary(v: KtUnaryExpression) = Node.UnaryExpression(
         expression = convertExpression(v.baseExpression ?: error("No unary expr for $v")),
@@ -984,6 +975,7 @@ open class Converter {
         Node.ClassDeclaration.ClassDeclarationKeyword::class to buildMapTextToKClass<Node.ClassDeclaration.ClassDeclarationKeyword>(),
         Node.ValOrVarKeyword::class to buildMapTextToKClass<Node.ValOrVarKeyword>(),
         Node.SecondaryConstructorDeclaration.DelegationTargetKeyword::class to buildMapTextToKClass<Node.SecondaryConstructorDeclaration.DelegationTargetKeyword>(),
+        Node.BinaryExpression.BinaryOperator::class to buildMapTextToKClass<Node.BinaryExpression.BinaryOperator>(),
     )
 
     protected inline fun <reified T : Node.SealedKeyword> buildMapTextToKClass() =
