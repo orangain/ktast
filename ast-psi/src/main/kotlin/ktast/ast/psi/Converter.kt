@@ -986,10 +986,10 @@ open class Converter {
         Node.SecondaryConstructorDeclaration.DelegationTargetKeyword::class to buildMapTextToKClass<Node.SecondaryConstructorDeclaration.DelegationTargetKeyword>(),
     )
 
-    protected inline fun <reified T : Node> buildMapTextToKClass() =
-        T::class.sealedSubclasses.associateBy { it.simpleName!!.lowercase() }
+    protected inline fun <reified T : Node.SealedKeyword> buildMapTextToKClass() =
+        T::class.sealedSubclasses.associateBy { it.createInstance().string }
 
-    protected inline fun <reified T : Node> convertSealedKeyword(v: PsiElement): T {
+    protected inline fun <reified T : Node.SealedKeyword> convertSealedKeyword(v: PsiElement): T {
         val mapTextToKClass = mapTextToKClassCache[T::class] ?: error("Unknown type: ${T::class.qualifiedName}")
         return (mapTextToKClass[v.text]?.createInstance() ?: error("Unknown value: ${v.text}"))
             .map(v) as T

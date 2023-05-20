@@ -62,6 +62,8 @@ sealed interface Node {
             get() = token.string
     }
 
+    sealed interface SealedKeyword : Node, HasSimpleStringRepresentation
+
     /**
      * AST node corresponds to KtFile.
      */
@@ -145,7 +147,7 @@ sealed interface Node {
         val isCompanion = modifiers?.elements.orEmpty().contains(KeywordModifier(KeywordModifier.Token.COMPANION))
         val isEnum = modifiers?.elements.orEmpty().contains(KeywordModifier(KeywordModifier.Token.ENUM))
 
-        sealed interface ClassDeclarationKeyword : Node
+        sealed interface ClassDeclarationKeyword : SealedKeyword
 
         /**
          * AST node corresponds to KtSuperTypeList.
@@ -388,7 +390,7 @@ sealed interface Node {
             override var tag: Any? = null,
         ) : Node
 
-        sealed interface DelegationTargetKeyword : Node
+        sealed interface DelegationTargetKeyword : SealedKeyword
     }
 
     /**
@@ -1228,7 +1230,7 @@ sealed interface Node {
         ) : Node
     }
 
-    sealed interface ValOrVarKeyword : Node
+    sealed interface ValOrVarKeyword : SealedKeyword
 
     sealed class Keyword(override val string: String) : Node, HasSimpleStringRepresentation {
         data class Package(override var tag: Any? = null) : Keyword("package")
