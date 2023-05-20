@@ -542,12 +542,9 @@ open class Converter {
 
     open fun convertUnary(v: KtUnaryExpression) = Node.UnaryExpression(
         expression = convertExpression(v.baseExpression ?: error("No unary expr for $v")),
-        operator = convertUnaryOperator(v.operationReference),
+        operator = convertSealedKeyword(v.operationReference),
         prefix = v is KtPrefixExpression
     ).map(v)
-
-    open fun convertUnaryOperator(v: PsiElement) = Node.UnaryExpression.Operator.of(v.text)
-        .map(v)
 
     open fun convertBinaryType(v: KtBinaryExpressionWithTypeRHS) = Node.BinaryTypeExpression(
         lhs = convertExpression(v.left),
@@ -976,6 +973,7 @@ open class Converter {
         Node.ValOrVarKeyword::class to buildMapTextToKClass<Node.ValOrVarKeyword>(),
         Node.SecondaryConstructorDeclaration.DelegationTargetKeyword::class to buildMapTextToKClass<Node.SecondaryConstructorDeclaration.DelegationTargetKeyword>(),
         Node.BinaryExpression.BinaryOperator::class to buildMapTextToKClass<Node.BinaryExpression.BinaryOperator>(),
+        Node.UnaryExpression.UnaryOperator::class to buildMapTextToKClass<Node.UnaryExpression.UnaryOperator>(),
     )
 
     protected inline fun <reified T : Node.SealedKeyword> buildMapTextToKClass() =

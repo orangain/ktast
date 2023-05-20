@@ -666,24 +666,11 @@ sealed interface Node {
      */
     data class UnaryExpression(
         val expression: Expression,
-        val operator: Operator,
+        val operator: UnaryOperator,
         val prefix: Boolean,
         override var tag: Any? = null,
     ) : Expression() {
-        data class Operator(
-            override val token: Token,
-            override var tag: Any? = null,
-        ) : Node, TokenContainer<Operator.Token> {
-            companion object {
-                private val mapStringToToken = Token.values().associateBy { it.string }
-                fun of(value: String): Operator =
-                    mapStringToToken[value]?.let(::Operator) ?: error("Unknown value: $value")
-            }
-
-            enum class Token(override val string: String) : HasSimpleStringRepresentation {
-                NEG("-"), POS("+"), INC("++"), DEC("--"), NOT("!"), NULL_DEREF("!!")
-            }
-        }
+        sealed interface UnaryOperator : SealedKeyword
     }
 
     /**
@@ -1253,8 +1240,12 @@ sealed interface Node {
         data class Asterisk(override var tag: Any? = null) : Keyword("*"), BinaryExpression.BinaryOperator
         data class Slash(override var tag: Any? = null) : Keyword("/"), BinaryExpression.BinaryOperator
         data class Percent(override var tag: Any? = null) : Keyword("%"), BinaryExpression.BinaryOperator
-        data class Plus(override var tag: Any? = null) : Keyword("+"), BinaryExpression.BinaryOperator
-        data class Minus(override var tag: Any? = null) : Keyword("-"), BinaryExpression.BinaryOperator
+        data class Plus(override var tag: Any? = null) : Keyword("+"), BinaryExpression.BinaryOperator,
+            UnaryExpression.UnaryOperator
+
+        data class Minus(override var tag: Any? = null) : Keyword("-"), BinaryExpression.BinaryOperator,
+            UnaryExpression.UnaryOperator
+
         data class In(override var tag: Any? = null) : Keyword("in"), BinaryExpression.BinaryOperator
         data class NotIn(override var tag: Any? = null) : Keyword("!in"), BinaryExpression.BinaryOperator
         data class Greater(override var tag: Any? = null) : Keyword(">"), BinaryExpression.BinaryOperator
@@ -1276,6 +1267,10 @@ sealed interface Node {
         data class Dot(override var tag: Any? = null) : Keyword("."), BinaryExpression.BinaryOperator
         data class QuestionDot(override var tag: Any? = null) : Keyword("?."), BinaryExpression.BinaryOperator
         data class Question(override var tag: Any? = null) : Keyword("?"), BinaryExpression.BinaryOperator
+        data class PlusPlus(override var tag: Any? = null) : Keyword("++"), UnaryExpression.UnaryOperator
+        data class MinusMinus(override var tag: Any? = null) : Keyword("--"), UnaryExpression.UnaryOperator
+        data class Not(override var tag: Any? = null) : Keyword("!"), UnaryExpression.UnaryOperator
+        data class NotNot(override var tag: Any? = null) : Keyword("!!"), UnaryExpression.UnaryOperator
     }
 
     sealed class Extra : Node {
