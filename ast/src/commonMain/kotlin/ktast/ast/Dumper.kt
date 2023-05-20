@@ -79,7 +79,6 @@ class Dumper(
                 is Node.StringLiteralExpression.ShortTemplateEntry -> mapOf("str" to str)
                 is Node.StringLiteralExpression.UnicodeEscapeEntry -> mapOf("digits" to digits)
                 is Node.StringLiteralExpression.RegularEscapeEntry -> mapOf("char" to char.toEscapedString())
-                is Node.Keyword -> mapOf("str" to string)
                 else -> null
             }?.let {
                 app.append(it.toString())
