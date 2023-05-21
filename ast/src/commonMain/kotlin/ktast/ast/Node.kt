@@ -723,39 +723,51 @@ sealed interface Node {
      * AST node corresponds to KtStringTemplateExpression.
      */
     data class StringLiteralExpression(
-        val entries: List<Entry>,
+        val entries: List<StringEntry>,
         val raw: Boolean,
         override var tag: Any? = null,
     ) : Expression() {
         /**
          * AST node corresponds to KtStringTemplateEntry.
          */
-        sealed class Entry : Node
+        sealed class StringEntry : Node
 
+        /**
+         * AST node corresponds to KtLiteralStringTemplateEntry.
+         */
         data class LiteralStringEntry(
             val str: String,
             override var tag: Any? = null,
-        ) : Entry()
+        ) : StringEntry()
 
-        data class ShortTemplateEntry(
+        /**
+         * AST node corresponds to KtEscapeStringTemplateEntry.
+         */
+        data class EscapeStringEntry(
             val str: String,
             override var tag: Any? = null,
-        ) : Entry()
+        ) : StringEntry() {
+            init {
+                require(str.startsWith('\\')) {
+                    "Escape string template entry must start with backslash."
+                }
+            }
+        }
 
-        data class UnicodeEscapeEntry(
-            val digits: String,
-            override var tag: Any? = null,
-        ) : Entry()
-
-        data class RegularEscapeEntry(
-            val char: Char,
-            override var tag: Any? = null,
-        ) : Entry()
-
-        data class LongTemplateEntry(
+        /**
+         * AST node corresponds to KtStringTemplateEntryWithExpression.
+         */
+        data class TemplateStringEntry(
             val expression: Expression,
+            val short: Boolean,
             override var tag: Any? = null,
-        ) : Entry()
+        ) : StringEntry() {
+            init {
+                require(!short || expression is NameExpression) {
+                    "Short template string entry must be a name expression."
+                }
+            }
+        }
     }
 
     /**

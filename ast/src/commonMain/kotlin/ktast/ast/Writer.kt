@@ -386,29 +386,19 @@ open class Writer(
                 }
                 is Node.StringLiteralExpression.LiteralStringEntry ->
                     doAppend(str)
-                is Node.StringLiteralExpression.ShortTemplateEntry -> {
-                    doAppend("$")
+                is Node.StringLiteralExpression.EscapeStringEntry -> {
                     doAppend(str)
                 }
-                is Node.StringLiteralExpression.UnicodeEscapeEntry -> {
-                    doAppend("\\u")
-                    doAppend(digits)
+                is Node.StringLiteralExpression.TemplateStringEntry -> {
+                    val (prefix, suffix) = if (short) {
+                        Pair("$", "")
+                    } else {
+                        Pair("\${", "}")
+                    }
+                    doAppend(prefix)
+                    children(expression)
+                    doAppend(suffix)
                 }
-                is Node.StringLiteralExpression.RegularEscapeEntry -> {
-                    doAppend(
-                        "\\${
-                            when (char) {
-                                '\b' -> 'b'
-                                '\n' -> 'n'
-                                '\t' -> 't'
-                                '\r' -> 'r'
-                                else -> char
-                            }
-                        }"
-                    )
-                }
-                is Node.StringLiteralExpression.LongTemplateEntry ->
-                    append("\${").also { children(expression) }.append('}')
                 is Node.ConstantLiteralExpression ->
                     append(value)
                 is Node.LambdaExpression -> {

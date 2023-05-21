@@ -280,10 +280,8 @@ open class Visitor {
                 visitChildren(entries)
             }
             is Node.StringLiteralExpression.LiteralStringEntry -> {}
-            is Node.StringLiteralExpression.ShortTemplateEntry -> {}
-            is Node.StringLiteralExpression.UnicodeEscapeEntry -> {}
-            is Node.StringLiteralExpression.RegularEscapeEntry -> {}
-            is Node.StringLiteralExpression.LongTemplateEntry -> {
+            is Node.StringLiteralExpression.EscapeStringEntry -> {}
+            is Node.StringLiteralExpression.TemplateStringEntry -> {
                 visitChildren(expression)
             }
             is Node.ConstantLiteralExpression -> {}
@@ -406,7 +404,6 @@ open class Visitor {
             }
             is Node.Keyword -> {}
             is Node.Extra -> {}
-            else -> error("Expected to be unreachable here. Missing visitor implementation for $this.")
         }
     }
 
