@@ -20,6 +20,10 @@ sealed interface Node {
         abstract val trailingComma: Keyword.Comma?
     }
 
+    sealed interface SimpleTextNode : Node {
+        val text: String
+    }
+
     interface WithAnnotationSets {
         val annotationSets: List<AnnotationSet>
     }
@@ -956,9 +960,9 @@ sealed interface Node {
      * AST node corresponds to KtValueArgumentName, KtSimpleNameExpression or PsiElement whose elementType is IDENTIFIER.
      */
     data class NameExpression(
-        val text: String,
+        override val text: String,
         override var tag: Any? = null,
-    ) : Expression
+    ) : Expression, SimpleTextNode
 
     /**
      * AST node corresponds to KtLabeledExpression.
@@ -1129,9 +1133,7 @@ sealed interface Node {
 
     sealed interface ValOrVarKeyword : Keyword
 
-    sealed interface Keyword : Node {
-        val text: String
-
+    sealed interface Keyword : SimpleTextNode {
         data class Package(override var tag: Any? = null) : Keyword {
             override val text: String; get() = "package"
         }
