@@ -531,7 +531,7 @@ open class Writer(
                     children(expression)
                 }
                 is Node.Keyword -> {
-                    append(string)
+                    append(text)
                 }
                 else ->
                     error("Unrecognized node type: $this")

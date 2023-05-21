@@ -940,7 +940,7 @@ open class Converter {
     }
 
     protected val mapTextToKeywordKClass =
-        Node.Keyword::class.sealedSubclasses.filter { it.isData }.associateBy { it.createInstance().string }
+        Node.Keyword::class.sealedSubclasses.filter { it.isData }.associateBy { it.createInstance().text }
 
     protected inline fun <reified T : Node.Keyword> convertKeyword(v: PsiElement): T =
         ((mapTextToKeywordKClass[v.text]?.createInstance() as? T) ?: error("Unexpected keyword: ${v.text}"))
