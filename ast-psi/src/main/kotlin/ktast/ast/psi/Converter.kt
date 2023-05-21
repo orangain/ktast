@@ -244,13 +244,15 @@ open class Converter {
             modifiers = v.modifierList?.let(::convertModifiers),
             constructorKeyword = convertKeyword(v.getConstructorKeyword()),
             params = v.valueParameterList?.let(::convertFuncParams),
-            delegationCall = if (v.hasImplicitDelegationCall()) null else convertSecondaryConstructorDelegationCall(v.getDelegationCall()),
+            constructorDelegationCall = if (v.hasImplicitDelegationCall()) null else convertSecondaryConstructorDelegationCall(
+                v.getDelegationCall()
+            ),
             block = v.bodyExpression?.let(::convertBlock)
         ).map(v)
 
     open fun convertSecondaryConstructorDelegationCall(v: KtConstructorDelegationCall) =
-        Node.ClassDeclaration.ClassBody.SecondaryConstructor.DelegationCall(
-            target = convertKeyword(v.calleeExpression?.firstChild ?: error("No delegation target for $v")),
+        Node.ClassDeclaration.ClassBody.SecondaryConstructor.ConstructorDelegationCall(
+            targetKeyword = convertKeyword(v.calleeExpression?.firstChild ?: error("No delegation target for $v")),
             args = v.valueArgumentList?.let(::convertValueArgs)
         ).map(v)
 

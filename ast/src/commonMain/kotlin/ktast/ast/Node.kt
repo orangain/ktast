@@ -228,20 +228,20 @@ sealed interface Node {
                 override val modifiers: Modifiers?,
                 val constructorKeyword: Keyword.Constructor,
                 val params: FunctionParams?,
-                val delegationCall: DelegationCall?,
+                val constructorDelegationCall: ConstructorDelegationCall?,
                 val block: BlockExpression?,
                 override var tag: Any? = null,
             ) : Declaration(), WithModifiers {
                 /**
                  * AST node corresponds to KtConstructorDelegationCall.
                  */
-                data class DelegationCall(
-                    val target: DelegationTarget,
+                data class ConstructorDelegationCall(
+                    val targetKeyword: DelegationTargetKeyword,
                     val args: ValueArgs?,
                     override var tag: Any? = null,
                 ) : Node
 
-                sealed interface DelegationTarget : Keyword
+                sealed interface DelegationTargetKeyword : Keyword
             }
         }
     }
@@ -1167,12 +1167,12 @@ sealed interface Node {
         }
 
         data class This(override var tag: Any? = null) : Keyword,
-            ClassDeclaration.ClassBody.SecondaryConstructor.DelegationTarget {
+            ClassDeclaration.ClassBody.SecondaryConstructor.DelegationTargetKeyword {
             override val string: String; get() = "this"
         }
 
         data class Super(override var tag: Any? = null) : Keyword,
-            ClassDeclaration.ClassBody.SecondaryConstructor.DelegationTarget {
+            ClassDeclaration.ClassBody.SecondaryConstructor.DelegationTargetKeyword {
             override val string: String; get() = "super"
         }
 

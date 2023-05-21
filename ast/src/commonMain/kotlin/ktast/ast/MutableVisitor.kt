@@ -154,11 +154,11 @@ open class MutableVisitor(
                         modifiers = visitChildren(modifiers, newCh),
                         constructorKeyword = visitChildren(constructorKeyword, newCh),
                         params = visitChildren(params, newCh),
-                        delegationCall = visitChildren(delegationCall, newCh),
+                        constructorDelegationCall = visitChildren(constructorDelegationCall, newCh),
                         block = visitChildren(block, newCh)
                     )
-                    is Node.ClassDeclaration.ClassBody.SecondaryConstructor.DelegationCall -> copy(
-                        target = visitChildren(target, newCh),
+                    is Node.ClassDeclaration.ClassBody.SecondaryConstructor.ConstructorDelegationCall -> copy(
+                        targetKeyword = visitChildren(targetKeyword, newCh),
                         args = visitChildren(args, newCh),
                     )
                     is Node.ClassDeclaration.ClassBody.EnumEntry -> copy(
