@@ -90,23 +90,20 @@ open class Converter {
     ).map(v)
 
     open fun convertParent(v: KtSuperTypeListEntry) = when (v) {
-        is KtSuperTypeCallEntry -> Node.ClassDeclaration.ClassParent.CallConstructor(
+        is KtSuperTypeCallEntry -> Node.ClassDeclaration.ConstructorClassParent(
             type = v.typeReference?.typeElement?.let(::convertType) as? Node.SimpleType
                 ?: error("Bad type on super call $v"),
-            typeArgs = v.typeArgumentList?.let(::convertTypeArgs),
             args = v.valueArgumentList?.let(::convertValueArgs),
-            // TODO
-            lambda = null
         ).map(v)
-        is KtDelegatedSuperTypeEntry -> Node.ClassDeclaration.ClassParent.DelegatedType(
-            type = v.typeReference?.typeElement?.let(::convertType) as? Node.SimpleType
-                ?: error("Bad type on super call $v"),
+        is KtDelegatedSuperTypeEntry -> Node.ClassDeclaration.DelegationClassParent(
+            type = v.typeReference?.typeElement?.let(::convertType)
+                ?: error("No type on delegated super type $v"),
             byKeyword = convertKeyword(v.byKeywordNode.psi),
             expression = convertExpression(v.delegateExpression ?: error("Missing delegateExpression for $v")),
         ).map(v)
-        is KtSuperTypeEntry -> Node.ClassDeclaration.ClassParent.Type(
-            type = v.typeReference?.typeElement?.let(::convertType) as? Node.SimpleType
-                ?: error("Bad type on super call $v"),
+        is KtSuperTypeEntry -> Node.ClassDeclaration.TypeClassParent(
+            type = v.typeReference?.typeElement?.let(::convertType)
+                ?: error("No type on super type $v"),
         ).map(v)
         else -> error("Unknown super type entry $v")
     }
