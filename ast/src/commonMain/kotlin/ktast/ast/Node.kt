@@ -418,7 +418,7 @@ sealed interface Node {
         override val modifiers: Modifiers?,
         val contextReceivers: ContextReceivers?,
         val functionTypeReceiver: FunctionTypeReceiver?,
-        val params: Params?,
+        val params: FunctionTypeParams?,
         val returnTypeRef: TypeRef,
         val rPar: Keyword.RPar?,
         override var tag: Any? = null,
@@ -451,7 +451,7 @@ sealed interface Node {
         /**
          * AST node corresponds to KtParameterList under KtFunctionType.
          */
-        data class Params(
+        data class FunctionTypeParams(
             override val elements: List<Param>,
             override val trailingComma: Keyword.Comma?,
             override var tag: Any? = null,

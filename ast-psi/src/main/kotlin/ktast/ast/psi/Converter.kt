@@ -405,7 +405,7 @@ open class Converter {
         typeRef = convertTypeRef(v.typeReference),
     ).map(v)
 
-    open fun convertTypeFunctionParams(v: KtParameterList) = Node.FunctionType.Params(
+    open fun convertTypeFunctionParams(v: KtParameterList) = Node.FunctionType.FunctionTypeParams(
         elements = v.parameters.map(::convertTypeFunctionParam),
         trailingComma = v.trailingComma?.let(::convertKeyword)
     ).map(v)
