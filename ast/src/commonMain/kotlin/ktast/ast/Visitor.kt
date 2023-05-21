@@ -47,18 +47,18 @@ open class Visitor {
                 visitChildren(typeConstraintSet)
                 visitChildren(classBody)
             }
-            is Node.ClassDeclaration.ClassParent.CallConstructor -> {
+            is Node.ClassDeclaration.ConstructorClassParent -> {
                 visitChildren(type)
                 visitChildren(typeArgs)
                 visitChildren(args)
                 visitChildren(lambda)
             }
-            is Node.ClassDeclaration.ClassParent.DelegatedType -> {
+            is Node.ClassDeclaration.DelegationClassParent -> {
                 visitChildren(type)
                 visitChildren(byKeyword)
                 visitChildren(expression)
             }
-            is Node.ClassDeclaration.ClassParent.Type -> {
+            is Node.ClassDeclaration.TypeClassParent -> {
                 visitChildren(type)
             }
             is Node.ClassDeclaration.PrimaryConstructor -> {

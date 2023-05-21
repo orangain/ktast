@@ -150,36 +150,36 @@ sealed interface Node {
         /**
          * AST node corresponds to KtSuperTypeListEntry.
          */
-        sealed class ClassParent : Node {
-            /**
-             * AST node corresponds to KtSuperTypeCallEntry.
-             */
-            data class CallConstructor(
-                val type: SimpleType,
-                val typeArgs: TypeArgs?,
-                val args: ValueArgs?,
-                val lambda: CallExpression.LambdaArg?,
-                override var tag: Any? = null,
-            ) : ClassParent()
+        sealed class ClassParent : Node
 
-            /**
-             * AST node corresponds to KtDelegatedSuperTypeEntry.
-             */
-            data class DelegatedType(
-                val type: SimpleType,
-                val byKeyword: Keyword.By,
-                val expression: Expression,
-                override var tag: Any? = null,
-            ) : ClassParent()
+        /**
+         * AST node corresponds to KtSuperTypeCallEntry.
+         */
+        data class ConstructorClassParent(
+            val type: SimpleType,
+            val typeArgs: TypeArgs?,
+            val args: ValueArgs?,
+            val lambda: CallExpression.LambdaArg?,
+            override var tag: Any? = null,
+        ) : ClassParent()
 
-            /**
-             * AST node corresponds to KtSuperTypeEntry.
-             */
-            data class Type(
-                val type: SimpleType,
-                override var tag: Any? = null,
-            ) : ClassParent()
-        }
+        /**
+         * AST node corresponds to KtDelegatedSuperTypeEntry.
+         */
+        data class DelegationClassParent(
+            val type: SimpleType,
+            val byKeyword: Keyword.By,
+            val expression: Expression,
+            override var tag: Any? = null,
+        ) : ClassParent()
+
+        /**
+         * AST node corresponds to KtSuperTypeEntry.
+         */
+        data class TypeClassParent(
+            val type: SimpleType,
+            override var tag: Any? = null,
+        ) : ClassParent()
 
         /**
          * AST node corresponds to KtPrimaryConstructor.
