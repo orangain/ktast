@@ -169,6 +169,7 @@ open class Converter {
         lPar = null,
         variables = listOf(
             Node.Variable(
+                modifiers = null,
                 name = v.nameIdentifier?.let(::convertName) ?: error("No property name on $v"),
                 typeRef = v.typeReference?.let(::convertTypeRef)
             ).mapNotCorrespondsPsiElement(v)
@@ -193,7 +194,7 @@ open class Converter {
         typeParams = null,
         receiverTypeRef = null,
         lPar = v.lPar?.let(::convertKeyword),
-        variables = v.entries.map(::convertPropertyVariable),
+        variables = v.entries.map(::convertVariable),
         trailingComma = v.trailingComma?.let(::convertKeyword),
         rPar = v.rPar?.let(::convertKeyword),
         typeConstraintSet = null,
@@ -203,7 +204,8 @@ open class Converter {
         accessors = listOf(),
     ).map(v)
 
-    open fun convertPropertyVariable(v: KtDestructuringDeclarationEntry) = Node.Variable(
+    open fun convertVariable(v: KtDestructuringDeclarationEntry) = Node.Variable(
+        modifiers = v.modifierList?.let(::convertModifiers),
         name = v.nameIdentifier?.let(::convertName) ?: error("No property name on $v"),
         typeRef = v.typeReference?.let(::convertTypeRef)
     ).map(v)
@@ -669,7 +671,7 @@ open class Converter {
         return if (destructuringDeclaration != null) {
             Node.LambdaParam(
                 lPar = destructuringDeclaration.lPar?.let(::convertKeyword),
-                variables = destructuringDeclaration.entries.map(::convertLambdaParamVariable),
+                variables = destructuringDeclaration.entries.map(::convertVariable),
                 trailingComma = destructuringDeclaration.trailingComma?.let(::convertKeyword),
                 rPar = destructuringDeclaration.rPar?.let(::convertKeyword),
                 colon = v.colon?.let(::convertKeyword),
@@ -679,7 +681,7 @@ open class Converter {
             Node.LambdaParam(
                 lPar = null,
                 variables = listOf(
-                    Node.LambdaParam.Variable(
+                    Node.Variable(
                         modifiers = v.modifierList?.let(::convertModifiers),
                         name = v.nameIdentifier?.let(::convertName) ?: error("No lambda param name on $v"),
                         typeRef = v.typeReference?.let(::convertTypeRef),
@@ -692,12 +694,6 @@ open class Converter {
             ).map(v)
         }
     }
-
-    open fun convertLambdaParamVariable(v: KtDestructuringDeclarationEntry) = Node.LambdaParam.Variable(
-        modifiers = v.modifierList?.let(::convertModifiers),
-        name = v.nameIdentifier?.let(::convertName) ?: error("No lambda param name on $v"),
-        typeRef = v.typeReference?.let(::convertTypeRef),
-    ).map(v)
 
     open fun convertLambdaBody(v: KtBlockExpression) = Node.LambdaExpression.LambdaBody(
         statements = v.statements.map(::convertStatement)

@@ -339,13 +339,14 @@ sealed interface Node {
     }
 
     /**
-     * Virtual AST node corresponds a part of KtProperty or AST node corresponds to KtDestructuringDeclarationEntry.
+     * AST node corresponds to KtDestructuringDeclarationEntry, virtual AST node corresponds a part of KtProperty, or virtual AST node corresponds to KtParameter whose child is IDENTIFIER.
      */
     data class Variable(
+        override val modifiers: Modifiers?,
         val name: NameExpression,
         val typeRef: TypeRef?,
         override var tag: Any? = null,
-    ) : Node
+    ) : Node, WithModifiers
 
     /**
      * AST node corresponds to KtTypeAlias.
@@ -832,16 +833,6 @@ sealed interface Node {
                 require(lPar != null && rPar != null) { "lPar and rPar are required when trailing comma exists" }
             }
         }
-
-        /**
-         * AST node corresponds to KtDestructuringDeclarationEntry or virtual AST node corresponds to KtParameter whose child is IDENTIFIER.
-         */
-        data class Variable(
-            override val modifiers: Modifiers?,
-            val name: NameExpression,
-            val typeRef: TypeRef?,
-            override var tag: Any? = null,
-        ) : Node, WithModifiers
     }
 
     /**

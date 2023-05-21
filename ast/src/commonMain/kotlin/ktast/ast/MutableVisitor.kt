@@ -124,8 +124,9 @@ open class MutableVisitor(
                         expression = visitChildren(expression, newCh),
                     )
                     is Node.Variable -> copy(
+                        modifiers = visitChildren(modifiers, newCh),
                         name = visitChildren(name, newCh),
-                        typeRef = visitChildren(typeRef, newCh)
+                        typeRef = visitChildren(typeRef, newCh),
                     )
                     is Node.PropertyDeclaration.Getter -> copy(
                         modifiers = visitChildren(modifiers, newCh),
@@ -330,11 +331,6 @@ open class MutableVisitor(
                         rPar = visitChildren(rPar, newCh),
                         colon = visitChildren(colon, newCh),
                         destructTypeRef = visitChildren(destructTypeRef, newCh),
-                    )
-                    is Node.LambdaParam.Variable -> copy(
-                        modifiers = visitChildren(modifiers, newCh),
-                        name = visitChildren(name, newCh),
-                        typeRef = visitChildren(typeRef, newCh),
                     )
                     is Node.LambdaExpression.LambdaBody -> copy(
                         statements = visitChildren(statements, newCh)
