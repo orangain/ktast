@@ -732,16 +732,25 @@ sealed interface Node {
          */
         sealed class StringEntry : Node
 
+        /**
+         * AST node corresponds to KtLiteralStringTemplateEntry.
+         */
         data class LiteralStringEntry(
             val str: String,
             override var tag: Any? = null,
         ) : StringEntry()
 
+        /**
+         * AST node corresponds to KtEscapeStringTemplateEntry.
+         */
         data class EscapeStringEntry(
             val str: String,
             override var tag: Any? = null,
         ) : StringEntry()
 
+        /**
+         * AST node corresponds to KtStringTemplateEntryWithExpression.
+         */
         data class TemplateStringEntry(
             val expression: Expression,
             val short: Boolean,
