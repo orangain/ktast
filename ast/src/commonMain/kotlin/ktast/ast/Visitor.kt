@@ -50,7 +50,6 @@ open class Visitor {
             is Node.ClassDeclaration.ConstructorClassParent -> {
                 visitChildren(type)
                 visitChildren(args)
-                visitChildren(lambda)
             }
             is Node.ClassDeclaration.DelegationClassParent -> {
                 visitChildren(type)

@@ -56,7 +56,6 @@ open class MutableVisitor(
                     is Node.ClassDeclaration.ConstructorClassParent -> copy(
                         type = visitChildren(type, newCh),
                         args = visitChildren(args, newCh),
-                        lambda = visitChildren(lambda, newCh)
                     )
                     is Node.ClassDeclaration.DelegationClassParent -> copy(
                         type = visitChildren(type, newCh),
