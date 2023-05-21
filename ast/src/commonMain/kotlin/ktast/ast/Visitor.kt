@@ -255,16 +255,11 @@ open class Visitor {
             }
             is Node.CallableReferenceExpression -> {
                 visitChildren(lhs)
+                visitChildren(questionMarks)
                 visitChildren(rhs)
             }
             is Node.ClassLiteralExpression -> {
                 visitChildren(lhs)
-            }
-            is Node.DoubleColonExpression.Receiver.Expression -> {
-                visitChildren(expression)
-            }
-            is Node.DoubleColonExpression.Receiver.Type -> {
-                visitChildren(type)
                 visitChildren(questionMarks)
             }
             is Node.ParenthesizedExpression -> {

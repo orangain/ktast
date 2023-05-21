@@ -355,19 +355,15 @@ open class Writer(
                     children(listOf(lhs, operator, rhs), "")
                 is Node.CallableReferenceExpression -> {
                     if (lhs != null) children(lhs)
+                    children(questionMarks)
                     append("::")
                     children(rhs)
                 }
                 is Node.ClassLiteralExpression -> {
                     if (lhs != null) children(lhs)
+                    children(questionMarks)
                     append("::")
                     append("class")
-                }
-                is Node.DoubleColonExpression.Receiver.Expression ->
-                    children(expression)
-                is Node.DoubleColonExpression.Receiver.Type -> {
-                    children(type)
-                    children(questionMarks)
                 }
                 is Node.ParenthesizedExpression ->
                     append('(').also { children(expression) }.append(')')
