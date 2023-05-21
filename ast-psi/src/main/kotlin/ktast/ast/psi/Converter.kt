@@ -773,15 +773,15 @@ open class Converter {
     ).map(v)
 
     open fun convertValueArgName(v: KtValueArgumentName) = Node.NameExpression(
-        name = (v.referenceExpression.getIdentifier() ?: error("No identifier for $v")).text,
+        text = (v.referenceExpression.getIdentifier() ?: error("No identifier for $v")).text,
     ).map(v)
 
     open fun convertName(v: KtSimpleNameExpression) = Node.NameExpression(
-        name = (v.getIdentifier() ?: error("No identifier for $v")).text,
+        text = (v.getIdentifier() ?: error("No identifier for $v")).text,
     ).map(v)
 
     open fun convertName(v: PsiElement) = Node.NameExpression(
-        name = v.text
+        text = v.text
     ).map(v)
 
     open fun convertLabeled(v: KtLabeledExpression) = Node.LabeledExpression(

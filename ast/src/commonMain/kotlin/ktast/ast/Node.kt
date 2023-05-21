@@ -956,7 +956,7 @@ sealed interface Node {
      * AST node corresponds to KtValueArgumentName, KtSimpleNameExpression or PsiElement whose elementType is IDENTIFIER.
      */
     data class NameExpression(
-        val name: String,
+        val text: String,
         override var tag: Any? = null,
     ) : Expression
 

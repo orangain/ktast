@@ -71,7 +71,7 @@ class Dumper(
             when (this) {
                 is Node.UnaryExpression -> mapOf("prefix" to this.prefix)
                 is Node.AnnotationSet -> mapOf("target" to target)
-                is Node.NameExpression -> mapOf("name" to name)
+                is Node.NameExpression -> mapOf("name" to text)
                 is Node.ConstantLiteralExpression -> mapOf("value" to value, "form" to form)
                 is Node.Comment -> mapOf("text" to text)
                 is Node.StringLiteralExpression.LiteralStringEntry -> mapOf("str" to str)

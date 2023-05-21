@@ -468,7 +468,7 @@ open class Writer(
                 is Node.CollectionLiteralExpression ->
                     children(expressions, ",", "[", "]", trailingComma)
                 is Node.NameExpression ->
-                    append(name)
+                    append(text)
                 is Node.LabeledExpression ->
                     append(label).append("@").also { children(expression) }
                 is Node.AnnotatedExpression ->
@@ -641,7 +641,7 @@ open class Writer(
     )
 
     protected open fun writeHeuristicExtraAfterChild(v: Node, next: Node?, parent: Node?) {
-        if (v is Node.NameExpression && modifierKeywords.contains(v.name) && next is Node.Declaration && parent is Node.StatementsContainer) {
+        if (v is Node.NameExpression && modifierKeywords.contains(v.text) && next is Node.Declaration && parent is Node.StatementsContainer) {
             // Insert heuristic semicolon after name expression whose name is the same as the modifier keyword and next
             // is declaration to avoid ambiguity with keyword modifier.
             if (!containsSemicolon(extrasSinceLastNonSymbol)) {

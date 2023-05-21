@@ -29,9 +29,9 @@ class MutableVisitorTest {
             """.trimIndent(),
             { v, _ ->
                 if (v is Node.NameExpression) {
-                    when (v.name) {
-                        "x" -> v.copy(name = "a")
-                        "y" -> v.copy(name = "b")
+                    when (v.text) {
+                        "x" -> v.copy(text = "a")
+                        "y" -> v.copy(text = "b")
                         else -> v
                     }
                 } else {
