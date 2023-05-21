@@ -114,6 +114,7 @@ open class Visitor {
                 visitChildren(expression)
             }
             is Node.Variable -> {
+                visitChildren(modifiers)
                 visitChildren(name)
                 visitChildren(typeRef)
             }
@@ -186,7 +187,7 @@ open class Visitor {
             is Node.FunctionType.FunctionTypeReceiver -> {
                 visitChildren(typeRef)
             }
-            is Node.FunctionType.Param -> {
+            is Node.FunctionType.FunctionTypeParam -> {
                 visitChildren(name)
                 visitChildren(typeRef)
             }
@@ -296,11 +297,6 @@ open class Visitor {
                 visitChildren(rPar)
                 visitChildren(colon)
                 visitChildren(destructTypeRef)
-            }
-            is Node.LambdaParam.Variable -> {
-                visitChildren(modifiers)
-                visitChildren(name)
-                visitChildren(typeRef)
             }
             is Node.LambdaExpression.LambdaBody -> {
                 visitChildren(statements)

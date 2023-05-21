@@ -339,13 +339,14 @@ sealed interface Node {
     }
 
     /**
-     * Virtual AST node corresponds a part of KtProperty or AST node corresponds to KtDestructuringDeclarationEntry.
+     * AST node corresponds to KtDestructuringDeclarationEntry, virtual AST node corresponds a part of KtProperty, or virtual AST node corresponds to KtParameter whose child is IDENTIFIER.
      */
     data class Variable(
+        override val modifiers: Modifiers?,
         val name: NameExpression,
         val typeRef: TypeRef?,
         override var tag: Any? = null,
-    ) : Node
+    ) : Node, WithModifiers
 
     /**
      * AST node corresponds to KtTypeAlias.
@@ -418,7 +419,7 @@ sealed interface Node {
         override val modifiers: Modifiers?,
         val contextReceivers: ContextReceivers?,
         val functionTypeReceiver: FunctionTypeReceiver?,
-        val params: Params?,
+        val params: FunctionTypeParams?,
         val returnTypeRef: TypeRef,
         val rPar: Keyword.RPar?,
         override var tag: Any? = null,
@@ -451,16 +452,16 @@ sealed interface Node {
         /**
          * AST node corresponds to KtParameterList under KtFunctionType.
          */
-        data class Params(
-            override val elements: List<Param>,
+        data class FunctionTypeParams(
+            override val elements: List<FunctionTypeParam>,
             override val trailingComma: Keyword.Comma?,
             override var tag: Any? = null,
-        ) : CommaSeparatedNodeList<Param>("(", ")")
+        ) : CommaSeparatedNodeList<FunctionTypeParam>("(", ")")
 
         /**
          * AST node corresponds to KtParameter inside KtFunctionType.
          */
-        data class Param(
+        data class FunctionTypeParam(
             val name: NameExpression?,
             val typeRef: TypeRef,
             override var tag: Any? = null,
@@ -832,16 +833,6 @@ sealed interface Node {
                 require(lPar != null && rPar != null) { "lPar and rPar are required when trailing comma exists" }
             }
         }
-
-        /**
-         * AST node corresponds to KtDestructuringDeclarationEntry or virtual AST node corresponds to KtParameter whose child is IDENTIFIER.
-         */
-        data class Variable(
-            override val modifiers: Modifiers?,
-            val name: NameExpression,
-            val typeRef: TypeRef?,
-            override var tag: Any? = null,
-        ) : Node, WithModifiers
     }
 
     /**

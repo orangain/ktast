@@ -165,6 +165,7 @@ open class Writer(
                     children(expression)
                 }
                 is Node.Variable -> {
+                    children(modifiers)
                     children(name)
                     if (typeRef != null) append(":").also { children(typeRef) }
                 }
@@ -265,7 +266,7 @@ open class Writer(
                 is Node.FunctionType.FunctionTypeReceiver -> {
                     children(typeRef)
                 }
-                is Node.FunctionType.Param -> {
+                is Node.FunctionType.FunctionTypeParam -> {
                     if (name != null) children(name).append(":")
                     children(typeRef)
                 }
@@ -417,14 +418,6 @@ open class Writer(
                     children(rPar)
                     children(colon)
                     children(destructTypeRef)
-                }
-                is Node.LambdaParam.Variable -> {
-                    children(modifiers)
-                    children(name)
-                    if (typeRef != null) {
-                        append(":")
-                        children(typeRef)
-                    }
                 }
                 is Node.LambdaExpression.LambdaBody -> {
                     children(statements)
