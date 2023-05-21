@@ -746,7 +746,13 @@ sealed interface Node {
         data class EscapeStringEntry(
             val str: String,
             override var tag: Any? = null,
-        ) : StringEntry()
+        ) : StringEntry() {
+            init {
+                require(str.startsWith('\\')) {
+                    "Escape string template entry must start with backslash."
+                }
+            }
+        }
 
         /**
          * AST node corresponds to KtStringTemplateEntryWithExpression.
