@@ -405,7 +405,6 @@ open class Visitor {
             }
             is Node.Keyword -> {}
             is Node.Extra -> {}
-            else -> error("Expected to be unreachable here. Missing visitor implementation for $this.")
         }
     }
 
