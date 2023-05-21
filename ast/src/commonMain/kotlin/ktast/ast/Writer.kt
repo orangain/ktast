@@ -120,7 +120,7 @@ open class Writer(
                     children(declarations)
                     append("}")
                 }
-                is Node.InitDeclaration -> {
+                is Node.ClassDeclaration.ClassBody.Initializer -> {
                     children(modifiers)
                     append("init")
                     children(block)
@@ -199,14 +199,14 @@ open class Writer(
                     children(typeParams).append("=")
                     children(typeRef)
                 }
-                is Node.SecondaryConstructorDeclaration -> {
+                is Node.ClassDeclaration.ClassBody.SecondaryConstructor -> {
                     children(modifiers)
                     children(constructorKeyword)
                     children(params)
                     if (delegationCall != null) append(":").also { children(delegationCall) }
                     children(block)
                 }
-                is Node.SecondaryConstructorDeclaration.DelegationCall -> {
+                is Node.ClassDeclaration.ClassBody.SecondaryConstructor.DelegationCall -> {
                     children(target)
                     children(args)
                 }

@@ -211,17 +211,40 @@ sealed interface Node {
                 val classBody: ClassBody?,
                 override var tag: Any? = null,
             ) : Node, WithModifiers
+
+            /**
+             * AST node corresponds to KtAnonymousInitializer.
+             */
+            data class Initializer(
+                override val modifiers: Modifiers?,
+                val block: BlockExpression,
+                override var tag: Any? = null,
+            ) : Declaration(), WithModifiers
+
+            /**
+             * AST node corresponds to KtSecondaryConstructor.
+             */
+            data class SecondaryConstructor(
+                override val modifiers: Modifiers?,
+                val constructorKeyword: Keyword.Constructor,
+                val params: FunctionParams?,
+                val delegationCall: DelegationCall?,
+                val block: BlockExpression?,
+                override var tag: Any? = null,
+            ) : Declaration(), WithModifiers {
+                /**
+                 * AST node corresponds to KtConstructorDelegationCall.
+                 */
+                data class DelegationCall(
+                    val target: DelegationTarget,
+                    val args: ValueArgs?,
+                    override var tag: Any? = null,
+                ) : Node
+
+                sealed interface DelegationTarget : Keyword
+            }
         }
     }
-
-    /**
-     * AST node corresponds to KtAnonymousInitializer.
-     */
-    data class InitDeclaration(
-        override val modifiers: Modifiers?,
-        val block: BlockExpression,
-        override var tag: Any? = null,
-    ) : Declaration(), WithModifiers
 
     /**
      * AST node corresponds to KtNamedFunction.
@@ -358,29 +381,6 @@ sealed interface Node {
         val typeRef: TypeRef,
         override var tag: Any? = null,
     ) : Declaration(), WithModifiers
-
-    /**
-     * AST node corresponds to KtSecondaryConstructor.
-     */
-    data class SecondaryConstructorDeclaration(
-        override val modifiers: Modifiers?,
-        val constructorKeyword: Keyword.Constructor,
-        val params: FunctionParams?,
-        val delegationCall: DelegationCall?,
-        val block: BlockExpression?,
-        override var tag: Any? = null,
-    ) : Declaration(), WithModifiers {
-        /**
-         * AST node corresponds to KtConstructorDelegationCall.
-         */
-        data class DelegationCall(
-            val target: DelegationTarget,
-            val args: ValueArgs?,
-            override var tag: Any? = null,
-        ) : Node
-
-        sealed interface DelegationTarget : Keyword
-    }
 
     /**
      * AST node corresponds to KtTypeParameterList.
@@ -1166,11 +1166,13 @@ sealed interface Node {
             override val string: String; get() = "var"
         }
 
-        data class This(override var tag: Any? = null) : Keyword, SecondaryConstructorDeclaration.DelegationTarget {
+        data class This(override var tag: Any? = null) : Keyword,
+            ClassDeclaration.ClassBody.SecondaryConstructor.DelegationTarget {
             override val string: String; get() = "this"
         }
 
-        data class Super(override var tag: Any? = null) : Keyword, SecondaryConstructorDeclaration.DelegationTarget {
+        data class Super(override var tag: Any? = null) : Keyword,
+            ClassDeclaration.ClassBody.SecondaryConstructor.DelegationTarget {
             override val string: String; get() = "super"
         }
 

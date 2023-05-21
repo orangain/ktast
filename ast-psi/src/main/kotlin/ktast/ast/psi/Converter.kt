@@ -117,7 +117,7 @@ open class Converter {
         params = v.valueParameterList?.let(::convertFuncParams)
     ).map(v)
 
-    open fun convertInit(v: KtAnonymousInitializer) = Node.InitDeclaration(
+    open fun convertInit(v: KtAnonymousInitializer) = Node.ClassDeclaration.ClassBody.Initializer(
         modifiers = v.modifierList?.let(::convertModifiers),
         block = convertBlock(v.body as? KtBlockExpression ?: error("No init block for $v")),
     ).map(v)
@@ -239,16 +239,17 @@ open class Converter {
         typeRef = convertTypeRef(v.getTypeReference() ?: error("No type alias ref for $v"))
     ).map(v)
 
-    open fun convertSecondaryConstructor(v: KtSecondaryConstructor) = Node.SecondaryConstructorDeclaration(
-        modifiers = v.modifierList?.let(::convertModifiers),
-        constructorKeyword = convertKeyword(v.getConstructorKeyword()),
-        params = v.valueParameterList?.let(::convertFuncParams),
-        delegationCall = if (v.hasImplicitDelegationCall()) null else convertSecondaryConstructorDelegationCall(v.getDelegationCall()),
-        block = v.bodyExpression?.let(::convertBlock)
-    ).map(v)
+    open fun convertSecondaryConstructor(v: KtSecondaryConstructor) =
+        Node.ClassDeclaration.ClassBody.SecondaryConstructor(
+            modifiers = v.modifierList?.let(::convertModifiers),
+            constructorKeyword = convertKeyword(v.getConstructorKeyword()),
+            params = v.valueParameterList?.let(::convertFuncParams),
+            delegationCall = if (v.hasImplicitDelegationCall()) null else convertSecondaryConstructorDelegationCall(v.getDelegationCall()),
+            block = v.bodyExpression?.let(::convertBlock)
+        ).map(v)
 
     open fun convertSecondaryConstructorDelegationCall(v: KtConstructorDelegationCall) =
-        Node.SecondaryConstructorDeclaration.DelegationCall(
+        Node.ClassDeclaration.ClassBody.SecondaryConstructor.DelegationCall(
             target = convertKeyword(v.calleeExpression?.firstChild ?: error("No delegation target for $v")),
             args = v.valueArgumentList?.let(::convertValueArgs)
         ).map(v)

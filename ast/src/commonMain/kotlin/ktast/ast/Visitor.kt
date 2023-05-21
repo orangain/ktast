@@ -70,7 +70,7 @@ open class Visitor {
                 visitChildren(enumEntries)
                 visitChildren(declarations)
             }
-            is Node.InitDeclaration -> {
+            is Node.ClassDeclaration.ClassBody.Initializer -> {
                 visitChildren(modifiers)
                 visitChildren(block)
             }
@@ -140,14 +140,14 @@ open class Visitor {
                 visitChildren(typeParams)
                 visitChildren(typeRef)
             }
-            is Node.SecondaryConstructorDeclaration -> {
+            is Node.ClassDeclaration.ClassBody.SecondaryConstructor -> {
                 visitChildren(modifiers)
                 visitChildren(constructorKeyword)
                 visitChildren(params)
                 visitChildren(delegationCall)
                 visitChildren(block)
             }
-            is Node.SecondaryConstructorDeclaration.DelegationCall -> {
+            is Node.ClassDeclaration.ClassBody.SecondaryConstructor.DelegationCall -> {
                 visitChildren(target)
                 visitChildren(args)
             }
