@@ -452,15 +452,15 @@ sealed interface Node {
          * AST node corresponds to KtParameterList under KtFunctionType.
          */
         data class FunctionTypeParams(
-            override val elements: List<Param>,
+            override val elements: List<FunctionTypeParam>,
             override val trailingComma: Keyword.Comma?,
             override var tag: Any? = null,
-        ) : CommaSeparatedNodeList<Param>("(", ")")
+        ) : CommaSeparatedNodeList<FunctionTypeParam>("(", ")")
 
         /**
          * AST node corresponds to KtParameter inside KtFunctionType.
          */
-        data class Param(
+        data class FunctionTypeParam(
             val name: NameExpression?,
             val typeRef: TypeRef,
             override var tag: Any? = null,

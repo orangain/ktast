@@ -212,7 +212,7 @@ open class MutableVisitor(
                         elements = visitChildren(elements, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
-                    is Node.FunctionType.Param -> copy(
+                    is Node.FunctionType.FunctionTypeParam -> copy(
                         name = visitChildren(name, newCh),
                         typeRef = visitChildren(typeRef, newCh),
                     )

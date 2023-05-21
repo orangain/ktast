@@ -410,7 +410,7 @@ open class Converter {
         trailingComma = v.trailingComma?.let(::convertKeyword)
     ).map(v)
 
-    open fun convertTypeFunctionParam(v: KtParameter) = Node.FunctionType.Param(
+    open fun convertTypeFunctionParam(v: KtParameter) = Node.FunctionType.FunctionTypeParam(
         name = v.nameIdentifier?.let(::convertName),
         typeRef = convertTypeRef(v.typeReference ?: error("No param type"))
     ).map(v)

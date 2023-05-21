@@ -186,7 +186,7 @@ open class Visitor {
             is Node.FunctionType.FunctionTypeReceiver -> {
                 visitChildren(typeRef)
             }
-            is Node.FunctionType.Param -> {
+            is Node.FunctionType.FunctionTypeParam -> {
                 visitChildren(name)
                 visitChildren(typeRef)
             }
