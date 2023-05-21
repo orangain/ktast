@@ -863,50 +863,41 @@ sealed interface Node {
         /**
          * AST node corresponds to KtWhenEntry.
          */
-        sealed class WhenBranch : Node {
-            data class Conditional(
-                val whenConditions: List<WhenCondition>,
-                val trailingComma: Keyword.Comma?,
-                val body: Expression,
-                override var tag: Any? = null,
-            ) : WhenBranch()
-
-            data class Else(
-                val elseKeyword: Keyword.Else,
-                val body: Expression,
-                override var tag: Any? = null,
-            ) : WhenBranch()
+        data class WhenBranch(
+            val whenConditions: List<WhenCondition>,
+            val trailingComma: Keyword.Comma?,
+            val elseKeyword: Keyword.Else?,
+            val body: Expression,
+            override var tag: Any? = null,
+        ) : Node {
+            init {
+                when {
+                    whenConditions.isNotEmpty() -> require(elseKeyword == null) { "elseKeyword must be null when whenConditions is not empty" }
+                    else -> require(trailingComma == null && elseKeyword != null) { "trailingComma must be null and elseKeyword must not be null when whenConditions is empty" }
+                }
+            }
         }
+
+        sealed interface WhenConditionOperator : Keyword
+        sealed interface WhenConditionTypeOperator : WhenConditionOperator
+        sealed interface WhenConditionRangeOperator : WhenConditionOperator
 
         /**
          * AST node corresponds to KtWhenCondition.
          */
-        sealed class WhenCondition : Node {
-            /**
-             * AST node corresponds to KtWhenConditionWithExpression.
-             */
-            data class Expression(
-                val expression: Node.Expression,
-                override var tag: Any? = null,
-            ) : WhenCondition()
-
-            /**
-             * AST node corresponds to KtWhenConditionInRange.
-             */
-            data class In(
-                val expression: Node.Expression,
-                val not: Boolean,
-                override var tag: Any? = null,
-            ) : WhenCondition()
-
-            /**
-             * AST node corresponds to KtWhenConditionIsPattern.
-             */
-            data class Is(
-                val typeRef: TypeRef,
-                val not: Boolean,
-                override var tag: Any? = null,
-            ) : WhenCondition()
+        data class WhenCondition(
+            val operator: WhenConditionOperator?,
+            val expression: Expression?,
+            val typeRef: TypeRef?,
+            override var tag: Any? = null,
+        ) : Node {
+            init {
+                when (operator) {
+                    null -> require(expression != null || typeRef == null) { "expression must not be null and typeRef must be null when operator is null" }
+                    is WhenConditionTypeOperator -> require(expression == null && typeRef != null) { "expression must be null and typeRef must not be null when operator is type operator" }
+                    is WhenConditionRangeOperator -> require(expression != null && typeRef == null) { "expression must not be null and typeRef must be null when operator is range operator" }
+                }
+            }
         }
     }
 
@@ -1302,11 +1293,13 @@ sealed interface Node {
             override val string: String; get() = "-"
         }
 
-        data class In(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator, KeywordModifier {
+        data class In(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator, KeywordModifier,
+            WhenExpression.WhenConditionRangeOperator {
             override val string: String; get() = "in"
         }
 
-        data class NotIn(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
+        data class NotIn(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator,
+            WhenExpression.WhenConditionRangeOperator {
             override val string: String; get() = "!in"
         }
 
@@ -1414,11 +1407,13 @@ sealed interface Node {
             override val string: String; get() = ":"
         }
 
-        data class Is(override var tag: Any? = null) : Keyword, BinaryTypeExpression.BinaryTypeOperator {
+        data class Is(override var tag: Any? = null) : Keyword, BinaryTypeExpression.BinaryTypeOperator,
+            WhenExpression.WhenConditionTypeOperator {
             override val string: String; get() = "is"
         }
 
-        data class NotIs(override var tag: Any? = null) : Keyword, BinaryTypeExpression.BinaryTypeOperator {
+        data class NotIs(override var tag: Any? = null) : Keyword, BinaryTypeExpression.BinaryTypeOperator,
+            WhenExpression.WhenConditionTypeOperator {
             override val string: String; get() = "!is"
         }
 

@@ -723,33 +723,32 @@ open class Converter {
         whenBranches = v.entries.map(::convertWhenEntry),
     ).map(v)
 
-    open fun convertWhenEntry(v: KtWhenEntry): Node.WhenExpression.WhenBranch {
-        val elseKeyword = v.elseKeyword
-        return if (elseKeyword == null) {
-            Node.WhenExpression.WhenBranch.Conditional(
-                whenConditions = v.conditions.map(::convertWhenCondition),
-                trailingComma = v.trailingComma?.let(::convertKeyword),
-                body = convertExpression(v.expression ?: error("No when entry body for $v"))
-            ).map(v)
-        } else {
-            Node.WhenExpression.WhenBranch.Else(
-                elseKeyword = convertKeyword(elseKeyword),
-                body = convertExpression(v.expression ?: error("No when entry body for $v")),
-            ).map(v)
-        }
-    }
+    open fun convertWhenEntry(v: KtWhenEntry) = Node.WhenExpression.WhenBranch(
+        whenConditions = v.conditions.map(::convertWhenCondition),
+        trailingComma = v.trailingComma?.let(::convertKeyword),
+        elseKeyword = v.elseKeyword?.let(::convertKeyword),
+        body = convertExpression(v.expression ?: error("No when entry body for $v"))
+    ).map(v)
 
     open fun convertWhenCondition(v: KtWhenCondition) = when (v) {
-        is KtWhenConditionWithExpression -> Node.WhenExpression.WhenCondition.Expression(
-            expression = convertExpression(v.expression ?: error("No when cond expr for $v"))
+        is KtWhenConditionWithExpression -> Node.WhenExpression.WhenCondition(
+            operator = null,
+            expression = convertExpression(v.expression ?: error("No when cond expr for $v")),
+            typeRef = null,
         ).map(v)
-        is KtWhenConditionInRange -> Node.WhenExpression.WhenCondition.In(
+        is KtWhenConditionInRange -> Node.WhenExpression.WhenCondition(
+            operator = convertKeyword(v.operationReference),
             expression = convertExpression(v.rangeExpression ?: error("No when in expr for $v")),
-            not = v.isNegated
+            typeRef = null,
         ).map(v)
-        is KtWhenConditionIsPattern -> Node.WhenExpression.WhenCondition.Is(
+        is KtWhenConditionIsPattern -> Node.WhenExpression.WhenCondition(
+            operator = convertKeyword(
+                findChildByType(v, KtTokens.IS_KEYWORD)
+                    ?: findChildByType(v, KtTokens.NOT_IS)
+                    ?: error("No when is operator for $v")
+            ),
+            expression = null,
             typeRef = convertTypeRef(v.typeReference ?: error("No when is type for $v")),
-            not = v.isNegated
         ).map(v)
         else -> error("Unrecognized when cond of $v")
     }
