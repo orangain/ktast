@@ -628,29 +628,17 @@ sealed interface Node {
         override var tag: Any? = null,
     ) : Expression
 
-    sealed class BaseBinaryExpression : Expression {
-        abstract val lhs: Expression
-        abstract val rhs: Expression
-    }
-
     /**
      * AST node corresponds to KtBinaryExpression or KtQualifiedExpression.
      */
     data class BinaryExpression(
-        override val lhs: Expression,
+        val lhs: Expression,
         val operator: BinaryOperator,
-        override val rhs: Expression,
+        val rhs: Expression,
         override var tag: Any? = null,
-    ) : BaseBinaryExpression() {
-        sealed interface BinaryOperator : Keyword
+    ) : Expression {
+        sealed interface BinaryOperator : SimpleTextNode
     }
-
-    data class BinaryInfixExpression(
-        override val lhs: Expression,
-        val operator: NameExpression,
-        override val rhs: Expression,
-        override var tag: Any? = null,
-    ) : BaseBinaryExpression()
 
     /**
      * AST node corresponds to KtUnaryExpression.
@@ -962,7 +950,7 @@ sealed interface Node {
     data class NameExpression(
         override val text: String,
         override var tag: Any? = null,
-    ) : Expression, SimpleTextNode
+    ) : Expression, BinaryExpression.BinaryOperator
 
     /**
      * AST node corresponds to KtLabeledExpression.

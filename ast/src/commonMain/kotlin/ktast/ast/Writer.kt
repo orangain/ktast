@@ -349,9 +349,6 @@ open class Writer(
                 is Node.BinaryExpression -> {
                     children(lhs, operator, rhs)
                 }
-                is Node.BinaryInfixExpression -> {
-                    children(lhs, operator, rhs)
-                }
                 is Node.UnaryExpression ->
                     if (prefix) children(operator, expression) else children(expression, operator)
                 is Node.BinaryTypeExpression ->
@@ -590,7 +587,7 @@ open class Writer(
                 append("\n")
             }
         }
-        if (parent is Node.AnnotatedExpression && (this is Node.BaseBinaryExpression || this is Node.BinaryTypeExpression)) {
+        if (parent is Node.AnnotatedExpression && (this is Node.BinaryExpression || this is Node.BinaryTypeExpression)) {
             // Annotated expression requires newline between annotation and expression when expression is a binary operation.
             // This is because, without newline, annotated expression of binary expression is ambiguous with binary expression of annotated expression.
             if (!containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {

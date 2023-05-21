@@ -244,11 +244,6 @@ open class Visitor {
                 visitChildren(operator)
                 visitChildren(rhs)
             }
-            is Node.BinaryInfixExpression -> {
-                visitChildren(lhs)
-                visitChildren(operator)
-                visitChildren(rhs)
-            }
             is Node.UnaryExpression -> {
                 visitChildren(expression)
                 visitChildren(operator)

@@ -520,20 +520,15 @@ open class Converter {
         doWhile = v is KtDoWhileExpression
     ).map(v)
 
-    open fun convertBinary(v: KtBinaryExpression): Node.BaseBinaryExpression =
-        if (v.operationReference.isConventionOperator()) {
-            Node.BinaryExpression(
-                lhs = convertExpression(v.left ?: error("No binary lhs for $v")),
-                operator = convertKeyword(v.operationReference),
-                rhs = convertExpression(v.right ?: error("No binary rhs for $v"))
-            ).map(v)
+    open fun convertBinary(v: KtBinaryExpression) = Node.BinaryExpression(
+        lhs = convertExpression(v.left ?: error("No binary lhs for $v")),
+        operator = if (v.operationReference.isConventionOperator()) {
+            convertKeyword(v.operationReference)
         } else {
-            Node.BinaryInfixExpression(
-                lhs = convertExpression(v.left ?: error("No binary lhs for $v")),
-                operator = convertName(v.operationReference.firstChild),
-                rhs = convertExpression(v.right ?: error("No binary rhs for $v"))
-            ).map(v)
-        }
+            convertName(v.operationReference.firstChild)
+        },
+        rhs = convertExpression(v.right ?: error("No binary rhs for $v"))
+    ).map(v)
 
     open fun convertBinary(v: KtQualifiedExpression) = Node.BinaryExpression(
         lhs = convertExpression(v.receiverExpression),
