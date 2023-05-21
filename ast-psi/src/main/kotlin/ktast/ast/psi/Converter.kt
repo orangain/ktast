@@ -93,7 +93,6 @@ open class Converter {
         is KtSuperTypeCallEntry -> Node.ClassDeclaration.ConstructorClassParent(
             type = v.typeReference?.typeElement?.let(::convertType) as? Node.SimpleType
                 ?: error("Bad type on super call $v"),
-            typeArgs = v.typeArgumentList?.let(::convertTypeArgs),
             args = v.valueArgumentList?.let(::convertValueArgs),
             // TODO
             lambda = null

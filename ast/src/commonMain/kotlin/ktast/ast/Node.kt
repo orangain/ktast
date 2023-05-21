@@ -157,7 +157,6 @@ sealed interface Node {
          */
         data class ConstructorClassParent(
             val type: SimpleType,
-            val typeArgs: TypeArgs?,
             val args: ValueArgs?,
             val lambda: CallExpression.LambdaArg?,
             override var tag: Any? = null,

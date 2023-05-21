@@ -49,7 +49,6 @@ open class Visitor {
             }
             is Node.ClassDeclaration.ConstructorClassParent -> {
                 visitChildren(type)
-                visitChildren(typeArgs)
                 visitChildren(args)
                 visitChildren(lambda)
             }
