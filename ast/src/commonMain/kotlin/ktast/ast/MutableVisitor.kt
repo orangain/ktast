@@ -12,7 +12,6 @@ open class MutableVisitor(
         ch.sub { newCh ->
             preVisit(this, parent).run {
                 val new: Node = when (this) {
-                    is Node.HasSimpleStringRepresentation -> this
                     is Node.KotlinFile -> copy(
                         annotationSets = visitChildren(annotationSets, newCh),
                         packageDirective = visitChildren(packageDirective, newCh),
@@ -456,6 +455,7 @@ open class MutableVisitor(
                     is Node.Contract.ContractEffect -> copy(
                         expression = visitChildren(expression, newCh),
                     )
+                    is Node.Keyword -> this
                     is Node.Extra -> this
                     // Currently, else branch is required even when sealed classes are exhaustive.
                     // See: https://youtrack.jetbrains.com/issue/KT-21908
