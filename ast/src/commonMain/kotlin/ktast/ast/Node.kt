@@ -109,11 +109,11 @@ sealed interface Node {
     }
 
     /**
-     * Base class of [Declaration] and [Expression].
+     * Common interface of [Declaration] and [Expression].
      */
-    sealed class Statement : Node
+    sealed interface Statement : Node
 
-    sealed class Declaration : Statement()
+    sealed interface Declaration : Statement
 
     /**
      * AST node corresponds to KtClassOrObject.
@@ -128,7 +128,7 @@ sealed interface Node {
         val typeConstraintSet: TypeConstraintSet?,
         val classBody: ClassBody?,
         override var tag: Any? = null,
-    ) : Declaration(), WithModifiers {
+    ) : Declaration, WithModifiers {
         val isClass = classDeclarationKeyword is Keyword.Class
         val isObject = classDeclarationKeyword is Keyword.Object
         val isInterface = classDeclarationKeyword is Keyword.Interface
@@ -150,7 +150,7 @@ sealed interface Node {
         /**
          * AST node corresponds to KtSuperTypeListEntry.
          */
-        sealed class ClassParent : Node
+        sealed interface ClassParent : Node
 
         /**
          * AST node corresponds to KtSuperTypeCallEntry.
@@ -159,7 +159,7 @@ sealed interface Node {
             val type: SimpleType,
             val args: ValueArgs?,
             override var tag: Any? = null,
-        ) : ClassParent()
+        ) : ClassParent
 
         /**
          * AST node corresponds to KtDelegatedSuperTypeEntry.
@@ -169,7 +169,7 @@ sealed interface Node {
             val byKeyword: Keyword.By,
             val expression: Expression,
             override var tag: Any? = null,
-        ) : ClassParent()
+        ) : ClassParent
 
         /**
          * AST node corresponds to KtSuperTypeEntry.
@@ -177,7 +177,7 @@ sealed interface Node {
         data class TypeClassParent(
             val type: Type,
             override var tag: Any? = null,
-        ) : ClassParent()
+        ) : ClassParent
 
         /**
          * AST node corresponds to KtPrimaryConstructor.
@@ -217,7 +217,7 @@ sealed interface Node {
                 override val modifiers: Modifiers?,
                 val block: BlockExpression,
                 override var tag: Any? = null,
-            ) : Declaration(), WithModifiers
+            ) : Declaration, WithModifiers
 
             /**
              * AST node corresponds to KtSecondaryConstructor.
@@ -229,7 +229,7 @@ sealed interface Node {
                 val constructorDelegationCall: ConstructorDelegationCall?,
                 val block: BlockExpression?,
                 override var tag: Any? = null,
-            ) : Declaration(), WithModifiers {
+            ) : Declaration, WithModifiers {
                 /**
                  * AST node corresponds to KtConstructorDelegationCall.
                  */
@@ -260,7 +260,7 @@ sealed interface Node {
         override val equals: Keyword.Equal?,
         override val body: Expression?,
         override var tag: Any? = null,
-    ) : Declaration(), WithModifiers, WithPostModifiers, WithFunctionBody {
+    ) : Declaration, WithModifiers, WithPostModifiers, WithFunctionBody {
 
     }
 
@@ -306,7 +306,7 @@ sealed interface Node {
         val propertyDelegate: PropertyDelegate?,
         val accessors: List<Accessor>,
         override var tag: Any? = null,
-    ) : Declaration(), WithModifiers {
+    ) : Declaration, WithModifiers {
         init {
             if (propertyDelegate != null) {
                 require(equals == null && initializer == null) {
@@ -336,7 +336,7 @@ sealed interface Node {
         /**
          * AST node corresponds to KtPropertyAccessor.
          */
-        sealed class Accessor : Node, WithModifiers, WithPostModifiers, WithFunctionBody
+        sealed interface Accessor : Node, WithModifiers, WithPostModifiers, WithFunctionBody
 
         data class Getter(
             override val modifiers: Modifiers?,
@@ -346,7 +346,7 @@ sealed interface Node {
             override val equals: Keyword.Equal?,
             override val body: Expression?,
             override var tag: Any? = null,
-        ) : Accessor()
+        ) : Accessor
 
         data class Setter(
             override val modifiers: Modifiers?,
@@ -356,7 +356,7 @@ sealed interface Node {
             override val equals: Keyword.Equal?,
             override val body: Expression?,
             override var tag: Any? = null,
-        ) : Accessor()
+        ) : Accessor
     }
 
     /**
@@ -378,7 +378,7 @@ sealed interface Node {
         val typeParams: TypeParams?,
         val typeRef: TypeRef,
         override var tag: Any? = null,
-    ) : Declaration(), WithModifiers
+    ) : Declaration, WithModifiers
 
     /**
      * AST node corresponds to KtTypeParameterList.
@@ -399,7 +399,7 @@ sealed interface Node {
         override var tag: Any? = null,
     ) : Node, WithModifiers
 
-    sealed class Type : Node {
+    sealed interface Type : Node {
 
         interface NameWithTypeArgs {
             val name: NameExpression
@@ -421,7 +421,7 @@ sealed interface Node {
         val returnTypeRef: TypeRef,
         val rPar: Keyword.RPar?,
         override var tag: Any? = null,
-    ) : Type(), WithModifiers {
+    ) : Type, WithModifiers {
         /**
          * AST node corresponds to KtContextReceiverList.
          */
@@ -474,12 +474,12 @@ sealed interface Node {
         override val name: NameExpression,
         override val typeArgs: TypeArgs?,
         override var tag: Any? = null,
-    ) : Type(), Type.NameWithTypeArgs {
+    ) : Type, Type.NameWithTypeArgs {
         data class Qualifier(
             override val name: NameExpression,
             override val typeArgs: TypeArgs?,
             override var tag: Any? = null,
-        ) : Node, NameWithTypeArgs
+        ) : Node, Type.NameWithTypeArgs
     }
 
     /**
@@ -491,14 +491,14 @@ sealed interface Node {
         val type: Type,
         val rPar: Keyword.RPar?,
         override var tag: Any? = null,
-    ) : Type(), WithModifiers
+    ) : Type, WithModifiers
 
     /**
      * AST node corresponds to KtDynamicType.
      */
     data class DynamicType(
         override var tag: Any? = null,
-    ) : Type()
+    ) : Type
 
     /**
      * AST node corresponds to KtTypeArgumentList.
@@ -569,7 +569,7 @@ sealed interface Node {
         override var tag: Any? = null,
     ) : Node
 
-    sealed class Expression : Statement()
+    sealed interface Expression : Statement
 
     /**
      * AST node corresponds to KtIfExpression.
@@ -580,7 +580,7 @@ sealed interface Node {
         val body: ExpressionContainer,
         val elseBody: ExpressionContainer?,
         override var tag: Any? = null,
-    ) : Expression()
+    ) : Expression
 
     /**
      * AST node corresponds to KtTryExpression.
@@ -590,7 +590,7 @@ sealed interface Node {
         val catchClauses: List<CatchClause>,
         val finallyBlock: BlockExpression?,
         override var tag: Any? = null,
-    ) : Expression() {
+    ) : Expression {
         /**
          * AST node corresponds to KtCatchClause.
          */
@@ -611,7 +611,7 @@ sealed interface Node {
         val loopRange: ExpressionContainer,
         val body: ExpressionContainer,
         override var tag: Any? = null,
-    ) : Expression()
+    ) : Expression
 
     /**
      * AST node corresponds to KtWhileExpressionBase.
@@ -622,9 +622,9 @@ sealed interface Node {
         val body: ExpressionContainer,
         val doWhile: Boolean,
         override var tag: Any? = null,
-    ) : Expression()
+    ) : Expression
 
-    sealed class BaseBinaryExpression : Expression() {
+    sealed class BaseBinaryExpression : Expression {
         abstract val lhs: Expression
         abstract val rhs: Expression
     }
@@ -656,7 +656,7 @@ sealed interface Node {
         val operator: UnaryOperator,
         val prefix: Boolean,
         override var tag: Any? = null,
-    ) : Expression() {
+    ) : Expression {
         sealed interface UnaryOperator : Keyword
     }
 
@@ -668,14 +668,14 @@ sealed interface Node {
         val operator: BinaryTypeOperator,
         val rhs: TypeRef,
         override var tag: Any? = null,
-    ) : Expression() {
+    ) : Expression {
         sealed interface BinaryTypeOperator : Keyword
     }
 
     /**
      * AST node corresponds to KtDoubleColonExpression.
      */
-    sealed class DoubleColonExpression : Expression() {
+    sealed class DoubleColonExpression : Expression {
         abstract val lhs: Receiver?
 
         sealed class Receiver : Node {
@@ -716,7 +716,7 @@ sealed interface Node {
     data class ParenthesizedExpression(
         val expression: Expression,
         override var tag: Any? = null,
-    ) : Expression()
+    ) : Expression
 
     /**
      * AST node corresponds to KtStringTemplateExpression.
@@ -725,11 +725,11 @@ sealed interface Node {
         val entries: List<StringEntry>,
         val raw: Boolean,
         override var tag: Any? = null,
-    ) : Expression() {
+    ) : Expression {
         /**
          * AST node corresponds to KtStringTemplateEntry.
          */
-        sealed class StringEntry : Node
+        sealed interface StringEntry : Node
 
         /**
          * AST node corresponds to KtLiteralStringTemplateEntry.
@@ -737,7 +737,7 @@ sealed interface Node {
         data class LiteralStringEntry(
             val str: String,
             override var tag: Any? = null,
-        ) : StringEntry()
+        ) : StringEntry
 
         /**
          * AST node corresponds to KtEscapeStringTemplateEntry.
@@ -745,7 +745,7 @@ sealed interface Node {
         data class EscapeStringEntry(
             val str: String,
             override var tag: Any? = null,
-        ) : StringEntry() {
+        ) : StringEntry {
             init {
                 require(str.startsWith('\\')) {
                     "Escape string template entry must start with backslash."
@@ -760,7 +760,7 @@ sealed interface Node {
             val expression: Expression,
             val short: Boolean,
             override var tag: Any? = null,
-        ) : StringEntry() {
+        ) : StringEntry {
             init {
                 require(!short || expression is NameExpression) {
                     "Short template string entry must be a name expression."
@@ -776,7 +776,7 @@ sealed interface Node {
         val value: String,
         val form: Form,
         override var tag: Any? = null,
-    ) : Expression() {
+    ) : Expression {
         enum class Form { BOOLEAN, CHAR, INT, FLOAT, NULL }
     }
 
@@ -787,7 +787,7 @@ sealed interface Node {
         val params: LambdaParams?,
         val lambdaBody: LambdaBody?,
         override var tag: Any? = null,
-    ) : Expression() {
+    ) : Expression {
 
         /**
          * AST node corresponds to KtBlockExpression in lambda body.
@@ -799,7 +799,7 @@ sealed interface Node {
         data class LambdaBody(
             override val statements: List<Statement>,
             override var tag: Any? = null,
-        ) : Expression(), StatementsContainer
+        ) : Expression, StatementsContainer
     }
 
     /**
@@ -839,7 +839,7 @@ sealed interface Node {
     data class ThisExpression(
         val label: String?,
         override var tag: Any? = null,
-    ) : Expression()
+    ) : Expression
 
     /**
      * AST node corresponds to KtSuperExpression.
@@ -848,7 +848,7 @@ sealed interface Node {
         val typeArg: TypeRef?,
         val label: String?,
         override var tag: Any? = null,
-    ) : Expression()
+    ) : Expression
 
     /**
      * AST node corresponds to KtWhenExpression.
@@ -860,7 +860,7 @@ sealed interface Node {
         val rPar: Keyword.RPar?,
         val whenBranches: List<WhenBranch>,
         override var tag: Any? = null,
-    ) : Expression() {
+    ) : Expression {
         /**
          * AST node corresponds to KtWhenEntry.
          */
@@ -908,7 +908,7 @@ sealed interface Node {
     data class ObjectLiteralExpression(
         val declaration: ClassDeclaration,
         override var tag: Any? = null,
-    ) : Expression()
+    ) : Expression
 
     /**
      * AST node corresponds to KtThrowExpression.
@@ -916,7 +916,7 @@ sealed interface Node {
     data class ThrowExpression(
         val expression: Expression,
         override var tag: Any? = null,
-    ) : Expression()
+    ) : Expression
 
     /**
      * AST node corresponds to KtReturnExpression.
@@ -925,7 +925,7 @@ sealed interface Node {
         val label: String?,
         val expression: Expression?,
         override var tag: Any? = null,
-    ) : Expression()
+    ) : Expression
 
     /**
      * AST node corresponds to KtContinueExpression.
@@ -933,7 +933,7 @@ sealed interface Node {
     data class ContinueExpression(
         val label: String?,
         override var tag: Any? = null,
-    ) : Expression()
+    ) : Expression
 
     /**
      * AST node corresponds to KtBreakExpression.
@@ -941,7 +941,7 @@ sealed interface Node {
     data class BreakExpression(
         val label: String?,
         override var tag: Any? = null,
-    ) : Expression()
+    ) : Expression
 
     /**
      * AST node corresponds to KtCollectionLiteralExpression.
@@ -950,7 +950,7 @@ sealed interface Node {
         val expressions: List<Expression>,
         val trailingComma: Keyword.Comma?,
         override var tag: Any? = null,
-    ) : Expression()
+    ) : Expression
 
     /**
      * AST node corresponds to KtValueArgumentName, KtSimpleNameExpression or PsiElement whose elementType is IDENTIFIER.
@@ -958,7 +958,7 @@ sealed interface Node {
     data class NameExpression(
         val name: String,
         override var tag: Any? = null,
-    ) : Expression()
+    ) : Expression
 
     /**
      * AST node corresponds to KtLabeledExpression.
@@ -967,7 +967,7 @@ sealed interface Node {
         val label: String,
         val expression: Expression,
         override var tag: Any? = null,
-    ) : Expression()
+    ) : Expression
 
     /**
      * AST node corresponds to KtAnnotatedExpression.
@@ -976,7 +976,7 @@ sealed interface Node {
         override val annotationSets: List<AnnotationSet>,
         val expression: Expression,
         override var tag: Any? = null,
-    ) : Expression(), WithAnnotationSets
+    ) : Expression, WithAnnotationSets
 
     /**
      * AST node corresponds to KtCallExpression.
@@ -987,7 +987,7 @@ sealed interface Node {
         val args: ValueArgs?,
         val lambdaArg: LambdaArg?,
         override var tag: Any? = null,
-    ) : Expression() {
+    ) : Expression {
         /**
          * AST node corresponds to KtLambdaArgument.
          */
@@ -1007,7 +1007,7 @@ sealed interface Node {
         val indices: List<Expression>,
         val trailingComma: Keyword.Comma?,
         override var tag: Any? = null,
-    ) : Expression()
+    ) : Expression
 
     /**
      * Virtual AST node corresponds to KtNamedFunction in expression context.
@@ -1015,7 +1015,7 @@ sealed interface Node {
     data class AnonymousFunctionExpression(
         val function: FunctionDeclaration,
         override var tag: Any? = null,
-    ) : Expression()
+    ) : Expression
 
     /**
      * AST node corresponds to KtProperty or KtDestructuringDeclaration.
@@ -1024,7 +1024,7 @@ sealed interface Node {
     data class PropertyExpression(
         val declaration: PropertyDeclaration,
         override var tag: Any? = null,
-    ) : Expression()
+    ) : Expression
 
     /**
      * AST node corresponds to KtBlockExpression.
@@ -1032,7 +1032,7 @@ sealed interface Node {
     data class BlockExpression(
         override val statements: List<Statement>,
         override var tag: Any? = null,
-    ) : Expression(), StatementsContainer
+    ) : Expression, StatementsContainer
 
     /**
      * AST node corresponds to KtModifierList.
@@ -1070,7 +1070,7 @@ sealed interface Node {
 
     sealed interface KeywordModifier : Modifier, Keyword
 
-    sealed class PostModifier : Node
+    sealed interface PostModifier : Node
 
     /**
      * Virtual AST node corresponds to a pair of "where" keyword and KtTypeConstraintList.
@@ -1079,7 +1079,7 @@ sealed interface Node {
         val whereKeyword: Keyword.Where,
         val constraints: TypeConstraints,
         override var tag: Any? = null,
-    ) : PostModifier() {
+    ) : PostModifier {
         /**
          * AST node corresponds to KtTypeConstraintList.
          */
@@ -1108,7 +1108,7 @@ sealed interface Node {
         val contractKeyword: Keyword.Contract,
         val contractEffects: ContractEffects,
         override var tag: Any? = null,
-    ) : PostModifier() {
+    ) : PostModifier {
         /**
          * AST node corresponds to KtContractEffectList.
          */
@@ -1545,8 +1545,8 @@ sealed interface Node {
         }
     }
 
-    sealed class Extra : Node {
-        abstract val text: String
+    sealed interface Extra : Node {
+        val text: String
     }
 
     /**
@@ -1555,7 +1555,7 @@ sealed interface Node {
     data class Whitespace(
         override val text: String,
         override var tag: Any? = null,
-    ) : Extra()
+    ) : Extra
 
     /**
      * AST node corresponds to PsiComment.
@@ -1563,7 +1563,7 @@ sealed interface Node {
     data class Comment(
         override val text: String,
         override var tag: Any? = null,
-    ) : Extra()
+    ) : Extra
 
     /**
      * AST node corresponds to PsiElement whose elementType is SEMICOLON.
@@ -1571,5 +1571,5 @@ sealed interface Node {
     data class Semicolon(
         override val text: String,
         override var tag: Any? = null,
-    ) : Extra()
+    ) : Extra
 }
