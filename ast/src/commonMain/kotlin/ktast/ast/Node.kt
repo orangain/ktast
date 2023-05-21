@@ -166,7 +166,7 @@ sealed interface Node {
          * AST node corresponds to KtDelegatedSuperTypeEntry.
          */
         data class DelegationClassParent(
-            val type: SimpleType,
+            val type: Type,
             val byKeyword: Keyword.By,
             val expression: Expression,
             override var tag: Any? = null,
@@ -176,7 +176,7 @@ sealed interface Node {
          * AST node corresponds to KtSuperTypeEntry.
          */
         data class TypeClassParent(
-            val type: SimpleType,
+            val type: Type,
             override var tag: Any? = null,
         ) : ClassParent()
 

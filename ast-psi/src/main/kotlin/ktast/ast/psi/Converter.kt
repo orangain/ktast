@@ -98,14 +98,14 @@ open class Converter {
             lambda = null
         ).map(v)
         is KtDelegatedSuperTypeEntry -> Node.ClassDeclaration.DelegationClassParent(
-            type = v.typeReference?.typeElement?.let(::convertType) as? Node.SimpleType
-                ?: error("Bad type on super call $v"),
+            type = v.typeReference?.typeElement?.let(::convertType)
+                ?: error("No type on delegated super type $v"),
             byKeyword = convertKeyword(v.byKeywordNode.psi),
             expression = convertExpression(v.delegateExpression ?: error("Missing delegateExpression for $v")),
         ).map(v)
         is KtSuperTypeEntry -> Node.ClassDeclaration.TypeClassParent(
-            type = v.typeReference?.typeElement?.let(::convertType) as? Node.SimpleType
-                ?: error("Bad type on super call $v"),
+            type = v.typeReference?.typeElement?.let(::convertType)
+                ?: error("No type on super type $v"),
         ).map(v)
         else -> error("Unknown super type entry $v")
     }
