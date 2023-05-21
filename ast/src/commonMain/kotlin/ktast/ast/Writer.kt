@@ -349,9 +349,6 @@ open class Writer(
                 is Node.BinaryExpression -> {
                     children(lhs, operator, rhs)
                 }
-                is Node.BinaryInfixExpression -> {
-                    children(lhs, operator, rhs)
-                }
                 is Node.UnaryExpression ->
                     if (prefix) children(operator, expression) else children(expression, operator)
                 is Node.BinaryTypeExpression ->
@@ -468,7 +465,7 @@ open class Writer(
                 is Node.CollectionLiteralExpression ->
                     children(expressions, ",", "[", "]", trailingComma)
                 is Node.NameExpression ->
-                    append(name)
+                    append(text)
                 is Node.LabeledExpression ->
                     append(label).append("@").also { children(expression) }
                 is Node.AnnotatedExpression ->
@@ -531,7 +528,7 @@ open class Writer(
                     children(expression)
                 }
                 is Node.Keyword -> {
-                    append(string)
+                    append(text)
                 }
                 else ->
                     error("Unrecognized node type: $this")
@@ -590,7 +587,7 @@ open class Writer(
                 append("\n")
             }
         }
-        if (parent is Node.AnnotatedExpression && (this is Node.BaseBinaryExpression || this is Node.BinaryTypeExpression)) {
+        if (parent is Node.AnnotatedExpression && (this is Node.BinaryExpression || this is Node.BinaryTypeExpression)) {
             // Annotated expression requires newline between annotation and expression when expression is a binary operation.
             // This is because, without newline, annotated expression of binary expression is ambiguous with binary expression of annotated expression.
             if (!containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
@@ -641,7 +638,7 @@ open class Writer(
     )
 
     protected open fun writeHeuristicExtraAfterChild(v: Node, next: Node?, parent: Node?) {
-        if (v is Node.NameExpression && modifierKeywords.contains(v.name) && next is Node.Declaration && parent is Node.StatementsContainer) {
+        if (v is Node.NameExpression && modifierKeywords.contains(v.text) && next is Node.Declaration && parent is Node.StatementsContainer) {
             // Insert heuristic semicolon after name expression whose name is the same as the modifier keyword and next
             // is declaration to avoid ambiguity with keyword modifier.
             if (!containsSemicolon(extrasSinceLastNonSymbol)) {

@@ -520,20 +520,15 @@ open class Converter {
         doWhile = v is KtDoWhileExpression
     ).map(v)
 
-    open fun convertBinary(v: KtBinaryExpression): Node.BaseBinaryExpression =
-        if (v.operationReference.isConventionOperator()) {
-            Node.BinaryExpression(
-                lhs = convertExpression(v.left ?: error("No binary lhs for $v")),
-                operator = convertKeyword(v.operationReference),
-                rhs = convertExpression(v.right ?: error("No binary rhs for $v"))
-            ).map(v)
+    open fun convertBinary(v: KtBinaryExpression) = Node.BinaryExpression(
+        lhs = convertExpression(v.left ?: error("No binary lhs for $v")),
+        operator = if (v.operationReference.isConventionOperator()) {
+            convertKeyword(v.operationReference)
         } else {
-            Node.BinaryInfixExpression(
-                lhs = convertExpression(v.left ?: error("No binary lhs for $v")),
-                operator = convertName(v.operationReference.firstChild),
-                rhs = convertExpression(v.right ?: error("No binary rhs for $v"))
-            ).map(v)
-        }
+            convertName(v.operationReference.firstChild)
+        },
+        rhs = convertExpression(v.right ?: error("No binary rhs for $v"))
+    ).map(v)
 
     open fun convertBinary(v: KtQualifiedExpression) = Node.BinaryExpression(
         lhs = convertExpression(v.receiverExpression),
@@ -773,15 +768,15 @@ open class Converter {
     ).map(v)
 
     open fun convertValueArgName(v: KtValueArgumentName) = Node.NameExpression(
-        name = (v.referenceExpression.getIdentifier() ?: error("No identifier for $v")).text,
+        text = (v.referenceExpression.getIdentifier() ?: error("No identifier for $v")).text,
     ).map(v)
 
     open fun convertName(v: KtSimpleNameExpression) = Node.NameExpression(
-        name = (v.getIdentifier() ?: error("No identifier for $v")).text,
+        text = (v.getIdentifier() ?: error("No identifier for $v")).text,
     ).map(v)
 
     open fun convertName(v: PsiElement) = Node.NameExpression(
-        name = v.text
+        text = v.text
     ).map(v)
 
     open fun convertLabeled(v: KtLabeledExpression) = Node.LabeledExpression(
@@ -940,7 +935,7 @@ open class Converter {
     }
 
     protected val mapTextToKeywordKClass =
-        Node.Keyword::class.sealedSubclasses.filter { it.isData }.associateBy { it.createInstance().string }
+        Node.Keyword::class.sealedSubclasses.filter { it.isData }.associateBy { it.createInstance().text }
 
     protected inline fun <reified T : Node.Keyword> convertKeyword(v: PsiElement): T =
         ((mapTextToKeywordKClass[v.text]?.createInstance() as? T) ?: error("Unexpected keyword: ${v.text}"))

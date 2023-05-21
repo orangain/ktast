@@ -20,6 +20,10 @@ sealed interface Node {
         abstract val trailingComma: Keyword.Comma?
     }
 
+    sealed interface SimpleTextNode : Node {
+        val text: String
+    }
+
     interface WithAnnotationSets {
         val annotationSets: List<AnnotationSet>
     }
@@ -624,29 +628,17 @@ sealed interface Node {
         override var tag: Any? = null,
     ) : Expression
 
-    sealed class BaseBinaryExpression : Expression {
-        abstract val lhs: Expression
-        abstract val rhs: Expression
-    }
-
     /**
      * AST node corresponds to KtBinaryExpression or KtQualifiedExpression.
      */
     data class BinaryExpression(
-        override val lhs: Expression,
+        val lhs: Expression,
         val operator: BinaryOperator,
-        override val rhs: Expression,
+        val rhs: Expression,
         override var tag: Any? = null,
-    ) : BaseBinaryExpression() {
-        sealed interface BinaryOperator : Keyword
+    ) : Expression {
+        sealed interface BinaryOperator : SimpleTextNode
     }
-
-    data class BinaryInfixExpression(
-        override val lhs: Expression,
-        val operator: NameExpression,
-        override val rhs: Expression,
-        override var tag: Any? = null,
-    ) : BaseBinaryExpression()
 
     /**
      * AST node corresponds to KtUnaryExpression.
@@ -956,9 +948,9 @@ sealed interface Node {
      * AST node corresponds to KtValueArgumentName, KtSimpleNameExpression or PsiElement whose elementType is IDENTIFIER.
      */
     data class NameExpression(
-        val name: String,
+        override val text: String,
         override var tag: Any? = null,
-    ) : Expression
+    ) : Expression, BinaryExpression.BinaryOperator
 
     /**
      * AST node corresponds to KtLabeledExpression.
@@ -1129,419 +1121,417 @@ sealed interface Node {
 
     sealed interface ValOrVarKeyword : Keyword
 
-    sealed interface Keyword : Node {
-        val string: String
-
+    sealed interface Keyword : SimpleTextNode {
         data class Package(override var tag: Any? = null) : Keyword {
-            override val string: String; get() = "package"
+            override val text: String; get() = "package"
         }
 
         data class Import(override var tag: Any? = null) : Keyword {
-            override val string: String; get() = "import"
+            override val text: String; get() = "import"
         }
 
         data class Class(override var tag: Any? = null) : Keyword, ClassDeclaration.ClassDeclarationKeyword {
-            override val string: String; get() = "class"
+            override val text: String; get() = "class"
         }
 
         data class Object(override var tag: Any? = null) : Keyword, ClassDeclaration.ClassDeclarationKeyword {
-            override val string: String; get() = "object"
+            override val text: String; get() = "object"
         }
 
         data class Interface(override var tag: Any? = null) : Keyword, ClassDeclaration.ClassDeclarationKeyword {
-            override val string: String; get() = "interface"
+            override val text: String; get() = "interface"
         }
 
         data class Constructor(override var tag: Any? = null) : Keyword {
-            override val string: String; get() = "constructor"
+            override val text: String; get() = "constructor"
         }
 
         data class Val(override var tag: Any? = null) : Keyword, ValOrVarKeyword {
-            override val string: String; get() = "val"
+            override val text: String; get() = "val"
         }
 
         data class Var(override var tag: Any? = null) : Keyword, ValOrVarKeyword {
-            override val string: String; get() = "var"
+            override val text: String; get() = "var"
         }
 
         data class This(override var tag: Any? = null) : Keyword,
             ClassDeclaration.ClassBody.SecondaryConstructor.DelegationTargetKeyword {
-            override val string: String; get() = "this"
+            override val text: String; get() = "this"
         }
 
         data class Super(override var tag: Any? = null) : Keyword,
             ClassDeclaration.ClassBody.SecondaryConstructor.DelegationTargetKeyword {
-            override val string: String; get() = "super"
+            override val text: String; get() = "super"
         }
 
         data class For(override var tag: Any? = null) : Keyword {
-            override val string: String; get() = "for"
+            override val text: String; get() = "for"
         }
 
         data class While(override var tag: Any? = null) : Keyword {
-            override val string: String; get() = "while"
+            override val text: String; get() = "while"
         }
 
         data class If(override var tag: Any? = null) : Keyword {
-            override val string: String; get() = "if"
+            override val text: String; get() = "if"
         }
 
         data class Else(override var tag: Any? = null) : Keyword {
-            override val string: String; get() = "else"
+            override val text: String; get() = "else"
         }
 
         data class Catch(override var tag: Any? = null) : Keyword {
-            override val string: String; get() = "catch"
+            override val text: String; get() = "catch"
         }
 
         data class When(override var tag: Any? = null) : Keyword {
-            override val string: String; get() = "when"
+            override val text: String; get() = "when"
         }
 
         data class By(override var tag: Any? = null) : Keyword {
-            override val string: String; get() = "by"
+            override val text: String; get() = "by"
         }
 
         data class Contract(override var tag: Any? = null) : Keyword {
-            override val string: String; get() = "contract"
+            override val text: String; get() = "contract"
         }
 
         data class Where(override var tag: Any? = null) : Keyword {
-            override val string: String; get() = "where"
+            override val text: String; get() = "where"
         }
 
         data class Field(override var tag: Any? = null) : Keyword, AnnotationSet.AnnotationTarget {
-            override val string: String; get() = "field"
+            override val text: String; get() = "field"
         }
 
         data class File(override var tag: Any? = null) : Keyword, AnnotationSet.AnnotationTarget {
-            override val string: String; get() = "file"
+            override val text: String; get() = "file"
         }
 
         data class Property(override var tag: Any? = null) : Keyword, AnnotationSet.AnnotationTarget {
-            override val string: String; get() = "property"
+            override val text: String; get() = "property"
         }
 
         data class Get(override var tag: Any? = null) : Keyword, AnnotationSet.AnnotationTarget {
-            override val string: String; get() = "get"
+            override val text: String; get() = "get"
         }
 
         data class Set(override var tag: Any? = null) : Keyword, AnnotationSet.AnnotationTarget {
-            override val string: String; get() = "set"
+            override val text: String; get() = "set"
         }
 
         data class Receiver(override var tag: Any? = null) : Keyword, AnnotationSet.AnnotationTarget {
-            override val string: String; get() = "receiver"
+            override val text: String; get() = "receiver"
         }
 
         data class Param(override var tag: Any? = null) : Keyword, AnnotationSet.AnnotationTarget {
-            override val string: String; get() = "param"
+            override val text: String; get() = "param"
         }
 
         data class SetParam(override var tag: Any? = null) : Keyword, AnnotationSet.AnnotationTarget {
-            override val string: String; get() = "setparam"
+            override val text: String; get() = "setparam"
         }
 
         data class Delegate(override var tag: Any? = null) : Keyword, AnnotationSet.AnnotationTarget {
-            override val string: String; get() = "delegate"
+            override val text: String; get() = "delegate"
         }
 
         data class Equal(override var tag: Any? = null) : Keyword {
-            override val string: String; get() = "="
+            override val text: String; get() = "="
         }
 
         data class Comma(override var tag: Any? = null) : Keyword {
-            override val string: String; get() = ","
+            override val text: String; get() = ","
         }
 
         data class LPar(override var tag: Any? = null) : Keyword {
-            override val string: String; get() = "("
+            override val text: String; get() = "("
         }
 
         data class RPar(override var tag: Any? = null) : Keyword {
-            override val string: String; get() = ")"
+            override val text: String; get() = ")"
         }
 
         data class LBracket(override var tag: Any? = null) : Keyword {
-            override val string: String; get() = "["
+            override val text: String; get() = "["
         }
 
         data class RBracket(override var tag: Any? = null) : Keyword {
-            override val string: String; get() = "]"
+            override val text: String; get() = "]"
         }
 
         data class At(override var tag: Any? = null) : Keyword {
-            override val string: String; get() = "@"
+            override val text: String; get() = "@"
         }
 
         data class Asterisk(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
-            override val string: String; get() = "*"
+            override val text: String; get() = "*"
         }
 
         data class Slash(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
-            override val string: String; get() = "/"
+            override val text: String; get() = "/"
         }
 
         data class Percent(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
-            override val string: String; get() = "%"
+            override val text: String; get() = "%"
         }
 
         data class Plus(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator,
             UnaryExpression.UnaryOperator {
-            override val string: String; get() = "+"
+            override val text: String; get() = "+"
         }
 
         data class Minus(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator,
             UnaryExpression.UnaryOperator {
-            override val string: String; get() = "-"
+            override val text: String; get() = "-"
         }
 
         data class In(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator, KeywordModifier,
             WhenExpression.WhenConditionRangeOperator {
-            override val string: String; get() = "in"
+            override val text: String; get() = "in"
         }
 
         data class NotIn(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator,
             WhenExpression.WhenConditionRangeOperator {
-            override val string: String; get() = "!in"
+            override val text: String; get() = "!in"
         }
 
         data class Greater(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
-            override val string: String; get() = ">"
+            override val text: String; get() = ">"
         }
 
         data class GreaterEqual(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
-            override val string: String; get() = ">="
+            override val text: String; get() = ">="
         }
 
         data class Less(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
-            override val string: String; get() = "<"
+            override val text: String; get() = "<"
         }
 
         data class LessEqual(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
-            override val string: String; get() = "<="
+            override val text: String; get() = "<="
         }
 
         data class EqualEqual(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
-            override val string: String; get() = "=="
+            override val text: String; get() = "=="
         }
 
         data class NotEqual(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
-            override val string: String; get() = "!="
+            override val text: String; get() = "!="
         }
 
         data class AsteriskEqual(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
-            override val string: String; get() = "*="
+            override val text: String; get() = "*="
         }
 
         data class SlashEqual(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
-            override val string: String; get() = "/="
+            override val text: String; get() = "/="
         }
 
         data class PercentEqual(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
-            override val string: String; get() = "%="
+            override val text: String; get() = "%="
         }
 
         data class PlusEqual(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
-            override val string: String; get() = "+="
+            override val text: String; get() = "+="
         }
 
         data class MinusEqual(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
-            override val string: String; get() = "-="
+            override val text: String; get() = "-="
         }
 
         data class OrOr(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
-            override val string: String; get() = "||"
+            override val text: String; get() = "||"
         }
 
         data class AndAnd(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
-            override val string: String; get() = "&&"
+            override val text: String; get() = "&&"
         }
 
         data class QuestionColon(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
-            override val string: String; get() = "?:"
+            override val text: String; get() = "?:"
         }
 
         data class DotDot(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
-            override val string: String; get() = ".."
+            override val text: String; get() = ".."
         }
 
         data class DotDotLess(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
-            override val string: String; get() = "..<"
+            override val text: String; get() = "..<"
         }
 
         data class Dot(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
-            override val string: String; get() = "."
+            override val text: String; get() = "."
         }
 
         data class QuestionDot(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
-            override val string: String; get() = "?."
+            override val text: String; get() = "?."
         }
 
         data class Question(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
-            override val string: String; get() = "?"
+            override val text: String; get() = "?"
         }
 
         data class PlusPlus(override var tag: Any? = null) : Keyword, UnaryExpression.UnaryOperator {
-            override val string: String; get() = "++"
+            override val text: String; get() = "++"
         }
 
         data class MinusMinus(override var tag: Any? = null) : Keyword, UnaryExpression.UnaryOperator {
-            override val string: String; get() = "--"
+            override val text: String; get() = "--"
         }
 
         data class Not(override var tag: Any? = null) : Keyword, UnaryExpression.UnaryOperator {
-            override val string: String; get() = "!"
+            override val text: String; get() = "!"
         }
 
         data class NotNot(override var tag: Any? = null) : Keyword, UnaryExpression.UnaryOperator {
-            override val string: String; get() = "!!"
+            override val text: String; get() = "!!"
         }
 
         data class As(override var tag: Any? = null) : Keyword, BinaryTypeExpression.BinaryTypeOperator {
-            override val string: String; get() = "as"
+            override val text: String; get() = "as"
         }
 
         data class AsQuestion(override var tag: Any? = null) : Keyword, BinaryTypeExpression.BinaryTypeOperator {
-            override val string: String; get() = "as?"
+            override val text: String; get() = "as?"
         }
 
         data class Colon(override var tag: Any? = null) : Keyword, BinaryTypeExpression.BinaryTypeOperator {
-            override val string: String; get() = ":"
+            override val text: String; get() = ":"
         }
 
         data class Is(override var tag: Any? = null) : Keyword, BinaryTypeExpression.BinaryTypeOperator,
             WhenExpression.WhenConditionTypeOperator {
-            override val string: String; get() = "is"
+            override val text: String; get() = "is"
         }
 
         data class NotIs(override var tag: Any? = null) : Keyword, BinaryTypeExpression.BinaryTypeOperator,
             WhenExpression.WhenConditionTypeOperator {
-            override val string: String; get() = "!is"
+            override val text: String; get() = "!is"
         }
 
         data class Abstract(override var tag: Any? = null) : Keyword, KeywordModifier {
-            override val string: String; get() = "abstract"
+            override val text: String; get() = "abstract"
         }
 
         data class Final(override var tag: Any? = null) : Keyword, KeywordModifier {
-            override val string: String; get() = "final"
+            override val text: String; get() = "final"
         }
 
         data class Open(override var tag: Any? = null) : Keyword, KeywordModifier {
-            override val string: String; get() = "open"
+            override val text: String; get() = "open"
         }
 
         data class Annotation(override var tag: Any? = null) : Keyword, KeywordModifier {
-            override val string: String; get() = "annotation"
+            override val text: String; get() = "annotation"
         }
 
         data class Sealed(override var tag: Any? = null) : Keyword, KeywordModifier {
-            override val string: String; get() = "sealed"
+            override val text: String; get() = "sealed"
         }
 
         data class Data(override var tag: Any? = null) : Keyword, KeywordModifier {
-            override val string: String; get() = "data"
+            override val text: String; get() = "data"
         }
 
         data class Override(override var tag: Any? = null) : Keyword, KeywordModifier {
-            override val string: String; get() = "override"
+            override val text: String; get() = "override"
         }
 
         data class LateInit(override var tag: Any? = null) : Keyword, KeywordModifier {
-            override val string: String; get() = "lateinit"
+            override val text: String; get() = "lateinit"
         }
 
         data class Inner(override var tag: Any? = null) : Keyword, KeywordModifier {
-            override val string: String; get() = "inner"
+            override val text: String; get() = "inner"
         }
 
         data class Enum(override var tag: Any? = null) : Keyword, KeywordModifier {
-            override val string: String; get() = "enum"
+            override val text: String; get() = "enum"
         }
 
         data class Companion(override var tag: Any? = null) : Keyword, KeywordModifier {
-            override val string: String; get() = "companion"
+            override val text: String; get() = "companion"
         }
 
         data class Value(override var tag: Any? = null) : Keyword, KeywordModifier {
-            override val string: String; get() = "value"
+            override val text: String; get() = "value"
         }
 
         data class Private(override var tag: Any? = null) : Keyword, KeywordModifier {
-            override val string: String; get() = "private"
+            override val text: String; get() = "private"
         }
 
         data class Protected(override var tag: Any? = null) : Keyword, KeywordModifier {
-            override val string: String; get() = "protected"
+            override val text: String; get() = "protected"
         }
 
         data class Public(override var tag: Any? = null) : Keyword, KeywordModifier {
-            override val string: String; get() = "public"
+            override val text: String; get() = "public"
         }
 
         data class Internal(override var tag: Any? = null) : Keyword, KeywordModifier {
-            override val string: String; get() = "internal"
+            override val text: String; get() = "internal"
         }
 
         data class Out(override var tag: Any? = null) : Keyword, KeywordModifier {
-            override val string: String; get() = "out"
+            override val text: String; get() = "out"
         }
 
         data class Noinline(override var tag: Any? = null) : Keyword, KeywordModifier {
-            override val string: String; get() = "noinline"
+            override val text: String; get() = "noinline"
         }
 
         data class CrossInline(override var tag: Any? = null) : Keyword, KeywordModifier {
-            override val string: String; get() = "crossinline"
+            override val text: String; get() = "crossinline"
         }
 
         data class Vararg(override var tag: Any? = null) : Keyword, KeywordModifier {
-            override val string: String; get() = "vararg"
+            override val text: String; get() = "vararg"
         }
 
         data class Reified(override var tag: Any? = null) : Keyword, KeywordModifier {
-            override val string: String; get() = "reified"
+            override val text: String; get() = "reified"
         }
 
         data class TailRec(override var tag: Any? = null) : Keyword, KeywordModifier {
-            override val string: String; get() = "tailrec"
+            override val text: String; get() = "tailrec"
         }
 
         data class Operator(override var tag: Any? = null) : Keyword, KeywordModifier {
-            override val string: String; get() = "operator"
+            override val text: String; get() = "operator"
         }
 
         data class Infix(override var tag: Any? = null) : Keyword, KeywordModifier {
-            override val string: String; get() = "infix"
+            override val text: String; get() = "infix"
         }
 
         data class Inline(override var tag: Any? = null) : Keyword, KeywordModifier {
-            override val string: String; get() = "inline"
+            override val text: String; get() = "inline"
         }
 
         data class External(override var tag: Any? = null) : Keyword, KeywordModifier {
-            override val string: String; get() = "external"
+            override val text: String; get() = "external"
         }
 
         data class Suspend(override var tag: Any? = null) : Keyword, KeywordModifier {
-            override val string: String; get() = "suspend"
+            override val text: String; get() = "suspend"
         }
 
         data class Const(override var tag: Any? = null) : Keyword, KeywordModifier {
-            override val string: String; get() = "const"
+            override val text: String; get() = "const"
         }
 
         data class Fun(override var tag: Any? = null) : Keyword, KeywordModifier {
-            override val string: String; get() = "fun"
+            override val text: String; get() = "fun"
         }
 
         data class Actual(override var tag: Any? = null) : Keyword, KeywordModifier {
-            override val string: String; get() = "actual"
+            override val text: String; get() = "actual"
         }
 
         data class Expect(override var tag: Any? = null) : Keyword, KeywordModifier {
-            override val string: String; get() = "expect"
+            override val text: String; get() = "expect"
         }
     }
 
