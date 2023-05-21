@@ -737,18 +737,13 @@ sealed interface Node {
             override var tag: Any? = null,
         ) : Entry()
 
-        data class ShortTemplateEntry(
+        data class EscapeStringEntry(
             val str: String,
             override var tag: Any? = null,
         ) : Entry()
 
-        data class UnicodeEscapeEntry(
-            val digits: String,
-            override var tag: Any? = null,
-        ) : Entry()
-
-        data class RegularEscapeEntry(
-            val char: Char,
+        data class ShortTemplateEntry(
+            val str: String,
             override var tag: Any? = null,
         ) : Entry()
 

@@ -310,9 +310,8 @@ open class MutableVisitor(
                         entries = visitChildren(entries, newCh)
                     )
                     is Node.StringLiteralExpression.LiteralStringEntry -> this
+                    is Node.StringLiteralExpression.EscapeStringEntry -> this
                     is Node.StringLiteralExpression.ShortTemplateEntry -> this
-                    is Node.StringLiteralExpression.UnicodeEscapeEntry -> this
-                    is Node.StringLiteralExpression.RegularEscapeEntry -> this
                     is Node.StringLiteralExpression.LongTemplateEntry -> copy(
                         expression = visitChildren(expression, newCh)
                     )

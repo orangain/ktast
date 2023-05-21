@@ -386,26 +386,12 @@ open class Writer(
                 }
                 is Node.StringLiteralExpression.LiteralStringEntry ->
                     doAppend(str)
+                is Node.StringLiteralExpression.EscapeStringEntry -> {
+                    doAppend(str)
+                }
                 is Node.StringLiteralExpression.ShortTemplateEntry -> {
                     doAppend("$")
                     doAppend(str)
-                }
-                is Node.StringLiteralExpression.UnicodeEscapeEntry -> {
-                    doAppend("\\u")
-                    doAppend(digits)
-                }
-                is Node.StringLiteralExpression.RegularEscapeEntry -> {
-                    doAppend(
-                        "\\${
-                            when (char) {
-                                '\b' -> 'b'
-                                '\n' -> 'n'
-                                '\t' -> 't'
-                                '\r' -> 'r'
-                                else -> char
-                            }
-                        }"
-                    )
                 }
                 is Node.StringLiteralExpression.LongTemplateEntry ->
                     append("\${").also { children(expression) }.append('}')

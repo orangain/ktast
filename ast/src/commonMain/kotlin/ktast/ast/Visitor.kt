@@ -280,9 +280,8 @@ open class Visitor {
                 visitChildren(entries)
             }
             is Node.StringLiteralExpression.LiteralStringEntry -> {}
+            is Node.StringLiteralExpression.EscapeStringEntry -> {}
             is Node.StringLiteralExpression.ShortTemplateEntry -> {}
-            is Node.StringLiteralExpression.UnicodeEscapeEntry -> {}
-            is Node.StringLiteralExpression.RegularEscapeEntry -> {}
             is Node.StringLiteralExpression.LongTemplateEntry -> {
                 visitChildren(expression)
             }

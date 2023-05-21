@@ -629,18 +629,16 @@ open class Converter {
     ).map(v)
 
     open fun convertStringTemplateEntry(v: KtStringTemplateEntry) = when (v) {
-        is KtLiteralStringTemplateEntry ->
-            Node.StringLiteralExpression.LiteralStringEntry(v.text).map(v)
+        is KtLiteralStringTemplateEntry -> Node.StringLiteralExpression.LiteralStringEntry(v.text)
+            .map(v)
+        is KtEscapeStringTemplateEntry -> Node.StringLiteralExpression.EscapeStringEntry(v.text)
+            .map(v)
         is KtSimpleNameStringTemplateEntry ->
-            Node.StringLiteralExpression.ShortTemplateEntry(v.expression?.text ?: error("No short tmpl text")).map(v)
+            Node.StringLiteralExpression.ShortTemplateEntry(v.expression?.text ?: error("No short tmpl text"))
+                .map(v)
         is KtBlockStringTemplateEntry ->
             Node.StringLiteralExpression.LongTemplateEntry(convertExpression(v.expression ?: error("No expr tmpl")))
                 .map(v)
-        is KtEscapeStringTemplateEntry ->
-            if (v.text.startsWith("\\u"))
-                Node.StringLiteralExpression.UnicodeEscapeEntry(v.text.substring(2)).map(v)
-            else
-                Node.StringLiteralExpression.RegularEscapeEntry(v.unescapedValue.first()).map(v)
         else ->
             error("Unrecognized string template type for $v")
     }
