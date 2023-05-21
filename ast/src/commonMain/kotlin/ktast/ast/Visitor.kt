@@ -281,8 +281,7 @@ open class Visitor {
             }
             is Node.StringLiteralExpression.LiteralStringEntry -> {}
             is Node.StringLiteralExpression.EscapeStringEntry -> {}
-            is Node.StringLiteralExpression.ShortTemplateEntry -> {}
-            is Node.StringLiteralExpression.LongTemplateEntry -> {
+            is Node.StringLiteralExpression.TemplateStringEntry -> {
                 visitChildren(expression)
             }
             is Node.ConstantLiteralExpression -> {}

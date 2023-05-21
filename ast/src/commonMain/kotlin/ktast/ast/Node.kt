@@ -742,15 +742,17 @@ sealed interface Node {
             override var tag: Any? = null,
         ) : StringEntry()
 
-        data class ShortTemplateEntry(
-            val str: String,
-            override var tag: Any? = null,
-        ) : StringEntry()
-
-        data class LongTemplateEntry(
+        data class TemplateStringEntry(
             val expression: Expression,
+            val short: Boolean,
             override var tag: Any? = null,
-        ) : StringEntry()
+        ) : StringEntry() {
+            init {
+                require(!short || expression is NameExpression) {
+                    "Short template string entry must be a name expression."
+                }
+            }
+        }
     }
 
     /**

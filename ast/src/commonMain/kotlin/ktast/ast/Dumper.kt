@@ -77,7 +77,7 @@ class Dumper(
                 is Node.Comment -> mapOf("text" to text)
                 is Node.StringLiteralExpression.LiteralStringEntry -> mapOf("str" to str)
                 is Node.StringLiteralExpression.EscapeStringEntry -> mapOf("str" to str)
-                is Node.StringLiteralExpression.ShortTemplateEntry -> mapOf("str" to str)
+                is Node.StringLiteralExpression.TemplateStringEntry -> mapOf("short" to short)
                 else -> null
             }?.let {
                 app.append(it.toString())

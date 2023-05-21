@@ -633,12 +633,11 @@ open class Converter {
             .map(v)
         is KtEscapeStringTemplateEntry -> Node.StringLiteralExpression.EscapeStringEntry(v.text)
             .map(v)
-        is KtSimpleNameStringTemplateEntry ->
-            Node.StringLiteralExpression.ShortTemplateEntry(v.expression?.text ?: error("No short tmpl text"))
-                .map(v)
-        is KtBlockStringTemplateEntry ->
-            Node.StringLiteralExpression.LongTemplateEntry(convertExpression(v.expression ?: error("No expr tmpl")))
-                .map(v)
+        is KtStringTemplateEntryWithExpression ->
+            Node.StringLiteralExpression.TemplateStringEntry(
+                expression = convertExpression(v.expression ?: error("No expr tmpl")),
+                short = v is KtSimpleNameStringTemplateEntry,
+            ).map(v)
         else ->
             error("Unrecognized string template type for $v")
     }
