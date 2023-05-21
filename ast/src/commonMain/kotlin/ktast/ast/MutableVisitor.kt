@@ -352,23 +352,16 @@ open class MutableVisitor(
                         rPar = visitChildren(rPar, newCh),
                         whenBranches = visitChildren(whenBranches, newCh),
                     )
-                    is Node.WhenExpression.WhenBranch.Conditional -> copy(
+                    is Node.WhenExpression.WhenBranch -> copy(
                         whenConditions = visitChildren(whenConditions, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
-                        body = visitChildren(body, newCh),
-                    )
-                    is Node.WhenExpression.WhenBranch.Else -> copy(
                         elseKeyword = visitChildren(elseKeyword, newCh),
                         body = visitChildren(body, newCh),
                     )
-                    is Node.WhenExpression.WhenCondition.Expression -> copy(
-                        expression = visitChildren(expression, newCh)
-                    )
-                    is Node.WhenExpression.WhenCondition.In -> copy(
-                        expression = visitChildren(expression, newCh)
-                    )
-                    is Node.WhenExpression.WhenCondition.Is -> copy(
-                        typeRef = visitChildren(typeRef, newCh)
+                    is Node.WhenExpression.WhenCondition -> copy(
+                        operator = visitChildren(operator, newCh),
+                        expression = visitChildren(expression, newCh),
+                        typeRef = visitChildren(typeRef, newCh),
                     )
                     is Node.ObjectLiteralExpression -> copy(
                         declaration = visitChildren(declaration, newCh),

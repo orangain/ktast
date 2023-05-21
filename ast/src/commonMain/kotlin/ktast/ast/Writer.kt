@@ -454,23 +454,15 @@ open class Writer(
                     children(whenBranches)
                     append("}")
                 }
-                is Node.WhenExpression.WhenBranch.Conditional -> {
+                is Node.WhenExpression.WhenBranch -> {
                     children(whenConditions, ",", trailingSeparator = trailingComma)
-                    append("->").also { children(body) }
-                }
-                is Node.WhenExpression.WhenBranch.Else -> {
                     children(elseKeyword)
                     append("->").also { children(body) }
                 }
-                is Node.WhenExpression.WhenCondition.Expression ->
+                is Node.WhenExpression.WhenCondition -> {
+                    children(operator)
                     children(expression)
-                is Node.WhenExpression.WhenCondition.In -> {
-                    if (not) append('!')
-                    append("in").also { children(expression) }
-                }
-                is Node.WhenExpression.WhenCondition.Is -> {
-                    if (not) append('!')
-                    append("is").also { children(typeRef) }
+                    children(typeRef)
                 }
                 is Node.ObjectLiteralExpression -> {
                     children(declaration)
