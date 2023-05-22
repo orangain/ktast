@@ -243,7 +243,7 @@ open class Writer(
                     children(type)
                     children(rPar)
                 }
-                is Node.FunctionType -> {
+                is Node.Type.FunctionType -> {
                     children(lPar)
                     children(modifiers)
                     if (contextReceivers != null) {
@@ -260,17 +260,17 @@ open class Writer(
                     children(returnTypeRef)
                     children(rPar)
                 }
-                is Node.FunctionType.ContextReceiver -> {
+                is Node.Type.FunctionType.ContextReceiver -> {
                     children(typeRef)
                 }
-                is Node.FunctionType.FunctionTypeReceiver -> {
+                is Node.Type.FunctionType.FunctionTypeReceiver -> {
                     children(typeRef)
                 }
-                is Node.FunctionType.FunctionTypeParam -> {
+                is Node.Type.FunctionType.FunctionTypeParam -> {
                     if (name != null) children(name).append(":")
                     children(typeRef)
                 }
-                is Node.SimpleType -> {
+                is Node.Type.SimpleType -> {
                     if (qualifiers.isNotEmpty()) {
                         children(qualifiers, ".")
                         append(".")
@@ -278,18 +278,18 @@ open class Writer(
                     children(name)
                     children(typeArgs)
                 }
-                is Node.SimpleType.Qualifier -> {
+                is Node.Type.SimpleType.Qualifier -> {
                     children(name)
                     children(typeArgs)
                 }
-                is Node.NullableType -> {
+                is Node.Type.NullableType -> {
                     children(lPar)
                     children(modifiers)
                     children(type)
                     children(rPar)
                     append('?')
                 }
-                is Node.DynamicType ->
+                is Node.Type.DynamicType ->
                     append("dynamic")
                 is Node.ExpressionContainer -> {
                     children(expression)

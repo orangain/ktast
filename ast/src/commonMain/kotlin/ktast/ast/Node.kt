@@ -160,7 +160,7 @@ sealed interface Node {
          * AST node corresponds to KtSuperTypeCallEntry.
          */
         data class ConstructorClassParent(
-            val type: SimpleType,
+            val type: Type.SimpleType,
             val args: ValueArgs?,
             override var tag: Any? = null,
         ) : ClassParent
@@ -410,99 +410,99 @@ sealed interface Node {
             val typeArgs: TypeArgs?
         }
 
-    }
-
-    /**
-     * AST node corresponds to KtFunctionType.
-     * Note that properties [lPar], [modifiers] and [rPar] correspond to those of parent KtTypeReference.
-     */
-    data class FunctionType(
-        val lPar: Keyword.LPar?,
-        override val modifiers: Modifiers?,
-        val contextReceivers: ContextReceivers?,
-        val functionTypeReceiver: FunctionTypeReceiver?,
-        val params: FunctionTypeParams?,
-        val returnTypeRef: TypeRef,
-        val rPar: Keyword.RPar?,
-        override var tag: Any? = null,
-    ) : Type, WithModifiers {
         /**
-         * AST node corresponds to KtContextReceiverList.
+         * AST node corresponds to KtFunctionType.
+         * Note that properties [lPar], [modifiers] and [rPar] correspond to those of parent KtTypeReference.
          */
-        data class ContextReceivers(
-            override val elements: List<ContextReceiver>,
-            override val trailingComma: Keyword.Comma?,
+        data class FunctionType(
+            val lPar: Keyword.LPar?,
+            override val modifiers: Modifiers?,
+            val contextReceivers: ContextReceivers?,
+            val functionTypeReceiver: FunctionTypeReceiver?,
+            val params: FunctionTypeParams?,
+            val returnTypeRef: TypeRef,
+            val rPar: Keyword.RPar?,
             override var tag: Any? = null,
-        ) : CommaSeparatedNodeList<ContextReceiver>("(", ")")
+        ) : Type, WithModifiers {
+            /**
+             * AST node corresponds to KtContextReceiverList.
+             */
+            data class ContextReceivers(
+                override val elements: List<ContextReceiver>,
+                override val trailingComma: Keyword.Comma?,
+                override var tag: Any? = null,
+            ) : CommaSeparatedNodeList<ContextReceiver>("(", ")")
+
+            /**
+             * AST node corresponds to KtContextReceiver.
+             */
+            data class ContextReceiver(
+                val typeRef: TypeRef,
+                override var tag: Any? = null,
+            ) : Node
+
+            /**
+             * AST node corresponds KtFunctionTypeReceiver.
+             */
+            data class FunctionTypeReceiver(
+                val typeRef: TypeRef,
+                override var tag: Any? = null,
+            ) : Node
+
+            /**
+             * AST node corresponds to KtParameterList under KtFunctionType.
+             */
+            data class FunctionTypeParams(
+                override val elements: List<FunctionTypeParam>,
+                override val trailingComma: Keyword.Comma?,
+                override var tag: Any? = null,
+            ) : CommaSeparatedNodeList<FunctionTypeParam>("(", ")")
+
+            /**
+             * AST node corresponds to KtParameter inside KtFunctionType.
+             */
+            data class FunctionTypeParam(
+                val name: Expression.NameExpression?,
+                val typeRef: TypeRef,
+                override var tag: Any? = null,
+            ) : Node
+        }
 
         /**
-         * AST node corresponds to KtContextReceiver.
+         * AST node corresponds to KtUserType.
          */
-        data class ContextReceiver(
-            val typeRef: TypeRef,
-            override var tag: Any? = null,
-        ) : Node
-
-        /**
-         * AST node corresponds KtFunctionTypeReceiver.
-         */
-        data class FunctionTypeReceiver(
-            val typeRef: TypeRef,
-            override var tag: Any? = null,
-        ) : Node
-
-        /**
-         * AST node corresponds to KtParameterList under KtFunctionType.
-         */
-        data class FunctionTypeParams(
-            override val elements: List<FunctionTypeParam>,
-            override val trailingComma: Keyword.Comma?,
-            override var tag: Any? = null,
-        ) : CommaSeparatedNodeList<FunctionTypeParam>("(", ")")
-
-        /**
-         * AST node corresponds to KtParameter inside KtFunctionType.
-         */
-        data class FunctionTypeParam(
-            val name: Expression.NameExpression?,
-            val typeRef: TypeRef,
-            override var tag: Any? = null,
-        ) : Node
-    }
-
-    /**
-     * AST node corresponds to KtUserType.
-     */
-    data class SimpleType(
-        val qualifiers: List<Qualifier>,
-        override val name: Expression.NameExpression,
-        override val typeArgs: TypeArgs?,
-        override var tag: Any? = null,
-    ) : Type, Type.NameWithTypeArgs {
-        data class Qualifier(
+        data class SimpleType(
+            val qualifiers: List<Qualifier>,
             override val name: Expression.NameExpression,
             override val typeArgs: TypeArgs?,
             override var tag: Any? = null,
-        ) : Node, Type.NameWithTypeArgs
+        ) : Type, NameWithTypeArgs {
+            data class Qualifier(
+                override val name: Expression.NameExpression,
+                override val typeArgs: TypeArgs?,
+                override var tag: Any? = null,
+            ) : Node, NameWithTypeArgs
+        }
+
+        /**
+         * AST node corresponds to KtNullableType.
+         */
+        data class NullableType(
+            val lPar: Keyword.LPar?,
+            override val modifiers: Modifiers?,
+            val type: Type,
+            val rPar: Keyword.RPar?,
+            override var tag: Any? = null,
+        ) : Type, WithModifiers
+
+        /**
+         * AST node corresponds to KtDynamicType.
+         */
+        data class DynamicType(
+            override var tag: Any? = null,
+        ) : Type
+
     }
-
-    /**
-     * AST node corresponds to KtNullableType.
-     */
-    data class NullableType(
-        val lPar: Keyword.LPar?,
-        override val modifiers: Modifiers?,
-        val type: Type,
-        val rPar: Keyword.RPar?,
-        override var tag: Any? = null,
-    ) : Type, WithModifiers
-
-    /**
-     * AST node corresponds to KtDynamicType.
-     */
-    data class DynamicType(
-        override var tag: Any? = null,
-    ) : Type
 
     /**
      * AST node corresponds to KtTypeArgumentList.
@@ -1044,7 +1044,7 @@ sealed interface Node {
          * AST node corresponds to KtAnnotationEntry under KtAnnotation or virtual AST node corresponds to KtAnnotationEntry not under KtAnnotation.
          */
         data class Annotation(
-            val type: SimpleType,
+            val type: Type.SimpleType,
             val args: ValueArgs?,
             override var tag: Any? = null,
         ) : Node

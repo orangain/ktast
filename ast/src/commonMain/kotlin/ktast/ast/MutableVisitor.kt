@@ -188,7 +188,7 @@ open class MutableVisitor(
                         type = visitChildren(type, newCh),
                         rPar = visitChildren(rPar, newCh),
                     )
-                    is Node.FunctionType -> copy(
+                    is Node.Type.FunctionType -> copy(
                         lPar = visitChildren(lPar, newCh),
                         modifiers = visitChildren(modifiers, newCh),
                         contextReceivers = visitChildren(contextReceivers, newCh),
@@ -197,40 +197,40 @@ open class MutableVisitor(
                         returnTypeRef = visitChildren(returnTypeRef, newCh),
                         rPar = visitChildren(rPar, newCh),
                     )
-                    is Node.FunctionType.ContextReceivers -> copy(
+                    is Node.Type.FunctionType.ContextReceivers -> copy(
                         elements = visitChildren(elements, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
-                    is Node.FunctionType.ContextReceiver -> copy(
+                    is Node.Type.FunctionType.ContextReceiver -> copy(
                         typeRef = visitChildren(typeRef, newCh),
                     )
-                    is Node.FunctionType.FunctionTypeReceiver -> copy(
+                    is Node.Type.FunctionType.FunctionTypeReceiver -> copy(
                         typeRef = visitChildren(typeRef, newCh),
                     )
-                    is Node.FunctionType.FunctionTypeParams -> copy(
+                    is Node.Type.FunctionType.FunctionTypeParams -> copy(
                         elements = visitChildren(elements, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
-                    is Node.FunctionType.FunctionTypeParam -> copy(
+                    is Node.Type.FunctionType.FunctionTypeParam -> copy(
                         name = visitChildren(name, newCh),
                         typeRef = visitChildren(typeRef, newCh),
                     )
-                    is Node.SimpleType -> copy(
+                    is Node.Type.SimpleType -> copy(
                         qualifiers = visitChildren(qualifiers, newCh),
                         name = visitChildren(name, newCh),
                         typeArgs = visitChildren(typeArgs, newCh),
                     )
-                    is Node.SimpleType.Qualifier -> copy(
+                    is Node.Type.SimpleType.Qualifier -> copy(
                         name = visitChildren(name, newCh),
                         typeArgs = visitChildren(typeArgs, newCh),
                     )
-                    is Node.NullableType -> copy(
+                    is Node.Type.NullableType -> copy(
                         lPar = visitChildren(lPar, newCh),
                         modifiers = visitChildren(modifiers, newCh),
                         type = visitChildren(type, newCh),
                         rPar = visitChildren(rPar, newCh),
                     )
-                    is Node.DynamicType -> this
+                    is Node.Type.DynamicType -> this
                     is Node.ValueArgs -> copy(
                         elements = visitChildren(elements, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),

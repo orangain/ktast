@@ -170,7 +170,7 @@ open class Visitor {
                 visitChildren(type)
                 visitChildren(rPar)
             }
-            is Node.FunctionType -> {
+            is Node.Type.FunctionType -> {
                 visitChildren(lPar)
                 visitChildren(modifiers)
                 visitChildren(contextReceivers)
@@ -179,32 +179,32 @@ open class Visitor {
                 visitChildren(returnTypeRef)
                 visitChildren(rPar)
             }
-            is Node.FunctionType.ContextReceiver -> {
+            is Node.Type.FunctionType.ContextReceiver -> {
                 visitChildren(typeRef)
             }
-            is Node.FunctionType.FunctionTypeReceiver -> {
+            is Node.Type.FunctionType.FunctionTypeReceiver -> {
                 visitChildren(typeRef)
             }
-            is Node.FunctionType.FunctionTypeParam -> {
+            is Node.Type.FunctionType.FunctionTypeParam -> {
                 visitChildren(name)
                 visitChildren(typeRef)
             }
-            is Node.SimpleType -> {
+            is Node.Type.SimpleType -> {
                 visitChildren(qualifiers)
                 visitChildren(name)
                 visitChildren(typeArgs)
             }
-            is Node.SimpleType.Qualifier -> {
+            is Node.Type.SimpleType.Qualifier -> {
                 visitChildren(name)
                 visitChildren(typeArgs)
             }
-            is Node.NullableType -> {
+            is Node.Type.NullableType -> {
                 visitChildren(lPar)
                 visitChildren(modifiers)
                 visitChildren(type)
                 visitChildren(rPar)
             }
-            is Node.DynamicType -> {}
+            is Node.Type.DynamicType -> {}
             is Node.ValueArg -> {
                 visitChildren(name)
                 visitChildren(expression)
