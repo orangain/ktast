@@ -28,7 +28,7 @@ class MutableVisitorTest {
                 val y = 2
             """.trimIndent(),
             { v, _ ->
-                if (v is Node.NameExpression) {
+                if (v is Node.Expression.NameExpression) {
                     when (v.text) {
                         "x" -> v.copy(text = "a")
                         "y" -> v.copy(text = "b")

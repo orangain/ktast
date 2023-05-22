@@ -78,9 +78,9 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
         // Ignore elems we've done before
         val elemId = System.identityHashCode(elem)
         if (!seenExtraPsiIdentities.add(elemId)) null else when {
-            elem is PsiWhiteSpace -> Node.Whitespace(elem.text)
-            elem is PsiComment -> Node.Comment(elem.text)
-            elem.node.elementType == KtTokens.SEMICOLON -> Node.Semicolon(elem.text)
+            elem is PsiWhiteSpace -> Node.Extra.Whitespace(elem.text)
+            elem is PsiComment -> Node.Extra.Comment(elem.text)
+            elem.node.elementType == KtTokens.SEMICOLON -> Node.Extra.Semicolon(elem.text)
             else -> error("elems must contain only PsiWhiteSpace or PsiComment or SEMICOLON elements.")
         }
     }
