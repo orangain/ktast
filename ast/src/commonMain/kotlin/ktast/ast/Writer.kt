@@ -84,7 +84,7 @@ open class Writer(
                     append("as")
                     children(name)
                 }
-                is Node.ClassDeclaration -> {
+                is Node.Declaration.ClassDeclaration -> {
                     children(modifiers)
                     children(classDeclarationKeyword)
                     children(name)
@@ -97,35 +97,35 @@ open class Writer(
                     children(typeConstraintSet)
                     children(classBody)
                 }
-                is Node.ClassDeclaration.ConstructorClassParent -> {
+                is Node.Declaration.ClassDeclaration.ConstructorClassParent -> {
                     children(type)
                     children(args)
                 }
-                is Node.ClassDeclaration.DelegationClassParent -> {
+                is Node.Declaration.ClassDeclaration.DelegationClassParent -> {
                     children(type)
                     children(byKeyword)
                     children(expression)
                 }
-                is Node.ClassDeclaration.TypeClassParent -> {
+                is Node.Declaration.ClassDeclaration.TypeClassParent -> {
                     children(type)
                 }
-                is Node.ClassDeclaration.PrimaryConstructor -> {
+                is Node.Declaration.ClassDeclaration.PrimaryConstructor -> {
                     children(modifiers)
                     children(constructorKeyword)
                     children(params)
                 }
-                is Node.ClassDeclaration.ClassBody -> {
+                is Node.Declaration.ClassDeclaration.ClassBody -> {
                     append("{")
                     children(enumEntries, skipWritingExtrasWithin = true)
                     children(declarations)
                     append("}")
                 }
-                is Node.ClassDeclaration.ClassBody.Initializer -> {
+                is Node.Declaration.ClassDeclaration.ClassBody.Initializer -> {
                     children(modifiers)
                     append("init")
                     children(block)
                 }
-                is Node.FunctionDeclaration -> {
+                is Node.Declaration.FunctionDeclaration -> {
                     children(modifiers)
                     children(funKeyword)
                     children(typeParams)
@@ -145,7 +145,7 @@ open class Writer(
                     children(equals)
                     children(defaultValue)
                 }
-                is Node.PropertyDeclaration -> {
+                is Node.Declaration.PropertyDeclaration -> {
                     children(modifiers)
                     children(valOrVarKeyword)
                     children(typeParams)
@@ -160,7 +160,7 @@ open class Writer(
                     children(propertyDelegate)
                     children(accessors)
                 }
-                is Node.PropertyDeclaration.PropertyDelegate -> {
+                is Node.Declaration.PropertyDeclaration.PropertyDelegate -> {
                     children(byKeyword)
                     children(expression)
                 }
@@ -169,7 +169,7 @@ open class Writer(
                     children(name)
                     if (typeRef != null) append(":").also { children(typeRef) }
                 }
-                is Node.PropertyDeclaration.Getter -> {
+                is Node.Declaration.PropertyDeclaration.Getter -> {
                     children(modifiers)
                     children(getKeyword)
                     if (body != null) {
@@ -180,7 +180,7 @@ open class Writer(
                         children(body)
                     }
                 }
-                is Node.PropertyDeclaration.Setter -> {
+                is Node.Declaration.PropertyDeclaration.Setter -> {
                     children(modifiers)
                     children(setKeyword)
                     if (body != null) {
@@ -192,30 +192,30 @@ open class Writer(
                         children(body)
                     }
                 }
-                is Node.TypeAliasDeclaration -> {
+                is Node.Declaration.TypeAliasDeclaration -> {
                     children(modifiers)
                     append("typealias")
                     children(name)
                     children(typeParams).append("=")
                     children(typeRef)
                 }
-                is Node.ClassDeclaration.ClassBody.SecondaryConstructor -> {
+                is Node.Declaration.ClassDeclaration.ClassBody.SecondaryConstructor -> {
                     children(modifiers)
                     children(constructorKeyword)
                     children(params)
                     if (constructorDelegationCall != null) append(":").also { children(constructorDelegationCall) }
                     children(block)
                 }
-                is Node.ClassDeclaration.ClassBody.SecondaryConstructor.ConstructorDelegationCall -> {
+                is Node.Declaration.ClassDeclaration.ClassBody.SecondaryConstructor.ConstructorDelegationCall -> {
                     children(targetKeyword)
                     children(args)
                 }
-                is Node.ClassDeclaration.ClassBody.EnumEntry -> {
+                is Node.Declaration.ClassDeclaration.ClassBody.EnumEntry -> {
                     children(modifiers)
                     children(name)
                     children(args)
                     children(classBody)
-                    check(parent is Node.ClassDeclaration.ClassBody) // condition should always be true
+                    check(parent is Node.Declaration.ClassDeclaration.ClassBody) // condition should always be true
                     val isLastEntry = parent.enumEntries.last() === this
                     if (!isLastEntry || parent.hasTrailingCommaInEnumEntries) {
                         append(",")
@@ -568,7 +568,7 @@ open class Writer(
                 append("\n")
             }
         }
-        if (parent is Node.PropertyDeclaration && this is Node.PropertyDeclaration.Accessor) {
+        if (parent is Node.Declaration.PropertyDeclaration && this is Node.Declaration.PropertyDeclaration.Accessor) {
             // Property accessors require newline when the previous element is expression
             if ((parent.accessors.first() === this && (parent.propertyDelegate != null || parent.initializer != null)) ||
                 (parent.accessors.size == 2 && parent.accessors.last() === this && parent.accessors[0].equals != null)

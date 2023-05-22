@@ -117,155 +117,236 @@ sealed interface Node {
      */
     sealed interface Statement : Node
 
-    sealed interface Declaration : Statement
-
-    /**
-     * AST node corresponds to KtClassOrObject.
-     */
-    data class ClassDeclaration(
-        override val modifiers: Modifiers?,
-        val classDeclarationKeyword: ClassDeclarationKeyword,
-        val name: Expression.NameExpression?,
-        val typeParams: TypeParams?,
-        val primaryConstructor: PrimaryConstructor?,
-        val classParents: ClassParents?,
-        val typeConstraintSet: TypeConstraintSet?,
-        val classBody: ClassBody?,
-        override var tag: Any? = null,
-    ) : Declaration, WithModifiers {
-        val isClass = classDeclarationKeyword is Keyword.Class
-        val isObject = classDeclarationKeyword is Keyword.Object
-        val isInterface = classDeclarationKeyword is Keyword.Interface
-        val isCompanion = modifiers?.elements.orEmpty().any { it is Keyword.Companion }
-        val isEnum = modifiers?.elements.orEmpty().any { it is Keyword.Enum }
-
-        sealed interface ClassDeclarationKeyword : Keyword
-
+    sealed interface Declaration : Statement {
         /**
-         * AST node corresponds to KtSuperTypeList.
+         * AST node corresponds to KtClassOrObject.
          */
-        data class ClassParents(
-            override val elements: List<ClassParent>,
-            override var tag: Any? = null,
-        ) : CommaSeparatedNodeList<ClassParent>("", "") {
-            override val trailingComma: Keyword.Comma? = null
-        }
-
-        /**
-         * AST node corresponds to KtSuperTypeListEntry.
-         */
-        sealed interface ClassParent : Node
-
-        /**
-         * AST node corresponds to KtSuperTypeCallEntry.
-         */
-        data class ConstructorClassParent(
-            val type: Type.SimpleType,
-            val args: ValueArgs?,
-            override var tag: Any? = null,
-        ) : ClassParent
-
-        /**
-         * AST node corresponds to KtDelegatedSuperTypeEntry.
-         */
-        data class DelegationClassParent(
-            val type: Type,
-            val byKeyword: Keyword.By,
-            val expression: Expression,
-            override var tag: Any? = null,
-        ) : ClassParent
-
-        /**
-         * AST node corresponds to KtSuperTypeEntry.
-         */
-        data class TypeClassParent(
-            val type: Type,
-            override var tag: Any? = null,
-        ) : ClassParent
-
-        /**
-         * AST node corresponds to KtPrimaryConstructor.
-         */
-        data class PrimaryConstructor(
+        data class ClassDeclaration(
             override val modifiers: Modifiers?,
-            val constructorKeyword: Keyword.Constructor?,
-            val params: FunctionParams?,
+            val classDeclarationKeyword: ClassDeclarationKeyword,
+            val name: Expression.NameExpression?,
+            val typeParams: TypeParams?,
+            val primaryConstructor: PrimaryConstructor?,
+            val classParents: ClassParents?,
+            val typeConstraintSet: TypeConstraintSet?,
+            val classBody: ClassBody?,
             override var tag: Any? = null,
-        ) : Node, WithModifiers
+        ) : Declaration, WithModifiers {
+            val isClass = classDeclarationKeyword is Keyword.Class
+            val isObject = classDeclarationKeyword is Keyword.Object
+            val isInterface = classDeclarationKeyword is Keyword.Interface
+            val isCompanion = modifiers?.elements.orEmpty().any { it is Keyword.Companion }
+            val isEnum = modifiers?.elements.orEmpty().any { it is Keyword.Enum }
 
-        /**
-         * AST node corresponds to KtClassBody.
-         */
-        data class ClassBody(
-            val enumEntries: List<EnumEntry>,
-            val hasTrailingCommaInEnumEntries: Boolean,
-            override val declarations: List<Declaration>,
-            override var tag: Any? = null,
-        ) : Node, DeclarationsContainer {
+            sealed interface ClassDeclarationKeyword : Keyword
 
             /**
-             * AST node corresponds to KtEnumEntry.
+             * AST node corresponds to KtSuperTypeList.
              */
-            data class EnumEntry(
-                override val modifiers: Modifiers?,
-                val name: Expression.NameExpression,
+            data class ClassParents(
+                override val elements: List<ClassParent>,
+                override var tag: Any? = null,
+            ) : CommaSeparatedNodeList<ClassParent>("", "") {
+                override val trailingComma: Keyword.Comma? = null
+            }
+
+            /**
+             * AST node corresponds to KtSuperTypeListEntry.
+             */
+            sealed interface ClassParent : Node
+
+            /**
+             * AST node corresponds to KtSuperTypeCallEntry.
+             */
+            data class ConstructorClassParent(
+                val type: Type.SimpleType,
                 val args: ValueArgs?,
-                val classBody: ClassBody?,
+                override var tag: Any? = null,
+            ) : ClassParent
+
+            /**
+             * AST node corresponds to KtDelegatedSuperTypeEntry.
+             */
+            data class DelegationClassParent(
+                val type: Type,
+                val byKeyword: Keyword.By,
+                val expression: Expression,
+                override var tag: Any? = null,
+            ) : ClassParent
+
+            /**
+             * AST node corresponds to KtSuperTypeEntry.
+             */
+            data class TypeClassParent(
+                val type: Type,
+                override var tag: Any? = null,
+            ) : ClassParent
+
+            /**
+             * AST node corresponds to KtPrimaryConstructor.
+             */
+            data class PrimaryConstructor(
+                override val modifiers: Modifiers?,
+                val constructorKeyword: Keyword.Constructor?,
+                val params: FunctionParams?,
                 override var tag: Any? = null,
             ) : Node, WithModifiers
 
             /**
-             * AST node corresponds to KtAnonymousInitializer.
+             * AST node corresponds to KtClassBody.
              */
-            data class Initializer(
-                override val modifiers: Modifiers?,
-                val block: Expression.BlockExpression,
+            data class ClassBody(
+                val enumEntries: List<EnumEntry>,
+                val hasTrailingCommaInEnumEntries: Boolean,
+                override val declarations: List<Declaration>,
                 override var tag: Any? = null,
-            ) : Declaration, WithModifiers
+            ) : Node, DeclarationsContainer {
 
-            /**
-             * AST node corresponds to KtSecondaryConstructor.
-             */
-            data class SecondaryConstructor(
-                override val modifiers: Modifiers?,
-                val constructorKeyword: Keyword.Constructor,
-                val params: FunctionParams?,
-                val constructorDelegationCall: ConstructorDelegationCall?,
-                val block: Expression.BlockExpression?,
-                override var tag: Any? = null,
-            ) : Declaration, WithModifiers {
                 /**
-                 * AST node corresponds to KtConstructorDelegationCall.
+                 * AST node corresponds to KtEnumEntry.
                  */
-                data class ConstructorDelegationCall(
-                    val targetKeyword: DelegationTargetKeyword,
+                data class EnumEntry(
+                    override val modifiers: Modifiers?,
+                    val name: Expression.NameExpression,
                     val args: ValueArgs?,
+                    val classBody: ClassBody?,
                     override var tag: Any? = null,
-                ) : Node
+                ) : Node, WithModifiers
 
-                sealed interface DelegationTargetKeyword : Keyword
+                /**
+                 * AST node corresponds to KtAnonymousInitializer.
+                 */
+                data class Initializer(
+                    override val modifiers: Modifiers?,
+                    val block: Expression.BlockExpression,
+                    override var tag: Any? = null,
+                ) : Declaration, WithModifiers
+
+                /**
+                 * AST node corresponds to KtSecondaryConstructor.
+                 */
+                data class SecondaryConstructor(
+                    override val modifiers: Modifiers?,
+                    val constructorKeyword: Keyword.Constructor,
+                    val params: FunctionParams?,
+                    val constructorDelegationCall: ConstructorDelegationCall?,
+                    val block: Expression.BlockExpression?,
+                    override var tag: Any? = null,
+                ) : Declaration, WithModifiers {
+                    /**
+                     * AST node corresponds to KtConstructorDelegationCall.
+                     */
+                    data class ConstructorDelegationCall(
+                        val targetKeyword: DelegationTargetKeyword,
+                        val args: ValueArgs?,
+                        override var tag: Any? = null,
+                    ) : Node
+
+                    sealed interface DelegationTargetKeyword : Keyword
+                }
             }
         }
-    }
 
-    /**
-     * AST node corresponds to KtNamedFunction.
-     */
-    data class FunctionDeclaration(
-        override val modifiers: Modifiers?,
-        val funKeyword: Keyword.Fun,
-        val typeParams: TypeParams?,
-        val receiverTypeRef: TypeRef?,
-        // Name not present on anonymous functions
-        val name: Expression.NameExpression?,
-        val params: FunctionParams?,
-        val typeRef: TypeRef?,
-        override val postModifiers: List<PostModifier>,
-        override val equals: Keyword.Equal?,
-        override val body: Expression?,
-        override var tag: Any? = null,
-    ) : Declaration, WithModifiers, WithPostModifiers, WithFunctionBody {
+        /**
+         * AST node corresponds to KtNamedFunction.
+         */
+        data class FunctionDeclaration(
+            override val modifiers: Modifiers?,
+            val funKeyword: Keyword.Fun,
+            val typeParams: TypeParams?,
+            val receiverTypeRef: TypeRef?,
+            // Name not present on anonymous functions
+            val name: Expression.NameExpression?,
+            val params: FunctionParams?,
+            val typeRef: TypeRef?,
+            override val postModifiers: List<PostModifier>,
+            override val equals: Keyword.Equal?,
+            override val body: Expression?,
+            override var tag: Any? = null,
+        ) : Declaration, WithModifiers, WithPostModifiers, WithFunctionBody
 
+        /**
+         * AST node corresponds to KtProperty or KtDestructuringDeclaration.
+         */
+        data class PropertyDeclaration(
+            override val modifiers: Modifiers?,
+            val valOrVarKeyword: ValOrVarKeyword,
+            val typeParams: TypeParams?,
+            val receiverTypeRef: TypeRef?,
+            val lPar: Keyword.LPar?,
+            // Always at least one, more than one is destructuring
+            val variables: List<Variable>,
+            val trailingComma: Keyword.Comma?,
+            val rPar: Keyword.RPar?,
+            val typeConstraintSet: TypeConstraintSet?,
+            val equals: Keyword.Equal?,
+            val initializer: Expression?,
+            val propertyDelegate: PropertyDelegate?,
+            val accessors: List<Accessor>,
+            override var tag: Any? = null,
+        ) : Declaration, WithModifiers {
+            init {
+                if (propertyDelegate != null) {
+                    require(equals == null && initializer == null) {
+                        "equals and initializer must be null when delegate is not null"
+                    }
+                }
+                require((equals == null && initializer == null) || (equals != null && initializer != null)) {
+                    "equals and initializer must be both null or both non-null"
+                }
+                if (variables.size >= 2) {
+                    require(lPar != null && rPar != null) { "lPar and rPar are required when there are multiple variables" }
+                }
+                if (trailingComma != null) {
+                    require(lPar != null && rPar != null) { "lPar and rPar are required when trailing comma exists" }
+                }
+            }
+
+            /**
+             * AST node corresponds to KtPropertyDelegate.
+             */
+            data class PropertyDelegate(
+                val byKeyword: Keyword.By,
+                val expression: Expression,
+                override var tag: Any? = null,
+            ) : Node
+
+            /**
+             * AST node corresponds to KtPropertyAccessor.
+             */
+            sealed interface Accessor : Node, WithModifiers, WithPostModifiers, WithFunctionBody
+
+            data class Getter(
+                override val modifiers: Modifiers?,
+                val getKeyword: Keyword.Get,
+                val typeRef: TypeRef?,
+                override val postModifiers: List<PostModifier>,
+                override val equals: Keyword.Equal?,
+                override val body: Expression?,
+                override var tag: Any? = null,
+            ) : Accessor
+
+            data class Setter(
+                override val modifiers: Modifiers?,
+                val setKeyword: Keyword.Set,
+                val params: LambdaParams?,
+                override val postModifiers: List<PostModifier>,
+                override val equals: Keyword.Equal?,
+                override val body: Expression?,
+                override var tag: Any? = null,
+            ) : Accessor
+        }
+
+        /**
+         * AST node corresponds to KtTypeAlias.
+         */
+        data class TypeAliasDeclaration(
+            override val modifiers: Modifiers?,
+            val name: Expression.NameExpression,
+            val typeParams: TypeParams?,
+            val typeRef: TypeRef,
+            override var tag: Any? = null,
+        ) : Declaration, WithModifiers
     }
 
     /**
@@ -292,78 +373,6 @@ sealed interface Node {
     ) : Node, WithModifiers
 
     /**
-     * AST node corresponds to KtProperty or KtDestructuringDeclaration.
-     */
-    data class PropertyDeclaration(
-        override val modifiers: Modifiers?,
-        val valOrVarKeyword: ValOrVarKeyword,
-        val typeParams: TypeParams?,
-        val receiverTypeRef: TypeRef?,
-        val lPar: Keyword.LPar?,
-        // Always at least one, more than one is destructuring
-        val variables: List<Variable>,
-        val trailingComma: Keyword.Comma?,
-        val rPar: Keyword.RPar?,
-        val typeConstraintSet: TypeConstraintSet?,
-        val equals: Keyword.Equal?,
-        val initializer: Expression?,
-        val propertyDelegate: PropertyDelegate?,
-        val accessors: List<Accessor>,
-        override var tag: Any? = null,
-    ) : Declaration, WithModifiers {
-        init {
-            if (propertyDelegate != null) {
-                require(equals == null && initializer == null) {
-                    "equals and initializer must be null when delegate is not null"
-                }
-            }
-            require((equals == null && initializer == null) || (equals != null && initializer != null)) {
-                "equals and initializer must be both null or both non-null"
-            }
-            if (variables.size >= 2) {
-                require(lPar != null && rPar != null) { "lPar and rPar are required when there are multiple variables" }
-            }
-            if (trailingComma != null) {
-                require(lPar != null && rPar != null) { "lPar and rPar are required when trailing comma exists" }
-            }
-        }
-
-        /**
-         * AST node corresponds to KtPropertyDelegate.
-         */
-        data class PropertyDelegate(
-            val byKeyword: Keyword.By,
-            val expression: Expression,
-            override var tag: Any? = null,
-        ) : Node
-
-        /**
-         * AST node corresponds to KtPropertyAccessor.
-         */
-        sealed interface Accessor : Node, WithModifiers, WithPostModifiers, WithFunctionBody
-
-        data class Getter(
-            override val modifiers: Modifiers?,
-            val getKeyword: Keyword.Get,
-            val typeRef: TypeRef?,
-            override val postModifiers: List<PostModifier>,
-            override val equals: Keyword.Equal?,
-            override val body: Expression?,
-            override var tag: Any? = null,
-        ) : Accessor
-
-        data class Setter(
-            override val modifiers: Modifiers?,
-            val setKeyword: Keyword.Set,
-            val params: LambdaParams?,
-            override val postModifiers: List<PostModifier>,
-            override val equals: Keyword.Equal?,
-            override val body: Expression?,
-            override var tag: Any? = null,
-        ) : Accessor
-    }
-
-    /**
      * AST node corresponds to KtDestructuringDeclarationEntry, virtual AST node corresponds a part of KtProperty, or virtual AST node corresponds to KtParameter whose child is IDENTIFIER.
      */
     data class Variable(
@@ -372,17 +381,6 @@ sealed interface Node {
         val typeRef: TypeRef?,
         override var tag: Any? = null,
     ) : Node, WithModifiers
-
-    /**
-     * AST node corresponds to KtTypeAlias.
-     */
-    data class TypeAliasDeclaration(
-        override val modifiers: Modifiers?,
-        val name: Expression.NameExpression,
-        val typeParams: TypeParams?,
-        val typeRef: TypeRef,
-        override var tag: Any? = null,
-    ) : Declaration, WithModifiers
 
     /**
      * AST node corresponds to KtTypeParameterList.
@@ -856,7 +854,7 @@ sealed interface Node {
          * AST node corresponds to KtObjectLiteralExpression.
          */
         data class ObjectLiteralExpression(
-            val declaration: ClassDeclaration,
+            val declaration: Declaration.ClassDeclaration,
             override var tag: Any? = null,
         ) : Expression
 
@@ -963,7 +961,7 @@ sealed interface Node {
          * Virtual AST node corresponds to KtNamedFunction in expression context.
          */
         data class AnonymousFunctionExpression(
-            val function: FunctionDeclaration,
+            val function: Declaration.FunctionDeclaration,
             override var tag: Any? = null,
         ) : Expression
 
@@ -972,7 +970,7 @@ sealed interface Node {
          * This is only present for when expressions and labeled expressions.
          */
         data class PropertyExpression(
-            val declaration: PropertyDeclaration,
+            val declaration: Declaration.PropertyDeclaration,
             override var tag: Any? = null,
         ) : Expression
 
@@ -1120,15 +1118,18 @@ sealed interface Node {
             override val text: String; get() = "import"
         }
 
-        data class Class(override var tag: Any? = null) : Keyword, ClassDeclaration.ClassDeclarationKeyword {
+        data class Class(override var tag: Any? = null) : Keyword,
+            Declaration.ClassDeclaration.ClassDeclarationKeyword {
             override val text: String; get() = "class"
         }
 
-        data class Object(override var tag: Any? = null) : Keyword, ClassDeclaration.ClassDeclarationKeyword {
+        data class Object(override var tag: Any? = null) : Keyword,
+            Declaration.ClassDeclaration.ClassDeclarationKeyword {
             override val text: String; get() = "object"
         }
 
-        data class Interface(override var tag: Any? = null) : Keyword, ClassDeclaration.ClassDeclarationKeyword {
+        data class Interface(override var tag: Any? = null) : Keyword,
+            Declaration.ClassDeclaration.ClassDeclarationKeyword {
             override val text: String; get() = "interface"
         }
 
@@ -1145,12 +1146,12 @@ sealed interface Node {
         }
 
         data class This(override var tag: Any? = null) : Keyword,
-            ClassDeclaration.ClassBody.SecondaryConstructor.DelegationTargetKeyword {
+            Declaration.ClassDeclaration.ClassBody.SecondaryConstructor.DelegationTargetKeyword {
             override val text: String; get() = "this"
         }
 
         data class Super(override var tag: Any? = null) : Keyword,
-            ClassDeclaration.ClassBody.SecondaryConstructor.DelegationTargetKeyword {
+            Declaration.ClassDeclaration.ClassBody.SecondaryConstructor.DelegationTargetKeyword {
             override val text: String; get() = "super"
         }
 
