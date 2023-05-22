@@ -163,6 +163,9 @@ sealed interface Node {
      */
     sealed interface Statement : Node
 
+    /**
+     * Common interface of all nodes that are main contents of a Kotlin file or a class body.
+     */
     sealed interface Declaration : Statement {
         /**
          * AST node corresponds to KtClassOrObject.
@@ -184,6 +187,9 @@ sealed interface Node {
             val isCompanion = modifiers?.elements.orEmpty().any { it is Keyword.Companion }
             val isEnum = modifiers?.elements.orEmpty().any { it is Keyword.Enum }
 
+            /**
+             * Common interface of keyword nodes that are used to declare a class.
+             */
             sealed interface ClassDeclarationKeyword : Keyword
 
             /**
@@ -288,6 +294,9 @@ sealed interface Node {
                         override var tag: Any? = null,
                     ) : Node
 
+                    /**
+                     * Common interface of keyword nodes that are used to declare a delegation target.
+                     */
                     sealed interface DelegationTargetKeyword : Keyword
                 }
             }
@@ -362,6 +371,9 @@ sealed interface Node {
              */
             sealed interface Accessor : Node, WithModifiers, WithPostModifiers, WithFunctionBody
 
+            /**
+             * AST node that represents a property getter.
+             */
             data class Getter(
                 override val modifiers: Modifiers?,
                 val getKeyword: Keyword.Get,
@@ -372,6 +384,9 @@ sealed interface Node {
                 override var tag: Any? = null,
             ) : Accessor
 
+            /**
+             * AST node that represents a property setter.
+             */
             data class Setter(
                 override val modifiers: Modifiers?,
                 val setKeyword: Keyword.Set,
@@ -447,6 +462,9 @@ sealed interface Node {
         override var tag: Any? = null,
     ) : Node, WithModifiers
 
+    /**
+     * Common interface for AST nodes that represent types.
+     */
     sealed interface Type : Node {
 
         interface NameWithTypeArgs {
@@ -617,6 +635,9 @@ sealed interface Node {
         override var tag: Any? = null,
     ) : Node
 
+    /**
+     * Common interface for AST nodes that represent expressions.
+     */
     sealed interface Expression : Statement {
         /**
          * AST node corresponds to KtIfExpression.
@@ -680,6 +701,10 @@ sealed interface Node {
             val rhs: Expression,
             override var tag: Any? = null,
         ) : Expression {
+            /**
+             * Common interface for AST nodes that represent binary operators.
+             * Note that [NameExpression] implements [BinaryOperator] because it can be used as a infix operator.
+             */
             sealed interface BinaryOperator : SimpleTextNode
         }
 
@@ -692,6 +717,9 @@ sealed interface Node {
             val prefix: Boolean,
             override var tag: Any? = null,
         ) : Expression {
+            /**
+             * Common interface for AST nodes that represent unary operators.
+             */
             sealed interface UnaryOperator : Keyword
         }
 
@@ -704,6 +732,9 @@ sealed interface Node {
             val rhs: TypeRef,
             override var tag: Any? = null,
         ) : Expression {
+            /**
+             * Common interface for AST nodes that represent binary type operators.
+             */
             sealed interface BinaryTypeOperator : Keyword
         }
 
@@ -873,8 +904,19 @@ sealed interface Node {
                 }
             }
 
+            /**
+             * Common interface for when condition operators.
+             */
             sealed interface WhenConditionOperator : Keyword
+
+            /**
+             * Common interface for when condition type operators.
+             */
             sealed interface WhenConditionTypeOperator : WhenConditionOperator
+
+            /**
+             * Common interface for when condition range operators.
+             */
             sealed interface WhenConditionRangeOperator : WhenConditionOperator
 
             /**
@@ -1068,6 +1110,9 @@ sealed interface Node {
         override var tag: Any? = null,
     ) : NodeList<Modifier>()
 
+    /**
+     * Common interface for modifiers.
+     */
     sealed interface Modifier : Node {
         /**
          * AST node corresponds to KtAnnotation or KtAnnotationEntry not under KtAnnotation.
@@ -1081,6 +1126,9 @@ sealed interface Node {
             val rBracket: Keyword.RBracket?,
             override var tag: Any? = null,
         ) : Modifier {
+            /**
+             * Common interface for annotation target keywords.
+             */
             sealed interface AnnotationTarget : Keyword
 
             /**
@@ -1093,9 +1141,15 @@ sealed interface Node {
             ) : Node
         }
 
+        /**
+         * Common interface for keyword modifiers.
+         */
         sealed interface KeywordModifier : Modifier, Keyword
     }
 
+    /**
+     * Common interface for post-modifiers.
+     */
     sealed interface PostModifier : Node {
         /**
          * Virtual AST node corresponds to a pair of "where" keyword and KtTypeConstraintList.
@@ -1153,8 +1207,14 @@ sealed interface Node {
         }
     }
 
+    /**
+     * Common interface for val or var keywords.
+     */
     sealed interface ValOrVarKeyword : Keyword
 
+    /**
+     * Common interface for keywords.
+     */
     sealed interface Keyword : SimpleTextNode {
         data class Package(override var tag: Any? = null) : Keyword {
             override val text: String; get() = "package"
@@ -1574,6 +1634,9 @@ sealed interface Node {
         }
     }
 
+    /**
+     * Common interface for extra nodes.
+     */
     sealed interface Extra : Node {
         val text: String
 
