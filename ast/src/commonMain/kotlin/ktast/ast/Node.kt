@@ -81,7 +81,7 @@ sealed interface Node {
     data class PackageDirective(
         override val modifiers: Modifiers?,
         val packageKeyword: Keyword.Package,
-        val names: List<NameExpression>,
+        val names: List<Expression.NameExpression>,
         override var tag: Any? = null,
     ) : Node, WithModifiers
 
@@ -98,7 +98,7 @@ sealed interface Node {
      */
     data class ImportDirective(
         val importKeyword: Keyword.Import,
-        val names: List<NameExpression>,
+        val names: List<Expression.NameExpression>,
         val importAlias: ImportAlias?,
         override var tag: Any? = null,
     ) : Node {
@@ -107,7 +107,7 @@ sealed interface Node {
          * AST node corresponds to KtImportAlias.
          */
         data class ImportAlias(
-            val name: NameExpression,
+            val name: Expression.NameExpression,
             override var tag: Any? = null,
         ) : Node
     }
@@ -125,7 +125,7 @@ sealed interface Node {
     data class ClassDeclaration(
         override val modifiers: Modifiers?,
         val classDeclarationKeyword: ClassDeclarationKeyword,
-        val name: NameExpression?,
+        val name: Expression.NameExpression?,
         val typeParams: TypeParams?,
         val primaryConstructor: PrimaryConstructor?,
         val classParents: ClassParents?,
@@ -208,7 +208,7 @@ sealed interface Node {
              */
             data class EnumEntry(
                 override val modifiers: Modifiers?,
-                val name: NameExpression,
+                val name: Expression.NameExpression,
                 val args: ValueArgs?,
                 val classBody: ClassBody?,
                 override var tag: Any? = null,
@@ -219,7 +219,7 @@ sealed interface Node {
              */
             data class Initializer(
                 override val modifiers: Modifiers?,
-                val block: BlockExpression,
+                val block: Expression.BlockExpression,
                 override var tag: Any? = null,
             ) : Declaration, WithModifiers
 
@@ -231,7 +231,7 @@ sealed interface Node {
                 val constructorKeyword: Keyword.Constructor,
                 val params: FunctionParams?,
                 val constructorDelegationCall: ConstructorDelegationCall?,
-                val block: BlockExpression?,
+                val block: Expression.BlockExpression?,
                 override var tag: Any? = null,
             ) : Declaration, WithModifiers {
                 /**
@@ -257,7 +257,7 @@ sealed interface Node {
         val typeParams: TypeParams?,
         val receiverTypeRef: TypeRef?,
         // Name not present on anonymous functions
-        val name: NameExpression?,
+        val name: Expression.NameExpression?,
         val params: FunctionParams?,
         val typeRef: TypeRef?,
         override val postModifiers: List<PostModifier>,
@@ -283,7 +283,7 @@ sealed interface Node {
     data class FunctionParam(
         override val modifiers: Modifiers?,
         val valOrVarKeyword: ValOrVarKeyword?,
-        val name: NameExpression,
+        val name: Expression.NameExpression,
         // typeRef can be null for anon functions
         val typeRef: TypeRef?,
         val equals: Keyword.Equal?,
@@ -368,7 +368,7 @@ sealed interface Node {
      */
     data class Variable(
         override val modifiers: Modifiers?,
-        val name: NameExpression,
+        val name: Expression.NameExpression,
         val typeRef: TypeRef?,
         override var tag: Any? = null,
     ) : Node, WithModifiers
@@ -378,7 +378,7 @@ sealed interface Node {
      */
     data class TypeAliasDeclaration(
         override val modifiers: Modifiers?,
-        val name: NameExpression,
+        val name: Expression.NameExpression,
         val typeParams: TypeParams?,
         val typeRef: TypeRef,
         override var tag: Any? = null,
@@ -398,7 +398,7 @@ sealed interface Node {
      */
     data class TypeParam(
         override val modifiers: Modifiers?,
-        val name: NameExpression,
+        val name: Expression.NameExpression,
         val typeRef: TypeRef?,
         override var tag: Any? = null,
     ) : Node, WithModifiers
@@ -406,7 +406,7 @@ sealed interface Node {
     sealed interface Type : Node {
 
         interface NameWithTypeArgs {
-            val name: NameExpression
+            val name: Expression.NameExpression
             val typeArgs: TypeArgs?
         }
 
@@ -464,7 +464,7 @@ sealed interface Node {
          * AST node corresponds to KtParameter inside KtFunctionType.
          */
         data class FunctionTypeParam(
-            val name: NameExpression?,
+            val name: Expression.NameExpression?,
             val typeRef: TypeRef,
             override var tag: Any? = null,
         ) : Node
@@ -475,12 +475,12 @@ sealed interface Node {
      */
     data class SimpleType(
         val qualifiers: List<Qualifier>,
-        override val name: NameExpression,
+        override val name: Expression.NameExpression,
         override val typeArgs: TypeArgs?,
         override var tag: Any? = null,
     ) : Type, Type.NameWithTypeArgs {
         data class Qualifier(
-            override val name: NameExpression,
+            override val name: Expression.NameExpression,
             override val typeArgs: TypeArgs?,
             override var tag: Any? = null,
         ) : Node, Type.NameWithTypeArgs
@@ -559,7 +559,7 @@ sealed interface Node {
      * AST node corresponds to KtValueArgument.
      */
     data class ValueArg(
-        val name: NameExpression?,
+        val name: Expression.NameExpression?,
         val asterisk: Boolean, // Array spread operator
         val expression: Expression,
         override var tag: Any? = null,
@@ -573,212 +573,413 @@ sealed interface Node {
         override var tag: Any? = null,
     ) : Node
 
-    sealed interface Expression : Statement
-
-    /**
-     * AST node corresponds to KtIfExpression.
-     */
-    data class IfExpression(
-        val ifKeyword: Keyword.If,
-        val condition: Expression,
-        val body: ExpressionContainer,
-        val elseBody: ExpressionContainer?,
-        override var tag: Any? = null,
-    ) : Expression
-
-    /**
-     * AST node corresponds to KtTryExpression.
-     */
-    data class TryExpression(
-        val block: BlockExpression,
-        val catchClauses: List<CatchClause>,
-        val finallyBlock: BlockExpression?,
-        override var tag: Any? = null,
-    ) : Expression {
+    sealed interface Expression : Statement {
         /**
-         * AST node corresponds to KtCatchClause.
+         * AST node corresponds to KtIfExpression.
          */
-        data class CatchClause(
-            val catchKeyword: Keyword.Catch,
-            val params: FunctionParams,
+        data class IfExpression(
+            val ifKeyword: Keyword.If,
+            val condition: Expression,
+            val body: ExpressionContainer,
+            val elseBody: ExpressionContainer?,
+            override var tag: Any? = null,
+        ) : Expression
+
+        /**
+         * AST node corresponds to KtTryExpression.
+         */
+        data class TryExpression(
             val block: BlockExpression,
+            val catchClauses: List<CatchClause>,
+            val finallyBlock: BlockExpression?,
             override var tag: Any? = null,
-        ) : Node
-    }
-
-    /**
-     * AST node corresponds to KtForExpression.
-     */
-    data class ForExpression(
-        val forKeyword: Keyword.For,
-        val loopParam: LambdaParam,
-        val loopRange: ExpressionContainer,
-        val body: ExpressionContainer,
-        override var tag: Any? = null,
-    ) : Expression
-
-    /**
-     * AST node corresponds to KtWhileExpressionBase.
-     */
-    data class WhileExpression(
-        val whileKeyword: Keyword.While,
-        val condition: ExpressionContainer,
-        val body: ExpressionContainer,
-        val doWhile: Boolean,
-        override var tag: Any? = null,
-    ) : Expression
-
-    /**
-     * AST node corresponds to KtBinaryExpression or KtQualifiedExpression.
-     */
-    data class BinaryExpression(
-        val lhs: Expression,
-        val operator: BinaryOperator,
-        val rhs: Expression,
-        override var tag: Any? = null,
-    ) : Expression {
-        sealed interface BinaryOperator : SimpleTextNode
-    }
-
-    /**
-     * AST node corresponds to KtUnaryExpression.
-     */
-    data class UnaryExpression(
-        val expression: Expression,
-        val operator: UnaryOperator,
-        val prefix: Boolean,
-        override var tag: Any? = null,
-    ) : Expression {
-        sealed interface UnaryOperator : Keyword
-    }
-
-    /**
-     * AST node corresponds to KtBinaryExpressionWithTypeRHS or KtIsExpression.
-     */
-    data class BinaryTypeExpression(
-        val lhs: Expression,
-        val operator: BinaryTypeOperator,
-        val rhs: TypeRef,
-        override var tag: Any? = null,
-    ) : Expression {
-        sealed interface BinaryTypeOperator : Keyword
-    }
-
-    /**
-     * AST node corresponds to KtDoubleColonExpression.
-     */
-    sealed interface DoubleColonExpression : Expression {
-        val lhs: Expression?
-        val questionMarks: List<Keyword.Question>
-    }
-
-    /**
-     * AST node corresponds to KtCallableReferenceExpression.
-     */
-    data class CallableReferenceExpression(
-        override val lhs: Expression?,
-        override val questionMarks: List<Keyword.Question>,
-        val rhs: NameExpression,
-        override var tag: Any? = null,
-    ) : DoubleColonExpression
-
-    /**
-     * AST node corresponds to KtClassLiteralExpression.
-     */
-    data class ClassLiteralExpression(
-        // Class literal expression without lhs is not supported in Kotlin syntax, but Kotlin compiler does parse it.
-        override val lhs: Expression?,
-        override val questionMarks: List<Keyword.Question>,
-        override var tag: Any? = null,
-    ) : DoubleColonExpression
-
-    /**
-     * AST node corresponds to KtParenthesizedExpression.
-     */
-    data class ParenthesizedExpression(
-        val expression: Expression,
-        override var tag: Any? = null,
-    ) : Expression
-
-    /**
-     * AST node corresponds to KtStringTemplateExpression.
-     */
-    data class StringLiteralExpression(
-        val entries: List<StringEntry>,
-        val raw: Boolean,
-        override var tag: Any? = null,
-    ) : Expression {
-        /**
-         * AST node corresponds to KtStringTemplateEntry.
-         */
-        sealed interface StringEntry : Node
-
-        /**
-         * AST node corresponds to KtLiteralStringTemplateEntry.
-         */
-        data class LiteralStringEntry(
-            val str: String,
-            override var tag: Any? = null,
-        ) : StringEntry
-
-        /**
-         * AST node corresponds to KtEscapeStringTemplateEntry.
-         */
-        data class EscapeStringEntry(
-            val str: String,
-            override var tag: Any? = null,
-        ) : StringEntry {
-            init {
-                require(str.startsWith('\\')) {
-                    "Escape string template entry must start with backslash."
-                }
-            }
+        ) : Expression {
+            /**
+             * AST node corresponds to KtCatchClause.
+             */
+            data class CatchClause(
+                val catchKeyword: Keyword.Catch,
+                val params: FunctionParams,
+                val block: BlockExpression,
+                override var tag: Any? = null,
+            ) : Node
         }
 
         /**
-         * AST node corresponds to KtStringTemplateEntryWithExpression.
+         * AST node corresponds to KtForExpression.
          */
-        data class TemplateStringEntry(
+        data class ForExpression(
+            val forKeyword: Keyword.For,
+            val loopParam: LambdaParam,
+            val loopRange: ExpressionContainer,
+            val body: ExpressionContainer,
+            override var tag: Any? = null,
+        ) : Expression
+
+        /**
+         * AST node corresponds to KtWhileExpressionBase.
+         */
+        data class WhileExpression(
+            val whileKeyword: Keyword.While,
+            val condition: ExpressionContainer,
+            val body: ExpressionContainer,
+            val doWhile: Boolean,
+            override var tag: Any? = null,
+        ) : Expression
+
+        /**
+         * AST node corresponds to KtBinaryExpression or KtQualifiedExpression.
+         */
+        data class BinaryExpression(
+            val lhs: Expression,
+            val operator: BinaryOperator,
+            val rhs: Expression,
+            override var tag: Any? = null,
+        ) : Expression {
+            sealed interface BinaryOperator : SimpleTextNode
+        }
+
+        /**
+         * AST node corresponds to KtUnaryExpression.
+         */
+        data class UnaryExpression(
             val expression: Expression,
-            val short: Boolean,
+            val operator: UnaryOperator,
+            val prefix: Boolean,
             override var tag: Any? = null,
-        ) : StringEntry {
-            init {
-                require(!short || expression is NameExpression) {
-                    "Short template string entry must be a name expression."
+        ) : Expression {
+            sealed interface UnaryOperator : Keyword
+        }
+
+        /**
+         * AST node corresponds to KtBinaryExpressionWithTypeRHS or KtIsExpression.
+         */
+        data class BinaryTypeExpression(
+            val lhs: Expression,
+            val operator: BinaryTypeOperator,
+            val rhs: TypeRef,
+            override var tag: Any? = null,
+        ) : Expression {
+            sealed interface BinaryTypeOperator : Keyword
+        }
+
+        /**
+         * AST node corresponds to KtDoubleColonExpression.
+         */
+        sealed interface DoubleColonExpression : Expression {
+            val lhs: Expression?
+            val questionMarks: List<Keyword.Question>
+        }
+
+        /**
+         * AST node corresponds to KtCallableReferenceExpression.
+         */
+        data class CallableReferenceExpression(
+            override val lhs: Expression?,
+            override val questionMarks: List<Keyword.Question>,
+            val rhs: NameExpression,
+            override var tag: Any? = null,
+        ) : DoubleColonExpression
+
+        /**
+         * AST node corresponds to KtClassLiteralExpression.
+         */
+        data class ClassLiteralExpression(
+            // Class literal expression without lhs is not supported in Kotlin syntax, but Kotlin compiler does parse it.
+            override val lhs: Expression?,
+            override val questionMarks: List<Keyword.Question>,
+            override var tag: Any? = null,
+        ) : DoubleColonExpression
+
+        /**
+         * AST node corresponds to KtParenthesizedExpression.
+         */
+        data class ParenthesizedExpression(
+            val expression: Expression,
+            override var tag: Any? = null,
+        ) : Expression
+
+        /**
+         * AST node corresponds to KtStringTemplateExpression.
+         */
+        data class StringLiteralExpression(
+            val entries: List<StringEntry>,
+            val raw: Boolean,
+            override var tag: Any? = null,
+        ) : Expression {
+            /**
+             * AST node corresponds to KtStringTemplateEntry.
+             */
+            sealed interface StringEntry : Node
+
+            /**
+             * AST node corresponds to KtLiteralStringTemplateEntry.
+             */
+            data class LiteralStringEntry(
+                val str: String,
+                override var tag: Any? = null,
+            ) : StringEntry
+
+            /**
+             * AST node corresponds to KtEscapeStringTemplateEntry.
+             */
+            data class EscapeStringEntry(
+                val str: String,
+                override var tag: Any? = null,
+            ) : StringEntry {
+                init {
+                    require(str.startsWith('\\')) {
+                        "Escape string template entry must start with backslash."
+                    }
+                }
+            }
+
+            /**
+             * AST node corresponds to KtStringTemplateEntryWithExpression.
+             */
+            data class TemplateStringEntry(
+                val expression: Expression,
+                val short: Boolean,
+                override var tag: Any? = null,
+            ) : StringEntry {
+                init {
+                    require(!short || expression is NameExpression) {
+                        "Short template string entry must be a name expression."
+                    }
                 }
             }
         }
-    }
-
-    /**
-     * AST node corresponds to KtConstantExpression.
-     */
-    data class ConstantLiteralExpression(
-        val value: String,
-        val form: Form,
-        override var tag: Any? = null,
-    ) : Expression {
-        enum class Form { BOOLEAN, CHAR, INT, FLOAT, NULL }
-    }
-
-    /**
-     * AST node corresponds to KtLambdaExpression.
-     */
-    data class LambdaExpression(
-        val params: LambdaParams?,
-        val lambdaBody: LambdaBody?,
-        override var tag: Any? = null,
-    ) : Expression {
 
         /**
-         * AST node corresponds to KtBlockExpression in lambda body.
-         * In lambda expression, left and right braces are not included in [LambdaExpression.LambdaBody], but are included in Lambda.
-         * This means:
-         *
-         * <Lambda> = { <Param>, <Param> -> <Body> }
+         * AST node corresponds to KtConstantExpression.
          */
-        data class LambdaBody(
+        data class ConstantLiteralExpression(
+            val value: String,
+            val form: Form,
+            override var tag: Any? = null,
+        ) : Expression {
+            enum class Form { BOOLEAN, CHAR, INT, FLOAT, NULL }
+        }
+
+        /**
+         * AST node corresponds to KtLambdaExpression.
+         */
+        data class LambdaExpression(
+            val params: LambdaParams?,
+            val lambdaBody: LambdaBody?,
+            override var tag: Any? = null,
+        ) : Expression {
+
+            /**
+             * AST node corresponds to KtBlockExpression in lambda body.
+             * In lambda expression, left and right braces are not included in [LambdaExpression.LambdaBody], but are included in Lambda.
+             * This means:
+             *
+             * <Lambda> = { <Param>, <Param> -> <Body> }
+             */
+            data class LambdaBody(
+                override val statements: List<Statement>,
+                override var tag: Any? = null,
+            ) : Expression, StatementsContainer
+        }
+
+        /**
+         * AST node corresponds to KtThisExpression.
+         */
+        data class ThisExpression(
+            val label: String?,
+            override var tag: Any? = null,
+        ) : Expression
+
+        /**
+         * AST node corresponds to KtSuperExpression.
+         */
+        data class SuperExpression(
+            val typeArg: TypeRef?,
+            val label: String?,
+            override var tag: Any? = null,
+        ) : Expression
+
+        /**
+         * AST node corresponds to KtWhenExpression.
+         */
+        data class WhenExpression(
+            val whenKeyword: Keyword.When,
+            val lPar: Keyword.LPar?,
+            val expression: Expression?,
+            val rPar: Keyword.RPar?,
+            val whenBranches: List<WhenBranch>,
+            override var tag: Any? = null,
+        ) : Expression {
+            /**
+             * AST node corresponds to KtWhenEntry.
+             */
+            data class WhenBranch(
+                val whenConditions: List<WhenCondition>,
+                val trailingComma: Keyword.Comma?,
+                val elseKeyword: Keyword.Else?,
+                val body: Expression,
+                override var tag: Any? = null,
+            ) : Node {
+                init {
+                    when {
+                        whenConditions.isNotEmpty() -> require(elseKeyword == null) { "elseKeyword must be null when whenConditions is not empty" }
+                        else -> require(trailingComma == null && elseKeyword != null) { "trailingComma must be null and elseKeyword must not be null when whenConditions is empty" }
+                    }
+                }
+            }
+
+            sealed interface WhenConditionOperator : Keyword
+            sealed interface WhenConditionTypeOperator : WhenConditionOperator
+            sealed interface WhenConditionRangeOperator : WhenConditionOperator
+
+            /**
+             * AST node corresponds to KtWhenCondition.
+             */
+            data class WhenCondition(
+                val operator: WhenConditionOperator?,
+                val expression: Expression?,
+                val typeRef: TypeRef?,
+                override var tag: Any? = null,
+            ) : Node {
+                init {
+                    when (operator) {
+                        null -> require(expression != null || typeRef == null) { "expression must not be null and typeRef must be null when operator is null" }
+                        is WhenConditionTypeOperator -> require(expression == null && typeRef != null) { "expression must be null and typeRef must not be null when operator is type operator" }
+                        is WhenConditionRangeOperator -> require(expression != null && typeRef == null) { "expression must not be null and typeRef must be null when operator is range operator" }
+                    }
+                }
+            }
+        }
+
+        /**
+         * AST node corresponds to KtObjectLiteralExpression.
+         */
+        data class ObjectLiteralExpression(
+            val declaration: ClassDeclaration,
+            override var tag: Any? = null,
+        ) : Expression
+
+        /**
+         * AST node corresponds to KtThrowExpression.
+         */
+        data class ThrowExpression(
+            val expression: Expression,
+            override var tag: Any? = null,
+        ) : Expression
+
+        /**
+         * AST node corresponds to KtReturnExpression.
+         */
+        data class ReturnExpression(
+            val label: String?,
+            val expression: Expression?,
+            override var tag: Any? = null,
+        ) : Expression
+
+        /**
+         * AST node corresponds to KtContinueExpression.
+         */
+        data class ContinueExpression(
+            val label: String?,
+            override var tag: Any? = null,
+        ) : Expression
+
+        /**
+         * AST node corresponds to KtBreakExpression.
+         */
+        data class BreakExpression(
+            val label: String?,
+            override var tag: Any? = null,
+        ) : Expression
+
+        /**
+         * AST node corresponds to KtCollectionLiteralExpression.
+         */
+        data class CollectionLiteralExpression(
+            val expressions: List<Expression>,
+            val trailingComma: Keyword.Comma?,
+            override var tag: Any? = null,
+        ) : Expression
+
+        /**
+         * AST node corresponds to KtValueArgumentName, KtSimpleNameExpression or PsiElement whose elementType is IDENTIFIER.
+         */
+        data class NameExpression(
+            override val text: String,
+            override var tag: Any? = null,
+        ) : Expression, BinaryExpression.BinaryOperator
+
+        /**
+         * AST node corresponds to KtLabeledExpression.
+         */
+        data class LabeledExpression(
+            val label: String,
+            val expression: Expression,
+            override var tag: Any? = null,
+        ) : Expression
+
+        /**
+         * AST node corresponds to KtAnnotatedExpression.
+         */
+        data class AnnotatedExpression(
+            override val annotationSets: List<AnnotationSet>,
+            val expression: Expression,
+            override var tag: Any? = null,
+        ) : Expression, WithAnnotationSets
+
+        /**
+         * AST node corresponds to KtCallExpression.
+         */
+        data class CallExpression(
+            val expression: Expression,
+            val typeArgs: TypeArgs?,
+            val args: ValueArgs?,
+            val lambdaArg: LambdaArg?,
+            override var tag: Any? = null,
+        ) : Expression {
+            /**
+             * AST node corresponds to KtLambdaArgument.
+             */
+            data class LambdaArg(
+                override val annotationSets: List<AnnotationSet>,
+                val label: String?,
+                val expression: LambdaExpression,
+                override var tag: Any? = null,
+            ) : Node, WithAnnotationSets
+        }
+
+        /**
+         * AST node corresponds to KtArrayAccessExpression.
+         */
+        data class ArrayAccessExpression(
+            val expression: Expression,
+            val indices: List<Expression>,
+            val trailingComma: Keyword.Comma?,
+            override var tag: Any? = null,
+        ) : Expression
+
+        /**
+         * Virtual AST node corresponds to KtNamedFunction in expression context.
+         */
+        data class AnonymousFunctionExpression(
+            val function: FunctionDeclaration,
+            override var tag: Any? = null,
+        ) : Expression
+
+        /**
+         * AST node corresponds to KtProperty or KtDestructuringDeclaration.
+         * This is only present for when expressions and labeled expressions.
+         */
+        data class PropertyExpression(
+            val declaration: PropertyDeclaration,
+            override var tag: Any? = null,
+        ) : Expression
+
+        /**
+         * AST node corresponds to KtBlockExpression.
+         */
+        data class BlockExpression(
             override val statements: List<Statement>,
             override var tag: Any? = null,
         ) : Expression, StatementsContainer
@@ -814,207 +1015,6 @@ sealed interface Node {
             }
         }
     }
-
-    /**
-     * AST node corresponds to KtThisExpression.
-     */
-    data class ThisExpression(
-        val label: String?,
-        override var tag: Any? = null,
-    ) : Expression
-
-    /**
-     * AST node corresponds to KtSuperExpression.
-     */
-    data class SuperExpression(
-        val typeArg: TypeRef?,
-        val label: String?,
-        override var tag: Any? = null,
-    ) : Expression
-
-    /**
-     * AST node corresponds to KtWhenExpression.
-     */
-    data class WhenExpression(
-        val whenKeyword: Keyword.When,
-        val lPar: Keyword.LPar?,
-        val expression: Expression?,
-        val rPar: Keyword.RPar?,
-        val whenBranches: List<WhenBranch>,
-        override var tag: Any? = null,
-    ) : Expression {
-        /**
-         * AST node corresponds to KtWhenEntry.
-         */
-        data class WhenBranch(
-            val whenConditions: List<WhenCondition>,
-            val trailingComma: Keyword.Comma?,
-            val elseKeyword: Keyword.Else?,
-            val body: Expression,
-            override var tag: Any? = null,
-        ) : Node {
-            init {
-                when {
-                    whenConditions.isNotEmpty() -> require(elseKeyword == null) { "elseKeyword must be null when whenConditions is not empty" }
-                    else -> require(trailingComma == null && elseKeyword != null) { "trailingComma must be null and elseKeyword must not be null when whenConditions is empty" }
-                }
-            }
-        }
-
-        sealed interface WhenConditionOperator : Keyword
-        sealed interface WhenConditionTypeOperator : WhenConditionOperator
-        sealed interface WhenConditionRangeOperator : WhenConditionOperator
-
-        /**
-         * AST node corresponds to KtWhenCondition.
-         */
-        data class WhenCondition(
-            val operator: WhenConditionOperator?,
-            val expression: Expression?,
-            val typeRef: TypeRef?,
-            override var tag: Any? = null,
-        ) : Node {
-            init {
-                when (operator) {
-                    null -> require(expression != null || typeRef == null) { "expression must not be null and typeRef must be null when operator is null" }
-                    is WhenConditionTypeOperator -> require(expression == null && typeRef != null) { "expression must be null and typeRef must not be null when operator is type operator" }
-                    is WhenConditionRangeOperator -> require(expression != null && typeRef == null) { "expression must not be null and typeRef must be null when operator is range operator" }
-                }
-            }
-        }
-    }
-
-    /**
-     * AST node corresponds to KtObjectLiteralExpression.
-     */
-    data class ObjectLiteralExpression(
-        val declaration: ClassDeclaration,
-        override var tag: Any? = null,
-    ) : Expression
-
-    /**
-     * AST node corresponds to KtThrowExpression.
-     */
-    data class ThrowExpression(
-        val expression: Expression,
-        override var tag: Any? = null,
-    ) : Expression
-
-    /**
-     * AST node corresponds to KtReturnExpression.
-     */
-    data class ReturnExpression(
-        val label: String?,
-        val expression: Expression?,
-        override var tag: Any? = null,
-    ) : Expression
-
-    /**
-     * AST node corresponds to KtContinueExpression.
-     */
-    data class ContinueExpression(
-        val label: String?,
-        override var tag: Any? = null,
-    ) : Expression
-
-    /**
-     * AST node corresponds to KtBreakExpression.
-     */
-    data class BreakExpression(
-        val label: String?,
-        override var tag: Any? = null,
-    ) : Expression
-
-    /**
-     * AST node corresponds to KtCollectionLiteralExpression.
-     */
-    data class CollectionLiteralExpression(
-        val expressions: List<Expression>,
-        val trailingComma: Keyword.Comma?,
-        override var tag: Any? = null,
-    ) : Expression
-
-    /**
-     * AST node corresponds to KtValueArgumentName, KtSimpleNameExpression or PsiElement whose elementType is IDENTIFIER.
-     */
-    data class NameExpression(
-        override val text: String,
-        override var tag: Any? = null,
-    ) : Expression, BinaryExpression.BinaryOperator
-
-    /**
-     * AST node corresponds to KtLabeledExpression.
-     */
-    data class LabeledExpression(
-        val label: String,
-        val expression: Expression,
-        override var tag: Any? = null,
-    ) : Expression
-
-    /**
-     * AST node corresponds to KtAnnotatedExpression.
-     */
-    data class AnnotatedExpression(
-        override val annotationSets: List<AnnotationSet>,
-        val expression: Expression,
-        override var tag: Any? = null,
-    ) : Expression, WithAnnotationSets
-
-    /**
-     * AST node corresponds to KtCallExpression.
-     */
-    data class CallExpression(
-        val expression: Expression,
-        val typeArgs: TypeArgs?,
-        val args: ValueArgs?,
-        val lambdaArg: LambdaArg?,
-        override var tag: Any? = null,
-    ) : Expression {
-        /**
-         * AST node corresponds to KtLambdaArgument.
-         */
-        data class LambdaArg(
-            override val annotationSets: List<AnnotationSet>,
-            val label: String?,
-            val expression: LambdaExpression,
-            override var tag: Any? = null,
-        ) : Node, WithAnnotationSets
-    }
-
-    /**
-     * AST node corresponds to KtArrayAccessExpression.
-     */
-    data class ArrayAccessExpression(
-        val expression: Expression,
-        val indices: List<Expression>,
-        val trailingComma: Keyword.Comma?,
-        override var tag: Any? = null,
-    ) : Expression
-
-    /**
-     * Virtual AST node corresponds to KtNamedFunction in expression context.
-     */
-    data class AnonymousFunctionExpression(
-        val function: FunctionDeclaration,
-        override var tag: Any? = null,
-    ) : Expression
-
-    /**
-     * AST node corresponds to KtProperty or KtDestructuringDeclaration.
-     * This is only present for when expressions and labeled expressions.
-     */
-    data class PropertyExpression(
-        val declaration: PropertyDeclaration,
-        override var tag: Any? = null,
-    ) : Expression
-
-    /**
-     * AST node corresponds to KtBlockExpression.
-     */
-    data class BlockExpression(
-        override val statements: List<Statement>,
-        override var tag: Any? = null,
-    ) : Expression, StatementsContainer
 
     /**
      * AST node corresponds to KtModifierList.
@@ -1077,7 +1077,7 @@ sealed interface Node {
          */
         data class TypeConstraint(
             override val annotationSets: List<AnnotationSet>,
-            val name: NameExpression,
+            val name: Expression.NameExpression,
             val typeRef: TypeRef,
             override var tag: Any? = null,
         ) : Node, WithAnnotationSets
@@ -1254,149 +1254,151 @@ sealed interface Node {
             override val text: String; get() = "@"
         }
 
-        data class Asterisk(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
+        data class Asterisk(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
             override val text: String; get() = "*"
         }
 
-        data class Slash(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
+        data class Slash(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
             override val text: String; get() = "/"
         }
 
-        data class Percent(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
+        data class Percent(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
             override val text: String; get() = "%"
         }
 
-        data class Plus(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator,
-            UnaryExpression.UnaryOperator {
+        data class Plus(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator,
+            Expression.UnaryExpression.UnaryOperator {
             override val text: String; get() = "+"
         }
 
-        data class Minus(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator,
-            UnaryExpression.UnaryOperator {
+        data class Minus(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator,
+            Expression.UnaryExpression.UnaryOperator {
             override val text: String; get() = "-"
         }
 
-        data class In(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator, KeywordModifier,
-            WhenExpression.WhenConditionRangeOperator {
+        data class In(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator,
+            KeywordModifier,
+            Expression.WhenExpression.WhenConditionRangeOperator {
             override val text: String; get() = "in"
         }
 
-        data class NotIn(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator,
-            WhenExpression.WhenConditionRangeOperator {
+        data class NotIn(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator,
+            Expression.WhenExpression.WhenConditionRangeOperator {
             override val text: String; get() = "!in"
         }
 
-        data class Greater(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
+        data class Greater(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
             override val text: String; get() = ">"
         }
 
-        data class GreaterEqual(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
+        data class GreaterEqual(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
             override val text: String; get() = ">="
         }
 
-        data class Less(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
+        data class Less(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
             override val text: String; get() = "<"
         }
 
-        data class LessEqual(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
+        data class LessEqual(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
             override val text: String; get() = "<="
         }
 
-        data class EqualEqual(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
+        data class EqualEqual(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
             override val text: String; get() = "=="
         }
 
-        data class NotEqual(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
+        data class NotEqual(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
             override val text: String; get() = "!="
         }
 
-        data class AsteriskEqual(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
+        data class AsteriskEqual(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
             override val text: String; get() = "*="
         }
 
-        data class SlashEqual(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
+        data class SlashEqual(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
             override val text: String; get() = "/="
         }
 
-        data class PercentEqual(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
+        data class PercentEqual(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
             override val text: String; get() = "%="
         }
 
-        data class PlusEqual(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
+        data class PlusEqual(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
             override val text: String; get() = "+="
         }
 
-        data class MinusEqual(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
+        data class MinusEqual(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
             override val text: String; get() = "-="
         }
 
-        data class OrOr(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
+        data class OrOr(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
             override val text: String; get() = "||"
         }
 
-        data class AndAnd(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
+        data class AndAnd(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
             override val text: String; get() = "&&"
         }
 
-        data class QuestionColon(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
+        data class QuestionColon(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
             override val text: String; get() = "?:"
         }
 
-        data class DotDot(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
+        data class DotDot(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
             override val text: String; get() = ".."
         }
 
-        data class DotDotLess(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
+        data class DotDotLess(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
             override val text: String; get() = "..<"
         }
 
-        data class Dot(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
+        data class Dot(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
             override val text: String; get() = "."
         }
 
-        data class QuestionDot(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
+        data class QuestionDot(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
             override val text: String; get() = "?."
         }
 
-        data class Question(override var tag: Any? = null) : Keyword, BinaryExpression.BinaryOperator {
+        data class Question(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
             override val text: String; get() = "?"
         }
 
-        data class PlusPlus(override var tag: Any? = null) : Keyword, UnaryExpression.UnaryOperator {
+        data class PlusPlus(override var tag: Any? = null) : Keyword, Expression.UnaryExpression.UnaryOperator {
             override val text: String; get() = "++"
         }
 
-        data class MinusMinus(override var tag: Any? = null) : Keyword, UnaryExpression.UnaryOperator {
+        data class MinusMinus(override var tag: Any? = null) : Keyword, Expression.UnaryExpression.UnaryOperator {
             override val text: String; get() = "--"
         }
 
-        data class Not(override var tag: Any? = null) : Keyword, UnaryExpression.UnaryOperator {
+        data class Not(override var tag: Any? = null) : Keyword, Expression.UnaryExpression.UnaryOperator {
             override val text: String; get() = "!"
         }
 
-        data class NotNot(override var tag: Any? = null) : Keyword, UnaryExpression.UnaryOperator {
+        data class NotNot(override var tag: Any? = null) : Keyword, Expression.UnaryExpression.UnaryOperator {
             override val text: String; get() = "!!"
         }
 
-        data class As(override var tag: Any? = null) : Keyword, BinaryTypeExpression.BinaryTypeOperator {
+        data class As(override var tag: Any? = null) : Keyword, Expression.BinaryTypeExpression.BinaryTypeOperator {
             override val text: String; get() = "as"
         }
 
-        data class AsQuestion(override var tag: Any? = null) : Keyword, BinaryTypeExpression.BinaryTypeOperator {
+        data class AsQuestion(override var tag: Any? = null) : Keyword,
+            Expression.BinaryTypeExpression.BinaryTypeOperator {
             override val text: String; get() = "as?"
         }
 
-        data class Colon(override var tag: Any? = null) : Keyword, BinaryTypeExpression.BinaryTypeOperator {
+        data class Colon(override var tag: Any? = null) : Keyword, Expression.BinaryTypeExpression.BinaryTypeOperator {
             override val text: String; get() = ":"
         }
 
-        data class Is(override var tag: Any? = null) : Keyword, BinaryTypeExpression.BinaryTypeOperator,
-            WhenExpression.WhenConditionTypeOperator {
+        data class Is(override var tag: Any? = null) : Keyword, Expression.BinaryTypeExpression.BinaryTypeOperator,
+            Expression.WhenExpression.WhenConditionTypeOperator {
             override val text: String; get() = "is"
         }
 
-        data class NotIs(override var tag: Any? = null) : Keyword, BinaryTypeExpression.BinaryTypeOperator,
-            WhenExpression.WhenConditionTypeOperator {
+        data class NotIs(override var tag: Any? = null) : Keyword, Expression.BinaryTypeExpression.BinaryTypeOperator,
+            Expression.WhenExpression.WhenConditionTypeOperator {
             override val text: String; get() = "!is"
         }
 

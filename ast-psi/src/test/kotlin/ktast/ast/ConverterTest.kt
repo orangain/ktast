@@ -19,11 +19,11 @@ class ConverterTest {
                     Node.Keyword.Val
                     AFTER: Node.Whitespace
                     Node.Variable
-                      Node.NameExpression
+                      Node.Expression.NameExpression
                       AFTER: Node.Whitespace
                     Node.Keyword.Equal
                     AFTER: Node.Whitespace
-                    Node.StringLiteralExpression
+                    Node.Expression.StringLiteralExpression
             """.trimIndent()
         )
     }
@@ -40,11 +40,11 @@ class ConverterTest {
                     Node.Keyword.Val
                     AFTER: Node.Whitespace
                     Node.Variable
-                      Node.NameExpression
+                      Node.Expression.NameExpression
                       AFTER: Node.Whitespace
                     Node.Keyword.Equal
                     AFTER: Node.Whitespace
-                    Node.StringLiteralExpression
+                    Node.Expression.StringLiteralExpression
                     AFTER: Node.Whitespace
                     AFTER: Node.Comment
             """.trimIndent()
