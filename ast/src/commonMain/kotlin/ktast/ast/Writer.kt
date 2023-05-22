@@ -654,13 +654,13 @@ open class Writer(
 
     protected fun containsNewline(extras: List<Node.Extra>): Boolean {
         return extras.any {
-            it is Node.Whitespace && it.text.contains("\n")
+            it is Node.Extra.Whitespace && it.text.contains("\n")
         }
     }
 
     protected fun containsSemicolon(extras: List<Node.Extra>): Boolean {
         return extras.any {
-            it is Node.Semicolon
+            it is Node.Extra.Semicolon
         }
     }
 

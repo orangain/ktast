@@ -17,12 +17,12 @@ class ConverterTest {
                 Node.KotlinFile
                   Node.PropertyDeclaration
                     Node.Keyword.Val
-                    AFTER: Node.Whitespace
+                    AFTER: Node.Extra.Whitespace
                     Node.Variable
                       Node.Expression.NameExpression
-                      AFTER: Node.Whitespace
+                      AFTER: Node.Extra.Whitespace
                     Node.Keyword.Equal
-                    AFTER: Node.Whitespace
+                    AFTER: Node.Extra.Whitespace
                     Node.Expression.StringLiteralExpression
             """.trimIndent()
         )
@@ -38,15 +38,15 @@ class ConverterTest {
                 Node.KotlinFile
                   Node.PropertyDeclaration
                     Node.Keyword.Val
-                    AFTER: Node.Whitespace
+                    AFTER: Node.Extra.Whitespace
                     Node.Variable
                       Node.Expression.NameExpression
-                      AFTER: Node.Whitespace
+                      AFTER: Node.Extra.Whitespace
                     Node.Keyword.Equal
-                    AFTER: Node.Whitespace
+                    AFTER: Node.Extra.Whitespace
                     Node.Expression.StringLiteralExpression
-                    AFTER: Node.Whitespace
-                    AFTER: Node.Comment
+                    AFTER: Node.Extra.Whitespace
+                    AFTER: Node.Extra.Comment
             """.trimIndent()
         )
     }
