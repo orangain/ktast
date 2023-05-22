@@ -203,12 +203,8 @@ open class Writer(
                     children(modifiers)
                     children(constructorKeyword)
                     children(params)
-                    if (constructorDelegationCall != null) append(":").also { children(constructorDelegationCall) }
+                    if (delegationCall != null) append(":").also { children(delegationCall) }
                     children(block)
-                }
-                is Node.Declaration.ClassDeclaration.ClassBody.SecondaryConstructor.ConstructorDelegationCall -> {
-                    children(targetKeyword)
-                    children(args)
                 }
                 is Node.Declaration.ClassDeclaration.ClassBody.EnumEntry -> {
                     children(modifiers)

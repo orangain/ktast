@@ -281,24 +281,10 @@ sealed interface Node {
                     override val modifiers: Modifiers?,
                     val constructorKeyword: Keyword.Constructor,
                     val params: FunctionParams?,
-                    val constructorDelegationCall: ConstructorDelegationCall?,
+                    val delegationCall: Expression.CallExpression?,
                     val block: Expression.BlockExpression?,
                     override var tag: Any? = null,
-                ) : Declaration, WithModifiers {
-                    /**
-                     * AST node corresponds to KtConstructorDelegationCall.
-                     */
-                    data class ConstructorDelegationCall(
-                        val targetKeyword: DelegationTargetKeyword,
-                        val args: ValueArgs?,
-                        override var tag: Any? = null,
-                    ) : Node
-
-                    /**
-                     * Common interface for keyword nodes that are used to declare a delegation target.
-                     */
-                    sealed interface DelegationTargetKeyword : Keyword
-                }
+                ) : Declaration, WithModifiers
             }
         }
 
@@ -1015,7 +1001,7 @@ sealed interface Node {
         ) : Expression, WithAnnotationSets
 
         /**
-         * AST node corresponds to KtCallExpression.
+         * AST node corresponds to KtCallElement.
          */
         data class CallExpression(
             val expression: Expression,
@@ -1249,16 +1235,6 @@ sealed interface Node {
 
         data class Var(override var tag: Any? = null) : Keyword, ValOrVarKeyword {
             override val text: String; get() = "var"
-        }
-
-        data class This(override var tag: Any? = null) : Keyword,
-            Declaration.ClassDeclaration.ClassBody.SecondaryConstructor.DelegationTargetKeyword {
-            override val text: String; get() = "this"
-        }
-
-        data class Super(override var tag: Any? = null) : Keyword,
-            Declaration.ClassDeclaration.ClassBody.SecondaryConstructor.DelegationTargetKeyword {
-            override val text: String; get() = "super"
         }
 
         data class For(override var tag: Any? = null) : Keyword {
