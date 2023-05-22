@@ -285,16 +285,11 @@ open class MutableVisitor(
                     )
                     is Node.CallableReferenceExpression -> copy(
                         lhs = visitChildren(lhs, newCh),
+                        questionMarks = visitChildren(questionMarks, newCh),
                         rhs = visitChildren(rhs, newCh),
                     )
                     is Node.ClassLiteralExpression -> copy(
-                        lhs = visitChildren(lhs, newCh)
-                    )
-                    is Node.DoubleColonExpression.Receiver.Expression -> copy(
-                        expression = visitChildren(expression, newCh)
-                    )
-                    is Node.DoubleColonExpression.Receiver.Type -> copy(
-                        type = visitChildren(type, newCh),
+                        lhs = visitChildren(lhs, newCh),
                         questionMarks = visitChildren(questionMarks, newCh),
                     )
                     is Node.ParenthesizedExpression -> copy(

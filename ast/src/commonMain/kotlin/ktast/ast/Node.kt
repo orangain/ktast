@@ -667,40 +667,30 @@ sealed interface Node {
     /**
      * AST node corresponds to KtDoubleColonExpression.
      */
-    sealed class DoubleColonExpression : Expression {
-        abstract val lhs: Receiver?
-
-        sealed class Receiver : Node {
-            data class Expression(
-                val expression: Node.Expression,
-                override var tag: Any? = null,
-            ) : Receiver()
-
-            data class Type(
-                val type: SimpleType,
-                val questionMarks: List<Keyword.Question>,
-                override var tag: Any? = null,
-            ) : Receiver()
-        }
+    sealed interface DoubleColonExpression : Expression {
+        val lhs: Expression?
+        val questionMarks: List<Keyword.Question>
     }
 
     /**
      * AST node corresponds to KtCallableReferenceExpression.
      */
     data class CallableReferenceExpression(
-        override val lhs: Receiver?,
+        override val lhs: Expression?,
+        override val questionMarks: List<Keyword.Question>,
         val rhs: NameExpression,
         override var tag: Any? = null,
-    ) : DoubleColonExpression()
+    ) : DoubleColonExpression
 
     /**
      * AST node corresponds to KtClassLiteralExpression.
      */
     data class ClassLiteralExpression(
         // Class literal expression without lhs is not supported in Kotlin syntax, but Kotlin compiler does parse it.
-        override val lhs: Receiver?,
+        override val lhs: Expression?,
+        override val questionMarks: List<Keyword.Question>,
         override var tag: Any? = null,
-    ) : DoubleColonExpression()
+    ) : DoubleColonExpression
 
     /**
      * AST node corresponds to KtParenthesizedExpression.
