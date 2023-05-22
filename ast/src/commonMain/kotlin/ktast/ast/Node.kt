@@ -25,13 +25,13 @@ sealed interface Node {
     }
 
     interface WithAnnotationSets {
-        val annotationSets: List<AnnotationSet>
+        val annotationSets: List<Modifier.AnnotationSet>
     }
 
     interface WithModifiers : WithAnnotationSets {
         val modifiers: Modifiers?
-        override val annotationSets: List<AnnotationSet>
-            get() = modifiers?.elements.orEmpty().mapNotNull { it as? AnnotationSet }
+        override val annotationSets: List<Modifier.AnnotationSet>
+            get() = modifiers?.elements.orEmpty().mapNotNull { it as? Modifier.AnnotationSet }
     }
 
     interface KotlinEntry : WithAnnotationSets {
@@ -60,7 +60,7 @@ sealed interface Node {
      * AST node corresponds to KtFile.
      */
     data class KotlinFile(
-        override val annotationSets: List<AnnotationSet>,
+        override val annotationSets: List<Modifier.AnnotationSet>,
         override val packageDirective: PackageDirective?,
         override val importDirectives: ImportDirectives?,
         override val declarations: List<Declaration>,
@@ -68,7 +68,7 @@ sealed interface Node {
     ) : Node, KotlinEntry, DeclarationsContainer
 
     data class KotlinScript(
-        override val annotationSets: List<AnnotationSet>,
+        override val annotationSets: List<Modifier.AnnotationSet>,
         override val packageDirective: PackageDirective?,
         override val importDirectives: ImportDirectives?,
         val expressions: List<Expression>,
@@ -921,7 +921,7 @@ sealed interface Node {
          * AST node corresponds to KtAnnotatedExpression.
          */
         data class AnnotatedExpression(
-            override val annotationSets: List<AnnotationSet>,
+            override val annotationSets: List<Modifier.AnnotationSet>,
             val expression: Expression,
             override var tag: Any? = null,
         ) : Expression, WithAnnotationSets
@@ -940,7 +940,7 @@ sealed interface Node {
              * AST node corresponds to KtLambdaArgument.
              */
             data class LambdaArg(
-                override val annotationSets: List<AnnotationSet>,
+                override val annotationSets: List<Modifier.AnnotationSet>,
                 val label: String?,
                 val expression: LambdaExpression,
                 override var tag: Any? = null,
@@ -1022,33 +1022,33 @@ sealed interface Node {
         override var tag: Any? = null,
     ) : NodeList<Modifier>()
 
-    sealed interface Modifier : Node
-
-    /**
-     * AST node corresponds to KtAnnotation or KtAnnotationEntry not under KtAnnotation.
-     */
-    data class AnnotationSet(
-        val atSymbol: Keyword.At?,
-        val target: AnnotationTarget?,
-        val colon: Keyword.Colon?,
-        val lBracket: Keyword.LBracket?,
-        val annotations: List<Annotation>,
-        val rBracket: Keyword.RBracket?,
-        override var tag: Any? = null,
-    ) : Modifier {
-        sealed interface AnnotationTarget : Keyword
-
+    sealed interface Modifier : Node {
         /**
-         * AST node corresponds to KtAnnotationEntry under KtAnnotation or virtual AST node corresponds to KtAnnotationEntry not under KtAnnotation.
+         * AST node corresponds to KtAnnotation or KtAnnotationEntry not under KtAnnotation.
          */
-        data class Annotation(
-            val type: Type.SimpleType,
-            val args: ValueArgs?,
+        data class AnnotationSet(
+            val atSymbol: Keyword.At?,
+            val target: AnnotationTarget?,
+            val colon: Keyword.Colon?,
+            val lBracket: Keyword.LBracket?,
+            val annotations: List<Annotation>,
+            val rBracket: Keyword.RBracket?,
             override var tag: Any? = null,
-        ) : Node
-    }
+        ) : Modifier {
+            sealed interface AnnotationTarget : Keyword
 
-    sealed interface KeywordModifier : Modifier, Keyword
+            /**
+             * AST node corresponds to KtAnnotationEntry under KtAnnotation or virtual AST node corresponds to KtAnnotationEntry not under KtAnnotation.
+             */
+            data class Annotation(
+                val type: Type.SimpleType,
+                val args: ValueArgs?,
+                override var tag: Any? = null,
+            ) : Node
+        }
+
+        sealed interface KeywordModifier : Modifier, Keyword
+    }
 
     sealed interface PostModifier : Node
 
@@ -1074,7 +1074,7 @@ sealed interface Node {
          * AST node corresponds to KtTypeConstraint.
          */
         data class TypeConstraint(
-            override val annotationSets: List<AnnotationSet>,
+            override val annotationSets: List<Modifier.AnnotationSet>,
             val name: Expression.NameExpression,
             val typeRef: TypeRef,
             override var tag: Any? = null,
@@ -1191,39 +1191,39 @@ sealed interface Node {
             override val text: String; get() = "where"
         }
 
-        data class Field(override var tag: Any? = null) : Keyword, AnnotationSet.AnnotationTarget {
+        data class Field(override var tag: Any? = null) : Keyword, Modifier.AnnotationSet.AnnotationTarget {
             override val text: String; get() = "field"
         }
 
-        data class File(override var tag: Any? = null) : Keyword, AnnotationSet.AnnotationTarget {
+        data class File(override var tag: Any? = null) : Keyword, Modifier.AnnotationSet.AnnotationTarget {
             override val text: String; get() = "file"
         }
 
-        data class Property(override var tag: Any? = null) : Keyword, AnnotationSet.AnnotationTarget {
+        data class Property(override var tag: Any? = null) : Keyword, Modifier.AnnotationSet.AnnotationTarget {
             override val text: String; get() = "property"
         }
 
-        data class Get(override var tag: Any? = null) : Keyword, AnnotationSet.AnnotationTarget {
+        data class Get(override var tag: Any? = null) : Keyword, Modifier.AnnotationSet.AnnotationTarget {
             override val text: String; get() = "get"
         }
 
-        data class Set(override var tag: Any? = null) : Keyword, AnnotationSet.AnnotationTarget {
+        data class Set(override var tag: Any? = null) : Keyword, Modifier.AnnotationSet.AnnotationTarget {
             override val text: String; get() = "set"
         }
 
-        data class Receiver(override var tag: Any? = null) : Keyword, AnnotationSet.AnnotationTarget {
+        data class Receiver(override var tag: Any? = null) : Keyword, Modifier.AnnotationSet.AnnotationTarget {
             override val text: String; get() = "receiver"
         }
 
-        data class Param(override var tag: Any? = null) : Keyword, AnnotationSet.AnnotationTarget {
+        data class Param(override var tag: Any? = null) : Keyword, Modifier.AnnotationSet.AnnotationTarget {
             override val text: String; get() = "param"
         }
 
-        data class SetParam(override var tag: Any? = null) : Keyword, AnnotationSet.AnnotationTarget {
+        data class SetParam(override var tag: Any? = null) : Keyword, Modifier.AnnotationSet.AnnotationTarget {
             override val text: String; get() = "setparam"
         }
 
-        data class Delegate(override var tag: Any? = null) : Keyword, AnnotationSet.AnnotationTarget {
+        data class Delegate(override var tag: Any? = null) : Keyword, Modifier.AnnotationSet.AnnotationTarget {
             override val text: String; get() = "delegate"
         }
 
@@ -1278,7 +1278,7 @@ sealed interface Node {
         }
 
         data class In(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator,
-            KeywordModifier,
+            Modifier.KeywordModifier,
             Expression.WhenExpression.WhenConditionRangeOperator {
             override val text: String; get() = "in"
         }
@@ -1403,127 +1403,127 @@ sealed interface Node {
             override val text: String; get() = "!is"
         }
 
-        data class Abstract(override var tag: Any? = null) : Keyword, KeywordModifier {
+        data class Abstract(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
             override val text: String; get() = "abstract"
         }
 
-        data class Final(override var tag: Any? = null) : Keyword, KeywordModifier {
+        data class Final(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
             override val text: String; get() = "final"
         }
 
-        data class Open(override var tag: Any? = null) : Keyword, KeywordModifier {
+        data class Open(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
             override val text: String; get() = "open"
         }
 
-        data class Annotation(override var tag: Any? = null) : Keyword, KeywordModifier {
+        data class Annotation(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
             override val text: String; get() = "annotation"
         }
 
-        data class Sealed(override var tag: Any? = null) : Keyword, KeywordModifier {
+        data class Sealed(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
             override val text: String; get() = "sealed"
         }
 
-        data class Data(override var tag: Any? = null) : Keyword, KeywordModifier {
+        data class Data(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
             override val text: String; get() = "data"
         }
 
-        data class Override(override var tag: Any? = null) : Keyword, KeywordModifier {
+        data class Override(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
             override val text: String; get() = "override"
         }
 
-        data class LateInit(override var tag: Any? = null) : Keyword, KeywordModifier {
+        data class LateInit(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
             override val text: String; get() = "lateinit"
         }
 
-        data class Inner(override var tag: Any? = null) : Keyword, KeywordModifier {
+        data class Inner(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
             override val text: String; get() = "inner"
         }
 
-        data class Enum(override var tag: Any? = null) : Keyword, KeywordModifier {
+        data class Enum(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
             override val text: String; get() = "enum"
         }
 
-        data class Companion(override var tag: Any? = null) : Keyword, KeywordModifier {
+        data class Companion(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
             override val text: String; get() = "companion"
         }
 
-        data class Value(override var tag: Any? = null) : Keyword, KeywordModifier {
+        data class Value(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
             override val text: String; get() = "value"
         }
 
-        data class Private(override var tag: Any? = null) : Keyword, KeywordModifier {
+        data class Private(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
             override val text: String; get() = "private"
         }
 
-        data class Protected(override var tag: Any? = null) : Keyword, KeywordModifier {
+        data class Protected(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
             override val text: String; get() = "protected"
         }
 
-        data class Public(override var tag: Any? = null) : Keyword, KeywordModifier {
+        data class Public(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
             override val text: String; get() = "public"
         }
 
-        data class Internal(override var tag: Any? = null) : Keyword, KeywordModifier {
+        data class Internal(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
             override val text: String; get() = "internal"
         }
 
-        data class Out(override var tag: Any? = null) : Keyword, KeywordModifier {
+        data class Out(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
             override val text: String; get() = "out"
         }
 
-        data class Noinline(override var tag: Any? = null) : Keyword, KeywordModifier {
+        data class Noinline(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
             override val text: String; get() = "noinline"
         }
 
-        data class CrossInline(override var tag: Any? = null) : Keyword, KeywordModifier {
+        data class CrossInline(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
             override val text: String; get() = "crossinline"
         }
 
-        data class Vararg(override var tag: Any? = null) : Keyword, KeywordModifier {
+        data class Vararg(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
             override val text: String; get() = "vararg"
         }
 
-        data class Reified(override var tag: Any? = null) : Keyword, KeywordModifier {
+        data class Reified(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
             override val text: String; get() = "reified"
         }
 
-        data class TailRec(override var tag: Any? = null) : Keyword, KeywordModifier {
+        data class TailRec(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
             override val text: String; get() = "tailrec"
         }
 
-        data class Operator(override var tag: Any? = null) : Keyword, KeywordModifier {
+        data class Operator(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
             override val text: String; get() = "operator"
         }
 
-        data class Infix(override var tag: Any? = null) : Keyword, KeywordModifier {
+        data class Infix(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
             override val text: String; get() = "infix"
         }
 
-        data class Inline(override var tag: Any? = null) : Keyword, KeywordModifier {
+        data class Inline(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
             override val text: String; get() = "inline"
         }
 
-        data class External(override var tag: Any? = null) : Keyword, KeywordModifier {
+        data class External(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
             override val text: String; get() = "external"
         }
 
-        data class Suspend(override var tag: Any? = null) : Keyword, KeywordModifier {
+        data class Suspend(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
             override val text: String; get() = "suspend"
         }
 
-        data class Const(override var tag: Any? = null) : Keyword, KeywordModifier {
+        data class Const(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
             override val text: String; get() = "const"
         }
 
-        data class Fun(override var tag: Any? = null) : Keyword, KeywordModifier {
+        data class Fun(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
             override val text: String; get() = "fun"
         }
 
-        data class Actual(override var tag: Any? = null) : Keyword, KeywordModifier {
+        data class Actual(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
             override val text: String; get() = "actual"
         }
 
-        data class Expect(override var tag: Any? = null) : Keyword, KeywordModifier {
+        data class Expect(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
             override val text: String; get() = "expect"
         }
     }

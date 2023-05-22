@@ -753,7 +753,7 @@ open class Converter {
 
     open fun convertCallLambdaArg(v: KtLambdaArgument): Node.Expression.CallExpression.LambdaArg {
         var label: String? = null
-        var annotationSets: List<Node.AnnotationSet> = emptyList()
+        var annotationSets: List<Node.Modifier.AnnotationSet> = emptyList()
         fun KtExpression.extractLambda(): KtLambdaExpression? = when (this) {
             is KtLambdaExpression -> this
             is KtLabeledExpression -> baseExpression?.extractLambda().also {
@@ -800,7 +800,7 @@ open class Converter {
         else
             convertExpression(v)
 
-    open fun convertAnnotationSets(v: KtElement): List<Node.AnnotationSet> = v.children.flatMap { elem ->
+    open fun convertAnnotationSets(v: KtElement): List<Node.Modifier.AnnotationSet> = v.children.flatMap { elem ->
         // We go over the node children because we want to preserve order
         when (elem) {
             is KtAnnotationEntry ->
@@ -814,7 +814,7 @@ open class Converter {
         }
     }
 
-    open fun convertAnnotationSet(v: KtAnnotation) = Node.AnnotationSet(
+    open fun convertAnnotationSet(v: KtAnnotation) = Node.Modifier.AnnotationSet(
         atSymbol = v.atSymbol?.let(::convertKeyword),
         target = v.useSiteTarget?.let(::convertKeyword),
         colon = v.colon?.let(::convertKeyword),
@@ -826,7 +826,7 @@ open class Converter {
         rBracket = v.rBracket?.let(::convertKeyword),
     ).map(v)
 
-    open fun convertAnnotationSet(v: KtAnnotationEntry) = Node.AnnotationSet(
+    open fun convertAnnotationSet(v: KtAnnotationEntry) = Node.Modifier.AnnotationSet(
         atSymbol = v.atSymbol?.let(::convertKeyword),
         target = v.useSiteTarget?.let(::convertKeyword),
         colon = v.colon?.let(::convertKeyword),
@@ -838,7 +838,7 @@ open class Converter {
         rBracket = null,
     ).map(v)
 
-    open fun convertAnnotationWithoutMapping(v: KtAnnotationEntry) = Node.AnnotationSet.Annotation(
+    open fun convertAnnotationWithoutMapping(v: KtAnnotationEntry) = Node.Modifier.AnnotationSet.Annotation(
         type = convertType(
             v.calleeExpression?.typeReference?.typeElement
                 ?: error("No callee expression, type reference or type element for $v")
@@ -855,7 +855,7 @@ open class Converter {
                     is KtAnnotationEntry -> convertAnnotationSet(psi)
                     is KtAnnotation -> convertAnnotationSet(psi)
                     is PsiWhiteSpace -> null
-                    else -> convertKeyword<Node.KeywordModifier>(psi)
+                    else -> convertKeyword<Node.Modifier.KeywordModifier>(psi)
                 }
             }.toList(),
         ).map(v)

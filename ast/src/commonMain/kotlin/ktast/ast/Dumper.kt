@@ -70,7 +70,7 @@ class Dumper(
         if (verbose) {
             when (this) {
                 is Node.Expression.UnaryExpression -> mapOf("prefix" to this.prefix)
-                is Node.AnnotationSet -> mapOf("target" to target)
+                is Node.Modifier.AnnotationSet -> mapOf("target" to target)
                 is Node.Expression.NameExpression -> mapOf("text" to text)
                 is Node.Expression.ConstantLiteralExpression -> mapOf("value" to value, "form" to form)
                 is Node.Extra.Comment -> mapOf("text" to text)
