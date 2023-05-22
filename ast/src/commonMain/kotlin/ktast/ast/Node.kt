@@ -4,8 +4,19 @@ package ktast.ast
  * Common interface of all AST nodes.
  */
 sealed interface Node {
+    /**
+     * Property to store any extra data by the user.
+     */
     var tag: Any?
 
+    /**
+     * Base class of all nodes that represent a list of nodes.
+     *
+     * @param E type of elements in the list
+     * @property prefix prefix of the list when converted to source code, e.g. `(`.
+     * @property suffix suffix of the list when converted to source code, e.g. `)`.
+     * @property elements list of elements in the list.
+     */
     abstract class NodeList<out E : Node>(
         val prefix: String = "",
         val suffix: String = "",
@@ -13,6 +24,11 @@ sealed interface Node {
         abstract val elements: List<E>
     }
 
+    /**
+     * Specialization of [NodeList] for comma-separated lists.
+     *
+     * @property trailingComma trailing comma node of the list if exists.
+     */
     abstract class CommaSeparatedNodeList<out E : Node>(
         prefix: String,
         suffix: String,
@@ -20,38 +36,68 @@ sealed interface Node {
         abstract val trailingComma: Keyword.Comma?
     }
 
+    /**
+     * Common interface of all nodes that have a simple text representation.
+     *
+     * @property text text representation of the node.
+     */
     sealed interface SimpleTextNode : Node {
         val text: String
     }
 
+    /**
+     * Common interface of all nodes that have annotations.
+     *
+     * @property annotationSets list of annotation sets.
+     */
     interface WithAnnotationSets {
         val annotationSets: List<Modifier.AnnotationSet>
     }
 
+    /**
+     * Common interface of all nodes that have modifiers.
+     *
+     * @property modifiers list of modifiers.
+     */
     interface WithModifiers : WithAnnotationSets {
         val modifiers: Modifiers?
         override val annotationSets: List<Modifier.AnnotationSet>
             get() = modifiers?.elements.orEmpty().mapNotNull { it as? Modifier.AnnotationSet }
     }
 
+    /**
+     * Common interface of all nodes that have package directives and import directives.
+     */
     interface KotlinEntry : WithAnnotationSets {
         val packageDirective: PackageDirective?
         val importDirectives: ImportDirectives?
     }
 
+    /**
+     * Common interface of all nodes that have post-modifiers.
+     */
     interface WithPostModifiers {
         val postModifiers: List<PostModifier>
     }
 
+    /**
+     * Common interface of all nodes that have a function body.
+     */
     interface WithFunctionBody {
         val equals: Keyword.Equal?
         val body: Expression?
     }
 
+    /**
+     * Common interface of all nodes that have statements.
+     */
     interface StatementsContainer {
         val statements: List<Statement>
     }
 
+    /**
+     * Common interface of all nodes that have declarations.
+     */
     interface DeclarationsContainer {
         val declarations: List<Declaration>
     }
