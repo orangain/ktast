@@ -467,7 +467,7 @@ sealed interface Node {
      */
     sealed interface Type : Node {
 
-        interface NameWithTypeArgs {
+        private interface NameWithTypeArgs {
             val name: Expression.NameExpression
             val typeArgs: TypeArgs?
         }
