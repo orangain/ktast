@@ -1,7 +1,7 @@
 package ktast.ast
 
 /**
- * Common interface of all AST nodes.
+ * Common interface for all the AST nodes.
  */
 sealed interface Node {
     /**
@@ -37,7 +37,7 @@ sealed interface Node {
     }
 
     /**
-     * Common interface of all nodes that have a simple text representation.
+     * Common interface for AST nodes that have a simple text representation.
      *
      * @property text text representation of the node.
      */
@@ -46,7 +46,7 @@ sealed interface Node {
     }
 
     /**
-     * Common interface of all nodes that have annotations.
+     * Common interface for AST nodes that have annotations.
      *
      * @property annotationSets list of annotation sets.
      */
@@ -55,7 +55,7 @@ sealed interface Node {
     }
 
     /**
-     * Common interface of all nodes that have modifiers.
+     * Common interface for AST nodes that have modifiers.
      *
      * @property modifiers list of modifiers.
      */
@@ -66,7 +66,7 @@ sealed interface Node {
     }
 
     /**
-     * Common interface of all nodes that have package directives and import directives.
+     * Common interface for AST nodes that have package directives and import directives.
      */
     interface KotlinEntry : WithAnnotationSets {
         val packageDirective: PackageDirective?
@@ -74,14 +74,14 @@ sealed interface Node {
     }
 
     /**
-     * Common interface of all nodes that have post-modifiers.
+     * Common interface for AST nodes that have post-modifiers.
      */
     interface WithPostModifiers {
         val postModifiers: List<PostModifier>
     }
 
     /**
-     * Common interface of all nodes that have a function body.
+     * Common interface for AST nodes that have a function body.
      */
     interface WithFunctionBody {
         val equals: Keyword.Equal?
@@ -89,14 +89,14 @@ sealed interface Node {
     }
 
     /**
-     * Common interface of all nodes that have statements.
+     * Common interface for AST nodes that have statements.
      */
     interface StatementsContainer {
         val statements: List<Statement>
     }
 
     /**
-     * Common interface of all nodes that have declarations.
+     * Common interface for AST nodes that have declarations.
      */
     interface DeclarationsContainer {
         val declarations: List<Declaration>
@@ -159,12 +159,12 @@ sealed interface Node {
     }
 
     /**
-     * Common interface of [Declaration] and [Expression].
+     * Common interface for [Declaration] and [Expression].
      */
     sealed interface Statement : Node
 
     /**
-     * Common interface of all nodes that are main contents of a Kotlin file or a class body.
+     * Common interface for AST nodes that are main contents of a Kotlin file or a class body.
      */
     sealed interface Declaration : Statement {
         /**
@@ -188,7 +188,7 @@ sealed interface Node {
             val isEnum = modifiers?.elements.orEmpty().any { it is Keyword.Enum }
 
             /**
-             * Common interface of keyword nodes that are used to declare a class.
+             * Common interface for keyword nodes that are used to declare a class.
              */
             sealed interface ClassDeclarationKeyword : Keyword
 
@@ -295,7 +295,7 @@ sealed interface Node {
                     ) : Node
 
                     /**
-                     * Common interface of keyword nodes that are used to declare a delegation target.
+                     * Common interface for keyword nodes that are used to declare a delegation target.
                      */
                     sealed interface DelegationTargetKeyword : Keyword
                 }
