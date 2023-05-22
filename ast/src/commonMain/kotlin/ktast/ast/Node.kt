@@ -845,7 +845,7 @@ sealed interface Node {
         }
 
         /**
-         * AST node corresponds to KtThisExpression.
+         * AST node corresponds to KtThisExpression or KtConstructorDelegationReferenceExpression whose text is "this".
          */
         data class ThisExpression(
             val label: String?,
@@ -853,7 +853,7 @@ sealed interface Node {
         ) : Expression
 
         /**
-         * AST node corresponds to KtSuperExpression.
+         * AST node corresponds to KtSuperExpression or KtConstructorDelegationReferenceExpression whose text is "super".
          */
         data class SuperExpression(
             val typeArg: TypeRef?,
