@@ -77,7 +77,7 @@ open class Converter {
         primaryConstructor = v.primaryConstructor?.let(::convertPrimaryConstructor),
         classParents = v.getSuperTypeList()?.let(::convertParents),
         typeConstraintSet = v.typeConstraintList?.let { typeConstraintList ->
-            Node.TypeConstraintSet(
+            Node.PostModifier.TypeConstraintSet(
                 whereKeyword = convertKeyword(v.whereKeyword),
                 constraints = convertTypeConstraints(typeConstraintList),
             ).mapNotCorrespondsPsiElement(v)
@@ -174,7 +174,7 @@ open class Converter {
         trailingComma = null,
         rPar = null,
         typeConstraintSet = v.typeConstraintList?.let { typeConstraintList ->
-            Node.TypeConstraintSet(
+            Node.PostModifier.TypeConstraintSet(
                 whereKeyword = convertKeyword(v.whereKeyword),
                 constraints = convertTypeConstraints(typeConstraintList),
             ).mapNotCorrespondsPsiElement(v)
@@ -338,11 +338,11 @@ open class Converter {
         ).map(v)
     }
 
-    open fun convertTypeConstraints(v: KtTypeConstraintList) = Node.TypeConstraintSet.TypeConstraints(
+    open fun convertTypeConstraints(v: KtTypeConstraintList) = Node.PostModifier.TypeConstraintSet.TypeConstraints(
         elements = v.constraints.map(::convertTypeConstraint),
     ).map(v)
 
-    open fun convertTypeConstraint(v: KtTypeConstraint) = Node.TypeConstraintSet.TypeConstraint(
+    open fun convertTypeConstraint(v: KtTypeConstraint) = Node.PostModifier.TypeConstraintSet.TypeConstraint(
         annotationSets = v.children.mapNotNull {
             when (it) {
                 is KtAnnotationEntry -> convertAnnotationSet(it)
@@ -394,12 +394,12 @@ open class Converter {
         typeRef = convertTypeRef(v.typeReference() ?: error("Missing type reference for $v")),
     ).map(v)
 
-    open fun convertContractEffects(v: KtContractEffectList) = Node.Contract.ContractEffects(
+    open fun convertContractEffects(v: KtContractEffectList) = Node.PostModifier.Contract.ContractEffects(
         elements = v.children.filterIsInstance<KtContractEffect>().map(::convertContractEffect),
         trailingComma = findTrailingSeparator(v, KtTokens.COMMA)?.let(::convertKeyword),
     ).map(v)
 
-    open fun convertContractEffect(v: KtContractEffect) = Node.Contract.ContractEffect(
+    open fun convertContractEffect(v: KtContractEffect) = Node.PostModifier.Contract.ContractEffect(
         expression = convertExpression(v.getExpression()),
     ).map(v)
 
@@ -871,11 +871,11 @@ open class Converter {
         var prevPsi = nonExtraChildren[0]
         return nonExtraChildren.drop(1).mapNotNull { psi ->
             when (psi) {
-                is KtTypeConstraintList -> Node.TypeConstraintSet(
+                is KtTypeConstraintList -> Node.PostModifier.TypeConstraintSet(
                     whereKeyword = convertKeyword(prevPsi),
                     constraints = convertTypeConstraints(psi),
                 ).mapNotCorrespondsPsiElement(v)
-                is KtContractEffectList -> Node.Contract(
+                is KtContractEffectList -> Node.PostModifier.Contract(
                     contractKeyword = convertKeyword(prevPsi),
                     contractEffects = convertContractEffects(psi),
                 ).mapNotCorrespondsPsiElement(v)
