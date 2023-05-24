@@ -142,12 +142,8 @@ open class Visitor {
                 visitChildren(modifiers)
                 visitChildren(constructorKeyword)
                 visitChildren(params)
-                visitChildren(constructorDelegationCall)
+                visitChildren(delegationCall)
                 visitChildren(block)
-            }
-            is Node.Declaration.ClassDeclaration.ClassBody.SecondaryConstructor.ConstructorDelegationCall -> {
-                visitChildren(targetKeyword)
-                visitChildren(args)
             }
             is Node.Declaration.ClassDeclaration.ClassBody.EnumEntry -> {
                 visitChildren(modifiers)

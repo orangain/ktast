@@ -241,16 +241,10 @@ open class Converter {
             modifiers = v.modifierList?.let(::convertModifiers),
             constructorKeyword = convertKeyword(v.getConstructorKeyword()),
             params = v.valueParameterList?.let(::convertFuncParams),
-            constructorDelegationCall = if (v.hasImplicitDelegationCall()) null else convertSecondaryConstructorDelegationCall(
+            delegationCall = if (v.hasImplicitDelegationCall()) null else convertCall(
                 v.getDelegationCall()
             ),
             block = v.bodyExpression?.let(::convertBlock)
-        ).map(v)
-
-    open fun convertSecondaryConstructorDelegationCall(v: KtConstructorDelegationCall) =
-        Node.Declaration.ClassDeclaration.ClassBody.SecondaryConstructor.ConstructorDelegationCall(
-            targetKeyword = convertKeyword(v.calleeExpression?.firstChild ?: error("No delegation target for $v")),
-            args = v.valueArgumentList?.let(::convertValueArgs)
         ).map(v)
 
     open fun convertEnumEntry(v: KtEnumEntry): Node.Declaration.ClassDeclaration.ClassBody.EnumEntry =
@@ -474,6 +468,7 @@ open class Converter {
         is KtBreakExpression -> convertBreak(v)
         is KtCollectionLiteralExpression -> convertCollLit(v)
         is KtSimpleNameExpression -> convertName(v)
+        is KtConstructorDelegationReferenceExpression -> convertThisOrSuperExpression(v)
         is KtLabeledExpression -> convertLabeled(v)
         is KtAnnotatedExpression -> convertAnnotated(v)
         is KtCallExpression -> convertCall(v)
@@ -728,6 +723,18 @@ open class Converter {
         text = v.text
     ).map(v)
 
+    open fun convertThisOrSuperExpression(v: KtConstructorDelegationReferenceExpression): Node.Expression =
+        when (v.text) {
+            "this" -> Node.Expression.ThisExpression(
+                label = null,
+            ).map(v)
+            "super" -> Node.Expression.SuperExpression(
+                typeArg = null,
+                label = null,
+            ).map(v)
+            else -> error("Unrecognized this/super expr $v")
+        }
+
     open fun convertLabeled(v: KtLabeledExpression) = Node.Expression.LabeledExpression(
         label = v.getLabelName() ?: error("No label name for $v"),
         expression = convertExpression(v.baseExpression ?: error("No label expr for $v"))
@@ -738,7 +745,7 @@ open class Converter {
         expression = convertExpression(v.baseExpression ?: error("No annotated expr for $v"))
     ).map(v)
 
-    open fun convertCall(v: KtCallExpression) = Node.Expression.CallExpression(
+    open fun convertCall(v: KtCallElement) = Node.Expression.CallExpression(
         expression = convertExpression(v.calleeExpression ?: error("No call expr for $v")),
         typeArgs = v.typeArgumentList?.let(::convertTypeArgs),
         args = v.valueArgumentList?.let(::convertValueArgs),
