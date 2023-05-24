@@ -2,18 +2,13 @@
 
 Ktast is a simple library to manipulate Kotlin source code as a set of AST objects. Features:
 
-* Simple, immutable, hierarchical [set of data classes](ast/src/commonMain/kotlin/ktast/ast/Node.kt) representing
-  Kotlin AST
-* Simple [writer implementation](ast/src/commonMain/kotlin/ktast/ast/Writer.kt) (some advanced features not yet
-  supported)
+* Simple and immutable set of hierarchical [data classes](ast/src/commonMain/kotlin/ktast/ast/Node.kt) that represent the Kotlin Abstract Syntax Tree (AST).
+* Support for [parsing](ast-psi/src/main/kotlin/ktast/ast/psi/Parser.kt) the latest version of Kotlin code (via Kotlin compiler's parser) and
+  [converting](ast-psi/src/main/kotlin/ktast/ast/psi/Converter.kt) them to the AST.
+* Simple [writer implementation](ast/src/commonMain/kotlin/ktast/ast/Writer.kt) that turn the AST back into Kotlin code.
 * Support for [regular](ast/src/commonMain/kotlin/ktast/ast/Visitor.kt) and
-  [mutable](ast/src/commonMain/kotlin/ktast/ast/MutableVisitor.kt) visitors
-* Basic support for blank-line and comment map (some advanced use cases not yet supported)
-* Support for [parsing](ast-psi/src/main/kotlin/ktast/ast/psi/Parser.kt) (via Kotlin compiler's parser) and
-  [converting](ast-psi/src/main/kotlin/ktast/ast/psi/Converter.kt) to the AST
-
-The project is a simple one and probably will not support a lot of features. It was created to facilitate advanced
-Kotlin code generation beyond the string-based versions that exist.
+  [mutable](ast/src/commonMain/kotlin/ktast/ast/MutableVisitor.kt) visitors.
+* Preserve whitespaces and comments even when manipulating the AST.
 
 ## Related work
 
@@ -59,7 +54,7 @@ dependencies {
 
 API document is available at:
 
-https://orangain.github.io/ktast/0.8.3/api/
+https://orangain.github.io/ktast/latest/api/
 
 ### Examples
 
