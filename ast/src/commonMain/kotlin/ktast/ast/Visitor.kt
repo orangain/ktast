@@ -37,6 +37,29 @@ open class Visitor {
             is Node.ImportDirective.ImportAlias -> {
                 visitChildren(name)
             }
+            is Node.Statement.ForStatement -> {
+                visitChildren(forKeyword)
+                visitChildren(loopParam)
+                visitChildren(loopRange)
+                visitChildren(body)
+            }
+            is Node.Statement.WhileStatement -> {
+                visitChildren(whileKeyword)
+                visitChildren(condition)
+                visitChildren(body)
+            }
+            is Node.Statement.DoWhileStatement -> {
+                visitChildren(body)
+                visitChildren(whileKeyword)
+                visitChildren(condition)
+            }
+            is Node.Statement.LabeledStatement -> {
+                visitChildren(statement)
+            }
+            is Node.Statement.AnnotatedStatement -> {
+                visitChildren(annotationSets)
+                visitChildren(statement)
+            }
             is Node.Declaration.ClassDeclaration -> {
                 visitChildren(modifiers)
                 visitChildren(classDeclarationKeyword)
@@ -223,22 +246,6 @@ open class Visitor {
                 visitChildren(catchKeyword)
                 visitChildren(params)
                 visitChildren(block)
-            }
-            is Node.Expression.ForExpression -> {
-                visitChildren(forKeyword)
-                visitChildren(loopParam)
-                visitChildren(loopRange)
-                visitChildren(body)
-            }
-            is Node.Expression.WhileExpression -> {
-                visitChildren(whileKeyword)
-                visitChildren(condition)
-                visitChildren(body)
-            }
-            is Node.Expression.DoWhileExpression -> {
-                visitChildren(body)
-                visitChildren(whileKeyword)
-                visitChildren(condition)
             }
             is Node.Expression.BinaryExpression -> {
                 visitChildren(lhs)

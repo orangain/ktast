@@ -31,6 +31,7 @@ class CorpusParseAndWriteHeuristicTest(private val unit: Corpus.Unit) {
             val newFile = Parser.parseFile(newCode)
             val newDump = Dumper.dump(newFile)
 
+//            assertEquals(origCode, newCode)
             assertEquals(origDump, newDump)
             assertEquals(origFile, newFile)
         } catch (e: Converter.Unsupported) {

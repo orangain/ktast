@@ -192,9 +192,91 @@ sealed interface Node {
     }
 
     /**
-     * Common interface for [Declaration] and [Expression].
+     * Common interface for [Declaration], [Expression] and other statements.
      */
-    sealed interface Statement : Node
+    sealed interface Statement : Node {
+
+        /**
+         * AST node corresponds to KtLabeledExpression used in statement context.
+         *
+         * @property label label before `@` symbol.
+         * @property statement statement after `@` symbol.
+         */
+        data class LabeledStatement(
+            val label: String,
+            val statement: Statement,
+            override var tag: Any? = null,
+        ) : Statement
+
+        /**
+         * AST node corresponds to KtAnnotatedExpression used in statement context.
+         *
+         * @property annotationSets list of annotation sets.
+         * @property statement statement of this annotated expression.
+         */
+        data class AnnotatedStatement(
+            override val annotationSets: List<Modifier.AnnotationSet>,
+            val statement: Statement,
+            override var tag: Any? = null,
+        ) : Statement, WithAnnotationSets
+
+        /**
+         * AST node corresponds to KtForExpression.
+         *
+         * ```
+         * for ([loopParam] in [loopRange]) [body]
+         * ```
+         *
+         * @property forKeyword `for` keyword.
+         * @property loopParam loop parameter before `in` keyword.
+         * @property loopRange loop range expression after `in` keyword.
+         * @property body body expression.
+         */
+        data class ForStatement(
+            val forKeyword: Keyword.For,
+            val loopParam: LambdaParam,
+            val loopRange: ExpressionContainer,
+            val body: ExpressionContainer,
+            override var tag: Any? = null,
+        ) : Statement
+
+        /**
+         * Common interface for [WhileStatement] and [DoWhileStatement].
+         */
+        sealed interface WhileStatementBase : Statement {
+            val whileKeyword: Keyword.While
+            val condition: ExpressionContainer
+            val body: ExpressionContainer
+        }
+
+        /**
+         * AST node corresponds to KtWhileExpression.
+         *
+         * @property whileKeyword `while` keyword.
+         * @property condition condition expression.
+         * @property body body expression.
+         */
+        data class WhileStatement(
+            override val whileKeyword: Keyword.While,
+            override val condition: ExpressionContainer,
+            override val body: ExpressionContainer,
+            override var tag: Any? = null,
+        ) : WhileStatementBase
+
+        /**
+         * AST node corresponds to KtDoWhileExpression.
+         *
+         * @property body body expression.
+         * @property whileKeyword `while` keyword.
+         * @property condition condition expression.
+         */
+        data class DoWhileStatement(
+            override val body: ExpressionContainer,
+            override val whileKeyword: Keyword.While,
+            override val condition: ExpressionContainer,
+            override var tag: Any? = null,
+        ) : WhileStatementBase
+    }
 
     /**
      * Common interface for AST nodes that are main contents of a Kotlin file or a class body.
@@ -858,63 +940,6 @@ sealed interface Node {
         }
 
         /**
-         * AST node corresponds to KtForExpression.
-         *
-         * ```
-         * for ([loopParam] in [loopRange]) [body]
-         * ```
-         *
-         * @property forKeyword `for` keyword.
-         * @property loopParam loop parameter before `in` keyword.
-         * @property loopRange loop range expression after `in` keyword.
-         * @property body body expression.
-         */
-        data class ForExpression(
-            val forKeyword: Keyword.For,
-            val loopParam: LambdaParam,
-            val loopRange: ExpressionContainer,
-            val body: ExpressionContainer,
-            override var tag: Any? = null,
-        ) : Expression
-
-        /**
-         * Common interface for [WhileExpression] and [DoWhileExpression].
-         */
-        sealed interface WhileExpressionBase : Expression {
-            val whileKeyword: Keyword.While
-            val condition: ExpressionContainer
-            val body: ExpressionContainer
-        }
-
-        /**
-         * AST node corresponds to KtWhileExpression.
-         *
-         * @property whileKeyword `while` keyword.
-         * @property condition condition expression.
-         * @property body body expression.
-         */
-        data class WhileExpression(
-            override val whileKeyword: Keyword.While,
-            override val condition: ExpressionContainer,
-            override val body: ExpressionContainer,
-            override var tag: Any? = null,
-        ) : WhileExpressionBase
-
-        /**
-         * AST node corresponds to KtDoWhileExpression.
-         *
-         * @property body body expression.
-         * @property whileKeyword `while` keyword.
-         * @property condition condition expression.
-         */
-        data class DoWhileExpression(
-            override val body: ExpressionContainer,
-            override val whileKeyword: Keyword.While,
-            override val condition: ExpressionContainer,
-            override var tag: Any? = null,
-        ) : WhileExpressionBase
-
-        /**
          * AST node corresponds to KtBinaryExpression or KtQualifiedExpression.
          *
          * @property lhs left-hand side expression.
@@ -1376,7 +1401,7 @@ sealed interface Node {
         ) : Expression, BinaryExpression.BinaryOperator
 
         /**
-         * AST node corresponds to KtLabeledExpression.
+         * AST node corresponds to KtLabeledExpression used in expression context.
          *
          * @property label label before `@` symbol.
          * @property expression expression after `@` symbol.
@@ -1388,7 +1413,7 @@ sealed interface Node {
         ) : Expression
 
         /**
-         * AST node corresponds to KtAnnotatedExpression.
+         * AST node corresponds to KtAnnotatedExpression used in expression context.
          *
          * @property annotationSets list of annotation sets.
          * @property expression expression of this annotated expression.

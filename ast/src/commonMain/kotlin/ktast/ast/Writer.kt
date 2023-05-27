@@ -84,6 +84,38 @@ open class Writer(
                     append("as")
                     children(name)
                 }
+                is Node.Statement.ForStatement -> {
+                    children(forKeyword)
+                    append("(")
+                    children(loopParam)
+                    append("in")
+                    children(loopRange)
+                    append(")")
+                    children(body)
+                }
+                is Node.Statement.WhileStatement -> {
+                    children(whileKeyword)
+                    append("(")
+                    children(condition)
+                    append(")")
+                    children(body)
+                }
+                is Node.Statement.DoWhileStatement -> {
+                    append("do")
+                    children(body)
+                    children(whileKeyword)
+                    append("(")
+                    children(condition)
+                    append(")")
+                }
+                is Node.Statement.LabeledStatement -> {
+                    append(label).append("@")
+                    children(statement)
+                }
+                is Node.Statement.AnnotatedStatement -> {
+                    children(annotationSets)
+                    children(statement)
+                }
                 is Node.Declaration.ClassDeclaration -> {
                     children(modifiers)
                     children(classDeclarationKeyword)
@@ -309,30 +341,6 @@ open class Writer(
                     children(catchKeyword)
                     children(params)
                     children(block)
-                }
-                is Node.Expression.ForExpression -> {
-                    children(forKeyword)
-                    append("(")
-                    children(loopParam)
-                    append("in")
-                    children(loopRange)
-                    append(")")
-                    children(body)
-                }
-                is Node.Expression.WhileExpression -> {
-                    children(whileKeyword)
-                    append("(")
-                    children(condition)
-                    append(")")
-                    children(body)
-                }
-                is Node.Expression.DoWhileExpression -> {
-                    append("do")
-                    children(body)
-                    children(whileKeyword)
-                    append("(")
-                    children(condition)
-                    append(")")
                 }
                 is Node.Expression.BinaryExpression -> {
                     children(lhs, operator, rhs)
@@ -573,7 +581,7 @@ open class Writer(
                 append("\n")
             }
         }
-        if (parent is Node.Expression.AnnotatedExpression && (this is Node.Expression.BinaryExpression || this is Node.Expression.BinaryTypeExpression)) {
+        if ((parent is Node.Statement.AnnotatedStatement || parent is Node.Expression.AnnotatedExpression) && (this is Node.Expression.BinaryExpression || this is Node.Expression.BinaryTypeExpression)) {
             // Annotated expression requires newline between annotation and expression when expression is a binary operation.
             // This is because, without newline, annotated expression of binary expression is ambiguous with binary expression of annotated expression.
             if (!containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
