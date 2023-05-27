@@ -1064,17 +1064,36 @@ sealed interface Node {
          * AST node corresponds to KtConstantExpression.
          *
          * @property text string representation of this constant.
-         * @property form form of this constant.
          */
-        data class ConstantLiteralExpression(
-            val text: String,
-            val form: Form,
+        sealed interface ConstantLiteralExpression : Expression {
+            val text: String
+        }
+
+        data class BooleanLiteralExpression(
+            override val text: String,
             override var tag: Any? = null,
-        ) : Expression {
-            /**
-             * Form of constant literal expression.
-             */
-            enum class Form { BOOLEAN, CHAR, INT, FLOAT, NULL }
+        ) : ConstantLiteralExpression
+
+        data class CharacterLiteralExpression(
+            override val text: String,
+            override var tag: Any? = null,
+        ) : ConstantLiteralExpression
+
+        data class IntegerLiteralExpression(
+            override val text: String,
+            override var tag: Any? = null,
+        ) : ConstantLiteralExpression
+
+        data class RealLiteralExpression(
+            override val text: String,
+            override var tag: Any? = null,
+        ) : ConstantLiteralExpression
+
+        data class NullLiteralExpression(
+            override var tag: Any? = null,
+        ) : ConstantLiteralExpression {
+            override val text: String
+                get() = "null"
         }
 
         /**

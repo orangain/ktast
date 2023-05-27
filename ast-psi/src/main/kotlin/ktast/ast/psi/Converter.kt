@@ -580,17 +580,15 @@ open class Converter {
             error("Unrecognized string template type for $v")
     }
 
-    open fun convertConst(v: KtConstantExpression) = Node.Expression.ConstantLiteralExpression(
-        text = v.text,
-        form = when (v.node.elementType) {
-            KtNodeTypes.BOOLEAN_CONSTANT -> Node.Expression.ConstantLiteralExpression.Form.BOOLEAN
-            KtNodeTypes.CHARACTER_CONSTANT -> Node.Expression.ConstantLiteralExpression.Form.CHAR
-            KtNodeTypes.INTEGER_CONSTANT -> Node.Expression.ConstantLiteralExpression.Form.INT
-            KtNodeTypes.FLOAT_CONSTANT -> Node.Expression.ConstantLiteralExpression.Form.FLOAT
-            KtNodeTypes.NULL -> Node.Expression.ConstantLiteralExpression.Form.NULL
-            else -> error("Unrecognized const type for $v")
-        }
-    ).map(v)
+    open fun convertConst(v: KtConstantExpression): Node.Expression.ConstantLiteralExpression =
+        when (v.node.elementType) {
+            KtNodeTypes.BOOLEAN_CONSTANT -> Node.Expression.BooleanLiteralExpression(v.text)
+            KtNodeTypes.CHARACTER_CONSTANT -> Node.Expression.CharacterLiteralExpression(v.text)
+            KtNodeTypes.INTEGER_CONSTANT -> Node.Expression.IntegerLiteralExpression(v.text)
+            KtNodeTypes.FLOAT_CONSTANT -> Node.Expression.RealLiteralExpression(v.text)
+            KtNodeTypes.NULL -> Node.Expression.NullLiteralExpression()
+            else -> error("Unrecognized constant type for $v")
+        }.map(v)
 
     open fun convertLambda(v: KtLambdaExpression) = Node.Expression.LambdaExpression(
         params = v.functionLiteral.valueParameterList?.let(::convertLambdaParams),
