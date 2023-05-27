@@ -48,13 +48,18 @@ open class Visitor {
             }
             is Node.Statement.WhileStatement -> {
                 visitChildren(whileKeyword)
+                visitChildren(lPar)
                 visitChildren(condition)
+                visitChildren(rPar)
                 visitChildren(body)
             }
             is Node.Statement.DoWhileStatement -> {
+                visitChildren(doKeyword)
                 visitChildren(body)
                 visitChildren(whileKeyword)
+                visitChildren(lPar)
                 visitChildren(condition)
+                visitChildren(rPar)
             }
             is Node.Statement.LabeledStatement -> {
                 visitChildren(statement)

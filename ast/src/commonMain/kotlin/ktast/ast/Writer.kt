@@ -88,19 +88,10 @@ open class Writer(
                     children(forKeyword, lPar, loopParam, inKeyword, loopRange, rPar, body)
                 }
                 is Node.Statement.WhileStatement -> {
-                    children(whileKeyword)
-                    append("(")
-                    children(condition)
-                    append(")")
-                    children(body)
+                    children(whileKeyword, lPar, condition, rPar, body)
                 }
                 is Node.Statement.DoWhileStatement -> {
-                    append("do")
-                    children(body)
-                    children(whileKeyword)
-                    append("(")
-                    children(condition)
-                    append(")")
+                    children(doKeyword, body, whileKeyword, lPar, condition, rPar)
                 }
                 is Node.Statement.LabeledStatement -> {
                     append(label).append("@")

@@ -51,13 +51,18 @@ open class MutableVisitor(
                     )
                     is Node.Statement.WhileStatement -> copy(
                         whileKeyword = visitChildren(whileKeyword, newCh),
+                        lPar = visitChildren(lPar, newCh),
                         condition = visitChildren(condition, newCh),
+                        rPar = visitChildren(rPar, newCh),
                         body = visitChildren(body, newCh),
                     )
                     is Node.Statement.DoWhileStatement -> copy(
+                        doKeyword = visitChildren(doKeyword, newCh),
                         body = visitChildren(body, newCh),
                         whileKeyword = visitChildren(whileKeyword, newCh),
+                        lPar = visitChildren(lPar, newCh),
                         condition = visitChildren(condition, newCh),
+                        rPar = visitChildren(rPar, newCh),
                     )
                     is Node.Statement.LabeledStatement -> copy(
                         statement = visitChildren(statement, newCh),
