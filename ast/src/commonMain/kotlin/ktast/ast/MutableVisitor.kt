@@ -188,7 +188,8 @@ open class MutableVisitor(
                         lPar = visitChildren(lPar, newCh),
                         modifiers = visitChildren(modifiers, newCh),
                         contextReceivers = visitChildren(contextReceivers, newCh),
-                        functionTypeReceiver = visitChildren(functionTypeReceiver, newCh),
+                        receiverTypeRef = visitChildren(receiverTypeRef, newCh),
+                        dotSymbol = visitChildren(dotSymbol, newCh),
                         params = visitChildren(params, newCh),
                         returnTypeRef = visitChildren(returnTypeRef, newCh),
                         rPar = visitChildren(rPar, newCh),
@@ -198,9 +199,6 @@ open class MutableVisitor(
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
                     is Node.Type.FunctionType.ContextReceiver -> copy(
-                        typeRef = visitChildren(typeRef, newCh),
-                    )
-                    is Node.Type.FunctionType.FunctionTypeReceiver -> copy(
                         typeRef = visitChildren(typeRef, newCh),
                     )
                     is Node.Type.FunctionType.FunctionTypeParams -> copy(

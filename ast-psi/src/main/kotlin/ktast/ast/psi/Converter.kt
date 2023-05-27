@@ -358,7 +358,8 @@ open class Converter {
             lPar = lPar?.let(::convertKeyword),
             modifiers = modifierList?.let(::convertModifiers),
             contextReceivers = v.contextReceiverList?.let { convertContextReceivers(it) },
-            functionTypeReceiver = v.receiver?.let(::convertTypeFunctionReceiver),
+            receiverTypeRef = v.receiver?.typeReference?.let(::convertTypeRef),
+            dotSymbol = findChildByType(v, KtTokens.DOT)?.let(::convertKeyword),
             params = v.parameterList?.let(::convertTypeFunctionParams),
             returnTypeRef = convertTypeRef(v.returnTypeReference ?: error("No return type")),
             rPar = rPar?.let(::convertKeyword),
@@ -395,10 +396,6 @@ open class Converter {
 
     open fun convertContractEffect(v: KtContractEffect) = Node.PostModifier.Contract.ContractEffect(
         expression = convertExpression(v.getExpression()),
-    ).map(v)
-
-    open fun convertTypeFunctionReceiver(v: KtFunctionTypeReceiver) = Node.Type.FunctionType.FunctionTypeReceiver(
-        typeRef = convertTypeRef(v.typeReference),
     ).map(v)
 
     open fun convertTypeFunctionParams(v: KtParameterList) = Node.Type.FunctionType.FunctionTypeParams(

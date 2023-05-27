@@ -170,15 +170,13 @@ open class Visitor {
                 visitChildren(lPar)
                 visitChildren(modifiers)
                 visitChildren(contextReceivers)
-                visitChildren(functionTypeReceiver)
+                visitChildren(receiverTypeRef)
+                visitChildren(dotSymbol)
                 visitChildren(params)
                 visitChildren(returnTypeRef)
                 visitChildren(rPar)
             }
             is Node.Type.FunctionType.ContextReceiver -> {
-                visitChildren(typeRef)
-            }
-            is Node.Type.FunctionType.FunctionTypeReceiver -> {
                 visitChildren(typeRef)
             }
             is Node.Type.FunctionType.FunctionTypeParam -> {
