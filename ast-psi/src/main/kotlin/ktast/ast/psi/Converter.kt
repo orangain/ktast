@@ -137,7 +137,7 @@ open class Converter {
             receiverTypeRef = v.receiverTypeReference?.let(::convertTypeRef),
             name = v.nameIdentifier?.let(::convertName),
             params = v.valueParameterList?.let(::convertFuncParams),
-            typeRef = v.typeReference?.let(::convertTypeRef),
+            returnTypeRef = v.typeReference?.let(::convertTypeRef),
             postModifiers = convertPostModifiers(v),
             equals = v.equalsToken?.let(::convertKeyword),
             body = v.bodyExpression?.let { convertExpression(it) },

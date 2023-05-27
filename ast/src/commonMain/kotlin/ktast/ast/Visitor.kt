@@ -79,7 +79,7 @@ open class Visitor {
                 visitChildren(receiverTypeRef)
                 visitChildren(name)
                 visitChildren(params)
-                visitChildren(typeRef)
+                visitChildren(returnTypeRef)
                 visitChildren(postModifiers)
                 visitChildren(equals)
                 visitChildren(body)

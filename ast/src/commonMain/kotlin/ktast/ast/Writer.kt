@@ -132,7 +132,7 @@ open class Writer(
                     if (receiverTypeRef != null) children(receiverTypeRef).append(".")
                     name?.also { children(it) }
                     children(params)
-                    if (typeRef != null) append(":").also { children(typeRef) }
+                    if (returnTypeRef != null) append(":").also { children(returnTypeRef) }
                     children(postModifiers)
                     children(equals)
                     children(body)

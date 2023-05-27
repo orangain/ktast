@@ -389,7 +389,7 @@ sealed interface Node {
          * @property receiverTypeRef receiver type reference of the function if exists, otherwise `null`.
          * @property name name of the function. If the function is anonymous, the name is `null`.
          * @property params parameters of the function if exists, otherwise `null`.
-         * @property typeRef return type reference of the function if exists, otherwise `null`.
+         * @property returnTypeRef return type reference of the function if exists, otherwise `null`.
          * @property postModifiers post-modifiers of the function.
          * @property equals `=` keyword if exists, otherwise `null`.
          * @property body body of the function if exists, otherwise `null`.
@@ -401,7 +401,7 @@ sealed interface Node {
             val receiverTypeRef: TypeRef?,
             val name: Expression.NameExpression?,
             val params: FunctionParams?,
-            val typeRef: TypeRef?,
+            val returnTypeRef: TypeRef?,
             override val postModifiers: List<PostModifier>,
             override val equals: Keyword.Equal?,
             override val body: Expression?,

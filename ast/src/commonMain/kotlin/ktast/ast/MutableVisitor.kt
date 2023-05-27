@@ -85,7 +85,7 @@ open class MutableVisitor(
                         receiverTypeRef = visitChildren(receiverTypeRef, newCh),
                         name = visitChildren(name, newCh),
                         params = visitChildren(params, newCh),
-                        typeRef = visitChildren(typeRef, newCh),
+                        returnTypeRef = visitChildren(returnTypeRef, newCh),
                         postModifiers = visitChildren(postModifiers, newCh),
                         equals = visitChildren(equals, newCh),
                         body = visitChildren(body, newCh),
