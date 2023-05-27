@@ -73,8 +73,8 @@ class Dumper(
                 is Node.Expression.NameExpression -> mapOf("text" to text)
                 is Node.Expression.ConstantLiteralExpression -> mapOf("text" to text)
                 is Node.Extra.Comment -> mapOf("text" to text)
-                is Node.Expression.StringLiteralExpression.LiteralStringEntry -> mapOf("str" to str)
-                is Node.Expression.StringLiteralExpression.EscapeStringEntry -> mapOf("str" to str)
+                is Node.Expression.StringLiteralExpression.LiteralStringEntry -> mapOf("text" to text)
+                is Node.Expression.StringLiteralExpression.EscapeStringEntry -> mapOf("text" to text)
                 is Node.Expression.StringLiteralExpression.TemplateStringEntry -> mapOf("short" to short)
                 else -> null
             }?.let {

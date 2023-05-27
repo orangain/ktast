@@ -1060,24 +1060,24 @@ sealed interface Node {
             /**
              * AST node corresponds to KtLiteralStringTemplateEntry.
              *
-             * @property str string of this entry.
+             * @property text string of this entry.
              */
             data class LiteralStringEntry(
-                val str: String,
+                val text: String,
                 override var tag: Any? = null,
             ) : StringEntry
 
             /**
              * AST node corresponds to KtEscapeStringTemplateEntry.
              *
-             * @property str string of this entry starting with backslash.
+             * @property text string of this entry starting with backslash.
              */
             data class EscapeStringEntry(
-                val str: String,
+                val text: String,
                 override var tag: Any? = null,
             ) : StringEntry {
                 init {
-                    require(str.startsWith('\\')) {
+                    require(text.startsWith('\\')) {
                         "Escape string template entry must start with backslash."
                     }
                 }
