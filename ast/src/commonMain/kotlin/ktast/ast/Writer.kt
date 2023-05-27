@@ -274,7 +274,7 @@ open class Writer(
                     children(name)
                     children(typeArgs)
                 }
-                is Node.Type.SimpleType.Qualifier -> {
+                is Node.Type.SimpleType.SimpleTypeQualifier -> {
                     children(name)
                     children(typeArgs)
                 }

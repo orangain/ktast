@@ -411,7 +411,7 @@ open class Converter {
         typeRef = convertTypeRef(v.typeReference ?: error("No param type"))
     ).map(v)
 
-    open fun convertTypeSimpleQualifier(v: KtUserType) = Node.Type.SimpleType.Qualifier(
+    open fun convertTypeSimpleQualifier(v: KtUserType) = Node.Type.SimpleType.SimpleTypeQualifier(
         name = convertName(v.referenceExpression ?: error("No type name for $v")),
         typeArgs = v.typeArgumentList?.let(::convertTypeArgs),
     ).map(v)

@@ -190,7 +190,7 @@ open class Visitor {
                 visitChildren(name)
                 visitChildren(typeArgs)
             }
-            is Node.Type.SimpleType.Qualifier -> {
+            is Node.Type.SimpleType.SimpleTypeQualifier -> {
                 visitChildren(name)
                 visitChildren(typeArgs)
             }

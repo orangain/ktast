@@ -216,7 +216,7 @@ open class MutableVisitor(
                         name = visitChildren(name, newCh),
                         typeArgs = visitChildren(typeArgs, newCh),
                     )
-                    is Node.Type.SimpleType.Qualifier -> copy(
+                    is Node.Type.SimpleType.SimpleTypeQualifier -> copy(
                         name = visitChildren(name, newCh),
                         typeArgs = visitChildren(typeArgs, newCh),
                     )

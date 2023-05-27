@@ -690,7 +690,7 @@ sealed interface Node {
          * @property typeArgs type arguments if exists, otherwise `null`.
          */
         data class SimpleType(
-            val qualifiers: List<Qualifier>,
+            val qualifiers: List<SimpleTypeQualifier>,
             override val name: Expression.NameExpression,
             override val typeArgs: TypeArgs?,
             override var tag: Any? = null,
@@ -701,7 +701,7 @@ sealed interface Node {
              * @property name name of the qualifier.
              * @property typeArgs type arguments if exists, otherwise `null`.
              */
-            data class Qualifier(
+            data class SimpleTypeQualifier(
                 override val name: Expression.NameExpression,
                 override val typeArgs: TypeArgs?,
                 override var tag: Any? = null,
