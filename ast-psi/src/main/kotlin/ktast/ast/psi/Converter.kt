@@ -268,6 +268,7 @@ open class Converter {
         modifiers = v.modifierList?.let(::convertModifiers),
         name = v.nameIdentifier?.let(::convertName) ?: error("No type alias name for $v"),
         typeParams = v.typeParameterList?.let(::convertTypeParams),
+        equals = convertKeyword(v.equalsToken),
         typeRef = convertTypeRef(v.getTypeReference() ?: error("No type alias ref for $v"))
     ).map(v)
 
@@ -938,7 +939,9 @@ open class Converter {
             get() = findChildByType(this, KtTokens.WHERE_KEYWORD) ?: error("No where keyword for $this")
 
         internal val KtDeclarationWithInitializer.equalsToken: PsiElement
-            get() = findChildByType(this, KtTokens.EQ) ?: error("No equals token for initializer of $this")
+            get() = findChildByType(this, KtTokens.EQ) ?: error("No equals token for $this")
+        internal val KtTypeAlias.equalsToken: PsiElement
+            get() = findChildByType(this, KtTokens.EQ) ?: error("No equals token for $this")
 
         internal val KtPropertyDelegate.byKeyword: PsiElement
             get() = byKeywordNode.psi

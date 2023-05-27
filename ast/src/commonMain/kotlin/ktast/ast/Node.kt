@@ -624,6 +624,7 @@ sealed interface Node {
             override val modifiers: Modifiers?,
             val name: Expression.NameExpression,
             val typeParams: TypeParams?,
+            val equals: Keyword.Equal,
             val typeRef: TypeRef,
             override var tag: Any? = null,
         ) : Declaration, WithModifiers

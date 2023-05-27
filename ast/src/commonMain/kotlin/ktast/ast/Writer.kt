@@ -208,7 +208,8 @@ open class Writer(
                     children(modifiers)
                     append("typealias")
                     children(name)
-                    children(typeParams).append("=")
+                    children(typeParams)
+                    children(equals)
                     children(typeRef)
                 }
                 is Node.Declaration.ClassDeclaration.ClassBody.SecondaryConstructor -> {

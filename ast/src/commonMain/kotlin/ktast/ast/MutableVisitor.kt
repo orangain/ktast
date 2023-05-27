@@ -170,6 +170,7 @@ open class MutableVisitor(
                         modifiers = visitChildren(modifiers, newCh),
                         name = visitChildren(name, newCh),
                         typeParams = visitChildren(typeParams, newCh),
+                        equals = visitChildren(equals, newCh),
                         typeRef = visitChildren(typeRef, newCh)
                     )
                     is Node.Declaration.ClassDeclaration.ClassBody.SecondaryConstructor -> copy(
