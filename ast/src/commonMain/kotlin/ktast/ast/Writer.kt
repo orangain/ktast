@@ -369,9 +369,9 @@ open class Writer(
                     }
                 }
                 is Node.Expression.StringLiteralExpression.LiteralStringEntry ->
-                    doAppend(str)
+                    doAppend(text)
                 is Node.Expression.StringLiteralExpression.EscapeStringEntry -> {
-                    doAppend(str)
+                    doAppend(text)
                 }
                 is Node.Expression.StringLiteralExpression.TemplateStringEntry -> {
                     val (prefix, suffix) = if (short) {
