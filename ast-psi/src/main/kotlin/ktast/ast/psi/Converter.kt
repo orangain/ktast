@@ -552,12 +552,12 @@ open class Converter {
         rhs = convertExpression(v.selectorExpression ?: error("No qualified rhs for $v"))
     ).map(v)
 
-    open fun convertPrefix(v: KtPrefixExpression) = Node.Expression.PrefixExpression(
+    open fun convertPrefix(v: KtPrefixExpression) = Node.Expression.PrefixUnaryExpression(
         operator = convertKeyword(v.operationReference),
         expression = convertExpression(v.baseExpression ?: error("No base expression for $v")),
     ).map(v)
 
-    open fun convertPostfix(v: KtPostfixExpression) = Node.Expression.PostfixExpression(
+    open fun convertPostfix(v: KtPostfixExpression) = Node.Expression.PostfixUnaryExpression(
         expression = convertExpression(v.baseExpression ?: error("No base expression for $v")),
         operator = convertKeyword(v.operationReference),
     ).map(v)

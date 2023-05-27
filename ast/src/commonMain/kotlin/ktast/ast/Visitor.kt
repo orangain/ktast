@@ -252,11 +252,11 @@ open class Visitor {
                 visitChildren(operator)
                 visitChildren(rhs)
             }
-            is Node.Expression.PrefixExpression -> {
+            is Node.Expression.PrefixUnaryExpression -> {
                 visitChildren(operator)
                 visitChildren(expression)
             }
-            is Node.Expression.PostfixExpression -> {
+            is Node.Expression.PostfixUnaryExpression -> {
                 visitChildren(expression)
                 visitChildren(operator)
             }

@@ -960,7 +960,7 @@ sealed interface Node {
         }
 
         /**
-         * Common interface for [PrefixExpression] and [PostfixExpression]. The node corresponds to KtUnaryExpression
+         * Common interface for [PrefixUnaryExpression] and [PostfixUnaryExpression]. The node corresponds to KtUnaryExpression
          *
          * @property expression operand expression.
          * @property operator unary operator.
@@ -976,24 +976,24 @@ sealed interface Node {
         }
 
         /**
-         * AST node corresponds to KtUnaryExpression whose operator is prefix.
+         * AST node corresponds to KtPrefixExpression.
          *
          * @property operator unary operator.
          * @property expression operand expression.
          */
-        data class PrefixExpression(
+        data class PrefixUnaryExpression(
             override val operator: UnaryExpression.UnaryOperator,
             override val expression: Expression,
             override var tag: Any? = null,
         ) : UnaryExpression
 
         /**
-         * AST node corresponds to KtUnaryExpression whose operator is postfix.
+         * AST node corresponds to KtPostfixExpression.
          *
          * @property expression operand expression.
          * @property operator unary operator.
          */
-        data class PostfixExpression(
+        data class PostfixUnaryExpression(
             override val expression: Expression,
             override val operator: UnaryExpression.UnaryOperator,
             override var tag: Any? = null,
