@@ -84,6 +84,30 @@ open class Writer(
                     append("as")
                     children(name)
                 }
+                is Node.Statement.ForStatement -> {
+                    children(forKeyword)
+                    append("(")
+                    children(loopParam)
+                    append("in")
+                    children(loopRange)
+                    append(")")
+                    children(body)
+                }
+                is Node.Statement.WhileStatement -> {
+                    children(whileKeyword)
+                    append("(")
+                    children(condition)
+                    append(")")
+                    children(body)
+                }
+                is Node.Statement.DoWhileStatement -> {
+                    append("do")
+                    children(body)
+                    children(whileKeyword)
+                    append("(")
+                    children(condition)
+                    append(")")
+                }
                 is Node.Statement.LabeledStatement -> {
                     append(label).append("@")
                     children(statement)
@@ -317,30 +341,6 @@ open class Writer(
                     children(catchKeyword)
                     children(params)
                     children(block)
-                }
-                is Node.Statement.ForStatement -> {
-                    children(forKeyword)
-                    append("(")
-                    children(loopParam)
-                    append("in")
-                    children(loopRange)
-                    append(")")
-                    children(body)
-                }
-                is Node.Statement.WhileStatement -> {
-                    children(whileKeyword)
-                    append("(")
-                    children(condition)
-                    append(")")
-                    children(body)
-                }
-                is Node.Statement.DoWhileStatement -> {
-                    append("do")
-                    children(body)
-                    children(whileKeyword)
-                    append("(")
-                    children(condition)
-                    append(")")
                 }
                 is Node.Expression.BinaryExpression -> {
                     children(lhs, operator, rhs)

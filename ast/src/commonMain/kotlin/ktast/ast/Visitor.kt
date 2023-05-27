@@ -37,6 +37,22 @@ open class Visitor {
             is Node.ImportDirective.ImportAlias -> {
                 visitChildren(name)
             }
+            is Node.Statement.ForStatement -> {
+                visitChildren(forKeyword)
+                visitChildren(loopParam)
+                visitChildren(loopRange)
+                visitChildren(body)
+            }
+            is Node.Statement.WhileStatement -> {
+                visitChildren(whileKeyword)
+                visitChildren(condition)
+                visitChildren(body)
+            }
+            is Node.Statement.DoWhileStatement -> {
+                visitChildren(body)
+                visitChildren(whileKeyword)
+                visitChildren(condition)
+            }
             is Node.Statement.LabeledStatement -> {
                 visitChildren(statement)
             }
@@ -230,22 +246,6 @@ open class Visitor {
                 visitChildren(catchKeyword)
                 visitChildren(params)
                 visitChildren(block)
-            }
-            is Node.Statement.ForStatement -> {
-                visitChildren(forKeyword)
-                visitChildren(loopParam)
-                visitChildren(loopRange)
-                visitChildren(body)
-            }
-            is Node.Statement.WhileStatement -> {
-                visitChildren(whileKeyword)
-                visitChildren(condition)
-                visitChildren(body)
-            }
-            is Node.Statement.DoWhileStatement -> {
-                visitChildren(body)
-                visitChildren(whileKeyword)
-                visitChildren(condition)
             }
             is Node.Expression.BinaryExpression -> {
                 visitChildren(lhs)

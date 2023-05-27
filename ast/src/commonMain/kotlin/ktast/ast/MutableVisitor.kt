@@ -40,6 +40,22 @@ open class MutableVisitor(
                     is Node.ImportDirective.ImportAlias -> copy(
                         name = visitChildren(name, newCh),
                     )
+                    is Node.Statement.ForStatement -> copy(
+                        forKeyword = visitChildren(forKeyword, newCh),
+                        loopParam = visitChildren(loopParam, newCh),
+                        loopRange = visitChildren(loopRange, newCh),
+                        body = visitChildren(body, newCh)
+                    )
+                    is Node.Statement.WhileStatement -> copy(
+                        whileKeyword = visitChildren(whileKeyword, newCh),
+                        condition = visitChildren(condition, newCh),
+                        body = visitChildren(body, newCh),
+                    )
+                    is Node.Statement.DoWhileStatement -> copy(
+                        body = visitChildren(body, newCh),
+                        whileKeyword = visitChildren(whileKeyword, newCh),
+                        condition = visitChildren(condition, newCh),
+                    )
                     is Node.Statement.LabeledStatement -> copy(
                         statement = visitChildren(statement, newCh),
                     )
@@ -260,22 +276,6 @@ open class MutableVisitor(
                         catchKeyword = visitChildren(catchKeyword, newCh),
                         params = visitChildren(params, newCh),
                         block = visitChildren(block, newCh),
-                    )
-                    is Node.Statement.ForStatement -> copy(
-                        forKeyword = visitChildren(forKeyword, newCh),
-                        loopParam = visitChildren(loopParam, newCh),
-                        loopRange = visitChildren(loopRange, newCh),
-                        body = visitChildren(body, newCh)
-                    )
-                    is Node.Statement.WhileStatement -> copy(
-                        whileKeyword = visitChildren(whileKeyword, newCh),
-                        condition = visitChildren(condition, newCh),
-                        body = visitChildren(body, newCh),
-                    )
-                    is Node.Statement.DoWhileStatement -> copy(
-                        body = visitChildren(body, newCh),
-                        whileKeyword = visitChildren(whileKeyword, newCh),
-                        condition = visitChildren(condition, newCh),
                     )
                     is Node.Expression.BinaryExpression -> copy(
                         lhs = visitChildren(lhs, newCh),
