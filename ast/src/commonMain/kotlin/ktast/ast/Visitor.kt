@@ -39,8 +39,11 @@ open class Visitor {
             }
             is Node.Statement.ForStatement -> {
                 visitChildren(forKeyword)
+                visitChildren(lPar)
                 visitChildren(loopParam)
+                visitChildren(inKeyword)
                 visitChildren(loopRange)
+                visitChildren(rPar)
                 visitChildren(body)
             }
             is Node.Statement.WhileStatement -> {

@@ -42,8 +42,11 @@ open class MutableVisitor(
                     )
                     is Node.Statement.ForStatement -> copy(
                         forKeyword = visitChildren(forKeyword, newCh),
+                        lPar = visitChildren(lPar, newCh),
                         loopParam = visitChildren(loopParam, newCh),
+                        inKeyword = visitChildren(inKeyword, newCh),
                         loopRange = visitChildren(loopRange, newCh),
+                        rPar = visitChildren(rPar, newCh),
                         body = visitChildren(body, newCh)
                     )
                     is Node.Statement.WhileStatement -> copy(

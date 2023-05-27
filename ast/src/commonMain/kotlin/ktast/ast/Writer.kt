@@ -85,13 +85,7 @@ open class Writer(
                     children(name)
                 }
                 is Node.Statement.ForStatement -> {
-                    children(forKeyword)
-                    append("(")
-                    children(loopParam)
-                    append("in")
-                    children(loopRange)
-                    append(")")
-                    children(body)
+                    children(forKeyword, lPar, loopParam, inKeyword, loopRange, rPar, body)
                 }
                 is Node.Statement.WhileStatement -> {
                     children(whileKeyword)

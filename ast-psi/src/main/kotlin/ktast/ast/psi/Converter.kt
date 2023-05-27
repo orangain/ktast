@@ -68,8 +68,11 @@ open class Converter {
 
     open fun convertFor(v: KtForExpression) = Node.Statement.ForStatement(
         forKeyword = convertKeyword(v.forKeyword),
+        lPar = convertKeyword(v.leftParenthesis ?: error("No left parenthesis for $v")),
         loopParam = convertLambdaParam(v.loopParameter ?: error("No param on for $v")),
+        inKeyword = convertKeyword(v.inKeyword ?: error("No in keyword for $v")),
         loopRange = convertExpressionContainer(v.loopRangeContainer),
+        rPar = convertKeyword(v.rightParenthesis ?: error("No right parenthesis for $v")),
         body = convertExpressionContainer(v.bodyContainer),
     ).map(v)
 

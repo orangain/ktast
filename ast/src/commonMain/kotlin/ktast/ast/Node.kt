@@ -204,14 +204,20 @@ sealed interface Node {
          * ```
          *
          * @property forKeyword `for` keyword.
+         * @property lPar left parenthesis.
          * @property loopParam loop parameter before `in` keyword.
+         * @property inKeyword `in` keyword.
          * @property loopRange loop range expression after `in` keyword.
+         * @property rPar right parenthesis.
          * @property body body expression.
          */
         data class ForStatement(
             val forKeyword: Keyword.For,
+            val lPar: Keyword.LPar,
             val loopParam: LambdaParam,
+            val inKeyword: Keyword.In,
             val loopRange: ExpressionContainer,
+            val rPar: Keyword.RPar,
             val body: ExpressionContainer,
             override var tag: Any? = null,
         ) : Statement
