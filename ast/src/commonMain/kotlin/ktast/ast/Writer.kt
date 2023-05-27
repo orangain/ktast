@@ -480,7 +480,7 @@ open class Writer(
                 is Node.Expression.AnonymousFunctionExpression ->
                     children(function)
                 is Node.Expression.PropertyExpression ->
-                    children(declaration)
+                    children(property)
                 is Node.Expression.BlockExpression -> {
                     append("{").run {
                         children(statements)

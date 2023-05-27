@@ -1368,10 +1368,10 @@ sealed interface Node {
          * AST node corresponds to KtProperty or KtDestructuringDeclaration.
          * This is only present for when expressions and labeled expressions.
          *
-         * @property declaration property declaration.
+         * @property property property declaration.
          */
         data class PropertyExpression(
-            val declaration: Declaration.PropertyDeclaration,
+            val property: Declaration.PropertyDeclaration,
             override var tag: Any? = null,
         ) : Expression
 

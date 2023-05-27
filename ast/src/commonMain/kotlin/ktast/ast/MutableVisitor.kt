@@ -383,7 +383,7 @@ open class MutableVisitor(
                         function = visitChildren(function, newCh)
                     )
                     is Node.Expression.PropertyExpression -> copy(
-                        declaration = visitChildren(declaration, newCh)
+                        property = visitChildren(property, newCh)
                     )
                     is Node.Expression.BlockExpression -> copy(
                         statements = visitChildren(statements, newCh)

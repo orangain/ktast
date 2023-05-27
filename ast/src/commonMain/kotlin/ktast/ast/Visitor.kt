@@ -349,7 +349,7 @@ open class Visitor {
                 visitChildren(function)
             }
             is Node.Expression.PropertyExpression -> {
-                visitChildren(declaration)
+                visitChildren(property)
             }
             is Node.Expression.BlockExpression -> {
                 visitChildren(statements)

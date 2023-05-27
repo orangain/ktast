@@ -790,11 +790,11 @@ open class Converter {
         Node.Expression.AnonymousFunctionExpression(convertFunction(v))
 
     open fun convertPropertyExpr(v: KtProperty) = Node.Expression.PropertyExpression(
-        declaration = convertProperty(v)
+        property = convertProperty(v)
     ).map(v)
 
     open fun convertPropertyExpr(v: KtDestructuringDeclaration) = Node.Expression.PropertyExpression(
-        declaration = convertProperty(v)
+        property = convertProperty(v)
     ).map(v)
 
     open fun convertBlock(v: KtBlockExpression) = Node.Expression.BlockExpression(
