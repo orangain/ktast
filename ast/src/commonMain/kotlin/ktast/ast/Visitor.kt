@@ -241,8 +241,11 @@ open class Visitor {
             }
             is Node.Expression.IfExpression -> {
                 visitChildren(ifKeyword)
+                visitChildren(lPar)
                 visitChildren(condition)
+                visitChildren(rPar)
                 visitChildren(body)
+                visitChildren(elseKeyword)
                 visitChildren(elseBody)
             }
             is Node.Expression.TryExpression -> {

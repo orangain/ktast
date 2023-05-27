@@ -527,8 +527,11 @@ open class Converter {
 
     open fun convertIf(v: KtIfExpression) = Node.Expression.IfExpression(
         ifKeyword = convertKeyword(v.ifKeyword),
+        lPar = convertKeyword(v.leftParenthesis ?: error("No left parenthesis on if for $v")),
         condition = convertExpression(v.condition ?: error("No cond on if for $v")),
+        rPar = convertKeyword(v.rightParenthesis ?: error("No right parenthesis on if for $v")),
         body = convertExpressionContainer(v.thenContainer),
+        elseKeyword = v.elseKeyword?.let(::convertKeyword),
         elseBody = v.elseContainer?.let(::convertExpressionContainer),
     ).map(v)
 

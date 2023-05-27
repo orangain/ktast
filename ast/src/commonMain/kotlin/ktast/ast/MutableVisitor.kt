@@ -271,8 +271,11 @@ open class MutableVisitor(
                     )
                     is Node.Expression.IfExpression -> copy(
                         ifKeyword = visitChildren(ifKeyword, newCh),
+                        lPar = visitChildren(lPar, newCh),
                         condition = visitChildren(condition, newCh),
+                        rPar = visitChildren(rPar, newCh),
                         body = visitChildren(body, newCh),
+                        elseKeyword = visitChildren(elseKeyword, newCh),
                         elseBody = visitChildren(elseBody, newCh)
                     )
                     is Node.Expression.TryExpression -> copy(

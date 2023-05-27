@@ -306,15 +306,7 @@ open class Writer(
                     children(expression)
                 }
                 is Node.Expression.IfExpression -> {
-                    children(ifKeyword)
-                    append("(")
-                    children(condition)
-                    append(")")
-                    children(body)
-                    if (elseBody != null) {
-                        append("else")
-                        children(elseBody)
-                    }
+                    children(ifKeyword, lPar, condition, rPar, body, elseKeyword, elseBody)
                 }
                 is Node.Expression.TryExpression -> {
                     append("try")

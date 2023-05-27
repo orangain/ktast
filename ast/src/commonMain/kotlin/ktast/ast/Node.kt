@@ -918,8 +918,11 @@ sealed interface Node {
          */
         data class IfExpression(
             val ifKeyword: Keyword.If,
+            val lPar: Keyword.LPar,
             val condition: Expression,
+            val rPar: Keyword.RPar,
             val body: ExpressionContainer,
+            val elseKeyword: Keyword.Else?,
             val elseBody: ExpressionContainer?,
             override var tag: Any? = null,
         ) : Expression
