@@ -261,18 +261,18 @@ open class MutableVisitor(
                         params = visitChildren(params, newCh),
                         block = visitChildren(block, newCh),
                     )
-                    is Node.Expression.ForExpression -> copy(
+                    is Node.Statement.ForExpression -> copy(
                         forKeyword = visitChildren(forKeyword, newCh),
                         loopParam = visitChildren(loopParam, newCh),
                         loopRange = visitChildren(loopRange, newCh),
                         body = visitChildren(body, newCh)
                     )
-                    is Node.Expression.WhileExpression -> copy(
+                    is Node.Statement.WhileExpression -> copy(
                         whileKeyword = visitChildren(whileKeyword, newCh),
                         condition = visitChildren(condition, newCh),
                         body = visitChildren(body, newCh),
                     )
-                    is Node.Expression.DoWhileExpression -> copy(
+                    is Node.Statement.DoWhileExpression -> copy(
                         body = visitChildren(body, newCh),
                         whileKeyword = visitChildren(whileKeyword, newCh),
                         condition = visitChildren(condition, newCh),
