@@ -1313,13 +1313,13 @@ sealed interface Node {
         /**
          * AST node corresponds to KtCallElement.
          *
-         * @property expression callee expression.
+         * @property calleeExpression callee expression.
          * @property typeArgs type arguments if exists, otherwise `null`.
          * @property args value arguments if exists, otherwise `null`.
          * @property lambdaArg lambda argument if exists, otherwise `null`.
          */
         data class CallExpression(
-            val expression: Expression,
+            val calleeExpression: Expression,
             val typeArgs: TypeArgs?,
             val args: ValueArgs?,
             val lambdaArg: LambdaArg?,

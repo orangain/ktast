@@ -331,7 +331,7 @@ open class Visitor {
                 visitChildren(expression)
             }
             is Node.Expression.CallExpression -> {
-                visitChildren(expression)
+                visitChildren(calleeExpression)
                 visitChildren(typeArgs)
                 visitChildren(args)
                 visitChildren(lambdaArg)

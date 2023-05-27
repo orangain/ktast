@@ -365,7 +365,7 @@ open class MutableVisitor(
                         expression = visitChildren(expression, newCh)
                     )
                     is Node.Expression.CallExpression -> copy(
-                        expression = visitChildren(expression, newCh),
+                        calleeExpression = visitChildren(calleeExpression, newCh),
                         typeArgs = visitChildren(typeArgs, newCh),
                         args = visitChildren(args, newCh),
                         lambdaArg = visitChildren(lambdaArg, newCh)

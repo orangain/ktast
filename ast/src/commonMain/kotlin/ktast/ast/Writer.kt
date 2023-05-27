@@ -463,7 +463,7 @@ open class Writer(
                 is Node.Expression.AnnotatedExpression ->
                     children(annotationSets).also { children(expression) }
                 is Node.Expression.CallExpression -> {
-                    children(expression)
+                    children(calleeExpression)
                     children(typeArgs)
                     children(args)
                     children(lambdaArg)
