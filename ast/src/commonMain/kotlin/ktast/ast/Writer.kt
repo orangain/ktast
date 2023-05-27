@@ -229,9 +229,7 @@ open class Writer(
                 is Node.TypeArg -> {
                     children(modifiers)
                     children(typeRef)
-                    if (asterisk) {
-                        append("*")
-                    }
+                    children(asterisk)
                 }
                 is Node.TypeRef -> {
                     children(lPar)

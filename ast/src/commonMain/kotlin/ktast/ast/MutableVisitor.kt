@@ -177,6 +177,7 @@ open class MutableVisitor(
                     is Node.TypeArg -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         typeRef = visitChildren(typeRef, newCh),
+                        asterisk = visitChildren(asterisk, newCh),
                     )
                     is Node.TypeRef -> copy(
                         lPar = visitChildren(lPar, newCh),

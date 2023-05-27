@@ -284,7 +284,7 @@ open class Converter {
     open fun convertTypeArg(v: KtTypeProjection): Node.TypeArg = Node.TypeArg(
         modifiers = v.modifierList?.let(::convertModifiers),
         typeRef = v.typeReference?.let(::convertTypeRef),
-        asterisk = v.projectionKind == KtProjectionKind.STAR,
+        asterisk = v.projectionToken?.let { convertKeyword<Node.Keyword>(it) } as? Node.Keyword.Asterisk,
     ).map(v)
 
     open fun convertTypeRef(v: KtTypeReference): Node.TypeRef {

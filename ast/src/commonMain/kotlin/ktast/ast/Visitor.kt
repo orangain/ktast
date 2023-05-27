@@ -159,6 +159,7 @@ open class Visitor {
             is Node.TypeArg -> {
                 visitChildren(modifiers)
                 visitChildren(typeRef)
+                visitChildren(asterisk)
             }
             is Node.TypeRef -> {
                 visitChildren(lPar)

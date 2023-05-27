@@ -739,16 +739,16 @@ sealed interface Node {
      *
      * @property modifiers modifiers if exists, otherwise `null`.
      * @property typeRef type reference if exists, otherwise `null`.
-     * @property asterisk `true` if this type projection is `*`, otherwise `false`. When `true`, [modifiers] and [typeRef] must be `null`. When `false`, [typeRef] must not be `null`.
+     * @property asterisk `*` if exists, otherwise `null`. When this is not null, [modifiers] and [typeRef] must be `null`, otherwise [typeRef] must not be `null`.
      */
     data class TypeArg(
         override val modifiers: Modifiers?,
         val typeRef: TypeRef?,
-        val asterisk: Boolean,
+        val asterisk: Keyword.Asterisk?,
         override var tag: Any? = null,
     ) : Node, WithModifiers {
         init {
-            if (asterisk) {
+            if (asterisk != null) {
                 require(modifiers == null && typeRef == null) {
                     "modifiers and typeRef must be null when asterisk is true"
                 }
