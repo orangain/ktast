@@ -232,7 +232,7 @@ sealed interface Node {
          * @property loopRange loop range expression after `in` keyword.
          * @property body body expression.
          */
-        data class ForExpression(
+        data class ForStatement(
             val forKeyword: Keyword.For,
             val loopParam: LambdaParam,
             val loopRange: ExpressionContainer,
@@ -241,9 +241,9 @@ sealed interface Node {
         ) : Statement
 
         /**
-         * Common interface for [WhileExpression] and [DoWhileExpression].
+         * Common interface for [WhileStatement] and [DoWhileStatement].
          */
-        sealed interface WhileExpressionBase : Statement {
+        sealed interface WhileStatementBase : Statement {
             val whileKeyword: Keyword.While
             val condition: ExpressionContainer
             val body: ExpressionContainer
@@ -256,12 +256,12 @@ sealed interface Node {
          * @property condition condition expression.
          * @property body body expression.
          */
-        data class WhileExpression(
+        data class WhileStatement(
             override val whileKeyword: Keyword.While,
             override val condition: ExpressionContainer,
             override val body: ExpressionContainer,
             override var tag: Any? = null,
-        ) : WhileExpressionBase
+        ) : WhileStatementBase
 
         /**
          * AST node corresponds to KtDoWhileExpression.
@@ -270,12 +270,12 @@ sealed interface Node {
          * @property whileKeyword `while` keyword.
          * @property condition condition expression.
          */
-        data class DoWhileExpression(
+        data class DoWhileStatement(
             override val body: ExpressionContainer,
             override val whileKeyword: Keyword.While,
             override val condition: ExpressionContainer,
             override var tag: Any? = null,
-        ) : WhileExpressionBase
+        ) : WhileStatementBase
     }
 
     /**

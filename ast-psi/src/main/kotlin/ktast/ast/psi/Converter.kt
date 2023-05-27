@@ -497,20 +497,20 @@ open class Converter {
         block = convertBlock(v.catchBody as? KtBlockExpression ?: error("No catch block for $v")),
     ).map(v)
 
-    open fun convertFor(v: KtForExpression) = Node.Statement.ForExpression(
+    open fun convertFor(v: KtForExpression) = Node.Statement.ForStatement(
         forKeyword = convertKeyword(v.forKeyword),
         loopParam = convertLambdaParam(v.loopParameter ?: error("No param on for $v")),
         loopRange = convertExpressionContainer(v.loopRangeContainer),
         body = convertExpressionContainer(v.bodyContainer),
     ).map(v)
 
-    open fun convertWhile(v: KtWhileExpression) = Node.Statement.WhileExpression(
+    open fun convertWhile(v: KtWhileExpression) = Node.Statement.WhileStatement(
         whileKeyword = convertKeyword(v.whileKeyword),
         condition = convertExpressionContainer(v.conditionContainer),
         body = convertExpressionContainer(v.bodyContainer),
     ).map(v)
 
-    open fun convertDoWhile(v: KtDoWhileExpression) = Node.Statement.DoWhileExpression(
+    open fun convertDoWhile(v: KtDoWhileExpression) = Node.Statement.DoWhileStatement(
         body = convertExpressionContainer(v.bodyContainer),
         whileKeyword = convertKeyword(v.whileKeyword ?: error("No while keyword for $v")),
         condition = convertExpressionContainer(v.conditionContainer),

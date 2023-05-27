@@ -231,18 +231,18 @@ open class Visitor {
                 visitChildren(params)
                 visitChildren(block)
             }
-            is Node.Statement.ForExpression -> {
+            is Node.Statement.ForStatement -> {
                 visitChildren(forKeyword)
                 visitChildren(loopParam)
                 visitChildren(loopRange)
                 visitChildren(body)
             }
-            is Node.Statement.WhileExpression -> {
+            is Node.Statement.WhileStatement -> {
                 visitChildren(whileKeyword)
                 visitChildren(condition)
                 visitChildren(body)
             }
-            is Node.Statement.DoWhileExpression -> {
+            is Node.Statement.DoWhileStatement -> {
                 visitChildren(body)
                 visitChildren(whileKeyword)
                 visitChildren(condition)

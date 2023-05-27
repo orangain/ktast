@@ -318,7 +318,7 @@ open class Writer(
                     children(params)
                     children(block)
                 }
-                is Node.Statement.ForExpression -> {
+                is Node.Statement.ForStatement -> {
                     children(forKeyword)
                     append("(")
                     children(loopParam)
@@ -327,14 +327,14 @@ open class Writer(
                     append(")")
                     children(body)
                 }
-                is Node.Statement.WhileExpression -> {
+                is Node.Statement.WhileStatement -> {
                     children(whileKeyword)
                     append("(")
                     children(condition)
                     append(")")
                     children(body)
                 }
-                is Node.Statement.DoWhileExpression -> {
+                is Node.Statement.DoWhileStatement -> {
                     append("do")
                     children(body)
                     children(whileKeyword)
