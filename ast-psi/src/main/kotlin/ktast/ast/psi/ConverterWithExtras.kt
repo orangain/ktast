@@ -80,7 +80,7 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
         if (!seenExtraPsiIdentities.add(elemId)) null else when {
             elem is PsiWhiteSpace -> Node.Extra.Whitespace(elem.text)
             elem is PsiComment -> Node.Extra.Comment(elem.text)
-            elem.node.elementType == KtTokens.SEMICOLON -> Node.Extra.Semicolon(elem.text)
+            elem.node.elementType == KtTokens.SEMICOLON -> Node.Extra.Semicolon()
             else -> error("elems must contain only PsiWhiteSpace or PsiComment or SEMICOLON elements.")
         }
     }

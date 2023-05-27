@@ -2089,9 +2089,10 @@ sealed interface Node {
          * @property text string representation of the node.
          */
         data class Semicolon(
-            override val text: String,
             override var tag: Any? = null,
-        ) : Extra
+        ) : Extra {
+            override val text = ";"
+        }
     }
 
 }
