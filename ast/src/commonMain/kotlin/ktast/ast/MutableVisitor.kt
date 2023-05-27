@@ -42,19 +42,27 @@ open class MutableVisitor(
                     )
                     is Node.Statement.ForStatement -> copy(
                         forKeyword = visitChildren(forKeyword, newCh),
+                        lPar = visitChildren(lPar, newCh),
                         loopParam = visitChildren(loopParam, newCh),
+                        inKeyword = visitChildren(inKeyword, newCh),
                         loopRange = visitChildren(loopRange, newCh),
+                        rPar = visitChildren(rPar, newCh),
                         body = visitChildren(body, newCh)
                     )
                     is Node.Statement.WhileStatement -> copy(
                         whileKeyword = visitChildren(whileKeyword, newCh),
+                        lPar = visitChildren(lPar, newCh),
                         condition = visitChildren(condition, newCh),
+                        rPar = visitChildren(rPar, newCh),
                         body = visitChildren(body, newCh),
                     )
                     is Node.Statement.DoWhileStatement -> copy(
+                        doKeyword = visitChildren(doKeyword, newCh),
                         body = visitChildren(body, newCh),
                         whileKeyword = visitChildren(whileKeyword, newCh),
+                        lPar = visitChildren(lPar, newCh),
                         condition = visitChildren(condition, newCh),
+                        rPar = visitChildren(rPar, newCh),
                     )
                     is Node.Statement.LabeledStatement -> copy(
                         statement = visitChildren(statement, newCh),
@@ -258,13 +266,13 @@ open class MutableVisitor(
                         asterisk = visitChildren(asterisk, newCh),
                         expression = visitChildren(expression, newCh)
                     )
-                    is Node.ExpressionContainer -> copy(
-                        expression = visitChildren(expression, newCh),
-                    )
                     is Node.Expression.IfExpression -> copy(
                         ifKeyword = visitChildren(ifKeyword, newCh),
+                        lPar = visitChildren(lPar, newCh),
                         condition = visitChildren(condition, newCh),
+                        rPar = visitChildren(rPar, newCh),
                         body = visitChildren(body, newCh),
+                        elseKeyword = visitChildren(elseKeyword, newCh),
                         elseBody = visitChildren(elseBody, newCh)
                     )
                     is Node.Expression.TryExpression -> copy(

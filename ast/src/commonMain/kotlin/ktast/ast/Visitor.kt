@@ -39,19 +39,27 @@ open class Visitor {
             }
             is Node.Statement.ForStatement -> {
                 visitChildren(forKeyword)
+                visitChildren(lPar)
                 visitChildren(loopParam)
+                visitChildren(inKeyword)
                 visitChildren(loopRange)
+                visitChildren(rPar)
                 visitChildren(body)
             }
             is Node.Statement.WhileStatement -> {
                 visitChildren(whileKeyword)
+                visitChildren(lPar)
                 visitChildren(condition)
+                visitChildren(rPar)
                 visitChildren(body)
             }
             is Node.Statement.DoWhileStatement -> {
+                visitChildren(doKeyword)
                 visitChildren(body)
                 visitChildren(whileKeyword)
+                visitChildren(lPar)
                 visitChildren(condition)
+                visitChildren(rPar)
             }
             is Node.Statement.LabeledStatement -> {
                 visitChildren(statement)
@@ -228,13 +236,13 @@ open class Visitor {
                 visitChildren(asterisk)
                 visitChildren(expression)
             }
-            is Node.ExpressionContainer -> {
-                visitChildren(expression)
-            }
             is Node.Expression.IfExpression -> {
                 visitChildren(ifKeyword)
+                visitChildren(lPar)
                 visitChildren(condition)
+                visitChildren(rPar)
                 visitChildren(body)
+                visitChildren(elseKeyword)
                 visitChildren(elseBody)
             }
             is Node.Expression.TryExpression -> {

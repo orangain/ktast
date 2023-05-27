@@ -197,6 +197,76 @@ sealed interface Node {
     sealed interface Statement : Node {
 
         /**
+         * AST node corresponds to KtForExpression.
+         *
+         * ```
+         * for ([loopParam] in [loopRange]) [body]
+         * ```
+         *
+         * @property forKeyword `for` keyword.
+         * @property lPar left parenthesis.
+         * @property loopParam loop parameter before `in` keyword.
+         * @property inKeyword `in` keyword.
+         * @property loopRange loop range expression after `in` keyword.
+         * @property rPar right parenthesis.
+         * @property body body expression.
+         */
+        data class ForStatement(
+            val forKeyword: Keyword.For,
+            val lPar: Keyword.LPar,
+            val loopParam: LambdaParam,
+            val inKeyword: Keyword.In,
+            val loopRange: Expression,
+            val rPar: Keyword.RPar,
+            val body: Expression,
+            override var tag: Any? = null,
+        ) : Statement
+
+        /**
+         * Common interface for [WhileStatement] and [DoWhileStatement].
+         */
+        sealed interface WhileStatementBase : Statement {
+            val whileKeyword: Keyword.While
+            val lPar: Keyword.LPar
+            val condition: Expression
+            val rPar: Keyword.RPar
+            val body: Expression
+        }
+
+        /**
+         * AST node corresponds to KtWhileExpression.
+         *
+         * @property whileKeyword `while` keyword.
+         * @property condition condition expression.
+         * @property body body expression.
+         */
+        data class WhileStatement(
+            override val whileKeyword: Keyword.While,
+            override val lPar: Keyword.LPar,
+            override val condition: Expression,
+            override val rPar: Keyword.RPar,
+            override val body: Expression,
+            override var tag: Any? = null,
+        ) : WhileStatementBase
+
+        /**
+         * AST node corresponds to KtDoWhileExpression.
+         *
+         * @property body body expression.
+         * @property whileKeyword `while` keyword.
+         * @property condition condition expression.
+         */
+        data class DoWhileStatement(
+            val doKeyword: Keyword.Do,
+            override val body: Expression,
+            override val whileKeyword: Keyword.While,
+            override val lPar: Keyword.LPar,
+            override val condition: Expression,
+            override val rPar: Keyword.RPar,
+            override var tag: Any? = null,
+        ) : WhileStatementBase
+
+        /**
          * AST node corresponds to KtLabeledExpression used in statement context.
          *
          * @property label label before `@` symbol.
@@ -219,63 +289,6 @@ sealed interface Node {
             val statement: Statement,
             override var tag: Any? = null,
         ) : Statement, WithAnnotationSets
-
-        /**
-         * AST node corresponds to KtForExpression.
-         *
-         * ```
-         * for ([loopParam] in [loopRange]) [body]
-         * ```
-         *
-         * @property forKeyword `for` keyword.
-         * @property loopParam loop parameter before `in` keyword.
-         * @property loopRange loop range expression after `in` keyword.
-         * @property body body expression.
-         */
-        data class ForStatement(
-            val forKeyword: Keyword.For,
-            val loopParam: LambdaParam,
-            val loopRange: ExpressionContainer,
-            val body: ExpressionContainer,
-            override var tag: Any? = null,
-        ) : Statement
-
-        /**
-         * Common interface for [WhileStatement] and [DoWhileStatement].
-         */
-        sealed interface WhileStatementBase : Statement {
-            val whileKeyword: Keyword.While
-            val condition: ExpressionContainer
-            val body: ExpressionContainer
-        }
-
-        /**
-         * AST node corresponds to KtWhileExpression.
-         *
-         * @property whileKeyword `while` keyword.
-         * @property condition condition expression.
-         * @property body body expression.
-         */
-        data class WhileStatement(
-            override val whileKeyword: Keyword.While,
-            override val condition: ExpressionContainer,
-            override val body: ExpressionContainer,
-            override var tag: Any? = null,
-        ) : WhileStatementBase
-
-        /**
-         * AST node corresponds to KtDoWhileExpression.
-         *
-         * @property body body expression.
-         * @property whileKeyword `while` keyword.
-         * @property condition condition expression.
-         */
-        data class DoWhileStatement(
-            override val body: ExpressionContainer,
-            override val whileKeyword: Keyword.While,
-            override val condition: ExpressionContainer,
-            override var tag: Any? = null,
-        ) : WhileStatementBase
     }
 
     /**
@@ -882,16 +895,6 @@ sealed interface Node {
     ) : Node
 
     /**
-     * AST node corresponds to KtContainerNode.
-     *
-     * @property expression expression in the container.
-     */
-    data class ExpressionContainer(
-        val expression: Expression,
-        override var tag: Any? = null,
-    ) : Node
-
-    /**
      * Common interface for AST nodes that represent expressions.
      */
     sealed interface Expression : Statement {
@@ -905,9 +908,12 @@ sealed interface Node {
          */
         data class IfExpression(
             val ifKeyword: Keyword.If,
+            val lPar: Keyword.LPar,
             val condition: Expression,
-            val body: ExpressionContainer,
-            val elseBody: ExpressionContainer?,
+            val rPar: Keyword.RPar,
+            val body: Expression,
+            val elseKeyword: Keyword.Else?,
+            val elseBody: Expression?,
             override var tag: Any? = null,
         ) : Expression
 
@@ -1715,6 +1721,10 @@ sealed interface Node {
 
         data class While(override var tag: Any? = null) : Keyword {
             override val text = "while"
+        }
+
+        data class Do(override var tag: Any? = null) : Keyword {
+            override val text = "do"
         }
 
         data class If(override var tag: Any? = null) : Keyword {

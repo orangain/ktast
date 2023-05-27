@@ -85,28 +85,13 @@ open class Writer(
                     children(name)
                 }
                 is Node.Statement.ForStatement -> {
-                    children(forKeyword)
-                    append("(")
-                    children(loopParam)
-                    append("in")
-                    children(loopRange)
-                    append(")")
-                    children(body)
+                    children(forKeyword, lPar, loopParam, inKeyword, loopRange, rPar, body)
                 }
                 is Node.Statement.WhileStatement -> {
-                    children(whileKeyword)
-                    append("(")
-                    children(condition)
-                    append(")")
-                    children(body)
+                    children(whileKeyword, lPar, condition, rPar, body)
                 }
                 is Node.Statement.DoWhileStatement -> {
-                    append("do")
-                    children(body)
-                    children(whileKeyword)
-                    append("(")
-                    children(condition)
-                    append(")")
+                    children(doKeyword, body, whileKeyword, lPar, condition, rPar)
                 }
                 is Node.Statement.LabeledStatement -> {
                     append(label).append("@")
@@ -312,24 +297,13 @@ open class Writer(
                 }
                 is Node.Type.DynamicType ->
                     append("dynamic")
-                is Node.ExpressionContainer -> {
-                    children(expression)
-                }
                 is Node.ValueArg -> {
                     if (name != null) children(name).append("=")
                     children(asterisk)
                     children(expression)
                 }
                 is Node.Expression.IfExpression -> {
-                    children(ifKeyword)
-                    append("(")
-                    children(condition)
-                    append(")")
-                    children(body)
-                    if (elseBody != null) {
-                        append("else")
-                        children(elseBody)
-                    }
+                    children(ifKeyword, lPar, condition, rPar, body, elseKeyword, elseBody)
                 }
                 is Node.Expression.TryExpression -> {
                     append("try")
