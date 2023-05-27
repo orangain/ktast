@@ -192,9 +192,34 @@ sealed interface Node {
     }
 
     /**
-     * Common interface for [Declaration] and [Expression].
+     * Common interface for [Declaration], [Expression] and other statements.
      */
-    sealed interface Statement : Node
+    sealed interface Statement : Node {
+
+        /**
+         * AST node corresponds to KtLabeledExpression used in statement context.
+         *
+         * @property label label before `@` symbol.
+         * @property statement statement after `@` symbol.
+         */
+        data class LabeledStatement(
+            val label: String,
+            val statement: Statement,
+            override var tag: Any? = null,
+        ) : Statement
+
+        /**
+         * AST node corresponds to KtAnnotatedExpression used in statement context.
+         *
+         * @property annotationSets list of annotation sets.
+         * @property statement statement of this annotated expression.
+         */
+        data class AnnotatedStatement(
+            override val annotationSets: List<Modifier.AnnotationSet>,
+            val statement: Statement,
+            override var tag: Any? = null,
+        ) : Statement, WithAnnotationSets
+    }
 
     /**
      * Common interface for AST nodes that are main contents of a Kotlin file or a class body.
@@ -1376,7 +1401,7 @@ sealed interface Node {
         ) : Expression, BinaryExpression.BinaryOperator
 
         /**
-         * AST node corresponds to KtLabeledExpression.
+         * AST node corresponds to KtLabeledExpression used in expression context.
          *
          * @property label label before `@` symbol.
          * @property expression expression after `@` symbol.
@@ -1388,7 +1413,7 @@ sealed interface Node {
         ) : Expression
 
         /**
-         * AST node corresponds to KtAnnotatedExpression.
+         * AST node corresponds to KtAnnotatedExpression used in expression context.
          *
          * @property annotationSets list of annotation sets.
          * @property expression expression of this annotated expression.
