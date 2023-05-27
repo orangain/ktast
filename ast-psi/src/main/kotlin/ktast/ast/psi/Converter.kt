@@ -358,7 +358,7 @@ open class Converter {
             lPar = lPar?.let(::convertKeyword),
             modifiers = modifierList?.let(::convertModifiers),
             contextReceivers = v.contextReceiverList?.let { convertContextReceivers(it) },
-            functionTypeReceiver = v.receiver?.let(::convertTypeFunctionReceiver),
+            receiverTypeRef = v.receiver?.typeReference?.let(::convertTypeRef),
             params = v.parameterList?.let(::convertTypeFunctionParams),
             returnTypeRef = convertTypeRef(v.returnTypeReference ?: error("No return type")),
             rPar = rPar?.let(::convertKeyword),

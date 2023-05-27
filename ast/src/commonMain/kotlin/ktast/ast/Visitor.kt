@@ -170,7 +170,7 @@ open class Visitor {
                 visitChildren(lPar)
                 visitChildren(modifiers)
                 visitChildren(contextReceivers)
-                visitChildren(functionTypeReceiver)
+                visitChildren(receiverTypeRef)
                 visitChildren(params)
                 visitChildren(returnTypeRef)
                 visitChildren(rPar)

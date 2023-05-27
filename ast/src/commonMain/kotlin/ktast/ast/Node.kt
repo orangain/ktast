@@ -616,7 +616,7 @@ sealed interface Node {
          * @property lPar `(` if exists, otherwise `null`.
          * @property modifiers modifiers if exists, otherwise `null`.
          * @property contextReceivers context receivers if exists, otherwise `null`.
-         * @property functionTypeReceiver function type receiver if exists, otherwise `null`.
+         * @property receiverTypeRef receiver type reference if exists, otherwise `null`.
          * @property params parameters of the function type if exists, otherwise `null`.
          * @property returnTypeRef return type reference of the function type.
          * @property rPar `)` if exists, otherwise `null`.
@@ -625,7 +625,7 @@ sealed interface Node {
             val lPar: Keyword.LPar?,
             override val modifiers: Modifiers?,
             val contextReceivers: ContextReceivers?,
-            val functionTypeReceiver: FunctionTypeReceiver?,
+            val receiverTypeRef: TypeRef?,
             val params: FunctionTypeParams?,
             val returnTypeRef: TypeRef,
             val rPar: Keyword.RPar?,

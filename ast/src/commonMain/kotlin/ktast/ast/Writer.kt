@@ -246,8 +246,8 @@ open class Writer(
                         append("context")
                         children(contextReceivers)
                     }
-                    if (functionTypeReceiver != null) {
-                        children(functionTypeReceiver)
+                    if (receiverTypeRef != null) {
+                        children(receiverTypeRef)
                         append('.')
                     }
                     if (params != null) {
