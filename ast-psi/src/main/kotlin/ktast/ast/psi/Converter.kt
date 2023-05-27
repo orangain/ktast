@@ -581,7 +581,7 @@ open class Converter {
     }
 
     open fun convertConst(v: KtConstantExpression) = Node.Expression.ConstantLiteralExpression(
-        value = v.text,
+        text = v.text,
         form = when (v.node.elementType) {
             KtNodeTypes.BOOLEAN_CONSTANT -> Node.Expression.ConstantLiteralExpression.Form.BOOLEAN
             KtNodeTypes.CHARACTER_CONSTANT -> Node.Expression.ConstantLiteralExpression.Form.CHAR

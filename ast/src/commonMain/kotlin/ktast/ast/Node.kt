@@ -1063,11 +1063,11 @@ sealed interface Node {
         /**
          * AST node corresponds to KtConstantExpression.
          *
-         * @property value string representation of this constant.
+         * @property text string representation of this constant.
          * @property form form of this constant.
          */
         data class ConstantLiteralExpression(
-            val value: String,
+            val text: String,
             val form: Form,
             override var tag: Any? = null,
         ) : Expression {
