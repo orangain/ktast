@@ -37,6 +37,13 @@ open class Visitor {
             is Node.ImportDirective.ImportAlias -> {
                 visitChildren(name)
             }
+            is Node.Statement.LabeledStatement -> {
+                visitChildren(statement)
+            }
+            is Node.Statement.AnnotatedStatement -> {
+                visitChildren(annotationSets)
+                visitChildren(statement)
+            }
             is Node.Declaration.ClassDeclaration -> {
                 visitChildren(modifiers)
                 visitChildren(classDeclarationKeyword)

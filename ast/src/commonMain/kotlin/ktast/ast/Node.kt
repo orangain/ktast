@@ -900,12 +900,12 @@ sealed interface Node {
             val loopRange: ExpressionContainer,
             val body: ExpressionContainer,
             override var tag: Any? = null,
-        ) : Expression
+        ) : Statement
 
         /**
          * Common interface for [WhileExpression] and [DoWhileExpression].
          */
-        sealed interface WhileExpressionBase : Expression {
+        sealed interface WhileExpressionBase : Statement {
             val whileKeyword: Keyword.While
             val condition: ExpressionContainer
             val body: ExpressionContainer

@@ -40,6 +40,13 @@ open class MutableVisitor(
                     is Node.ImportDirective.ImportAlias -> copy(
                         name = visitChildren(name, newCh),
                     )
+                    is Node.Statement.LabeledStatement -> copy(
+                        statement = visitChildren(statement, newCh),
+                    )
+                    is Node.Statement.AnnotatedStatement -> copy(
+                        annotationSets = visitChildren(annotationSets, newCh),
+                        statement = visitChildren(statement, newCh),
+                    )
                     is Node.Declaration.ClassDeclaration -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         classDeclarationKeyword = visitChildren(classDeclarationKeyword, newCh),

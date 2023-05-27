@@ -440,9 +440,6 @@ open class Converter {
     open fun convertExpression(v: KtExpression): Node.Expression = when (v) {
         is KtIfExpression -> convertIf(v)
         is KtTryExpression -> convertTry(v)
-        is KtForExpression -> convertFor(v)
-        is KtWhileExpression -> convertWhile(v)
-        is KtDoWhileExpression -> convertDoWhile(v)
         is KtBinaryExpression -> convertBinary(v)
         is KtQualifiedExpression -> convertBinary(v)
         is KtPrefixExpression -> convertPrefix(v)
@@ -807,11 +804,25 @@ open class Converter {
         statements = v.statements.map(::convertStatement)
     ).map(v)
 
-    open fun convertStatement(v: KtExpression): Node.Statement =
-        if (v is KtDeclaration)
-            convertDeclaration(v)
-        else
-            convertExpression(v)
+    open fun convertStatement(v: KtExpression): Node.Statement = when (v) {
+        is KtForExpression -> convertFor(v)
+        is KtWhileExpression -> convertWhile(v)
+        is KtDoWhileExpression -> convertDoWhile(v)
+        is KtLabeledExpression -> convertLabeledStatement(v)
+        is KtAnnotatedExpression -> convertAnnotatedStatement(v)
+        is KtDeclaration -> convertDeclaration(v)
+        else -> convertExpression(v) as? Node.Statement ?: error("Unrecognized statement $v")
+    }
+
+    open fun convertLabeledStatement(v: KtLabeledExpression) = Node.Statement.LabeledStatement(
+        label = v.getLabelName() ?: error("No label name for $v"),
+        statement = convertStatement(v.baseExpression ?: error("No label expr for $v"))
+    ).map(v)
+
+    open fun convertAnnotatedStatement(v: KtAnnotatedExpression) = Node.Statement.AnnotatedStatement(
+        annotationSets = convertAnnotationSets(v),
+        statement = convertStatement(v.baseExpression ?: error("No annotated expr for $v"))
+    ).map(v)
 
     open fun convertAnnotationSets(v: KtElement): List<Node.Modifier.AnnotationSet> = v.children.flatMap { elem ->
         // We go over the node children because we want to preserve order
