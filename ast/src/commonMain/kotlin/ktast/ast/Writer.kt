@@ -345,9 +345,9 @@ open class Writer(
                 is Node.Expression.BinaryExpression -> {
                     children(lhs, operator, rhs)
                 }
-                is Node.Expression.PrefixExpression ->
+                is Node.Expression.PrefixUnaryExpression ->
                     children(operator, expression)
-                is Node.Expression.PostfixExpression ->
+                is Node.Expression.PostfixUnaryExpression ->
                     children(expression, operator)
                 is Node.Expression.BinaryTypeExpression ->
                     children(listOf(lhs, operator, rhs), "")
