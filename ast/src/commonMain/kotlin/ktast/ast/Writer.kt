@@ -320,20 +320,19 @@ open class Writer(
                     children(body)
                 }
                 is Node.Expression.WhileExpression -> {
-                    if (!doWhile) {
-                        children(whileKeyword)
-                        append("(")
-                        children(condition)
-                        append(")")
-                        children(body)
-                    } else {
-                        append("do")
-                        children(body)
-                        children(whileKeyword)
-                        append("(")
-                        children(condition)
-                        append(")")
-                    }
+                    children(whileKeyword)
+                    append("(")
+                    children(condition)
+                    append(")")
+                    children(body)
+                }
+                is Node.Expression.DoWhileExpression -> {
+                    append("do")
+                    children(body)
+                    children(whileKeyword)
+                    append("(")
+                    children(condition)
+                    append(")")
                 }
                 is Node.Expression.BinaryExpression -> {
                     children(lhs, operator, rhs)

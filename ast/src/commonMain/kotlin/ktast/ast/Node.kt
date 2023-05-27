@@ -878,20 +878,41 @@ sealed interface Node {
         ) : Expression
 
         /**
-         * AST node corresponds to KtWhileExpressionBase.
+         * Common interface for [WhileExpression] and [DoWhileExpression].
+         */
+        sealed interface WhileExpressionBase : Expression {
+            val whileKeyword: Keyword.While
+            val condition: ExpressionContainer
+            val body: ExpressionContainer
+        }
+
+        /**
+         * AST node corresponds to KtWhileExpression.
          *
          * @property whileKeyword `while` keyword.
          * @property condition condition expression.
          * @property body body expression.
-         * @property doWhile `true` if this is do-while expression, `false` if this is while expression.
          */
         data class WhileExpression(
-            val whileKeyword: Keyword.While,
-            val condition: ExpressionContainer,
-            val body: ExpressionContainer,
-            val doWhile: Boolean,
+            override val whileKeyword: Keyword.While,
+            override val condition: ExpressionContainer,
+            override val body: ExpressionContainer,
             override var tag: Any? = null,
-        ) : Expression
+        ) : WhileExpressionBase
+
+        /**
+         * AST node corresponds to KtDoWhileExpression.
+         *
+         * @property body body expression.
+         * @property whileKeyword `while` keyword.
+         * @property condition condition expression.
+         */
+        data class DoWhileExpression(
+            override val body: ExpressionContainer,
+            override val whileKeyword: Keyword.While,
+            override val condition: ExpressionContainer,
+            override var tag: Any? = null,
+        ) : WhileExpressionBase
 
         /**
          * AST node corresponds to KtBinaryExpression or KtQualifiedExpression.

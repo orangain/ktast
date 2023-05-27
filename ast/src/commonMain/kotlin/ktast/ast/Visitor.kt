@@ -235,6 +235,11 @@ open class Visitor {
                 visitChildren(condition)
                 visitChildren(body)
             }
+            is Node.Expression.DoWhileExpression -> {
+                visitChildren(body)
+                visitChildren(whileKeyword)
+                visitChildren(condition)
+            }
             is Node.Expression.BinaryExpression -> {
                 visitChildren(lhs)
                 visitChildren(operator)

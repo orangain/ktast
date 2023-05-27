@@ -441,7 +441,8 @@ open class Converter {
         is KtIfExpression -> convertIf(v)
         is KtTryExpression -> convertTry(v)
         is KtForExpression -> convertFor(v)
-        is KtWhileExpressionBase -> convertWhile(v)
+        is KtWhileExpression -> convertWhile(v)
+        is KtDoWhileExpression -> convertDoWhile(v)
         is KtBinaryExpression -> convertBinary(v)
         is KtQualifiedExpression -> convertBinary(v)
         is KtUnaryExpression -> convertUnary(v)
@@ -505,11 +506,16 @@ open class Converter {
         body = convertExpressionContainer(v.bodyContainer),
     ).map(v)
 
-    open fun convertWhile(v: KtWhileExpressionBase) = Node.Expression.WhileExpression(
+    open fun convertWhile(v: KtWhileExpression) = Node.Expression.WhileExpression(
         whileKeyword = convertKeyword(v.whileKeyword),
         condition = convertExpressionContainer(v.conditionContainer),
         body = convertExpressionContainer(v.bodyContainer),
-        doWhile = v is KtDoWhileExpression
+    ).map(v)
+
+    open fun convertDoWhile(v: KtDoWhileExpression) = Node.Expression.DoWhileExpression(
+        body = convertExpressionContainer(v.bodyContainer),
+        whileKeyword = convertKeyword(v.whileKeyword ?: error("No while keyword for $v")),
+        condition = convertExpressionContainer(v.conditionContainer),
     ).map(v)
 
     open fun convertBinary(v: KtBinaryExpression) = Node.Expression.BinaryExpression(

@@ -265,6 +265,11 @@ open class MutableVisitor(
                         condition = visitChildren(condition, newCh),
                         body = visitChildren(body, newCh),
                     )
+                    is Node.Expression.DoWhileExpression -> copy(
+                        body = visitChildren(body, newCh),
+                        whileKeyword = visitChildren(whileKeyword, newCh),
+                        condition = visitChildren(condition, newCh),
+                    )
                     is Node.Expression.BinaryExpression -> copy(
                         lhs = visitChildren(lhs, newCh),
                         operator = visitChildren(operator, newCh),
