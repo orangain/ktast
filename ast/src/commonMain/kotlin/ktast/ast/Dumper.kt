@@ -70,12 +70,9 @@ class Dumper(
         if (verbose) {
             when (this) {
                 is Node.Modifier.AnnotationSet -> mapOf("target" to target)
-                is Node.Expression.NameExpression -> mapOf("text" to text)
-                is Node.Expression.ConstantLiteralExpression -> mapOf("text" to text)
-                is Node.Extra.Comment -> mapOf("text" to text)
-                is Node.Expression.StringLiteralExpression.LiteralStringEntry -> mapOf("text" to text)
-                is Node.Expression.StringLiteralExpression.EscapeStringEntry -> mapOf("text" to text)
+                is Node.Expression.StringLiteralExpression -> mapOf("raw" to raw)
                 is Node.Expression.StringLiteralExpression.TemplateStringEntry -> mapOf("short" to short)
+                is Node.SimpleTextNode -> mapOf("text" to text)
                 else -> null
             }?.let {
                 app.append(it.toString())
