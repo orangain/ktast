@@ -201,9 +201,6 @@ open class MutableVisitor(
                     is Node.Type.FunctionType.ContextReceiver -> copy(
                         typeRef = visitChildren(typeRef, newCh),
                     )
-                    is Node.Type.FunctionType.FunctionTypeReceiver -> copy(
-                        typeRef = visitChildren(typeRef, newCh),
-                    )
                     is Node.Type.FunctionType.FunctionTypeParams -> copy(
                         elements = visitChildren(elements, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),

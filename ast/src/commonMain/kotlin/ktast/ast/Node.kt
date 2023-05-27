@@ -653,16 +653,6 @@ sealed interface Node {
             ) : Node
 
             /**
-             * AST node corresponds KtFunctionTypeReceiver.
-             *
-             * @property typeRef type reference of the function type receiver.
-             */
-            data class FunctionTypeReceiver(
-                val typeRef: TypeRef,
-                override var tag: Any? = null,
-            ) : Node
-
-            /**
              * AST node corresponds to KtParameterList under KtFunctionType.
              */
             data class FunctionTypeParams(

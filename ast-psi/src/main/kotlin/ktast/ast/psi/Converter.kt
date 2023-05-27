@@ -398,10 +398,6 @@ open class Converter {
         expression = convertExpression(v.getExpression()),
     ).map(v)
 
-    open fun convertTypeFunctionReceiver(v: KtFunctionTypeReceiver) = Node.Type.FunctionType.FunctionTypeReceiver(
-        typeRef = convertTypeRef(v.typeReference),
-    ).map(v)
-
     open fun convertTypeFunctionParams(v: KtParameterList) = Node.Type.FunctionType.FunctionTypeParams(
         elements = v.parameters.map(::convertTypeFunctionParam),
         trailingComma = v.trailingComma?.let(::convertKeyword)

@@ -257,9 +257,6 @@ open class Writer(
                 is Node.Type.FunctionType.ContextReceiver -> {
                     children(typeRef)
                 }
-                is Node.Type.FunctionType.FunctionTypeReceiver -> {
-                    children(typeRef)
-                }
                 is Node.Type.FunctionType.FunctionTypeParam -> {
                     if (name != null) children(name).append(":")
                     children(typeRef)
