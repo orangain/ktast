@@ -159,6 +159,7 @@ open class Visitor {
             is Node.TypeArg -> {
                 visitChildren(modifiers)
                 visitChildren(typeRef)
+                visitChildren(asterisk)
             }
             is Node.TypeRef -> {
                 visitChildren(lPar)
@@ -201,6 +202,7 @@ open class Visitor {
             is Node.Type.DynamicType -> {}
             is Node.ValueArg -> {
                 visitChildren(name)
+                visitChildren(asterisk)
                 visitChildren(expression)
             }
             is Node.ExpressionContainer -> {
@@ -233,12 +235,21 @@ open class Visitor {
                 visitChildren(condition)
                 visitChildren(body)
             }
+            is Node.Expression.DoWhileExpression -> {
+                visitChildren(body)
+                visitChildren(whileKeyword)
+                visitChildren(condition)
+            }
             is Node.Expression.BinaryExpression -> {
                 visitChildren(lhs)
                 visitChildren(operator)
                 visitChildren(rhs)
             }
-            is Node.Expression.UnaryExpression -> {
+            is Node.Expression.PrefixExpression -> {
+                visitChildren(operator)
+                visitChildren(expression)
+            }
+            is Node.Expression.PostfixExpression -> {
                 visitChildren(expression)
                 visitChildren(operator)
             }

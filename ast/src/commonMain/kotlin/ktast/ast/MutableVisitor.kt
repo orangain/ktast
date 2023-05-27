@@ -177,6 +177,7 @@ open class MutableVisitor(
                     is Node.TypeArg -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         typeRef = visitChildren(typeRef, newCh),
+                        asterisk = visitChildren(asterisk, newCh),
                     )
                     is Node.TypeRef -> copy(
                         lPar = visitChildren(lPar, newCh),
@@ -231,6 +232,7 @@ open class MutableVisitor(
                     )
                     is Node.ValueArg -> copy(
                         name = visitChildren(name, newCh),
+                        asterisk = visitChildren(asterisk, newCh),
                         expression = visitChildren(expression, newCh)
                     )
                     is Node.ExpressionContainer -> copy(
@@ -263,12 +265,21 @@ open class MutableVisitor(
                         condition = visitChildren(condition, newCh),
                         body = visitChildren(body, newCh),
                     )
+                    is Node.Expression.DoWhileExpression -> copy(
+                        body = visitChildren(body, newCh),
+                        whileKeyword = visitChildren(whileKeyword, newCh),
+                        condition = visitChildren(condition, newCh),
+                    )
                     is Node.Expression.BinaryExpression -> copy(
                         lhs = visitChildren(lhs, newCh),
                         operator = visitChildren(operator, newCh),
                         rhs = visitChildren(rhs, newCh)
                     )
-                    is Node.Expression.UnaryExpression -> copy(
+                    is Node.Expression.PrefixExpression -> copy(
+                        operator = visitChildren(operator, newCh),
+                        expression = visitChildren(expression, newCh)
+                    )
+                    is Node.Expression.PostfixExpression -> copy(
                         expression = visitChildren(expression, newCh),
                         operator = visitChildren(operator, newCh)
                     )

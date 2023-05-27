@@ -739,16 +739,16 @@ sealed interface Node {
      *
      * @property modifiers modifiers if exists, otherwise `null`.
      * @property typeRef type reference if exists, otherwise `null`.
-     * @property asterisk `true` if this type projection is `*`, otherwise `false`. When `true`, [modifiers] and [typeRef] must be `null`. When `false`, [typeRef] must not be `null`.
+     * @property asterisk `*` if exists, otherwise `null`. When this is not null, [modifiers] and [typeRef] must be `null`, otherwise [typeRef] must not be `null`.
      */
     data class TypeArg(
         override val modifiers: Modifiers?,
         val typeRef: TypeRef?,
-        val asterisk: Boolean,
+        val asterisk: Keyword.Asterisk?,
         override var tag: Any? = null,
     ) : Node, WithModifiers {
         init {
-            if (asterisk) {
+            if (asterisk != null) {
                 require(modifiers == null && typeRef == null) {
                     "modifiers and typeRef must be null when asterisk is true"
                 }
@@ -789,12 +789,12 @@ sealed interface Node {
      * AST node corresponds to KtValueArgument.
      *
      * @property name name of the argument if exists, otherwise `null`.
-     * @property asterisk `true` if this argument is array spread operator, otherwise `false`.
+     * @property asterisk spread operator if exists, otherwise `null`.
      * @property expression expression of the argument.
      */
     data class ValueArg(
         val name: Expression.NameExpression?,
-        val asterisk: Boolean,
+        val asterisk: Keyword.Asterisk?,
         val expression: Expression,
         override var tag: Any? = null,
     ) : Node
@@ -878,20 +878,41 @@ sealed interface Node {
         ) : Expression
 
         /**
-         * AST node corresponds to KtWhileExpressionBase.
+         * Common interface for [WhileExpression] and [DoWhileExpression].
+         */
+        sealed interface WhileExpressionBase : Expression {
+            val whileKeyword: Keyword.While
+            val condition: ExpressionContainer
+            val body: ExpressionContainer
+        }
+
+        /**
+         * AST node corresponds to KtWhileExpression.
          *
          * @property whileKeyword `while` keyword.
          * @property condition condition expression.
          * @property body body expression.
-         * @property doWhile `true` if this is do-while expression, `false` if this is while expression.
          */
         data class WhileExpression(
-            val whileKeyword: Keyword.While,
-            val condition: ExpressionContainer,
-            val body: ExpressionContainer,
-            val doWhile: Boolean,
+            override val whileKeyword: Keyword.While,
+            override val condition: ExpressionContainer,
+            override val body: ExpressionContainer,
             override var tag: Any? = null,
-        ) : Expression
+        ) : WhileExpressionBase
+
+        /**
+         * AST node corresponds to KtDoWhileExpression.
+         *
+         * @property body body expression.
+         * @property whileKeyword `while` keyword.
+         * @property condition condition expression.
+         */
+        data class DoWhileExpression(
+            override val body: ExpressionContainer,
+            override val whileKeyword: Keyword.While,
+            override val condition: ExpressionContainer,
+            override var tag: Any? = null,
+        ) : WhileExpressionBase
 
         /**
          * AST node corresponds to KtBinaryExpression or KtQualifiedExpression.
@@ -914,23 +935,44 @@ sealed interface Node {
         }
 
         /**
-         * AST node corresponds to KtUnaryExpression.
+         * Common interface for [PrefixExpression] and [PostfixExpression]. The node corresponds to KtUnaryExpression
          *
          * @property expression operand expression.
          * @property operator unary operator.
-         * @property prefix `true` if this is prefix expression, `false` if this is postfix expression.
          */
-        data class UnaryExpression(
-            val expression: Expression,
-            val operator: UnaryOperator,
-            val prefix: Boolean,
-            override var tag: Any? = null,
-        ) : Expression {
+        sealed interface UnaryExpression : Expression {
+            val expression: Expression
+            val operator: UnaryOperator
+
             /**
              * Common interface for AST nodes that represent unary operators.
              */
             sealed interface UnaryOperator : Keyword
         }
+
+        /**
+         * AST node corresponds to KtUnaryExpression whose operator is prefix.
+         *
+         * @property operator unary operator.
+         * @property expression operand expression.
+         */
+        data class PrefixExpression(
+            override val operator: UnaryExpression.UnaryOperator,
+            override val expression: Expression,
+            override var tag: Any? = null,
+        ) : UnaryExpression
+
+        /**
+         * AST node corresponds to KtUnaryExpression whose operator is postfix.
+         *
+         * @property expression operand expression.
+         * @property operator unary operator.
+         */
+        data class PostfixExpression(
+            override val expression: Expression,
+            override val operator: UnaryExpression.UnaryOperator,
+            override var tag: Any? = null,
+        ) : UnaryExpression
 
         /**
          * AST node corresponds to KtBinaryExpressionWithTypeRHS or KtIsExpression.

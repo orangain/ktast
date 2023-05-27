@@ -229,9 +229,7 @@ open class Writer(
                 is Node.TypeArg -> {
                     children(modifiers)
                     children(typeRef)
-                    if (asterisk) {
-                        append("*")
-                    }
+                    children(asterisk)
                 }
                 is Node.TypeRef -> {
                     children(lPar)
@@ -287,7 +285,7 @@ open class Writer(
                 }
                 is Node.ValueArg -> {
                     if (name != null) children(name).append("=")
-                    if (asterisk) append('*')
+                    children(asterisk)
                     children(expression)
                 }
                 is Node.Expression.IfExpression -> {
@@ -322,26 +320,27 @@ open class Writer(
                     children(body)
                 }
                 is Node.Expression.WhileExpression -> {
-                    if (!doWhile) {
-                        children(whileKeyword)
-                        append("(")
-                        children(condition)
-                        append(")")
-                        children(body)
-                    } else {
-                        append("do")
-                        children(body)
-                        children(whileKeyword)
-                        append("(")
-                        children(condition)
-                        append(")")
-                    }
+                    children(whileKeyword)
+                    append("(")
+                    children(condition)
+                    append(")")
+                    children(body)
+                }
+                is Node.Expression.DoWhileExpression -> {
+                    append("do")
+                    children(body)
+                    children(whileKeyword)
+                    append("(")
+                    children(condition)
+                    append(")")
                 }
                 is Node.Expression.BinaryExpression -> {
                     children(lhs, operator, rhs)
                 }
-                is Node.Expression.UnaryExpression ->
-                    if (prefix) children(operator, expression) else children(expression, operator)
+                is Node.Expression.PrefixExpression ->
+                    children(operator, expression)
+                is Node.Expression.PostfixExpression ->
+                    children(expression, operator)
                 is Node.Expression.BinaryTypeExpression ->
                     children(listOf(lhs, operator, rhs), "")
                 is Node.Expression.CallableReferenceExpression -> {

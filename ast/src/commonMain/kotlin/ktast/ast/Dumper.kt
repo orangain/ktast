@@ -69,7 +69,6 @@ class Dumper(
         app.append(this::class.qualifiedName?.substring(10)) // 10 means length of "ktast.ast."
         if (verbose) {
             when (this) {
-                is Node.Expression.UnaryExpression -> mapOf("prefix" to this.prefix)
                 is Node.Modifier.AnnotationSet -> mapOf("target" to target)
                 is Node.Expression.NameExpression -> mapOf("text" to text)
                 is Node.Expression.ConstantLiteralExpression -> mapOf("text" to text)
