@@ -79,17 +79,17 @@ open class Converter {
     open fun convertWhile(v: KtWhileExpression) = Node.Statement.WhileStatement(
         whileKeyword = convertKeyword(v.whileKeyword),
         lPar = convertKeyword(v.leftParenthesis ?: error("No left parenthesis for $v")),
-        condition = convertExpressionContainer(v.conditionContainer),
+        condition = convertExpression(v.conditionContainer.expression),
         rPar = convertKeyword(v.rightParenthesis ?: error("No right parenthesis for $v")),
-        body = convertExpressionContainer(v.bodyContainer),
+        body = convertExpression(v.bodyContainer.expression ?: error("No body expression for $v")),
     ).map(v)
 
     open fun convertDoWhile(v: KtDoWhileExpression) = Node.Statement.DoWhileStatement(
         doKeyword = convertKeyword(v.doKeyword),
-        body = convertExpressionContainer(v.bodyContainer),
+        body = convertExpression(v.bodyContainer.expression ?: error("No body expression for $v")),
         whileKeyword = convertKeyword(v.whileKeyword ?: error("No while keyword for $v")),
         lPar = convertKeyword(v.leftParenthesis ?: error("No left parenthesis for $v")),
-        condition = convertExpressionContainer(v.conditionContainer),
+        condition = convertExpression(v.conditionContainer.expression),
         rPar = convertKeyword(v.rightParenthesis ?: error("No right parenthesis for $v")),
     ).map(v)
 

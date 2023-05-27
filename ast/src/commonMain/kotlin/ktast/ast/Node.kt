@@ -228,9 +228,9 @@ sealed interface Node {
         sealed interface WhileStatementBase : Statement {
             val whileKeyword: Keyword.While
             val lPar: Keyword.LPar
-            val condition: ExpressionContainer
+            val condition: Expression
             val rPar: Keyword.RPar
-            val body: ExpressionContainer
+            val body: Expression
         }
 
         /**
@@ -243,9 +243,9 @@ sealed interface Node {
         data class WhileStatement(
             override val whileKeyword: Keyword.While,
             override val lPar: Keyword.LPar,
-            override val condition: ExpressionContainer,
+            override val condition: Expression,
             override val rPar: Keyword.RPar,
-            override val body: ExpressionContainer,
+            override val body: Expression,
             override var tag: Any? = null,
         ) : WhileStatementBase
 
@@ -258,10 +258,10 @@ sealed interface Node {
          */
         data class DoWhileStatement(
             val doKeyword: Keyword.Do,
-            override val body: ExpressionContainer,
+            override val body: Expression,
             override val whileKeyword: Keyword.While,
             override val lPar: Keyword.LPar,
-            override val condition: ExpressionContainer,
+            override val condition: Expression,
             override val rPar: Keyword.RPar,
             override var tag: Any? = null,
         ) : WhileStatementBase
