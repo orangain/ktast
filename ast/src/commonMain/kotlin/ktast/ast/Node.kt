@@ -197,30 +197,6 @@ sealed interface Node {
     sealed interface Statement : Node {
 
         /**
-         * AST node corresponds to KtLabeledExpression used in statement context.
-         *
-         * @property label label before `@` symbol.
-         * @property statement statement after `@` symbol.
-         */
-        data class LabeledStatement(
-            val label: String,
-            val statement: Statement,
-            override var tag: Any? = null,
-        ) : Statement
-
-        /**
-         * AST node corresponds to KtAnnotatedExpression used in statement context.
-         *
-         * @property annotationSets list of annotation sets.
-         * @property statement statement of this annotated expression.
-         */
-        data class AnnotatedStatement(
-            override val annotationSets: List<Modifier.AnnotationSet>,
-            val statement: Statement,
-            override var tag: Any? = null,
-        ) : Statement, WithAnnotationSets
-
-        /**
          * AST node corresponds to KtForExpression.
          *
          * ```
@@ -276,6 +252,30 @@ sealed interface Node {
             override val condition: ExpressionContainer,
             override var tag: Any? = null,
         ) : WhileStatementBase
+
+        /**
+         * AST node corresponds to KtLabeledExpression used in statement context.
+         *
+         * @property label label before `@` symbol.
+         * @property statement statement after `@` symbol.
+         */
+        data class LabeledStatement(
+            val label: String,
+            val statement: Statement,
+            override var tag: Any? = null,
+        ) : Statement
+
+        /**
+         * AST node corresponds to KtAnnotatedExpression used in statement context.
+         *
+         * @property annotationSets list of annotation sets.
+         * @property statement statement of this annotated expression.
+         */
+        data class AnnotatedStatement(
+            override val annotationSets: List<Modifier.AnnotationSet>,
+            val statement: Statement,
+            override var tag: Any? = null,
+        ) : Statement, WithAnnotationSets
     }
 
     /**
