@@ -232,6 +232,7 @@ open class MutableVisitor(
                     )
                     is Node.ValueArg -> copy(
                         name = visitChildren(name, newCh),
+                        asterisk = visitChildren(asterisk, newCh),
                         expression = visitChildren(expression, newCh)
                     )
                     is Node.ExpressionContainer -> copy(

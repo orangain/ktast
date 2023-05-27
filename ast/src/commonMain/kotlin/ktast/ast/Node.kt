@@ -789,12 +789,12 @@ sealed interface Node {
      * AST node corresponds to KtValueArgument.
      *
      * @property name name of the argument if exists, otherwise `null`.
-     * @property asterisk `true` if this argument is array spread operator, otherwise `false`.
+     * @property asterisk spread operator if exists, otherwise `null`.
      * @property expression expression of the argument.
      */
     data class ValueArg(
         val name: Expression.NameExpression?,
-        val asterisk: Boolean,
+        val asterisk: Keyword.Asterisk?,
         val expression: Expression,
         override var tag: Any? = null,
     ) : Node

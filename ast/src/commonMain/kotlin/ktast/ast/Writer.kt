@@ -285,7 +285,7 @@ open class Writer(
                 }
                 is Node.ValueArg -> {
                     if (name != null) children(name).append("=")
-                    if (asterisk) append('*')
+                    children(asterisk)
                     children(expression)
                 }
                 is Node.Expression.IfExpression -> {

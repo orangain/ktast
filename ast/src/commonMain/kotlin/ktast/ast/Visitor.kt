@@ -202,6 +202,7 @@ open class Visitor {
             is Node.Type.DynamicType -> {}
             is Node.ValueArg -> {
                 visitChildren(name)
+                visitChildren(asterisk)
                 visitChildren(expression)
             }
             is Node.ExpressionContainer -> {
