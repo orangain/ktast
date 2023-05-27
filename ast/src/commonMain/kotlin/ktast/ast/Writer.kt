@@ -297,9 +297,6 @@ open class Writer(
                 }
                 is Node.Type.DynamicType ->
                     append("dynamic")
-                is Node.ExpressionContainer -> {
-                    children(expression)
-                }
                 is Node.ValueArg -> {
                     if (name != null) children(name).append("=")
                     children(asterisk)

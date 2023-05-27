@@ -266,9 +266,6 @@ open class MutableVisitor(
                         asterisk = visitChildren(asterisk, newCh),
                         expression = visitChildren(expression, newCh)
                     )
-                    is Node.ExpressionContainer -> copy(
-                        expression = visitChildren(expression, newCh),
-                    )
                     is Node.Expression.IfExpression -> copy(
                         ifKeyword = visitChildren(ifKeyword, newCh),
                         lPar = visitChildren(lPar, newCh),

@@ -236,9 +236,6 @@ open class Visitor {
                 visitChildren(asterisk)
                 visitChildren(expression)
             }
-            is Node.ExpressionContainer -> {
-                visitChildren(expression)
-            }
             is Node.Expression.IfExpression -> {
                 visitChildren(ifKeyword)
                 visitChildren(lPar)

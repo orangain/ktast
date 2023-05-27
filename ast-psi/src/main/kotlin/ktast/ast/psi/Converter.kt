@@ -480,10 +480,6 @@ open class Converter {
         expression = convertExpression(v.getArgumentExpression() ?: error("No expr for value arg"))
     ).map(v)
 
-    open fun convertExpressionContainer(v: KtContainerNode) = Node.ExpressionContainer(
-        expression = convertExpression(v.expression),
-    ).map(v)
-
     open fun convertExpression(v: KtExpression): Node.Expression = when (v) {
         is KtIfExpression -> convertIf(v)
         is KtTryExpression -> convertTry(v)

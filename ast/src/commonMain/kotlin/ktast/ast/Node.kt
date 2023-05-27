@@ -895,16 +895,6 @@ sealed interface Node {
     ) : Node
 
     /**
-     * AST node corresponds to KtContainerNode.
-     *
-     * @property expression expression in the container.
-     */
-    data class ExpressionContainer(
-        val expression: Expression,
-        override var tag: Any? = null,
-    ) : Node
-
-    /**
      * Common interface for AST nodes that represent expressions.
      */
     sealed interface Expression : Statement {
