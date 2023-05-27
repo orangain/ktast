@@ -921,9 +921,9 @@ sealed interface Node {
             val lPar: Keyword.LPar,
             val condition: Expression,
             val rPar: Keyword.RPar,
-            val body: ExpressionContainer,
+            val body: Expression,
             val elseKeyword: Keyword.Else?,
-            val elseBody: ExpressionContainer?,
+            val elseBody: Expression?,
             override var tag: Any? = null,
         ) : Expression
 

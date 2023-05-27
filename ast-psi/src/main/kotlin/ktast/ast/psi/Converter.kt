@@ -530,9 +530,9 @@ open class Converter {
         lPar = convertKeyword(v.leftParenthesis ?: error("No left parenthesis on if for $v")),
         condition = convertExpression(v.condition ?: error("No cond on if for $v")),
         rPar = convertKeyword(v.rightParenthesis ?: error("No right parenthesis on if for $v")),
-        body = convertExpressionContainer(v.thenContainer),
+        body = convertExpression(v.thenContainer.expression ?: error("No then body on if for $v")),
         elseKeyword = v.elseKeyword?.let(::convertKeyword),
-        elseBody = v.elseContainer?.let(::convertExpressionContainer),
+        elseBody = v.elseContainer?.expression?.let(::convertExpression),
     ).map(v)
 
     open fun convertTry(v: KtTryExpression) = Node.Expression.TryExpression(
