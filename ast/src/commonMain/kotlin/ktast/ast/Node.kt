@@ -618,14 +618,14 @@ sealed interface Node {
          * @property modifiers modifiers if exists, otherwise `null`.
          * @property name name of the type alias.
          * @property typeParams type parameters of the type alias if exists, otherwise `null`.
-         * @property typeRef type reference of the type alias.
+         * @property type existing type of the type alias.
          */
         data class TypeAliasDeclaration(
             override val modifiers: Modifiers?,
             val name: Expression.NameExpression,
             val typeParams: TypeParams?,
             val equals: Keyword.Equal,
-            val typeRef: TypeRef,
+            val type: Type,
             override var tag: Any? = null,
         ) : Declaration, WithModifiers
     }

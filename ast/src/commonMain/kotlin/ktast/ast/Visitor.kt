@@ -161,7 +161,7 @@ open class Visitor {
                 visitChildren(name)
                 visitChildren(typeParams)
                 visitChildren(equals)
-                visitChildren(typeRef)
+                visitChildren(type)
             }
             is Node.Declaration.ClassDeclaration.ClassBody.SecondaryConstructor -> {
                 visitChildren(modifiers)

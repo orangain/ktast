@@ -269,7 +269,7 @@ open class Converter {
         name = v.nameIdentifier?.let(::convertName) ?: error("No type alias name for $v"),
         typeParams = v.typeParameterList?.let(::convertTypeParams),
         equals = convertKeyword(v.equalsToken),
-        typeRef = convertTypeRef(v.getTypeReference() ?: error("No type alias ref for $v"))
+        type = convertType(v.getTypeReference()?.typeElement ?: error("No type alias ref for $v"))
     ).map(v)
 
     open fun convertSecondaryConstructor(v: KtSecondaryConstructor) =

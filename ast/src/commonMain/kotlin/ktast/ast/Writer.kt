@@ -210,7 +210,7 @@ open class Writer(
                     children(name)
                     children(typeParams)
                     children(equals)
-                    children(typeRef)
+                    children(type)
                 }
                 is Node.Declaration.ClassDeclaration.ClassBody.SecondaryConstructor -> {
                     children(modifiers)
