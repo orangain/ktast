@@ -359,6 +359,7 @@ open class Converter {
             modifiers = modifierList?.let(::convertModifiers),
             contextReceivers = v.contextReceiverList?.let { convertContextReceivers(it) },
             receiverTypeRef = v.receiver?.typeReference?.let(::convertTypeRef),
+            dotSymbol = findChildByType(v, KtTokens.DOT)?.let(::convertKeyword),
             params = v.parameterList?.let(::convertTypeFunctionParams),
             returnTypeRef = convertTypeRef(v.returnTypeReference ?: error("No return type")),
             rPar = rPar?.let(::convertKeyword),

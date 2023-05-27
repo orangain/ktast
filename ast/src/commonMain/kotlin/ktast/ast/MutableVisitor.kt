@@ -189,6 +189,7 @@ open class MutableVisitor(
                         modifiers = visitChildren(modifiers, newCh),
                         contextReceivers = visitChildren(contextReceivers, newCh),
                         receiverTypeRef = visitChildren(receiverTypeRef, newCh),
+                        dotSymbol = visitChildren(dotSymbol, newCh),
                         params = visitChildren(params, newCh),
                         returnTypeRef = visitChildren(returnTypeRef, newCh),
                         rPar = visitChildren(rPar, newCh),

@@ -246,10 +246,8 @@ open class Writer(
                         append("context")
                         children(contextReceivers)
                     }
-                    if (receiverTypeRef != null) {
-                        children(receiverTypeRef)
-                        append('.')
-                    }
+                    children(receiverTypeRef)
+                    children(dotSymbol)
                     if (params != null) {
                         children(params).append("->")
                     }
