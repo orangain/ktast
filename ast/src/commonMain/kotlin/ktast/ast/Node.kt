@@ -389,7 +389,7 @@ sealed interface Node {
          * @property receiverTypeRef receiver type reference of the function if exists, otherwise `null`.
          * @property name name of the function. If the function is anonymous, the name is `null`.
          * @property params parameters of the function if exists, otherwise `null`.
-         * @property typeRef return type reference of the function if exists, otherwise `null`.
+         * @property returnTypeRef return type reference of the function if exists, otherwise `null`.
          * @property postModifiers post-modifiers of the function.
          * @property equals `=` keyword if exists, otherwise `null`.
          * @property body body of the function if exists, otherwise `null`.
@@ -401,7 +401,7 @@ sealed interface Node {
             val receiverTypeRef: TypeRef?,
             val name: Expression.NameExpression?,
             val params: FunctionParams?,
-            val typeRef: TypeRef?,
+            val returnTypeRef: TypeRef?,
             override val postModifiers: List<PostModifier>,
             override val equals: Keyword.Equal?,
             override val body: Expression?,
@@ -690,7 +690,7 @@ sealed interface Node {
          * @property typeArgs type arguments if exists, otherwise `null`.
          */
         data class SimpleType(
-            val qualifiers: List<Qualifier>,
+            val qualifiers: List<SimpleTypeQualifier>,
             override val name: Expression.NameExpression,
             override val typeArgs: TypeArgs?,
             override var tag: Any? = null,
@@ -701,7 +701,7 @@ sealed interface Node {
              * @property name name of the qualifier.
              * @property typeArgs type arguments if exists, otherwise `null`.
              */
-            data class Qualifier(
+            data class SimpleTypeQualifier(
                 override val name: Expression.NameExpression,
                 override val typeArgs: TypeArgs?,
                 override var tag: Any? = null,
@@ -1313,13 +1313,13 @@ sealed interface Node {
         /**
          * AST node corresponds to KtCallElement.
          *
-         * @property expression callee expression.
+         * @property calleeExpression callee expression.
          * @property typeArgs type arguments if exists, otherwise `null`.
          * @property args value arguments if exists, otherwise `null`.
          * @property lambdaArg lambda argument if exists, otherwise `null`.
          */
         data class CallExpression(
-            val expression: Expression,
+            val calleeExpression: Expression,
             val typeArgs: TypeArgs?,
             val args: ValueArgs?,
             val lambdaArg: LambdaArg?,
@@ -1343,11 +1343,11 @@ sealed interface Node {
         /**
          * AST node corresponds to KtArrayAccessExpression.
          *
-         * @property expression array expression.
+         * @property expression collection expression.
          * @property indices list of index expressions.
          * @property trailingComma trailing comma of [indices] if exists, otherwise `null`.
          */
-        data class ArrayAccessExpression(
+        data class IndexedAccessExpression(
             val expression: Expression,
             val indices: List<Expression>,
             val trailingComma: Keyword.Comma?,
@@ -1368,10 +1368,10 @@ sealed interface Node {
          * AST node corresponds to KtProperty or KtDestructuringDeclaration.
          * This is only present for when expressions and labeled expressions.
          *
-         * @property declaration property declaration.
+         * @property property property declaration.
          */
         data class PropertyExpression(
-            val declaration: Declaration.PropertyDeclaration,
+            val property: Declaration.PropertyDeclaration,
             override var tag: Any? = null,
         ) : Expression
 

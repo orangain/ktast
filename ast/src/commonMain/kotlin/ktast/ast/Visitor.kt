@@ -79,7 +79,7 @@ open class Visitor {
                 visitChildren(receiverTypeRef)
                 visitChildren(name)
                 visitChildren(params)
-                visitChildren(typeRef)
+                visitChildren(returnTypeRef)
                 visitChildren(postModifiers)
                 visitChildren(equals)
                 visitChildren(body)
@@ -190,7 +190,7 @@ open class Visitor {
                 visitChildren(name)
                 visitChildren(typeArgs)
             }
-            is Node.Type.SimpleType.Qualifier -> {
+            is Node.Type.SimpleType.SimpleTypeQualifier -> {
                 visitChildren(name)
                 visitChildren(typeArgs)
             }
@@ -331,7 +331,7 @@ open class Visitor {
                 visitChildren(expression)
             }
             is Node.Expression.CallExpression -> {
-                visitChildren(expression)
+                visitChildren(calleeExpression)
                 visitChildren(typeArgs)
                 visitChildren(args)
                 visitChildren(lambdaArg)
@@ -340,7 +340,7 @@ open class Visitor {
                 visitChildren(annotationSets)
                 visitChildren(expression)
             }
-            is Node.Expression.ArrayAccessExpression -> {
+            is Node.Expression.IndexedAccessExpression -> {
                 visitChildren(expression)
                 visitChildren(indices)
                 visitChildren(trailingComma)
@@ -349,7 +349,7 @@ open class Visitor {
                 visitChildren(function)
             }
             is Node.Expression.PropertyExpression -> {
-                visitChildren(declaration)
+                visitChildren(property)
             }
             is Node.Expression.BlockExpression -> {
                 visitChildren(statements)

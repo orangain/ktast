@@ -137,7 +137,7 @@ open class Converter {
             receiverTypeRef = v.receiverTypeReference?.let(::convertTypeRef),
             name = v.nameIdentifier?.let(::convertName),
             params = v.valueParameterList?.let(::convertFuncParams),
-            typeRef = v.typeReference?.let(::convertTypeRef),
+            returnTypeRef = v.typeReference?.let(::convertTypeRef),
             postModifiers = convertPostModifiers(v),
             equals = v.equalsToken?.let(::convertKeyword),
             body = v.bodyExpression?.let { convertExpression(it) },
@@ -411,7 +411,7 @@ open class Converter {
         typeRef = convertTypeRef(v.typeReference ?: error("No param type"))
     ).map(v)
 
-    open fun convertTypeSimpleQualifier(v: KtUserType) = Node.Type.SimpleType.Qualifier(
+    open fun convertTypeSimpleQualifier(v: KtUserType) = Node.Type.SimpleType.SimpleTypeQualifier(
         name = convertName(v.referenceExpression ?: error("No type name for $v")),
         typeArgs = v.typeArgumentList?.let(::convertTypeArgs),
     ).map(v)
@@ -746,7 +746,7 @@ open class Converter {
     ).map(v)
 
     open fun convertCall(v: KtCallElement) = Node.Expression.CallExpression(
-        expression = convertExpression(v.calleeExpression ?: error("No call expr for $v")),
+        calleeExpression = convertExpression(v.calleeExpression ?: error("No call expr for $v")),
         typeArgs = v.typeArgumentList?.let(::convertTypeArgs),
         args = v.valueArgumentList?.let(::convertValueArgs),
         lambdaArg = v.lambdaArguments.also {
@@ -780,7 +780,7 @@ open class Converter {
         ).map(v)
     }
 
-    open fun convertArrayAccess(v: KtArrayAccessExpression) = Node.Expression.ArrayAccessExpression(
+    open fun convertArrayAccess(v: KtArrayAccessExpression) = Node.Expression.IndexedAccessExpression(
         expression = convertExpression(v.arrayExpression ?: error("No array expr for $v")),
         indices = v.indexExpressions.map(::convertExpression),
         trailingComma = v.trailingComma?.let(::convertKeyword),
@@ -790,11 +790,11 @@ open class Converter {
         Node.Expression.AnonymousFunctionExpression(convertFunction(v))
 
     open fun convertPropertyExpr(v: KtProperty) = Node.Expression.PropertyExpression(
-        declaration = convertProperty(v)
+        property = convertProperty(v)
     ).map(v)
 
     open fun convertPropertyExpr(v: KtDestructuringDeclaration) = Node.Expression.PropertyExpression(
-        declaration = convertProperty(v)
+        property = convertProperty(v)
     ).map(v)
 
     open fun convertBlock(v: KtBlockExpression) = Node.Expression.BlockExpression(

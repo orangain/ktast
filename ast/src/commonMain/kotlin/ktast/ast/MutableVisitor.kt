@@ -85,7 +85,7 @@ open class MutableVisitor(
                         receiverTypeRef = visitChildren(receiverTypeRef, newCh),
                         name = visitChildren(name, newCh),
                         params = visitChildren(params, newCh),
-                        typeRef = visitChildren(typeRef, newCh),
+                        returnTypeRef = visitChildren(returnTypeRef, newCh),
                         postModifiers = visitChildren(postModifiers, newCh),
                         equals = visitChildren(equals, newCh),
                         body = visitChildren(body, newCh),
@@ -216,7 +216,7 @@ open class MutableVisitor(
                         name = visitChildren(name, newCh),
                         typeArgs = visitChildren(typeArgs, newCh),
                     )
-                    is Node.Type.SimpleType.Qualifier -> copy(
+                    is Node.Type.SimpleType.SimpleTypeQualifier -> copy(
                         name = visitChildren(name, newCh),
                         typeArgs = visitChildren(typeArgs, newCh),
                     )
@@ -365,7 +365,7 @@ open class MutableVisitor(
                         expression = visitChildren(expression, newCh)
                     )
                     is Node.Expression.CallExpression -> copy(
-                        expression = visitChildren(expression, newCh),
+                        calleeExpression = visitChildren(calleeExpression, newCh),
                         typeArgs = visitChildren(typeArgs, newCh),
                         args = visitChildren(args, newCh),
                         lambdaArg = visitChildren(lambdaArg, newCh)
@@ -374,7 +374,7 @@ open class MutableVisitor(
                         annotationSets = visitChildren(annotationSets, newCh),
                         expression = visitChildren(expression, newCh)
                     )
-                    is Node.Expression.ArrayAccessExpression -> copy(
+                    is Node.Expression.IndexedAccessExpression -> copy(
                         expression = visitChildren(expression, newCh),
                         indices = visitChildren(indices, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
@@ -383,7 +383,7 @@ open class MutableVisitor(
                         function = visitChildren(function, newCh)
                     )
                     is Node.Expression.PropertyExpression -> copy(
-                        declaration = visitChildren(declaration, newCh)
+                        property = visitChildren(property, newCh)
                     )
                     is Node.Expression.BlockExpression -> copy(
                         statements = visitChildren(statements, newCh)

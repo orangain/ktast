@@ -132,7 +132,7 @@ open class Writer(
                     if (receiverTypeRef != null) children(receiverTypeRef).append(".")
                     name?.also { children(it) }
                     children(params)
-                    if (typeRef != null) append(":").also { children(typeRef) }
+                    if (returnTypeRef != null) append(":").also { children(returnTypeRef) }
                     children(postModifiers)
                     children(equals)
                     children(body)
@@ -274,7 +274,7 @@ open class Writer(
                     children(name)
                     children(typeArgs)
                 }
-                is Node.Type.SimpleType.Qualifier -> {
+                is Node.Type.SimpleType.SimpleTypeQualifier -> {
                     children(name)
                     children(typeArgs)
                 }
@@ -463,7 +463,7 @@ open class Writer(
                 is Node.Expression.AnnotatedExpression ->
                     children(annotationSets).also { children(expression) }
                 is Node.Expression.CallExpression -> {
-                    children(expression)
+                    children(calleeExpression)
                     children(typeArgs)
                     children(args)
                     children(lambdaArg)
@@ -473,14 +473,14 @@ open class Writer(
                     if (label != null) append(label).append("@")
                     children(expression)
                 }
-                is Node.Expression.ArrayAccessExpression -> {
+                is Node.Expression.IndexedAccessExpression -> {
                     children(expression)
                     children(indices, ",", "[", "]", trailingComma)
                 }
                 is Node.Expression.AnonymousFunctionExpression ->
                     children(function)
                 is Node.Expression.PropertyExpression ->
-                    children(declaration)
+                    children(property)
                 is Node.Expression.BlockExpression -> {
                     append("{").run {
                         children(statements)
