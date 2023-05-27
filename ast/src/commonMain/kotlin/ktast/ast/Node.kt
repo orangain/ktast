@@ -1063,18 +1063,73 @@ sealed interface Node {
         /**
          * AST node corresponds to KtConstantExpression.
          *
-         * @property value string representation of this constant.
-         * @property form form of this constant.
+         * @property text string representation of this constant.
          */
-        data class ConstantLiteralExpression(
-            val value: String,
-            val form: Form,
+        sealed interface ConstantLiteralExpression : Expression {
+            val text: String
+        }
+
+        /**
+         * AST node that represents boolean literal. The node corresponds to KtConstantExpression whose expressionType is KtNodeTypes.BOOLEAN_CONSTANT.
+         *
+         * @property text string representation of this constant, which is either "true" or "false".
+         */
+        data class BooleanLiteralExpression(
+            override val text: String,
             override var tag: Any? = null,
-        ) : Expression {
-            /**
-             * Form of constant literal expression.
-             */
-            enum class Form { BOOLEAN, CHAR, INT, FLOAT, NULL }
+        ) : ConstantLiteralExpression {
+            init {
+                require(text == "true" || text == "false") {
+                    """text must be either "true" or "false"."""
+                }
+            }
+        }
+
+        /**
+         * AST node that represents character literal. The node corresponds to KtConstantExpression whose expressionType is KtNodeTypes.CHARACTER_CONSTANT.
+         *
+         * @property text string representation of this constant, which is surrounded by single quotes.
+         */
+        data class CharacterLiteralExpression(
+            override val text: String,
+            override var tag: Any? = null,
+        ) : ConstantLiteralExpression {
+            init {
+                require(text.startsWith('\'') && text.endsWith('\'')) {
+                    "text must be surrounded by single quotes."
+                }
+            }
+        }
+
+        /**
+         * AST node that represents integer literal. The node corresponds to KtConstantExpression whose expressionType is KtNodeTypes.INTEGER_CONSTANT.
+         *
+         * @property text string representation of this constant.
+         */
+        data class IntegerLiteralExpression(
+            override val text: String,
+            override var tag: Any? = null,
+        ) : ConstantLiteralExpression
+
+        /**
+         * AST node that represents real number literal. The node corresponds to KtConstantExpression whose expressionType is KtNodeTypes.FLOAT_CONSTANT.
+         *
+         * @property text string representation of this constant.
+         */
+
+        data class RealLiteralExpression(
+            override val text: String,
+            override var tag: Any? = null,
+        ) : ConstantLiteralExpression
+
+        /**
+         * AST node that represents null literal. The node corresponds to KtConstantExpression whose expressionType is KtNodeTypes.NULL.
+         */
+        data class NullLiteralExpression(
+            override var tag: Any? = null,
+        ) : ConstantLiteralExpression {
+            override val text: String
+                get() = "null"
         }
 
         /**

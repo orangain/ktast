@@ -385,7 +385,7 @@ open class Writer(
                     doAppend(suffix)
                 }
                 is Node.Expression.ConstantLiteralExpression ->
-                    append(value)
+                    append(text)
                 is Node.Expression.LambdaExpression -> {
                     append("{")
                     if (params != null) {
