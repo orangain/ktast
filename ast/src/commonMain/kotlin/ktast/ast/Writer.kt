@@ -337,8 +337,10 @@ open class Writer(
                 is Node.Expression.BinaryExpression -> {
                     children(lhs, operator, rhs)
                 }
-                is Node.Expression.UnaryExpression ->
-                    if (prefix) children(operator, expression) else children(expression, operator)
+                is Node.Expression.PrefixExpression ->
+                    children(operator, expression)
+                is Node.Expression.PostfixExpression ->
+                    children(expression, operator)
                 is Node.Expression.BinaryTypeExpression ->
                     children(listOf(lhs, operator, rhs), "")
                 is Node.Expression.CallableReferenceExpression -> {

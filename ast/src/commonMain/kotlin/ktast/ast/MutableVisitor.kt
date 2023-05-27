@@ -275,7 +275,11 @@ open class MutableVisitor(
                         operator = visitChildren(operator, newCh),
                         rhs = visitChildren(rhs, newCh)
                     )
-                    is Node.Expression.UnaryExpression -> copy(
+                    is Node.Expression.PrefixExpression -> copy(
+                        operator = visitChildren(operator, newCh),
+                        expression = visitChildren(expression, newCh)
+                    )
+                    is Node.Expression.PostfixExpression -> copy(
                         expression = visitChildren(expression, newCh),
                         operator = visitChildren(operator, newCh)
                     )

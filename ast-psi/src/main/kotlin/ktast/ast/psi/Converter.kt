@@ -445,7 +445,8 @@ open class Converter {
         is KtDoWhileExpression -> convertDoWhile(v)
         is KtBinaryExpression -> convertBinary(v)
         is KtQualifiedExpression -> convertBinary(v)
-        is KtUnaryExpression -> convertUnary(v)
+        is KtPrefixExpression -> convertPrefix(v)
+        is KtPostfixExpression -> convertPostfix(v)
         is KtBinaryExpressionWithTypeRHS -> convertBinaryType(v)
         is KtIsExpression -> convertBinaryType(v)
         is KtCallableReferenceExpression -> convertCallableReference(v)
@@ -534,10 +535,14 @@ open class Converter {
         rhs = convertExpression(v.selectorExpression ?: error("No qualified rhs for $v"))
     ).map(v)
 
-    open fun convertUnary(v: KtUnaryExpression) = Node.Expression.UnaryExpression(
-        expression = convertExpression(v.baseExpression ?: error("No unary expr for $v")),
+    open fun convertPrefix(v: KtPrefixExpression) = Node.Expression.PrefixExpression(
         operator = convertKeyword(v.operationReference),
-        prefix = v is KtPrefixExpression
+        expression = convertExpression(v.baseExpression ?: error("No base expression for $v")),
+    ).map(v)
+
+    open fun convertPostfix(v: KtPostfixExpression) = Node.Expression.PostfixExpression(
+        expression = convertExpression(v.baseExpression ?: error("No base expression for $v")),
+        operator = convertKeyword(v.operationReference),
     ).map(v)
 
     open fun convertBinaryType(v: KtBinaryExpressionWithTypeRHS) = Node.Expression.BinaryTypeExpression(

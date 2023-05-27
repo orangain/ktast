@@ -935,23 +935,44 @@ sealed interface Node {
         }
 
         /**
-         * AST node corresponds to KtUnaryExpression.
+         * Common interface for [PrefixExpression] and [PostfixExpression]. The node corresponds to KtUnaryExpression
          *
          * @property expression operand expression.
          * @property operator unary operator.
-         * @property prefix `true` if this is prefix expression, `false` if this is postfix expression.
          */
-        data class UnaryExpression(
-            val expression: Expression,
-            val operator: UnaryOperator,
-            val prefix: Boolean,
-            override var tag: Any? = null,
-        ) : Expression {
+        sealed interface UnaryExpression : Expression {
+            val expression: Expression
+            val operator: UnaryOperator
+
             /**
              * Common interface for AST nodes that represent unary operators.
              */
             sealed interface UnaryOperator : Keyword
         }
+
+        /**
+         * AST node corresponds to KtUnaryExpression whose operator is prefix.
+         *
+         * @property operator unary operator.
+         * @property expression operand expression.
+         */
+        data class PrefixExpression(
+            override val operator: UnaryExpression.UnaryOperator,
+            override val expression: Expression,
+            override var tag: Any? = null,
+        ) : UnaryExpression
+
+        /**
+         * AST node corresponds to KtUnaryExpression whose operator is postfix.
+         *
+         * @property expression operand expression.
+         * @property operator unary operator.
+         */
+        data class PostfixExpression(
+            override val expression: Expression,
+            override val operator: UnaryExpression.UnaryOperator,
+            override var tag: Any? = null,
+        ) : UnaryExpression
 
         /**
          * AST node corresponds to KtBinaryExpressionWithTypeRHS or KtIsExpression.
