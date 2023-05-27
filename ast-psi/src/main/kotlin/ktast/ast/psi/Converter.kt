@@ -780,7 +780,7 @@ open class Converter {
         ).map(v)
     }
 
-    open fun convertArrayAccess(v: KtArrayAccessExpression) = Node.Expression.ArrayAccessExpression(
+    open fun convertArrayAccess(v: KtArrayAccessExpression) = Node.Expression.IndexedAccessExpression(
         expression = convertExpression(v.arrayExpression ?: error("No array expr for $v")),
         indices = v.indexExpressions.map(::convertExpression),
         trailingComma = v.trailingComma?.let(::convertKeyword),

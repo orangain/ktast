@@ -1343,11 +1343,11 @@ sealed interface Node {
         /**
          * AST node corresponds to KtArrayAccessExpression.
          *
-         * @property expression array expression.
+         * @property expression collection expression.
          * @property indices list of index expressions.
          * @property trailingComma trailing comma of [indices] if exists, otherwise `null`.
          */
-        data class ArrayAccessExpression(
+        data class IndexedAccessExpression(
             val expression: Expression,
             val indices: List<Expression>,
             val trailingComma: Keyword.Comma?,

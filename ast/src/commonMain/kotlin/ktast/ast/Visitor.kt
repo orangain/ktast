@@ -340,7 +340,7 @@ open class Visitor {
                 visitChildren(annotationSets)
                 visitChildren(expression)
             }
-            is Node.Expression.ArrayAccessExpression -> {
+            is Node.Expression.IndexedAccessExpression -> {
                 visitChildren(expression)
                 visitChildren(indices)
                 visitChildren(trailingComma)

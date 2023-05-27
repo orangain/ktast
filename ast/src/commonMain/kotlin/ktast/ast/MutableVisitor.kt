@@ -374,7 +374,7 @@ open class MutableVisitor(
                         annotationSets = visitChildren(annotationSets, newCh),
                         expression = visitChildren(expression, newCh)
                     )
-                    is Node.Expression.ArrayAccessExpression -> copy(
+                    is Node.Expression.IndexedAccessExpression -> copy(
                         expression = visitChildren(expression, newCh),
                         indices = visitChildren(indices, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),

@@ -473,7 +473,7 @@ open class Writer(
                     if (label != null) append(label).append("@")
                     children(expression)
                 }
-                is Node.Expression.ArrayAccessExpression -> {
+                is Node.Expression.IndexedAccessExpression -> {
                     children(expression)
                     children(indices, ",", "[", "]", trailingComma)
                 }
