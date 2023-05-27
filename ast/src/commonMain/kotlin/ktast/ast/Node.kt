@@ -216,9 +216,9 @@ sealed interface Node {
             val lPar: Keyword.LPar,
             val loopParam: LambdaParam,
             val inKeyword: Keyword.In,
-            val loopRange: ExpressionContainer,
+            val loopRange: Expression,
             val rPar: Keyword.RPar,
-            val body: ExpressionContainer,
+            val body: Expression,
             override var tag: Any? = null,
         ) : Statement
 

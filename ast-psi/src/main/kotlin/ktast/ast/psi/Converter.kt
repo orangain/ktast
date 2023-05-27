@@ -71,9 +71,9 @@ open class Converter {
         lPar = convertKeyword(v.leftParenthesis ?: error("No left parenthesis for $v")),
         loopParam = convertLambdaParam(v.loopParameter ?: error("No param on for $v")),
         inKeyword = convertKeyword(v.inKeyword ?: error("No in keyword for $v")),
-        loopRange = convertExpressionContainer(v.loopRangeContainer),
+        loopRange = convertExpression(v.loopRangeContainer.expression),
         rPar = convertKeyword(v.rightParenthesis ?: error("No right parenthesis for $v")),
-        body = convertExpressionContainer(v.bodyContainer),
+        body = convertExpression(v.bodyContainer.expression ?: error("No body expression for $v")),
     ).map(v)
 
     open fun convertWhile(v: KtWhileExpression) = Node.Statement.WhileStatement(
