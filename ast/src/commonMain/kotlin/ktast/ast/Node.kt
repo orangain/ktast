@@ -1063,9 +1063,9 @@ sealed interface Node {
              * @property text string of this entry.
              */
             data class LiteralStringEntry(
-                val text: String,
+                override val text: String,
                 override var tag: Any? = null,
-            ) : StringEntry
+            ) : StringEntry, SimpleTextNode
 
             /**
              * AST node corresponds to KtEscapeStringTemplateEntry.
@@ -1073,9 +1073,9 @@ sealed interface Node {
              * @property text string of this entry starting with backslash.
              */
             data class EscapeStringEntry(
-                val text: String,
+                override val text: String,
                 override var tag: Any? = null,
-            ) : StringEntry {
+            ) : StringEntry, SimpleTextNode {
                 init {
                     require(text.startsWith('\\')) {
                         "Escape string template entry must start with backslash."
@@ -1107,8 +1107,8 @@ sealed interface Node {
          *
          * @property text string representation of this constant.
          */
-        sealed interface ConstantLiteralExpression : Expression {
-            val text: String
+        sealed interface ConstantLiteralExpression : Expression, SimpleTextNode {
+            override val text: String
         }
 
         /**
@@ -2062,9 +2062,7 @@ sealed interface Node {
      *
      * @property text string representation of the node.
      */
-    sealed interface Extra : Node {
-        val text: String
-
+    sealed interface Extra : SimpleTextNode {
         /**
          * AST node corresponds to PsiWhiteSpace.
          *
