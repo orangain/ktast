@@ -402,9 +402,15 @@ open class Writer(
                     children(elseKeyword)
                     append("->").also { children(body) }
                 }
-                is Node.Expression.WhenExpression.WhenCondition -> {
+                is Node.Expression.WhenExpression.ExpressionWhenCondition -> {
+                    children(expression)
+                }
+                is Node.Expression.WhenExpression.RangeWhenCondition -> {
                     children(operator)
                     children(expression)
+                }
+                is Node.Expression.WhenExpression.TypeWhenCondition -> {
+                    children(operator)
                     children(typeRef)
                 }
                 is Node.Expression.ObjectLiteralExpression -> {

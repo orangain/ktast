@@ -681,23 +681,19 @@ open class Converter {
     ).map(v)
 
     open fun convertWhenCondition(v: KtWhenCondition) = when (v) {
-        is KtWhenConditionWithExpression -> Node.Expression.WhenExpression.WhenCondition(
-            operator = null,
+        is KtWhenConditionWithExpression -> Node.Expression.WhenExpression.ExpressionWhenCondition(
             expression = convertExpression(v.expression ?: error("No when cond expr for $v")),
-            typeRef = null,
         ).map(v)
-        is KtWhenConditionInRange -> Node.Expression.WhenExpression.WhenCondition(
+        is KtWhenConditionInRange -> Node.Expression.WhenExpression.RangeWhenCondition(
             operator = convertKeyword(v.operationReference),
             expression = convertExpression(v.rangeExpression ?: error("No when in expr for $v")),
-            typeRef = null,
         ).map(v)
-        is KtWhenConditionIsPattern -> Node.Expression.WhenExpression.WhenCondition(
+        is KtWhenConditionIsPattern -> Node.Expression.WhenExpression.TypeWhenCondition(
             operator = convertKeyword(
                 findChildByType(v, KtTokens.IS_KEYWORD)
                     ?: findChildByType(v, KtTokens.NOT_IS)
                     ?: error("No when is operator for $v")
             ),
-            expression = null,
             typeRef = convertTypeRef(v.typeReference ?: error("No when is type for $v")),
         ).map(v)
         else -> error("Unrecognized when cond of $v")

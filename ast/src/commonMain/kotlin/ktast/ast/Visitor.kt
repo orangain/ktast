@@ -322,9 +322,15 @@ open class Visitor {
                 visitChildren(elseKeyword)
                 visitChildren(body)
             }
-            is Node.Expression.WhenExpression.WhenCondition -> {
+            is Node.Expression.WhenExpression.ExpressionWhenCondition -> {
+                visitChildren(expression)
+            }
+            is Node.Expression.WhenExpression.RangeWhenCondition -> {
                 visitChildren(operator)
                 visitChildren(expression)
+            }
+            is Node.Expression.WhenExpression.TypeWhenCondition -> {
+                visitChildren(operator)
                 visitChildren(typeRef)
             }
             is Node.Expression.ObjectLiteralExpression -> {

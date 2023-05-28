@@ -1299,22 +1299,58 @@ sealed interface Node {
              * AST node corresponds to KtWhenCondition.
              *
              * @property operator operator of this condition if exists, otherwise `null`.
-             * @property expression operand of [operator] if it is [WhenConditionRangeOperator] or condition expression if [operator] is `null`, otherwise `null`.
-             * @property typeRef operand of [operator] if it is [WhenConditionTypeOperator], otherwise `null`.
+             * @property expression operand of [operator] or condition expression, otherwise `null`.
+             * @property typeRef operand of [operator], otherwise `null`.
              */
-            data class WhenCondition(
-                val operator: WhenConditionOperator?,
-                val expression: Expression?,
-                val typeRef: TypeRef?,
+            sealed interface WhenCondition : Node {
+                val operator: WhenConditionOperator?
+                val expression: Expression?
+                val typeRef: TypeRef?
+            }
+
+            /**
+             * AST node corresponds to KtWhenConditionWithExpression.
+             *
+             * @property operator always `null`.
+             * @property expression condition expression.
+             * @property typeRef always `null`.
+             */
+            data class ExpressionWhenCondition(
+                override val expression: Expression,
                 override var tag: Any? = null,
-            ) : Node {
-                init {
-                    when (operator) {
-                        null -> require(expression != null || typeRef == null) { "expression must not be null and typeRef must be null when operator is null" }
-                        is WhenConditionTypeOperator -> require(expression == null && typeRef != null) { "expression must be null and typeRef must not be null when operator is type operator" }
-                        is WhenConditionRangeOperator -> require(expression != null && typeRef == null) { "expression must not be null and typeRef must be null when operator is range operator" }
-                    }
-                }
+            ) : WhenCondition {
+                override val operator = null
+                override val typeRef = null
+            }
+
+            /**
+             * AST node corresponds to KtWhenConditionInRange.
+             *
+             * @property operator operator of this condition.
+             * @property expression operand of [operator].
+             * @property typeRef always `null`.
+             */
+            data class RangeWhenCondition(
+                override val operator: WhenConditionRangeOperator,
+                override val expression: Expression,
+                override var tag: Any? = null,
+            ) : WhenCondition {
+                override val typeRef = null
+            }
+
+            /**
+             * AST node corresponds to KtWhenConditionIsPattern.
+             *
+             * @property operator operator of this condition.
+             * @property expression always `null`.
+             * @property typeRef operand of [operator].
+             */
+            data class TypeWhenCondition(
+                override val operator: WhenConditionTypeOperator,
+                override val typeRef: TypeRef,
+                override var tag: Any? = null,
+            ) : WhenCondition {
+                override val expression = null
             }
         }
 

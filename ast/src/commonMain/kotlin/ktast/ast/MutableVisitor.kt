@@ -356,9 +356,15 @@ open class MutableVisitor(
                         elseKeyword = visitChildren(elseKeyword, newCh),
                         body = visitChildren(body, newCh),
                     )
-                    is Node.Expression.WhenExpression.WhenCondition -> copy(
+                    is Node.Expression.WhenExpression.ExpressionWhenCondition -> copy(
+                        expression = visitChildren(expression, newCh),
+                    )
+                    is Node.Expression.WhenExpression.RangeWhenCondition -> copy(
                         operator = visitChildren(operator, newCh),
                         expression = visitChildren(expression, newCh),
+                    )
+                    is Node.Expression.WhenExpression.TypeWhenCondition -> copy(
+                        operator = visitChildren(operator, newCh),
                         typeRef = visitChildren(typeRef, newCh),
                     )
                     is Node.Expression.ObjectLiteralExpression -> copy(
