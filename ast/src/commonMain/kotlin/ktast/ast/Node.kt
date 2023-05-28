@@ -1226,7 +1226,7 @@ sealed interface Node {
          */
         data class SuperExpression(
             val typeArg: TypeRef?,
-            val label: String?,
+            val label: NameExpression?,
             override var tag: Any? = null,
         ) : Expression
 
@@ -1335,7 +1335,7 @@ sealed interface Node {
          * @property expression expression to be returned if exists, otherwise `null`.
          */
         data class ReturnExpression(
-            val label: String?,
+            val label: NameExpression?,
             val expression: Expression?,
             override var tag: Any? = null,
         ) : Expression
@@ -1346,7 +1346,7 @@ sealed interface Node {
          * @property label label of this continue expression if exists, otherwise `null`.
          */
         data class ContinueExpression(
-            val label: String?,
+            val label: NameExpression?,
             override var tag: Any? = null,
         ) : Expression
 
@@ -1356,7 +1356,7 @@ sealed interface Node {
          * @property label label of this break expression if exists, otherwise `null`.
          */
         data class BreakExpression(
-            val label: String?,
+            val label: NameExpression?,
             override var tag: Any? = null,
         ) : Expression
 
@@ -1389,7 +1389,7 @@ sealed interface Node {
          * @property statement statement labeled by [label].
          */
         data class LabeledExpression(
-            val label: String,
+            val label: NameExpression,
             val statement: Statement,
             override var tag: Any? = null,
         ) : Expression
@@ -1430,7 +1430,7 @@ sealed interface Node {
              */
             data class LambdaArg(
                 override val annotationSets: List<Modifier.AnnotationSet>,
-                val label: String?,
+                val label: NameExpression?,
                 val expression: LambdaExpression,
                 override var tag: Any? = null,
             ) : Node, WithAnnotationSets
