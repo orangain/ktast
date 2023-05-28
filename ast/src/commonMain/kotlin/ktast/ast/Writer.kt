@@ -17,10 +17,6 @@ open class Writer(
         CharCategory.DECIMAL_DIGIT_NUMBER,
     )
 
-    protected fun appendLabel(label: String?) {
-        if (label != null) append('@').append(label)
-    }
-
     protected fun Node.appendLabel(label: Node.Expression.NameExpression?) {
         if (label != null) {
             append('@')
