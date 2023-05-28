@@ -657,7 +657,7 @@ open class Converter {
     ).map(v)
 
     open fun convertThis(v: KtThisExpression) = Node.Expression.ThisExpression(
-        label = v.getLabelName()
+        label = v.getTargetLabel()?.let(::convertName),
     ).map(v)
 
     open fun convertSuper(v: KtSuperExpression) = Node.Expression.SuperExpression(

@@ -336,7 +336,9 @@ open class MutableVisitor(
                     is Node.Expression.LambdaExpression.LambdaBody -> copy(
                         statements = visitChildren(statements, newCh)
                     )
-                    is Node.Expression.ThisExpression -> this
+                    is Node.Expression.ThisExpression -> copy(
+                        label = visitChildren(label, newCh),
+                    )
                     is Node.Expression.SuperExpression -> copy(
                         typeArg = visitChildren(typeArg, newCh)
                     )

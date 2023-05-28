@@ -21,6 +21,13 @@ open class Writer(
         if (label != null) append('@').append(label)
     }
 
+    protected fun Node.appendLabel(label: Node.Expression.NameExpression?) {
+        if (label != null) {
+            append('@')
+            children(label)
+        }
+    }
+
     protected fun append(ch: Char) = append(ch.toString())
     protected fun append(str: String) = also {
         if (heuristicSpaceInsertionCriteria.any { it(lastAppendedToken.lastOrNull(), str.firstOrNull()) }) {

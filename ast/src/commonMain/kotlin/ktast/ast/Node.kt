@@ -1214,7 +1214,7 @@ sealed interface Node {
          * @property label label of this expression if exists, otherwise `null`.
          */
         data class ThisExpression(
-            val label: String?,
+            val label: NameExpression?,
             override var tag: Any? = null,
         ) : Expression
 

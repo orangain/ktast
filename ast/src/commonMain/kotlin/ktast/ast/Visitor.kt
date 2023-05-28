@@ -302,7 +302,9 @@ open class Visitor {
             is Node.Expression.LambdaExpression.LambdaBody -> {
                 visitChildren(statements)
             }
-            is Node.Expression.ThisExpression -> {}
+            is Node.Expression.ThisExpression -> {
+                visitChildren(label)
+            }
             is Node.Expression.SuperExpression -> {
                 visitChildren(typeArg)
             }
