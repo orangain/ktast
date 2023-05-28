@@ -388,7 +388,7 @@ open class Writer(
                 }
                 is Node.Expression.SuperExpression -> {
                     append("super")
-                    if (typeArg != null) append('<').also { children(typeArg) }.append('>')
+                    if (typeArgTypeRef != null) append('<').also { children(typeArgTypeRef) }.append('>')
                     appendLabel(label)
                 }
                 is Node.Expression.WhenExpression -> {

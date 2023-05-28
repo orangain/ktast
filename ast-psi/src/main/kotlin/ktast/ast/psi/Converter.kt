@@ -661,7 +661,7 @@ open class Converter {
     ).map(v)
 
     open fun convertSuper(v: KtSuperExpression) = Node.Expression.SuperExpression(
-        typeArg = v.superTypeQualifier?.let(::convertTypeRef),
+        typeArgTypeRef = v.superTypeQualifier?.let(::convertTypeRef),
         label = v.getTargetLabel()?.let(::convertName),
     ).map(v)
 
@@ -753,7 +753,7 @@ open class Converter {
                 label = null,
             ).map(v)
             "super" -> Node.Expression.SuperExpression(
-                typeArg = null,
+                typeArgTypeRef = null,
                 label = null,
             ).map(v)
             else -> error("Unrecognized this/super expr $v")

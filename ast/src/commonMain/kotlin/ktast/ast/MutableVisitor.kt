@@ -340,7 +340,7 @@ open class MutableVisitor(
                         label = visitChildren(label, newCh),
                     )
                     is Node.Expression.SuperExpression -> copy(
-                        typeArg = visitChildren(typeArg, newCh),
+                        typeArgTypeRef = visitChildren(typeArgTypeRef, newCh),
                         label = visitChildren(label, newCh),
                     )
                     is Node.Expression.WhenExpression -> copy(

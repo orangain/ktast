@@ -306,7 +306,7 @@ open class Visitor {
                 visitChildren(label)
             }
             is Node.Expression.SuperExpression -> {
-                visitChildren(typeArg)
+                visitChildren(typeArgTypeRef)
                 visitChildren(label)
             }
             is Node.Expression.WhenExpression -> {

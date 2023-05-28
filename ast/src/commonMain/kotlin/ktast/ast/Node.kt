@@ -1256,11 +1256,11 @@ sealed interface Node {
         /**
          * AST node corresponds to KtSuperExpression or KtConstructorDelegationReferenceExpression whose text is "super".
          *
-         * @property typeArg type argument if exists, otherwise `null`.
+         * @property typeArgTypeRef type argument if exists, otherwise `null`.
          * @property label label of this expression if exists, otherwise `null`.
          */
         data class SuperExpression(
-            val typeArg: TypeRef?,
+            val typeArgTypeRef: TypeRef?,
             override val label: NameExpression?,
             override var tag: Any? = null,
         ) : Expression, WithLabel
