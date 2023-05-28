@@ -316,11 +316,18 @@ open class Converter {
         trailingComma = v.trailingComma?.let(::convertKeyword),
     ).map(v)
 
-    open fun convertTypeArg(v: KtTypeProjection): Node.TypeArg = Node.TypeArg(
-        modifiers = v.modifierList?.let(::convertModifiers),
-        typeRef = v.typeReference?.let(::convertTypeRef),
-        asterisk = v.projectionToken?.let { convertKeyword<Node.Keyword>(it) } as? Node.Keyword.Asterisk,
-    ).map(v)
+    open fun convertTypeArg(v: KtTypeProjection): Node.TypeArg {
+        return if (v.projectionKind == KtProjectionKind.STAR) {
+            Node.TypeArg.StarProjection(
+                asterisk = convertKeyword(v.projectionToken ?: error("Missing projection token for $v")),
+            ).map(v)
+        } else {
+            Node.TypeArg.TypeProjection(
+                modifiers = v.modifierList?.let(::convertModifiers),
+                typeRef = convertTypeRef(v.typeReference ?: error("Missing type ref for $v")),
+            ).map(v)
+        }
+    }
 
     open fun convertTypeRef(v: KtTypeReference): Node.TypeRef {
         var lPar: PsiElement? = null

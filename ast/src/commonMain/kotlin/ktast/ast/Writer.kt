@@ -238,9 +238,11 @@ open class Writer(
                     children(name)
                     if (typeRef != null) append(":").also { children(typeRef) }
                 }
-                is Node.TypeArg -> {
+                is Node.TypeArg.TypeProjection -> {
                     children(modifiers)
                     children(typeRef)
+                }
+                is Node.TypeArg.StarProjection -> {
                     children(asterisk)
                 }
                 is Node.TypeRef -> {

@@ -831,28 +831,44 @@ sealed interface Node {
     ) : CommaSeparatedNodeList<TypeArg>("<", ">")
 
     /**
-     * AST node that represents an actual type argument. For example, `Int` in `listOf<Int>()` is a type argument. The node corresponds to KtTypeProjection.
+     * Common interface for AST node that represents an actual type argument. For example, `Int` in `listOf<Int>()` is a type argument. The node corresponds to KtTypeProjection.
      *
      * @property modifiers modifiers if exists, otherwise `null`.
      * @property typeRef type reference if exists, otherwise `null`.
-     * @property asterisk `*` if exists, otherwise `null`. When this is not null, [modifiers] and [typeRef] must be `null`, otherwise [typeRef] must not be `null`.
+     * @property asterisk `*` if exists, otherwise `null`.
      */
-    data class TypeArg(
-        override val modifiers: Modifiers?,
-        val typeRef: TypeRef?,
-        val asterisk: Keyword.Asterisk?,
-        override var tag: Any? = null,
-    ) : Node, WithModifiers {
-        init {
-            if (asterisk != null) {
-                require(modifiers == null && typeRef == null) {
-                    "modifiers and typeRef must be null when asterisk is true"
-                }
-            } else {
-                require(typeRef != null) {
-                    "typeRef must not be null when asterisk is false"
-                }
-            }
+    sealed interface TypeArg : Node, WithModifiers {
+        val typeRef: TypeRef?
+        val asterisk: Keyword.Asterisk?
+
+        /**
+         * AST node that represents a type projection.
+         *
+         * @property modifiers modifiers if exists, otherwise `null`.
+         * @property typeRef type reference.
+         * @property asterisk always `null`.
+         */
+        data class TypeProjection(
+            override val modifiers: Modifiers?,
+            override val typeRef: TypeRef,
+            override var tag: Any? = null,
+        ) : TypeArg {
+            override val asterisk = null
+        }
+
+        /**
+         * AST node that represents a star projection.
+         *
+         * @property modifiers always `null`.
+         * @property typeRef always `null`.
+         * @property asterisk asterisk keyword.
+         */
+        data class StarProjection(
+            override val asterisk: Keyword.Asterisk,
+            override var tag: Any? = null,
+        ) : TypeArg {
+            override val modifiers = null
+            override val typeRef = null
         }
     }
 

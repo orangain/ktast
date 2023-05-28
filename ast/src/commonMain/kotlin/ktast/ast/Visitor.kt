@@ -180,9 +180,11 @@ open class Visitor {
                 visitChildren(name)
                 visitChildren(typeRef)
             }
-            is Node.TypeArg -> {
+            is Node.TypeArg.TypeProjection -> {
                 visitChildren(modifiers)
                 visitChildren(typeRef)
+            }
+            is Node.TypeArg.StarProjection -> {
                 visitChildren(asterisk)
             }
             is Node.TypeRef -> {
