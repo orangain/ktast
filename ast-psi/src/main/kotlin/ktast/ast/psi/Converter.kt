@@ -673,12 +673,22 @@ open class Converter {
         whenBranches = v.entries.map(::convertWhenEntry),
     ).map(v)
 
-    open fun convertWhenEntry(v: KtWhenEntry) = Node.Expression.WhenExpression.WhenBranch(
-        whenConditions = v.conditions.map(::convertWhenCondition),
-        trailingComma = v.trailingComma?.let(::convertKeyword),
-        elseKeyword = v.elseKeyword?.let(::convertKeyword),
-        body = convertExpression(v.expression ?: error("No when entry body for $v"))
-    ).map(v)
+    open fun convertWhenEntry(v: KtWhenEntry): Node.Expression.WhenExpression.WhenBranch {
+        val elseKeyword = v.elseKeyword
+        val body = convertExpression(v.expression ?: error("No when entry body for $v"))
+        return if (elseKeyword == null) {
+            Node.Expression.WhenExpression.ConditionalWhenBranch(
+                whenConditions = v.conditions.map(::convertWhenCondition),
+                trailingComma = v.trailingComma?.let(::convertKeyword),
+                body = body,
+            ).map(v)
+        } else {
+            Node.Expression.WhenExpression.ElseWhenBranch(
+                elseKeyword = convertKeyword(elseKeyword),
+                body = body,
+            ).map(v)
+        }
+    }
 
     open fun convertWhenCondition(v: KtWhenCondition) = when (v) {
         is KtWhenConditionWithExpression -> Node.Expression.WhenExpression.ExpressionWhenCondition(
@@ -943,7 +953,8 @@ open class Converter {
             get() = findChildByClass<KtExpression>(this) ?: error("No expression for $this")
 
         internal val KtIfExpression.thenContainer: KtContainerNode
-            get() = findChildByType(this, KtNodeTypes.THEN) as? KtContainerNode ?: error("No then container for $this")
+            get() = findChildByType(this, KtNodeTypes.THEN) as? KtContainerNode
+                ?: error("No then container for $this")
         internal val KtIfExpression.elseContainer: KtContainerNode?
             get() = findChildByType(this, KtNodeTypes.ELSE) as? KtContainerNode
 

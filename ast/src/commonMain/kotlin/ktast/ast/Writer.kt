@@ -397,8 +397,11 @@ open class Writer(
                     children(whenBranches)
                     append("}")
                 }
-                is Node.Expression.WhenExpression.WhenBranch -> {
+                is Node.Expression.WhenExpression.ConditionalWhenBranch -> {
                     children(whenConditions, ",", trailingSeparator = trailingComma)
+                    append("->").also { children(body) }
+                }
+                is Node.Expression.WhenExpression.ElseWhenBranch -> {
                     children(elseKeyword)
                     append("->").also { children(body) }
                 }

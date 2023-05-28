@@ -1260,24 +1260,54 @@ sealed interface Node {
             /**
              * AST node corresponds to KtWhenEntry.
              *
-             * @property whenConditions list of conditions. When this is empty, [trailingComma] must be `null` and [elseKeyword] must not be `null`.
+             * @property whenConditions list of conditions.
              * @property trailingComma trailing comma of conditions if exists, otherwise `null`.
              * @property elseKeyword else keyword if exists, otherwise `null`.
              * @property body body expression of this branch.
              */
-            data class WhenBranch(
-                val whenConditions: List<WhenCondition>,
-                val trailingComma: Keyword.Comma?,
-                val elseKeyword: Keyword.Else?,
-                val body: Expression,
+            sealed interface WhenBranch : Node {
+                val whenConditions: List<WhenCondition>
+                val trailingComma: Keyword.Comma?
+                val elseKeyword: Keyword.Else?
+                val body: Expression
+            }
+
+            /**
+             * AST node that represents when branch with conditions.
+             *
+             * @property whenConditions non-empty list of conditions.
+             * @property trailingComma trailing comma of conditions if exists, otherwise `null`.
+             * @property elseKeyword always `null`.
+             * @property body body expression of this branch.
+             */
+            data class ConditionalWhenBranch(
+                override val whenConditions: List<WhenCondition>,
+                override val trailingComma: Keyword.Comma?,
+                override val body: Expression,
                 override var tag: Any? = null,
-            ) : Node {
+            ) : WhenBranch {
+                override val elseKeyword = null
+
                 init {
-                    when {
-                        whenConditions.isNotEmpty() -> require(elseKeyword == null) { "elseKeyword must be null when whenConditions is not empty" }
-                        else -> require(trailingComma == null && elseKeyword != null) { "trailingComma must be null and elseKeyword must not be null when whenConditions is empty" }
-                    }
+                    require(whenConditions.isNotEmpty()) { "whenConditions must not be empty" }
                 }
+            }
+
+            /**
+             * AST node that represents when branch with else keyword.
+             *
+             * @property whenConditions always empty list.
+             * @property trailingComma always `null`.
+             * @property elseKeyword else keyword.
+             * @property body body expression of this branch.
+             */
+            data class ElseWhenBranch(
+                override val elseKeyword: Keyword.Else,
+                override val body: Expression,
+                override var tag: Any? = null,
+            ) : WhenBranch {
+                override val whenConditions = listOf<WhenCondition>()
+                override val trailingComma = null
             }
 
             /**

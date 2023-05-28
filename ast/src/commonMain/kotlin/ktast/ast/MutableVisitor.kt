@@ -350,9 +350,12 @@ open class MutableVisitor(
                         rPar = visitChildren(rPar, newCh),
                         whenBranches = visitChildren(whenBranches, newCh),
                     )
-                    is Node.Expression.WhenExpression.WhenBranch -> copy(
+                    is Node.Expression.WhenExpression.ConditionalWhenBranch -> copy(
                         whenConditions = visitChildren(whenConditions, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
+                        body = visitChildren(body, newCh),
+                    )
+                    is Node.Expression.WhenExpression.ElseWhenBranch -> copy(
                         elseKeyword = visitChildren(elseKeyword, newCh),
                         body = visitChildren(body, newCh),
                     )

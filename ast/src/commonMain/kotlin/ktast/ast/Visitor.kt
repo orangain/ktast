@@ -316,9 +316,12 @@ open class Visitor {
                 visitChildren(rPar)
                 visitChildren(whenBranches)
             }
-            is Node.Expression.WhenExpression.WhenBranch -> {
+            is Node.Expression.WhenExpression.ConditionalWhenBranch -> {
                 visitChildren(whenConditions)
                 visitChildren(trailingComma)
+                visitChildren(body)
+            }
+            is Node.Expression.WhenExpression.ElseWhenBranch -> {
                 visitChildren(elseKeyword)
                 visitChildren(body)
             }
