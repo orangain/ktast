@@ -64,13 +64,6 @@ open class MutableVisitor(
                         condition = visitChildren(condition, newCh),
                         rPar = visitChildren(rPar, newCh),
                     )
-                    is Node.Statement.LabeledStatement -> copy(
-                        statement = visitChildren(statement, newCh),
-                    )
-                    is Node.Statement.AnnotatedStatement -> copy(
-                        annotationSets = visitChildren(annotationSets, newCh),
-                        statement = visitChildren(statement, newCh),
-                    )
                     is Node.Declaration.ClassDeclaration -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         classDeclarationKeyword = visitChildren(classDeclarationKeyword, newCh),

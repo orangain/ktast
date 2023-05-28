@@ -61,13 +61,6 @@ open class Visitor {
                 visitChildren(condition)
                 visitChildren(rPar)
             }
-            is Node.Statement.LabeledStatement -> {
-                visitChildren(statement)
-            }
-            is Node.Statement.AnnotatedStatement -> {
-                visitChildren(annotationSets)
-                visitChildren(statement)
-            }
             is Node.Declaration.ClassDeclaration -> {
                 visitChildren(modifiers)
                 visitChildren(classDeclarationKeyword)

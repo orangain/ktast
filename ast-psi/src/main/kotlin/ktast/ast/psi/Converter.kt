@@ -91,16 +91,6 @@ open class Converter {
         rPar = convertKeyword(v.rightParenthesis ?: error("No right parenthesis for $v")),
     ).map(v)
 
-    open fun convertLabeledStatement(v: KtLabeledExpression) = Node.Statement.LabeledStatement(
-        label = v.getLabelName() ?: error("No label name for $v"),
-        statement = convertStatement(v.baseExpression ?: error("No label expr for $v"))
-    ).map(v)
-
-    open fun convertAnnotatedStatement(v: KtAnnotatedExpression) = Node.Statement.AnnotatedStatement(
-        annotationSets = convertAnnotationSets(v),
-        statement = convertStatement(v.baseExpression ?: error("No annotated expr for $v"))
-    ).map(v)
-
     open fun convertDeclaration(v: KtDeclaration): Node.Declaration = when (v) {
         is KtEnumEntry -> error("KtEnumEntry is handled in convertEnumEntry")
         is KtClassOrObject -> convertClass(v)
