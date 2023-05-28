@@ -498,7 +498,7 @@ sealed interface Node {
          */
         data class PropertyDeclaration(
             override val modifiers: Modifiers?,
-            val valOrVarKeyword: ValOrVarKeyword,
+            val valOrVarKeyword: Keyword.ValOrVarKeyword,
             val typeParams: TypeParams?,
             val receiverTypeRef: TypeRef?,
             val lPar: Keyword.LPar?,
@@ -625,7 +625,7 @@ sealed interface Node {
      */
     data class FunctionParam(
         override val modifiers: Modifiers?,
-        val valOrVarKeyword: ValOrVarKeyword?,
+        val valOrVarKeyword: Keyword.ValOrVarKeyword?,
         val name: Expression.NameExpression,
         val typeRef: TypeRef?,
         val equals: Keyword.Equal?,
@@ -1658,14 +1658,14 @@ sealed interface Node {
     }
 
     /**
-     * Common interface for val or var keywords.
-     */
-    sealed interface ValOrVarKeyword : Keyword
-
-    /**
      * Common interface for keywords.
      */
     sealed interface Keyword : SimpleTextNode {
+        /**
+         * Common interface for val or var keywords.
+         */
+        sealed interface ValOrVarKeyword : Keyword
+
         data class Package(override var tag: Any? = null) : Keyword {
             override val text = "package"
         }
