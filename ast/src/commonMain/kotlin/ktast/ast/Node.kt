@@ -639,7 +639,7 @@ sealed interface Node {
     ) : CommaSeparatedNodeList<FunctionParam>("(", ")")
 
     /**
-     * AST node corresponds to KtParameter inside KtNamedFunction.
+     * AST node that represents a formal function parameter of a function declaration. For example, `x: Int` in `fun f(x: Int)` is a function parameter. The node corresponds to KtParameter inside KtNamedFunction.
      *
      * @property modifiers modifiers if exists, otherwise `null`.
      * @property valOrVarKeyword `val` or `var` keyword if exists, otherwise `null`.
@@ -682,7 +682,7 @@ sealed interface Node {
     ) : CommaSeparatedNodeList<TypeParam>("<", ">")
 
     /**
-     * AST node corresponds to KtTypeParameter.
+     * AST node that represents a formal type parameter of a function or a class. For example, `T` in `fun <T> f()` is a type parameter. The node corresponds to KtTypeParameter.
      *
      * @property modifiers modifiers if exists, otherwise `null`.
      * @property name name of the type parameter.
@@ -758,7 +758,7 @@ sealed interface Node {
             ) : CommaSeparatedNodeList<FunctionTypeParam>("(", ")")
 
             /**
-             * AST node corresponds to KtParameter inside KtFunctionType.
+             * AST node that represents a formal function parameter of a function type. For example, `x: Int` in `(x: Int) -> Unit` is a function parameter. The node corresponds to KtParameter inside KtFunctionType.
              *
              * @property name name of the parameter if exists, otherwise `null`.
              * @property typeRef type reference of the parameter.
@@ -831,7 +831,7 @@ sealed interface Node {
     ) : CommaSeparatedNodeList<TypeArg>("<", ">")
 
     /**
-     * AST node corresponds to KtTypeProjection.
+     * AST node that represents an actual type argument. For example, `Int` in `listOf<Int>()` is a type argument. The node corresponds to KtTypeProjection.
      *
      * @property modifiers modifiers if exists, otherwise `null`.
      * @property typeRef type reference if exists, otherwise `null`.
@@ -882,7 +882,7 @@ sealed interface Node {
     ) : CommaSeparatedNodeList<ValueArg>("(", ")")
 
     /**
-     * AST node corresponds to KtValueArgument.
+     * AST node that represents an actual value argument of a function call. For example, `foo(1, 2)` has two value arguments `1` and `2`. The node corresponds to KtValueArgument.
      *
      * @property name name of the argument if exists, otherwise `null`.
      * @property asterisk spread operator if exists, otherwise `null`.
@@ -1593,7 +1593,7 @@ sealed interface Node {
     ) : CommaSeparatedNodeList<LambdaParam>("", "")
 
     /**
-     * AST node corresponds to KtParameter under KtLambdaExpression.
+     * AST node that represents a formal parameter of lambda expression. For example, `x` in `{ x -> ... }` is a lambda parameter. The node corresponds to KtParameter under KtLambdaExpression.
      *
      * @property lPar left parenthesis of this parameter if exists, otherwise `null`.
      * @property variables list of variables.
