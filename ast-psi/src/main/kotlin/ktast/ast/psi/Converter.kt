@@ -767,12 +767,12 @@ open class Converter {
 
     open fun convertLabeled(v: KtLabeledExpression) = Node.Expression.LabeledExpression(
         label = v.getLabelName() ?: error("No label name for $v"),
-        expression = convertExpression(v.baseExpression ?: error("No label expr for $v"))
+        statement = convertExpression(v.baseExpression ?: error("No label expr for $v"))
     ).map(v)
 
     open fun convertAnnotated(v: KtAnnotatedExpression) = Node.Expression.AnnotatedExpression(
         annotationSets = convertAnnotationSets(v),
-        expression = convertExpression(v.baseExpression ?: error("No annotated expr for $v"))
+        statement = convertExpression(v.baseExpression ?: error("No annotated expr for $v"))
     ).map(v)
 
     open fun convertCall(v: KtCallElement) = Node.Expression.CallExpression(

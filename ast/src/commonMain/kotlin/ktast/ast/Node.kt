@@ -1407,26 +1407,26 @@ sealed interface Node {
         ) : Expression, BinaryExpression.BinaryOperator
 
         /**
-         * AST node corresponds to KtLabeledExpression used in expression context.
+         * AST node corresponds to KtLabeledExpression.
          *
          * @property label label before `@` symbol.
-         * @property expression expression after `@` symbol.
+         * @property statement statement labeled by [label].
          */
         data class LabeledExpression(
             val label: String,
-            val expression: Expression,
+            val statement: Statement,
             override var tag: Any? = null,
         ) : Expression
 
         /**
-         * AST node corresponds to KtAnnotatedExpression used in expression context.
+         * AST node corresponds to KtAnnotatedExpression.
          *
          * @property annotationSets list of annotation sets.
-         * @property expression expression of this annotated expression.
+         * @property statement statement annotated by [annotationSets].
          */
         data class AnnotatedExpression(
             override val annotationSets: List<Modifier.AnnotationSet>,
-            val expression: Expression,
+            val statement: Statement,
             override var tag: Any? = null,
         ) : Expression, WithAnnotationSets
 

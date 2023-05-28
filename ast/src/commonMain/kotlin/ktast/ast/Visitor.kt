@@ -348,11 +348,11 @@ open class Visitor {
             }
             is Node.Expression.NameExpression -> {}
             is Node.Expression.LabeledExpression -> {
-                visitChildren(expression)
+                visitChildren(statement)
             }
             is Node.Expression.AnnotatedExpression -> {
                 visitChildren(annotationSets)
-                visitChildren(expression)
+                visitChildren(statement)
             }
             is Node.Expression.CallExpression -> {
                 visitChildren(calleeExpression)

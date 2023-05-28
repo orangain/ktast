@@ -435,9 +435,9 @@ open class Writer(
                 is Node.Expression.NameExpression ->
                     append(text)
                 is Node.Expression.LabeledExpression ->
-                    append(label).append("@").also { children(expression) }
+                    append(label).append("@").also { children(statement) }
                 is Node.Expression.AnnotatedExpression ->
-                    children(annotationSets).also { children(expression) }
+                    children(annotationSets).also { children(statement) }
                 is Node.Expression.CallExpression -> {
                     children(calleeExpression)
                     children(typeArgs)
