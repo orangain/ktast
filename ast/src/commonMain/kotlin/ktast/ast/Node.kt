@@ -336,44 +336,69 @@ sealed interface Node {
 
             /**
              * AST node that represents a parent of the class. The node corresponds to KtSuperTypeListEntry.
+             *
+             * @property type type of the parent.
+             * @property args value arguments of the parent call if exists, otherwise `null`.
+             * @property byKeyword `by` keyword if exists, otherwise `null`.
+             * @property expression expression of the delegation if exists, otherwise `null`.
              */
-            sealed interface ClassParent : Node
+            sealed interface ClassParent : Node {
+                val type: Type
+                val args: ValueArgs?
+                val byKeyword: Keyword.By?
+                val expression: Expression?
+            }
 
             /**
              * ClassParent node that represents constructor invocation. The node corresponds to KtSuperTypeCallEntry.
              *
              * @property type type of the parent.
-             * @property args value arguments of the parent call if exists, otherwise `null`.
+             * @property args value arguments of the parent call.
+             * @property byKeyword always `null`.
+             * @property expression always `null`.
              */
             data class ConstructorClassParent(
-                val type: Type.SimpleType,
-                val args: ValueArgs?,
+                override val type: Type.SimpleType,
+                override val args: ValueArgs,
                 override var tag: Any? = null,
-            ) : ClassParent
+            ) : ClassParent {
+                override val byKeyword: Keyword.By? = null
+                override val expression: Expression? = null
+            }
 
             /**
              * ClassParent node that represents explicit delegation. The node corresponds to KtDelegatedSuperTypeEntry.
              *
              * @property type type of the interface delegated to.
+             * @property args always `null`.
              * @property byKeyword `by` keyword.
              * @property expression expression of the delegation.
              */
             data class DelegationClassParent(
-                val type: Type,
-                val byKeyword: Keyword.By,
-                val expression: Expression,
+                override val type: Type,
+                override val byKeyword: Keyword.By,
+                override val expression: Expression,
                 override var tag: Any? = null,
-            ) : ClassParent
+            ) : ClassParent {
+                override val args: ValueArgs? = null
+            }
 
             /**
              * ClassParent node that represents just a type. The node corresponds to KtSuperTypeEntry.
              *
              * @property type type of the parent.
+             * @property args always `null`.
+             * @property byKeyword always `null`.
+             * @property expression always `null`.
              */
             data class TypeClassParent(
-                val type: Type,
+                override val type: Type,
                 override var tag: Any? = null,
-            ) : ClassParent
+            ) : ClassParent {
+                override val args: ValueArgs? = null
+                override val byKeyword: Keyword.By? = null
+                override val expression: Expression? = null
+            }
 
             /**
              * AST node corresponds to KtPrimaryConstructor.
