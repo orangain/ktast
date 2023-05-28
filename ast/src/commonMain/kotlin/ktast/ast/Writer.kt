@@ -275,6 +275,7 @@ open class Writer(
                     children(typeRef)
                 }
                 is Node.Type.SimpleType -> {
+                    children(modifiers)
                     if (qualifiers.isNotEmpty()) {
                         children(qualifiers, ".")
                         append(".")
@@ -293,8 +294,16 @@ open class Writer(
                     children(rPar)
                     append('?')
                 }
-                is Node.Type.DynamicType ->
+                is Node.Type.ParenthesizedType -> {
+                    children(modifiers)
+                    children(lPar)
+                    children(type)
+                    children(rPar)
+                }
+                is Node.Type.DynamicType -> {
+                    children(modifiers)
                     append("dynamic")
+                }
                 is Node.ValueArg -> {
                     if (name != null) children(name).append("=")
                     children(asterisk)

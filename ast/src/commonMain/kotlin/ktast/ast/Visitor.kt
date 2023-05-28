@@ -212,6 +212,7 @@ open class Visitor {
                 visitChildren(typeRef)
             }
             is Node.Type.SimpleType -> {
+                visitChildren(modifiers)
                 visitChildren(qualifiers)
                 visitChildren(name)
                 visitChildren(typeArgs)
@@ -226,7 +227,15 @@ open class Visitor {
                 visitChildren(type)
                 visitChildren(rPar)
             }
-            is Node.Type.DynamicType -> {}
+            is Node.Type.ParenthesizedType -> {
+                visitChildren(modifiers)
+                visitChildren(lPar)
+                visitChildren(type)
+                visitChildren(rPar)
+            }
+            is Node.Type.DynamicType -> {
+                visitChildren(modifiers)
+            }
             is Node.ValueArg -> {
                 visitChildren(name)
                 visitChildren(asterisk)

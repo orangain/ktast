@@ -699,7 +699,7 @@ sealed interface Node {
     /**
      * Common interface for AST nodes that represent types.
      */
-    sealed interface Type : Node {
+    sealed interface Type : Node, WithModifiers {
 
         private interface NameWithTypeArgs {
             val name: Expression.NameExpression
@@ -779,6 +779,7 @@ sealed interface Node {
          * @property typeArgs type arguments if exists, otherwise `null`.
          */
         data class SimpleType(
+            override val modifiers: Modifiers?,
             val qualifiers: List<SimpleTypeQualifier>,
             override val name: Expression.NameExpression,
             override val typeArgs: TypeArgs?,
@@ -814,9 +815,26 @@ sealed interface Node {
         ) : Type, WithModifiers
 
         /**
+         * Virtual AST node corresponds to KtTypeReference having `(` and `)` as children.
+         *
+         * @property modifiers modifiers if exists, otherwise `null`.
+         * @property lPar `(` symbol.
+         * @property type inner type.
+         * @property rPar `)` symbol.
+         */
+        data class ParenthesizedType(
+            override val modifiers: Modifiers?,
+            val lPar: Keyword.LPar,
+            val type: Type,
+            val rPar: Keyword.RPar,
+            override var tag: Any? = null,
+        ) : Type
+
+        /**
          * AST node corresponds to KtDynamicType.
          */
         data class DynamicType(
+            override val modifiers: Modifiers?,
             override var tag: Any? = null,
         ) : Type
 

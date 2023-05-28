@@ -238,6 +238,7 @@ open class MutableVisitor(
                         typeRef = visitChildren(typeRef, newCh),
                     )
                     is Node.Type.SimpleType -> copy(
+                        modifiers = visitChildren(modifiers, newCh),
                         qualifiers = visitChildren(qualifiers, newCh),
                         name = visitChildren(name, newCh),
                         typeArgs = visitChildren(typeArgs, newCh),
@@ -252,7 +253,15 @@ open class MutableVisitor(
                         type = visitChildren(type, newCh),
                         rPar = visitChildren(rPar, newCh),
                     )
-                    is Node.Type.DynamicType -> this
+                    is Node.Type.ParenthesizedType -> copy(
+                        modifiers = visitChildren(modifiers, newCh),
+                        lPar = visitChildren(lPar, newCh),
+                        type = visitChildren(type, newCh),
+                        rPar = visitChildren(rPar, newCh),
+                    )
+                    is Node.Type.DynamicType -> copy(
+                        modifiers = visitChildren(modifiers, newCh),
+                    )
                     is Node.ValueArgs -> copy(
                         elements = visitChildren(elements, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
