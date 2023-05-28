@@ -238,9 +238,11 @@ open class Writer(
                     children(name)
                     if (typeRef != null) append(":").also { children(typeRef) }
                 }
-                is Node.TypeArg -> {
+                is Node.TypeArg.TypeProjection -> {
                     children(modifiers)
                     children(typeRef)
+                }
+                is Node.TypeArg.StarProjection -> {
                     children(asterisk)
                 }
                 is Node.TypeRef -> {
@@ -388,7 +390,7 @@ open class Writer(
                 }
                 is Node.Expression.SuperExpression -> {
                     append("super")
-                    if (typeArg != null) append('<').also { children(typeArg) }.append('>')
+                    if (typeArgTypeRef != null) append('<').also { children(typeArgTypeRef) }.append('>')
                     appendLabel(label)
                 }
                 is Node.Expression.WhenExpression -> {
@@ -397,14 +399,23 @@ open class Writer(
                     children(whenBranches)
                     append("}")
                 }
-                is Node.Expression.WhenExpression.WhenBranch -> {
+                is Node.Expression.WhenExpression.ConditionalWhenBranch -> {
                     children(whenConditions, ",", trailingSeparator = trailingComma)
+                    append("->").also { children(body) }
+                }
+                is Node.Expression.WhenExpression.ElseWhenBranch -> {
                     children(elseKeyword)
                     append("->").also { children(body) }
                 }
-                is Node.Expression.WhenExpression.WhenCondition -> {
+                is Node.Expression.WhenExpression.ExpressionWhenCondition -> {
+                    children(expression)
+                }
+                is Node.Expression.WhenExpression.RangeWhenCondition -> {
                     children(operator)
                     children(expression)
+                }
+                is Node.Expression.WhenExpression.TypeWhenCondition -> {
+                    children(operator)
                     children(typeRef)
                 }
                 is Node.Expression.ObjectLiteralExpression -> {

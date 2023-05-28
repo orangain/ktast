@@ -336,44 +336,69 @@ sealed interface Node {
 
             /**
              * AST node that represents a parent of the class. The node corresponds to KtSuperTypeListEntry.
+             *
+             * @property type type of the parent.
+             * @property args value arguments of the parent call if exists, otherwise `null`.
+             * @property byKeyword `by` keyword if exists, otherwise `null`.
+             * @property expression expression of the delegation if exists, otherwise `null`.
              */
-            sealed interface ClassParent : Node
+            sealed interface ClassParent : Node {
+                val type: Type
+                val args: ValueArgs?
+                val byKeyword: Keyword.By?
+                val expression: Expression?
+            }
 
             /**
              * ClassParent node that represents constructor invocation. The node corresponds to KtSuperTypeCallEntry.
              *
              * @property type type of the parent.
-             * @property args value arguments of the parent call if exists, otherwise `null`.
+             * @property args value arguments of the parent call.
+             * @property byKeyword always `null`.
+             * @property expression always `null`.
              */
             data class ConstructorClassParent(
-                val type: Type.SimpleType,
-                val args: ValueArgs?,
+                override val type: Type.SimpleType,
+                override val args: ValueArgs,
                 override var tag: Any? = null,
-            ) : ClassParent
+            ) : ClassParent {
+                override val byKeyword: Keyword.By? = null
+                override val expression: Expression? = null
+            }
 
             /**
              * ClassParent node that represents explicit delegation. The node corresponds to KtDelegatedSuperTypeEntry.
              *
              * @property type type of the interface delegated to.
+             * @property args always `null`.
              * @property byKeyword `by` keyword.
              * @property expression expression of the delegation.
              */
             data class DelegationClassParent(
-                val type: Type,
-                val byKeyword: Keyword.By,
-                val expression: Expression,
+                override val type: Type,
+                override val byKeyword: Keyword.By,
+                override val expression: Expression,
                 override var tag: Any? = null,
-            ) : ClassParent
+            ) : ClassParent {
+                override val args: ValueArgs? = null
+            }
 
             /**
              * ClassParent node that represents just a type. The node corresponds to KtSuperTypeEntry.
              *
              * @property type type of the parent.
+             * @property args always `null`.
+             * @property byKeyword always `null`.
+             * @property expression always `null`.
              */
             data class TypeClassParent(
-                val type: Type,
+                override val type: Type,
                 override var tag: Any? = null,
-            ) : ClassParent
+            ) : ClassParent {
+                override val args: ValueArgs? = null
+                override val byKeyword: Keyword.By? = null
+                override val expression: Expression? = null
+            }
 
             /**
              * AST node corresponds to KtPrimaryConstructor.
@@ -498,7 +523,7 @@ sealed interface Node {
          */
         data class PropertyDeclaration(
             override val modifiers: Modifiers?,
-            val valOrVarKeyword: ValOrVarKeyword,
+            val valOrVarKeyword: Keyword.ValOrVarKeyword,
             val typeParams: TypeParams?,
             val receiverTypeRef: TypeRef?,
             val lPar: Keyword.LPar?,
@@ -614,7 +639,7 @@ sealed interface Node {
     ) : CommaSeparatedNodeList<FunctionParam>("(", ")")
 
     /**
-     * AST node corresponds to KtParameter inside KtNamedFunction.
+     * AST node that represents a formal function parameter of a function declaration. For example, `x: Int` in `fun f(x: Int)` is a function parameter. The node corresponds to KtParameter inside KtNamedFunction.
      *
      * @property modifiers modifiers if exists, otherwise `null`.
      * @property valOrVarKeyword `val` or `var` keyword if exists, otherwise `null`.
@@ -625,7 +650,7 @@ sealed interface Node {
      */
     data class FunctionParam(
         override val modifiers: Modifiers?,
-        val valOrVarKeyword: ValOrVarKeyword?,
+        val valOrVarKeyword: Keyword.ValOrVarKeyword?,
         val name: Expression.NameExpression,
         val typeRef: TypeRef?,
         val equals: Keyword.Equal?,
@@ -657,7 +682,7 @@ sealed interface Node {
     ) : CommaSeparatedNodeList<TypeParam>("<", ">")
 
     /**
-     * AST node corresponds to KtTypeParameter.
+     * AST node that represents a formal type parameter of a function or a class. For example, `T` in `fun <T> f()` is a type parameter. The node corresponds to KtTypeParameter.
      *
      * @property modifiers modifiers if exists, otherwise `null`.
      * @property name name of the type parameter.
@@ -733,7 +758,7 @@ sealed interface Node {
             ) : CommaSeparatedNodeList<FunctionTypeParam>("(", ")")
 
             /**
-             * AST node corresponds to KtParameter inside KtFunctionType.
+             * AST node that represents a formal function parameter of a function type. For example, `x: Int` in `(x: Int) -> Unit` is a function parameter. The node corresponds to KtParameter inside KtFunctionType.
              *
              * @property name name of the parameter if exists, otherwise `null`.
              * @property typeRef type reference of the parameter.
@@ -806,28 +831,44 @@ sealed interface Node {
     ) : CommaSeparatedNodeList<TypeArg>("<", ">")
 
     /**
-     * AST node corresponds to KtTypeProjection.
+     * Common interface for AST node that represents an actual type argument. For example, `Int` in `listOf<Int>()` is a type argument. The node corresponds to KtTypeProjection.
      *
      * @property modifiers modifiers if exists, otherwise `null`.
      * @property typeRef type reference if exists, otherwise `null`.
-     * @property asterisk `*` if exists, otherwise `null`. When this is not null, [modifiers] and [typeRef] must be `null`, otherwise [typeRef] must not be `null`.
+     * @property asterisk `*` if exists, otherwise `null`.
      */
-    data class TypeArg(
-        override val modifiers: Modifiers?,
-        val typeRef: TypeRef?,
-        val asterisk: Keyword.Asterisk?,
-        override var tag: Any? = null,
-    ) : Node, WithModifiers {
-        init {
-            if (asterisk != null) {
-                require(modifiers == null && typeRef == null) {
-                    "modifiers and typeRef must be null when asterisk is true"
-                }
-            } else {
-                require(typeRef != null) {
-                    "typeRef must not be null when asterisk is false"
-                }
-            }
+    sealed interface TypeArg : Node, WithModifiers {
+        val typeRef: TypeRef?
+        val asterisk: Keyword.Asterisk?
+
+        /**
+         * AST node that represents a type projection.
+         *
+         * @property modifiers modifiers if exists, otherwise `null`.
+         * @property typeRef type reference.
+         * @property asterisk always `null`.
+         */
+        data class TypeProjection(
+            override val modifiers: Modifiers?,
+            override val typeRef: TypeRef,
+            override var tag: Any? = null,
+        ) : TypeArg {
+            override val asterisk = null
+        }
+
+        /**
+         * AST node that represents a star projection.
+         *
+         * @property modifiers always `null`.
+         * @property typeRef always `null`.
+         * @property asterisk asterisk keyword.
+         */
+        data class StarProjection(
+            override val asterisk: Keyword.Asterisk,
+            override var tag: Any? = null,
+        ) : TypeArg {
+            override val modifiers = null
+            override val typeRef = null
         }
     }
 
@@ -857,7 +898,7 @@ sealed interface Node {
     ) : CommaSeparatedNodeList<ValueArg>("(", ")")
 
     /**
-     * AST node corresponds to KtValueArgument.
+     * AST node that represents an actual value argument of a function call. For example, `foo(1, 2)` has two value arguments `1` and `2`. The node corresponds to KtValueArgument.
      *
      * @property name name of the argument if exists, otherwise `null`.
      * @property asterisk spread operator if exists, otherwise `null`.
@@ -1231,11 +1272,11 @@ sealed interface Node {
         /**
          * AST node corresponds to KtSuperExpression or KtConstructorDelegationReferenceExpression whose text is "super".
          *
-         * @property typeArg type argument if exists, otherwise `null`.
+         * @property typeArgTypeRef type argument if exists, otherwise `null`.
          * @property label label of this expression if exists, otherwise `null`.
          */
         data class SuperExpression(
-            val typeArg: TypeRef?,
+            val typeArgTypeRef: TypeRef?,
             override val label: NameExpression?,
             override var tag: Any? = null,
         ) : Expression, WithLabel
@@ -1260,24 +1301,54 @@ sealed interface Node {
             /**
              * AST node corresponds to KtWhenEntry.
              *
-             * @property whenConditions list of conditions. When this is empty, [trailingComma] must be `null` and [elseKeyword] must not be `null`.
+             * @property whenConditions list of conditions.
              * @property trailingComma trailing comma of conditions if exists, otherwise `null`.
              * @property elseKeyword else keyword if exists, otherwise `null`.
              * @property body body expression of this branch.
              */
-            data class WhenBranch(
-                val whenConditions: List<WhenCondition>,
-                val trailingComma: Keyword.Comma?,
-                val elseKeyword: Keyword.Else?,
-                val body: Expression,
+            sealed interface WhenBranch : Node {
+                val whenConditions: List<WhenCondition>
+                val trailingComma: Keyword.Comma?
+                val elseKeyword: Keyword.Else?
+                val body: Expression
+            }
+
+            /**
+             * AST node that represents when branch with conditions.
+             *
+             * @property whenConditions non-empty list of conditions.
+             * @property trailingComma trailing comma of conditions if exists, otherwise `null`.
+             * @property elseKeyword always `null`.
+             * @property body body expression of this branch.
+             */
+            data class ConditionalWhenBranch(
+                override val whenConditions: List<WhenCondition>,
+                override val trailingComma: Keyword.Comma?,
+                override val body: Expression,
                 override var tag: Any? = null,
-            ) : Node {
+            ) : WhenBranch {
+                override val elseKeyword = null
+
                 init {
-                    when {
-                        whenConditions.isNotEmpty() -> require(elseKeyword == null) { "elseKeyword must be null when whenConditions is not empty" }
-                        else -> require(trailingComma == null && elseKeyword != null) { "trailingComma must be null and elseKeyword must not be null when whenConditions is empty" }
-                    }
+                    require(whenConditions.isNotEmpty()) { "whenConditions must not be empty" }
                 }
+            }
+
+            /**
+             * AST node that represents when branch with else keyword.
+             *
+             * @property whenConditions always empty list.
+             * @property trailingComma always `null`.
+             * @property elseKeyword else keyword.
+             * @property body body expression of this branch.
+             */
+            data class ElseWhenBranch(
+                override val elseKeyword: Keyword.Else,
+                override val body: Expression,
+                override var tag: Any? = null,
+            ) : WhenBranch {
+                override val whenConditions = listOf<WhenCondition>()
+                override val trailingComma = null
             }
 
             /**
@@ -1299,22 +1370,58 @@ sealed interface Node {
              * AST node corresponds to KtWhenCondition.
              *
              * @property operator operator of this condition if exists, otherwise `null`.
-             * @property expression operand of [operator] if it is [WhenConditionRangeOperator] or condition expression if [operator] is `null`, otherwise `null`.
-             * @property typeRef operand of [operator] if it is [WhenConditionTypeOperator], otherwise `null`.
+             * @property expression operand of [operator] or condition expression, otherwise `null`.
+             * @property typeRef operand of [operator], otherwise `null`.
              */
-            data class WhenCondition(
-                val operator: WhenConditionOperator?,
-                val expression: Expression?,
-                val typeRef: TypeRef?,
+            sealed interface WhenCondition : Node {
+                val operator: WhenConditionOperator?
+                val expression: Expression?
+                val typeRef: TypeRef?
+            }
+
+            /**
+             * AST node corresponds to KtWhenConditionWithExpression.
+             *
+             * @property operator always `null`.
+             * @property expression condition expression.
+             * @property typeRef always `null`.
+             */
+            data class ExpressionWhenCondition(
+                override val expression: Expression,
                 override var tag: Any? = null,
-            ) : Node {
-                init {
-                    when (operator) {
-                        null -> require(expression != null || typeRef == null) { "expression must not be null and typeRef must be null when operator is null" }
-                        is WhenConditionTypeOperator -> require(expression == null && typeRef != null) { "expression must be null and typeRef must not be null when operator is type operator" }
-                        is WhenConditionRangeOperator -> require(expression != null && typeRef == null) { "expression must not be null and typeRef must be null when operator is range operator" }
-                    }
-                }
+            ) : WhenCondition {
+                override val operator = null
+                override val typeRef = null
+            }
+
+            /**
+             * AST node corresponds to KtWhenConditionInRange.
+             *
+             * @property operator operator of this condition.
+             * @property expression operand of [operator].
+             * @property typeRef always `null`.
+             */
+            data class RangeWhenCondition(
+                override val operator: WhenConditionRangeOperator,
+                override val expression: Expression,
+                override var tag: Any? = null,
+            ) : WhenCondition {
+                override val typeRef = null
+            }
+
+            /**
+             * AST node corresponds to KtWhenConditionIsPattern.
+             *
+             * @property operator operator of this condition.
+             * @property expression always `null`.
+             * @property typeRef operand of [operator].
+             */
+            data class TypeWhenCondition(
+                override val operator: WhenConditionTypeOperator,
+                override val typeRef: TypeRef,
+                override var tag: Any? = null,
+            ) : WhenCondition {
+                override val expression = null
             }
         }
 
@@ -1502,7 +1609,7 @@ sealed interface Node {
     ) : CommaSeparatedNodeList<LambdaParam>("", "")
 
     /**
-     * AST node corresponds to KtParameter under KtLambdaExpression.
+     * AST node that represents a formal parameter of lambda expression. For example, `x` in `{ x -> ... }` is a lambda parameter. The node corresponds to KtParameter under KtLambdaExpression.
      *
      * @property lPar left parenthesis of this parameter if exists, otherwise `null`.
      * @property variables list of variables.
@@ -1658,14 +1765,14 @@ sealed interface Node {
     }
 
     /**
-     * Common interface for val or var keywords.
-     */
-    sealed interface ValOrVarKeyword : Keyword
-
-    /**
      * Common interface for keywords.
      */
     sealed interface Keyword : SimpleTextNode {
+        /**
+         * Common interface for val or var keywords.
+         */
+        sealed interface ValOrVarKeyword : Keyword
+
         data class Package(override var tag: Any? = null) : Keyword {
             override val text = "package"
         }

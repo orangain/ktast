@@ -128,7 +128,7 @@ open class Converter {
         is KtSuperTypeCallEntry -> Node.Declaration.ClassDeclaration.ConstructorClassParent(
             type = v.typeReference?.typeElement?.let(::convertType) as? Node.Type.SimpleType
                 ?: error("Bad type on super call $v"),
-            args = v.valueArgumentList?.let(::convertValueArgs),
+            args = v.valueArgumentList?.let(::convertValueArgs) ?: error("No value arguments for $v"),
         ).map(v)
         is KtDelegatedSuperTypeEntry -> Node.Declaration.ClassDeclaration.DelegationClassParent(
             type = v.typeReference?.typeElement?.let(::convertType)
@@ -316,11 +316,18 @@ open class Converter {
         trailingComma = v.trailingComma?.let(::convertKeyword),
     ).map(v)
 
-    open fun convertTypeArg(v: KtTypeProjection): Node.TypeArg = Node.TypeArg(
-        modifiers = v.modifierList?.let(::convertModifiers),
-        typeRef = v.typeReference?.let(::convertTypeRef),
-        asterisk = v.projectionToken?.let { convertKeyword<Node.Keyword>(it) } as? Node.Keyword.Asterisk,
-    ).map(v)
+    open fun convertTypeArg(v: KtTypeProjection): Node.TypeArg {
+        return if (v.projectionKind == KtProjectionKind.STAR) {
+            Node.TypeArg.StarProjection(
+                asterisk = convertKeyword(v.projectionToken ?: error("Missing projection token for $v")),
+            ).map(v)
+        } else {
+            Node.TypeArg.TypeProjection(
+                modifiers = v.modifierList?.let(::convertModifiers),
+                typeRef = convertTypeRef(v.typeReference ?: error("Missing type ref for $v")),
+            ).map(v)
+        }
+    }
 
     open fun convertTypeRef(v: KtTypeReference): Node.TypeRef {
         var lPar: PsiElement? = null
@@ -661,7 +668,7 @@ open class Converter {
     ).map(v)
 
     open fun convertSuper(v: KtSuperExpression) = Node.Expression.SuperExpression(
-        typeArg = v.superTypeQualifier?.let(::convertTypeRef),
+        typeArgTypeRef = v.superTypeQualifier?.let(::convertTypeRef),
         label = v.getTargetLabel()?.let(::convertName),
     ).map(v)
 
@@ -673,31 +680,37 @@ open class Converter {
         whenBranches = v.entries.map(::convertWhenEntry),
     ).map(v)
 
-    open fun convertWhenEntry(v: KtWhenEntry) = Node.Expression.WhenExpression.WhenBranch(
-        whenConditions = v.conditions.map(::convertWhenCondition),
-        trailingComma = v.trailingComma?.let(::convertKeyword),
-        elseKeyword = v.elseKeyword?.let(::convertKeyword),
-        body = convertExpression(v.expression ?: error("No when entry body for $v"))
-    ).map(v)
+    open fun convertWhenEntry(v: KtWhenEntry): Node.Expression.WhenExpression.WhenBranch {
+        val elseKeyword = v.elseKeyword
+        val body = convertExpression(v.expression ?: error("No when entry body for $v"))
+        return if (elseKeyword == null) {
+            Node.Expression.WhenExpression.ConditionalWhenBranch(
+                whenConditions = v.conditions.map(::convertWhenCondition),
+                trailingComma = v.trailingComma?.let(::convertKeyword),
+                body = body,
+            ).map(v)
+        } else {
+            Node.Expression.WhenExpression.ElseWhenBranch(
+                elseKeyword = convertKeyword(elseKeyword),
+                body = body,
+            ).map(v)
+        }
+    }
 
     open fun convertWhenCondition(v: KtWhenCondition) = when (v) {
-        is KtWhenConditionWithExpression -> Node.Expression.WhenExpression.WhenCondition(
-            operator = null,
+        is KtWhenConditionWithExpression -> Node.Expression.WhenExpression.ExpressionWhenCondition(
             expression = convertExpression(v.expression ?: error("No when cond expr for $v")),
-            typeRef = null,
         ).map(v)
-        is KtWhenConditionInRange -> Node.Expression.WhenExpression.WhenCondition(
+        is KtWhenConditionInRange -> Node.Expression.WhenExpression.RangeWhenCondition(
             operator = convertKeyword(v.operationReference),
             expression = convertExpression(v.rangeExpression ?: error("No when in expr for $v")),
-            typeRef = null,
         ).map(v)
-        is KtWhenConditionIsPattern -> Node.Expression.WhenExpression.WhenCondition(
+        is KtWhenConditionIsPattern -> Node.Expression.WhenExpression.TypeWhenCondition(
             operator = convertKeyword(
                 findChildByType(v, KtTokens.IS_KEYWORD)
                     ?: findChildByType(v, KtTokens.NOT_IS)
                     ?: error("No when is operator for $v")
             ),
-            expression = null,
             typeRef = convertTypeRef(v.typeReference ?: error("No when is type for $v")),
         ).map(v)
         else -> error("Unrecognized when cond of $v")
@@ -747,7 +760,7 @@ open class Converter {
                 label = null,
             ).map(v)
             "super" -> Node.Expression.SuperExpression(
-                typeArg = null,
+                typeArgTypeRef = null,
                 label = null,
             ).map(v)
             else -> error("Unrecognized this/super expr $v")
@@ -947,7 +960,8 @@ open class Converter {
             get() = findChildByClass<KtExpression>(this) ?: error("No expression for $this")
 
         internal val KtIfExpression.thenContainer: KtContainerNode
-            get() = findChildByType(this, KtNodeTypes.THEN) as? KtContainerNode ?: error("No then container for $this")
+            get() = findChildByType(this, KtNodeTypes.THEN) as? KtContainerNode
+                ?: error("No then container for $this")
         internal val KtIfExpression.elseContainer: KtContainerNode?
             get() = findChildByType(this, KtNodeTypes.ELSE) as? KtContainerNode
 

@@ -198,9 +198,11 @@ open class MutableVisitor(
                         elements = visitChildren(elements, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
-                    is Node.TypeArg -> copy(
+                    is Node.TypeArg.TypeProjection -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         typeRef = visitChildren(typeRef, newCh),
+                    )
+                    is Node.TypeArg.StarProjection -> copy(
                         asterisk = visitChildren(asterisk, newCh),
                     )
                     is Node.TypeRef -> copy(
@@ -340,7 +342,7 @@ open class MutableVisitor(
                         label = visitChildren(label, newCh),
                     )
                     is Node.Expression.SuperExpression -> copy(
-                        typeArg = visitChildren(typeArg, newCh),
+                        typeArgTypeRef = visitChildren(typeArgTypeRef, newCh),
                         label = visitChildren(label, newCh),
                     )
                     is Node.Expression.WhenExpression -> copy(
@@ -350,15 +352,24 @@ open class MutableVisitor(
                         rPar = visitChildren(rPar, newCh),
                         whenBranches = visitChildren(whenBranches, newCh),
                     )
-                    is Node.Expression.WhenExpression.WhenBranch -> copy(
+                    is Node.Expression.WhenExpression.ConditionalWhenBranch -> copy(
                         whenConditions = visitChildren(whenConditions, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
+                        body = visitChildren(body, newCh),
+                    )
+                    is Node.Expression.WhenExpression.ElseWhenBranch -> copy(
                         elseKeyword = visitChildren(elseKeyword, newCh),
                         body = visitChildren(body, newCh),
                     )
-                    is Node.Expression.WhenExpression.WhenCondition -> copy(
+                    is Node.Expression.WhenExpression.ExpressionWhenCondition -> copy(
+                        expression = visitChildren(expression, newCh),
+                    )
+                    is Node.Expression.WhenExpression.RangeWhenCondition -> copy(
                         operator = visitChildren(operator, newCh),
                         expression = visitChildren(expression, newCh),
+                    )
+                    is Node.Expression.WhenExpression.TypeWhenCondition -> copy(
+                        operator = visitChildren(operator, newCh),
                         typeRef = visitChildren(typeRef, newCh),
                     )
                     is Node.Expression.ObjectLiteralExpression -> copy(

@@ -180,9 +180,11 @@ open class Visitor {
                 visitChildren(name)
                 visitChildren(typeRef)
             }
-            is Node.TypeArg -> {
+            is Node.TypeArg.TypeProjection -> {
                 visitChildren(modifiers)
                 visitChildren(typeRef)
+            }
+            is Node.TypeArg.StarProjection -> {
                 visitChildren(asterisk)
             }
             is Node.TypeRef -> {
@@ -306,7 +308,7 @@ open class Visitor {
                 visitChildren(label)
             }
             is Node.Expression.SuperExpression -> {
-                visitChildren(typeArg)
+                visitChildren(typeArgTypeRef)
                 visitChildren(label)
             }
             is Node.Expression.WhenExpression -> {
@@ -316,15 +318,24 @@ open class Visitor {
                 visitChildren(rPar)
                 visitChildren(whenBranches)
             }
-            is Node.Expression.WhenExpression.WhenBranch -> {
+            is Node.Expression.WhenExpression.ConditionalWhenBranch -> {
                 visitChildren(whenConditions)
                 visitChildren(trailingComma)
+                visitChildren(body)
+            }
+            is Node.Expression.WhenExpression.ElseWhenBranch -> {
                 visitChildren(elseKeyword)
                 visitChildren(body)
             }
-            is Node.Expression.WhenExpression.WhenCondition -> {
+            is Node.Expression.WhenExpression.ExpressionWhenCondition -> {
+                visitChildren(expression)
+            }
+            is Node.Expression.WhenExpression.RangeWhenCondition -> {
                 visitChildren(operator)
                 visitChildren(expression)
+            }
+            is Node.Expression.WhenExpression.TypeWhenCondition -> {
+                visitChildren(operator)
                 visitChildren(typeRef)
             }
             is Node.Expression.ObjectLiteralExpression -> {
