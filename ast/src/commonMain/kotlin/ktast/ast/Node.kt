@@ -874,6 +874,16 @@ sealed interface Node {
      * Common interface for AST nodes that represent expressions.
      */
     sealed interface Expression : Statement {
+
+        /**
+         * Common interface for AST nodes that can have a label.
+         *
+         * @property label label if exists, otherwise `null`.
+         */
+        interface WithLabel {
+            val label: NameExpression?
+        }
+
         /**
          * AST node corresponds to KtIfExpression.
          *
@@ -1214,9 +1224,9 @@ sealed interface Node {
          * @property label label of this expression if exists, otherwise `null`.
          */
         data class ThisExpression(
-            val label: NameExpression?,
+            override val label: NameExpression?,
             override var tag: Any? = null,
-        ) : Expression
+        ) : Expression, WithLabel
 
         /**
          * AST node corresponds to KtSuperExpression or KtConstructorDelegationReferenceExpression whose text is "super".
@@ -1226,9 +1236,9 @@ sealed interface Node {
          */
         data class SuperExpression(
             val typeArg: TypeRef?,
-            val label: NameExpression?,
+            override val label: NameExpression?,
             override var tag: Any? = null,
-        ) : Expression
+        ) : Expression, WithLabel
 
         /**
          * AST node corresponds to KtWhenExpression.
@@ -1335,10 +1345,10 @@ sealed interface Node {
          * @property expression expression to be returned if exists, otherwise `null`.
          */
         data class ReturnExpression(
-            val label: NameExpression?,
+            override val label: NameExpression?,
             val expression: Expression?,
             override var tag: Any? = null,
-        ) : Expression
+        ) : Expression, WithLabel
 
         /**
          * AST node corresponds to KtContinueExpression.
@@ -1346,9 +1356,9 @@ sealed interface Node {
          * @property label label of this continue expression if exists, otherwise `null`.
          */
         data class ContinueExpression(
-            val label: NameExpression?,
+            override val label: NameExpression?,
             override var tag: Any? = null,
-        ) : Expression
+        ) : Expression, WithLabel
 
         /**
          * AST node corresponds to KtBreakExpression.
@@ -1356,9 +1366,9 @@ sealed interface Node {
          * @property label label of this break expression if exists, otherwise `null`.
          */
         data class BreakExpression(
-            val label: NameExpression?,
+            override val label: NameExpression?,
             override var tag: Any? = null,
-        ) : Expression
+        ) : Expression, WithLabel
 
         /**
          * AST node corresponds to KtCollectionLiteralExpression.
@@ -1430,10 +1440,10 @@ sealed interface Node {
              */
             data class LambdaArg(
                 override val annotationSets: List<Modifier.AnnotationSet>,
-                val label: NameExpression?,
+                override val label: NameExpression?,
                 val expression: LambdaExpression,
                 override var tag: Any? = null,
-            ) : Node, WithAnnotationSets
+            ) : Node, WithAnnotationSets, WithLabel
         }
 
         /**
