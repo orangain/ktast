@@ -93,14 +93,6 @@ open class Writer(
                 is Node.Statement.DoWhileStatement -> {
                     children(doKeyword, body, whileKeyword, lPar, condition, rPar)
                 }
-                is Node.Statement.LabeledStatement -> {
-                    append(label).append("@")
-                    children(statement)
-                }
-                is Node.Statement.AnnotatedStatement -> {
-                    children(annotationSets)
-                    children(statement)
-                }
                 is Node.Declaration.ClassDeclaration -> {
                     children(modifiers)
                     children(classDeclarationKeyword)
@@ -435,9 +427,9 @@ open class Writer(
                 is Node.Expression.NameExpression ->
                     append(text)
                 is Node.Expression.LabeledExpression ->
-                    append(label).append("@").also { children(expression) }
+                    append(label).append("@").also { children(statement) }
                 is Node.Expression.AnnotatedExpression ->
-                    children(annotationSets).also { children(expression) }
+                    children(annotationSets).also { children(statement) }
                 is Node.Expression.CallExpression -> {
                     children(calleeExpression)
                     children(typeArgs)
@@ -555,7 +547,7 @@ open class Writer(
                 append("\n")
             }
         }
-        if ((parent is Node.Statement.AnnotatedStatement || parent is Node.Expression.AnnotatedExpression) && (this is Node.Expression.BinaryExpression || this is Node.Expression.BinaryTypeExpression)) {
+        if (parent is Node.Expression.AnnotatedExpression && (this is Node.Expression.BinaryExpression || this is Node.Expression.BinaryTypeExpression)) {
             // Annotated expression requires newline between annotation and expression when expression is a binary operation.
             // This is because, without newline, annotated expression of binary expression is ambiguous with binary expression of annotated expression.
             if (!containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {

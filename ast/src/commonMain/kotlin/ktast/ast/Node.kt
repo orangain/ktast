@@ -192,7 +192,7 @@ sealed interface Node {
     }
 
     /**
-     * Common interface for [Declaration], [Expression] and other statements.
+     * Common interface for [Declaration], [Expression] and loop statements.
      */
     sealed interface Statement : Node {
 
@@ -265,30 +265,6 @@ sealed interface Node {
             override val rPar: Keyword.RPar,
             override var tag: Any? = null,
         ) : WhileStatementBase
-
-        /**
-         * AST node corresponds to KtLabeledExpression used in statement context.
-         *
-         * @property label label before `@` symbol.
-         * @property statement statement after `@` symbol.
-         */
-        data class LabeledStatement(
-            val label: String,
-            val statement: Statement,
-            override var tag: Any? = null,
-        ) : Statement
-
-        /**
-         * AST node corresponds to KtAnnotatedExpression used in statement context.
-         *
-         * @property annotationSets list of annotation sets.
-         * @property statement statement of this annotated expression.
-         */
-        data class AnnotatedStatement(
-            override val annotationSets: List<Modifier.AnnotationSet>,
-            val statement: Statement,
-            override var tag: Any? = null,
-        ) : Statement, WithAnnotationSets
     }
 
     /**
@@ -1407,26 +1383,26 @@ sealed interface Node {
         ) : Expression, BinaryExpression.BinaryOperator
 
         /**
-         * AST node corresponds to KtLabeledExpression used in expression context.
+         * AST node corresponds to KtLabeledExpression.
          *
          * @property label label before `@` symbol.
-         * @property expression expression after `@` symbol.
+         * @property statement statement labeled by [label].
          */
         data class LabeledExpression(
             val label: String,
-            val expression: Expression,
+            val statement: Statement,
             override var tag: Any? = null,
         ) : Expression
 
         /**
-         * AST node corresponds to KtAnnotatedExpression used in expression context.
+         * AST node corresponds to KtAnnotatedExpression.
          *
          * @property annotationSets list of annotation sets.
-         * @property expression expression of this annotated expression.
+         * @property statement statement annotated by [annotationSets].
          */
         data class AnnotatedExpression(
             override val annotationSets: List<Modifier.AnnotationSet>,
-            val expression: Expression,
+            val statement: Statement,
             override var tag: Any? = null,
         ) : Expression, WithAnnotationSets
 

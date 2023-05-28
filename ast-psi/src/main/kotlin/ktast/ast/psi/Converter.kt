@@ -60,8 +60,6 @@ open class Converter {
         is KtForExpression -> convertFor(v)
         is KtWhileExpression -> convertWhile(v)
         is KtDoWhileExpression -> convertDoWhile(v)
-        is KtLabeledExpression -> convertLabeledStatement(v)
-        is KtAnnotatedExpression -> convertAnnotatedStatement(v)
         is KtDeclaration -> convertDeclaration(v)
         else -> convertExpression(v) as? Node.Statement ?: error("Unrecognized statement $v")
     }
@@ -91,16 +89,6 @@ open class Converter {
         lPar = convertKeyword(v.leftParenthesis ?: error("No left parenthesis for $v")),
         condition = convertExpression(v.conditionContainer.expression),
         rPar = convertKeyword(v.rightParenthesis ?: error("No right parenthesis for $v")),
-    ).map(v)
-
-    open fun convertLabeledStatement(v: KtLabeledExpression) = Node.Statement.LabeledStatement(
-        label = v.getLabelName() ?: error("No label name for $v"),
-        statement = convertStatement(v.baseExpression ?: error("No label expr for $v"))
-    ).map(v)
-
-    open fun convertAnnotatedStatement(v: KtAnnotatedExpression) = Node.Statement.AnnotatedStatement(
-        annotationSets = convertAnnotationSets(v),
-        statement = convertStatement(v.baseExpression ?: error("No annotated expr for $v"))
     ).map(v)
 
     open fun convertDeclaration(v: KtDeclaration): Node.Declaration = when (v) {
@@ -767,12 +755,12 @@ open class Converter {
 
     open fun convertLabeled(v: KtLabeledExpression) = Node.Expression.LabeledExpression(
         label = v.getLabelName() ?: error("No label name for $v"),
-        expression = convertExpression(v.baseExpression ?: error("No label expr for $v"))
+        statement = convertStatement(v.baseExpression ?: error("No label expr for $v"))
     ).map(v)
 
     open fun convertAnnotated(v: KtAnnotatedExpression) = Node.Expression.AnnotatedExpression(
         annotationSets = convertAnnotationSets(v),
-        expression = convertExpression(v.baseExpression ?: error("No annotated expr for $v"))
+        statement = convertStatement(v.baseExpression ?: error("No annotated expr for $v"))
     ).map(v)
 
     open fun convertCall(v: KtCallElement) = Node.Expression.CallExpression(
