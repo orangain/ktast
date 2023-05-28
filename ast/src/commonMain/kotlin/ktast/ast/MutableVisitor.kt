@@ -336,9 +336,12 @@ open class MutableVisitor(
                     is Node.Expression.LambdaExpression.LambdaBody -> copy(
                         statements = visitChildren(statements, newCh)
                     )
-                    is Node.Expression.ThisExpression -> this
+                    is Node.Expression.ThisExpression -> copy(
+                        label = visitChildren(label, newCh),
+                    )
                     is Node.Expression.SuperExpression -> copy(
-                        typeArg = visitChildren(typeArg, newCh)
+                        typeArg = visitChildren(typeArg, newCh),
+                        label = visitChildren(label, newCh),
                     )
                     is Node.Expression.WhenExpression -> copy(
                         whenKeyword = visitChildren(whenKeyword, newCh),
@@ -365,17 +368,23 @@ open class MutableVisitor(
                         expression = visitChildren(expression, newCh)
                     )
                     is Node.Expression.ReturnExpression -> copy(
-                        expression = visitChildren(expression, newCh)
+                        label = visitChildren(label, newCh),
+                        expression = visitChildren(expression, newCh),
                     )
-                    is Node.Expression.ContinueExpression -> this
-                    is Node.Expression.BreakExpression -> this
+                    is Node.Expression.ContinueExpression -> copy(
+                        label = visitChildren(label, newCh),
+                    )
+                    is Node.Expression.BreakExpression -> copy(
+                        label = visitChildren(label, newCh),
+                    )
                     is Node.Expression.CollectionLiteralExpression -> copy(
                         expressions = visitChildren(expressions, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
                     is Node.Expression.NameExpression -> this
                     is Node.Expression.LabeledExpression -> copy(
-                        statement = visitChildren(statement, newCh)
+                        label = visitChildren(label, newCh),
+                        statement = visitChildren(statement, newCh),
                     )
                     is Node.Expression.AnnotatedExpression -> copy(
                         annotationSets = visitChildren(annotationSets, newCh),
@@ -389,7 +398,8 @@ open class MutableVisitor(
                     )
                     is Node.Expression.CallExpression.LambdaArg -> copy(
                         annotationSets = visitChildren(annotationSets, newCh),
-                        expression = visitChildren(expression, newCh)
+                        label = visitChildren(label, newCh),
+                        expression = visitChildren(expression, newCh),
                     )
                     is Node.Expression.IndexedAccessExpression -> copy(
                         expression = visitChildren(expression, newCh),

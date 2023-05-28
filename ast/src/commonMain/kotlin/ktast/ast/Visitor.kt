@@ -302,9 +302,12 @@ open class Visitor {
             is Node.Expression.LambdaExpression.LambdaBody -> {
                 visitChildren(statements)
             }
-            is Node.Expression.ThisExpression -> {}
+            is Node.Expression.ThisExpression -> {
+                visitChildren(label)
+            }
             is Node.Expression.SuperExpression -> {
                 visitChildren(typeArg)
+                visitChildren(label)
             }
             is Node.Expression.WhenExpression -> {
                 visitChildren(whenKeyword)
@@ -332,15 +335,21 @@ open class Visitor {
             }
             is Node.Expression.ReturnExpression -> {
                 visitChildren(expression)
+                visitChildren(label)
             }
-            is Node.Expression.ContinueExpression -> {}
-            is Node.Expression.BreakExpression -> {}
+            is Node.Expression.ContinueExpression -> {
+                visitChildren(label)
+            }
+            is Node.Expression.BreakExpression -> {
+                visitChildren(label)
+            }
             is Node.Expression.CollectionLiteralExpression -> {
                 visitChildren(expressions)
                 visitChildren(trailingComma)
             }
             is Node.Expression.NameExpression -> {}
             is Node.Expression.LabeledExpression -> {
+                visitChildren(label)
                 visitChildren(statement)
             }
             is Node.Expression.AnnotatedExpression -> {
@@ -355,6 +364,7 @@ open class Visitor {
             }
             is Node.Expression.CallExpression.LambdaArg -> {
                 visitChildren(annotationSets)
+                visitChildren(label)
                 visitChildren(expression)
             }
             is Node.Expression.IndexedAccessExpression -> {

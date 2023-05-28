@@ -657,12 +657,12 @@ open class Converter {
     ).map(v)
 
     open fun convertThis(v: KtThisExpression) = Node.Expression.ThisExpression(
-        label = v.getLabelName()
+        label = v.getTargetLabel()?.let(::convertName),
     ).map(v)
 
     open fun convertSuper(v: KtSuperExpression) = Node.Expression.SuperExpression(
         typeArg = v.superTypeQualifier?.let(::convertTypeRef),
-        label = v.getLabelName()
+        label = v.getTargetLabel()?.let(::convertName),
     ).map(v)
 
     open fun convertWhen(v: KtWhenExpression) = Node.Expression.WhenExpression(
@@ -712,16 +712,16 @@ open class Converter {
     ).map(v)
 
     open fun convertReturn(v: KtReturnExpression) = Node.Expression.ReturnExpression(
-        label = v.getLabelName(),
+        label = v.getTargetLabel()?.let(::convertName),
         expression = v.returnedExpression?.let(::convertExpression)
     ).map(v)
 
     open fun convertContinue(v: KtContinueExpression) = Node.Expression.ContinueExpression(
-        label = v.getLabelName()
+        label = v.getTargetLabel()?.let(::convertName),
     ).map(v)
 
     open fun convertBreak(v: KtBreakExpression) = Node.Expression.BreakExpression(
-        label = v.getLabelName()
+        label = v.getTargetLabel()?.let(::convertName),
     ).map(v)
 
     open fun convertCollLit(v: KtCollectionLiteralExpression) = Node.Expression.CollectionLiteralExpression(
@@ -754,7 +754,7 @@ open class Converter {
         }
 
     open fun convertLabeled(v: KtLabeledExpression) = Node.Expression.LabeledExpression(
-        label = v.getLabelName() ?: error("No label name for $v"),
+        label = convertName(v.getTargetLabel() ?: error("No label name for $v")),
         statement = convertStatement(v.baseExpression ?: error("No label expr for $v"))
     ).map(v)
 
@@ -777,12 +777,12 @@ open class Converter {
     ).map(v)
 
     open fun convertCallLambdaArg(v: KtLambdaArgument): Node.Expression.CallExpression.LambdaArg {
-        var label: String? = null
+        var label: Node.Expression.NameExpression? = null
         var annotationSets: List<Node.Modifier.AnnotationSet> = emptyList()
         fun KtExpression.extractLambda(): KtLambdaExpression? = when (this) {
             is KtLambdaExpression -> this
             is KtLabeledExpression -> baseExpression?.extractLambda().also {
-                label = getLabelName()
+                label = convertName(getTargetLabel() ?: error("No label for $this"))
             }
             is KtAnnotatedExpression -> baseExpression?.extractLambda().also {
                 annotationSets = convertAnnotationSets(this)

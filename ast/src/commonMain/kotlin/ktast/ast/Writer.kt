@@ -17,8 +17,11 @@ open class Writer(
         CharCategory.DECIMAL_DIGIT_NUMBER,
     )
 
-    protected fun appendLabel(label: String?) {
-        if (label != null) append('@').append(label)
+    protected fun Node.appendLabel(label: Node.Expression.NameExpression?) {
+        if (label != null) {
+            append('@')
+            children(label)
+        }
     }
 
     protected fun append(ch: Char) = append(ch.toString())
@@ -426,8 +429,11 @@ open class Writer(
                     children(expressions, ",", "[", "]", trailingComma)
                 is Node.Expression.NameExpression ->
                     append(text)
-                is Node.Expression.LabeledExpression ->
-                    append(label).append("@").also { children(statement) }
+                is Node.Expression.LabeledExpression -> {
+                    children(label)
+                    append("@")
+                    children(statement)
+                }
                 is Node.Expression.AnnotatedExpression ->
                     children(annotationSets).also { children(statement) }
                 is Node.Expression.CallExpression -> {
@@ -438,7 +444,10 @@ open class Writer(
                 }
                 is Node.Expression.CallExpression.LambdaArg -> {
                     children(annotationSets)
-                    if (label != null) append(label).append("@")
+                    if (label != null) {
+                        children(label)
+                        append("@")
+                    }
                     children(expression)
                 }
                 is Node.Expression.IndexedAccessExpression -> {
