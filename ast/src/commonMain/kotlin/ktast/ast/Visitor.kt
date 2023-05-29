@@ -138,7 +138,7 @@ open class Visitor {
             is Node.Variable -> {
                 visitChildren(modifiers)
                 visitChildren(name)
-                visitChildren(typeRef)
+                visitChildren(type)
             }
             is Node.Declaration.PropertyDeclaration.Getter -> {
                 visitChildren(modifiers)

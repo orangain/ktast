@@ -179,7 +179,7 @@ open class Writer(
                 is Node.Variable -> {
                     children(modifiers)
                     children(name)
-                    if (typeRef != null) append(":").also { children(typeRef) }
+                    if (type != null) append(":").also { children(type) }
                 }
                 is Node.Declaration.PropertyDeclaration.Getter -> {
                     children(modifiers)

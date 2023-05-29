@@ -203,7 +203,7 @@ open class Converter {
             Node.Variable(
                 modifiers = null,
                 name = v.nameIdentifier?.let(::convertName) ?: error("No property name on $v"),
-                typeRef = v.typeReference?.let(::convertTypeRef)
+                type = v.typeReference?.let(::convertType)
             ).mapNotCorrespondsPsiElement(v)
         ),
         trailingComma = null,
@@ -239,7 +239,7 @@ open class Converter {
     open fun convertVariable(v: KtDestructuringDeclarationEntry) = Node.Variable(
         modifiers = v.modifierList?.let(::convertModifiers),
         name = v.nameIdentifier?.let(::convertName) ?: error("No property name on $v"),
-        typeRef = v.typeReference?.let(::convertTypeRef)
+        type = v.typeReference?.let(::convertType)
     ).map(v)
 
     open fun convertPropertyDelegate(v: KtPropertyDelegate) = Node.Declaration.PropertyDeclaration.PropertyDelegate(
@@ -427,31 +427,30 @@ open class Converter {
     }
 
     open fun convertType(v: KtTypeReference): Node.Type {
-        return convertType(v, v.nonExtraChildren())
+        return convertType(v, v.nonExtraChildren(), mapTarget = v)
     }
 
-    open fun convertType(v: KtTypeReference, targetChildren: List<PsiElement>): Node.Type {
-        var restChildren = targetChildren
-        var modifierList: KtModifierList? = null
-        if (restChildren.firstOrNull() is KtModifierList) {
-            modifierList = restChildren.first() as KtModifierList
-            restChildren = restChildren.subList(1, restChildren.size)
-        }
+    // Actually, type of v is KtTypeReference or KtNullableType.
+    open fun convertType(v: KtElement, targetChildren: List<PsiElement>, mapTarget: KtElement?): Node.Type {
+        val modifierListElements = targetChildren.takeWhile { it is KtModifierList }
+        check(modifierListElements.size <= 1) { "Multiple modifier lists in type children: $targetChildren" }
+        val modifierList = modifierListElements.firstOrNull() as? KtModifierList
+        val questionMarks = targetChildren.takeLastWhile { it.node.elementType == KtTokens.QUEST }
+        val restChildren =
+            targetChildren.subList(modifierListElements.size, targetChildren.size - questionMarks.size)
 
+        // questionMarks can be ignored here because when v is KtNullableType, it will be handled in caller side.
         if (restChildren.first().node.elementType == KtTokens.LPAR && restChildren.last().node.elementType == KtTokens.RPAR) {
-            val lPar = restChildren.first()
-            val rPar = restChildren.last()
-            restChildren = restChildren.subList(1, restChildren.size - 1)
             return Node.Type.ParenthesizedType(
                 modifiers = modifierList?.let { convertModifiers(it) },
-                lPar = convertKeyword(lPar),
-                type = convertType(v, restChildren),
-                rPar = convertKeyword(rPar),
-            ).map(v)
+                lPar = convertKeyword(restChildren.first()),
+                type = convertType(v, restChildren.subList(1, restChildren.size - 1), mapTarget = null),
+                rPar = convertKeyword(restChildren.last()),
+            ).mapIfPossible(mapTarget)
         }
 
         val modifiers = modifierList?.let(::convertModifiers)
-        return when (val typeEl = restChildren.first() as KtTypeElement) {
+        return when (val typeEl = restChildren.first()) {
             is KtFunctionType -> Node.Type.FunctionType(
                 lPar = null,
                 modifiers = modifiers,
@@ -461,24 +460,24 @@ open class Converter {
                 params = typeEl.parameterList?.let(::convertTypeFunctionParams),
                 returnTypeRef = convertTypeRef(typeEl.returnTypeReference ?: error("No return type for $typeEl")),
                 rPar = null,
-            ).map(v)
+            ).mapIfPossible(mapTarget)
             is KtUserType -> Node.Type.SimpleType(
                 modifiers = modifiers,
                 qualifiers = generateSequence(typeEl.qualifier) { it.qualifier }.toList().reversed()
                     .map(::convertTypeSimpleQualifier),
                 name = convertName(typeEl.referenceExpression ?: error("No type name for $typeEl")),
                 typeArgs = typeEl.typeArgumentList?.let(::convertTypeArgs),
-            ).map(v)
+            ).mapIfPossible(mapTarget)
             is KtNullableType -> Node.Type.NullableType(
                 lPar = null,
                 modifiers = modifiers,
-                type = convertType(typeEl.innerType ?: error("No inner type for nullable $typeEl")),
+                type = convertType(typeEl, typeEl.nonExtraChildren(), typeEl),
                 rPar = null,
-            ).map(v)
+            ).mapIfPossible(mapTarget)
             is KtDynamicType -> Node.Type.DynamicType(
                 modifiers = modifiers,
-            ).map(v)
-            else -> error("Unrecognized type of $v")
+            ).mapIfPossible(mapTarget)
+            else -> error("Unrecognized type of $typeEl")
         }
     }
 
@@ -708,7 +707,7 @@ open class Converter {
                     Node.Variable(
                         modifiers = v.modifierList?.let(::convertModifiers),
                         name = v.nameIdentifier?.let(::convertName) ?: error("No lambda param name on $v"),
-                        typeRef = v.typeReference?.let(::convertTypeRef),
+                        type = v.typeReference?.let(::convertType),
                     ).mapNotCorrespondsPsiElement(v)
                 ),
                 trailingComma = null,
@@ -985,6 +984,7 @@ open class Converter {
 
     protected open fun <T : Node> T.map(v: PsiElement) = also { onNode(it, v) }
     protected open fun <T : Node> T.mapNotCorrespondsPsiElement(v: PsiElement) = also { onNode(it, null) }
+    protected open fun <T : Node> T.mapIfPossible(v: PsiElement?) = also { onNode(it, v) }
 
     class Unsupported(message: String) : UnsupportedOperationException(message)
 

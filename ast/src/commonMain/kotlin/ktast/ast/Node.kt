@@ -664,12 +664,12 @@ sealed interface Node {
      *
      * @property modifiers modifiers if exists, otherwise `null`.
      * @property name name of the variable.
-     * @property typeRef type reference of the variable if exists, otherwise `null`.
+     * @property type type of the variable if exists, otherwise `null`.
      */
     data class Variable(
         override val modifiers: Modifiers?,
         val name: Expression.NameExpression,
-        val typeRef: TypeRef?,
+        val type: Type?,
         override var tag: Any? = null,
     ) : Node, WithModifiers
 

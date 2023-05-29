@@ -148,7 +148,7 @@ open class MutableVisitor(
                     is Node.Variable -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         name = visitChildren(name, newCh),
-                        typeRef = visitChildren(typeRef, newCh),
+                        type = visitChildren(type, newCh),
                     )
                     is Node.Declaration.PropertyDeclaration.Getter -> copy(
                         modifiers = visitChildren(modifiers, newCh),
