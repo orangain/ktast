@@ -731,7 +731,7 @@ sealed interface Node {
             val type: Type,
             val rPar: Keyword.RPar?,
             override var tag: Any? = null,
-        ) : Type, WithModifiers
+        ) : Type
 
         private interface NameWithTypeArgs {
             val name: Expression.NameExpression
@@ -796,7 +796,7 @@ sealed interface Node {
             val returnTypeRef: TypeRef,
             val rPar: Keyword.RPar?,
             override var tag: Any? = null,
-        ) : Type, WithModifiers {
+        ) : Type {
             /**
              * AST node corresponds to KtContextReceiverList.
              */
