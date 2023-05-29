@@ -482,10 +482,10 @@ sealed interface Node {
          * @property modifiers modifiers if exists, otherwise `null`.
          * @property funKeyword `fun` keyword.
          * @property typeParams type parameters of the function if exists, otherwise `null`.
-         * @property receiverTypeRef receiver type reference of the function if exists, otherwise `null`.
+         * @property receiverType receiver type of the function if exists, otherwise `null`.
          * @property name name of the function. If the function is anonymous, the name is `null`.
          * @property params parameters of the function if exists, otherwise `null`.
-         * @property returnTypeRef return type reference of the function if exists, otherwise `null`.
+         * @property returnType return type of the function if exists, otherwise `null`.
          * @property postModifiers post-modifiers of the function.
          * @property equals `=` keyword if exists, otherwise `null`.
          * @property body body of the function if exists, otherwise `null`.
@@ -494,10 +494,10 @@ sealed interface Node {
             override val modifiers: Modifiers?,
             val funKeyword: Keyword.Fun,
             val typeParams: TypeParams?,
-            val receiverTypeRef: TypeRef?,
+            val receiverType: Type?,
             val name: Expression.NameExpression?,
             val params: FunctionParams?,
-            val returnTypeRef: TypeRef?,
+            val returnType: Type?,
             override val postModifiers: List<PostModifier>,
             override val equals: Keyword.Equal?,
             override val body: Expression?,
@@ -510,7 +510,7 @@ sealed interface Node {
          * @property modifiers modifiers if exists, otherwise `null`.
          * @property valOrVarKeyword `val` or `var` keyword.
          * @property typeParams type parameters of the property if exists, otherwise `null`.
-         * @property receiverTypeRef receiver type reference of the property if exists, otherwise `null`.
+         * @property receiverType receiver type of the property if exists, otherwise `null`.
          * @property lPar `(` keyword if exists, otherwise `null`. When there are two or more variables, the keyword must exist.
          * @property variables variables of the property. Always at least one, more than one means destructuring.
          * @property trailingComma trailing comma of the variables if exists, otherwise `null`.
@@ -525,7 +525,7 @@ sealed interface Node {
             override val modifiers: Modifiers?,
             val valOrVarKeyword: Keyword.ValOrVarKeyword,
             val typeParams: TypeParams?,
-            val receiverTypeRef: TypeRef?,
+            val receiverType: Type?,
             val lPar: Keyword.LPar?,
             val variables: List<Variable>,
             val trailingComma: Keyword.Comma?,
@@ -576,7 +576,7 @@ sealed interface Node {
              *
              * @property modifiers modifiers if exists, otherwise `null`.
              * @property getKeyword `get` keyword.
-             * @property typeRef return type reference of the getter if exists, otherwise `null`.
+             * @property type return type of the getter if exists, otherwise `null`.
              * @property postModifiers post-modifiers of the getter.
              * @property equals `=` keyword if exists, otherwise `null`.
              * @property body body of the getter if exists, otherwise `null`.
@@ -584,7 +584,7 @@ sealed interface Node {
             data class Getter(
                 override val modifiers: Modifiers?,
                 val getKeyword: Keyword.Get,
-                val typeRef: TypeRef?,
+                val type: Type?,
                 override val postModifiers: List<PostModifier>,
                 override val equals: Keyword.Equal?,
                 override val body: Expression?,
@@ -645,7 +645,7 @@ sealed interface Node {
      * @property modifiers modifiers if exists, otherwise `null`.
      * @property valOrVarKeyword `val` or `var` keyword if exists, otherwise `null`.
      * @property name name of the parameter.
-     * @property typeRef type reference of the parameter. Can be `null` for anonymous function parameters.
+     * @property type type of the parameter. Can be `null` for anonymous function parameters.
      * @property equals `=` keyword if exists, otherwise `null`.
      * @property defaultValue default value of the parameter if exists, otherwise `null`.
      */
@@ -653,7 +653,7 @@ sealed interface Node {
         override val modifiers: Modifiers?,
         val valOrVarKeyword: Keyword.ValOrVarKeyword?,
         val name: Expression.NameExpression,
-        val typeRef: TypeRef?,
+        val type: Type?,
         val equals: Keyword.Equal?,
         val defaultValue: Expression?,
         override var tag: Any? = null,
@@ -687,12 +687,12 @@ sealed interface Node {
      *
      * @property modifiers modifiers if exists, otherwise `null`.
      * @property name name of the type parameter.
-     * @property typeRef type reference of the type parameter if exists, otherwise `null`.
+     * @property type type of the type parameter if exists, otherwise `null`.
      */
     data class TypeParam(
         override val modifiers: Modifiers?,
         val name: Expression.NameExpression,
-        val typeRef: TypeRef?,
+        val type: Type?,
         override var tag: Any? = null,
     ) : Node, WithModifiers
 
@@ -780,20 +780,20 @@ sealed interface Node {
          * @property lPar `(` if exists, otherwise `null`.
          * @property modifiers modifiers if exists, otherwise `null`.
          * @property contextReceivers context receivers if exists, otherwise `null`.
-         * @property receiverTypeRef receiver type reference if exists, otherwise `null`.
+         * @property receiverType receiver type if exists, otherwise `null`.
          * @property dotSymbol `.` if exists, otherwise `null`.
          * @property params parameters of the function type if exists, otherwise `null`.
-         * @property returnTypeRef return type reference of the function type.
+         * @property returnType return type of the function type.
          * @property rPar `)` if exists, otherwise `null`.
          */
         data class FunctionType(
             val lPar: Keyword.LPar?,
             override val modifiers: Modifiers?,
             val contextReceivers: ContextReceivers?,
-            val receiverTypeRef: TypeRef?,
+            val receiverType: Type?,
             val dotSymbol: Keyword.Dot?,
             val params: FunctionTypeParams?,
-            val returnTypeRef: TypeRef,
+            val returnType: Type,
             val rPar: Keyword.RPar?,
             override var tag: Any? = null,
         ) : Type {
@@ -809,10 +809,10 @@ sealed interface Node {
             /**
              * AST node corresponds to KtContextReceiver.
              *
-             * @property typeRef type reference of the context receiver.
+             * @property type type of the context receiver.
              */
             data class ContextReceiver(
-                val typeRef: TypeRef,
+                val type: Type,
                 override var tag: Any? = null,
             ) : Node
 
@@ -829,11 +829,11 @@ sealed interface Node {
              * AST node that represents a formal function parameter of a function type. For example, `x: Int` in `(x: Int) -> Unit` is a function parameter. The node corresponds to KtParameter inside KtFunctionType.
              *
              * @property name name of the parameter if exists, otherwise `null`.
-             * @property typeRef type reference of the parameter.
+             * @property type type of the parameter.
              */
             data class FunctionTypeParam(
                 val name: Expression.NameExpression?,
-                val typeRef: TypeRef,
+                val type: Type,
                 override var tag: Any? = null,
             ) : Node
         }
@@ -852,23 +852,23 @@ sealed interface Node {
      * Common interface for AST node that represents an actual type argument. For example, `Int` in `listOf<Int>()` is a type argument. The node corresponds to KtTypeProjection.
      *
      * @property modifiers modifiers if exists, otherwise `null`.
-     * @property typeRef type reference if exists, otherwise `null`.
+     * @property type type if exists, otherwise `null`.
      * @property asterisk `*` if exists, otherwise `null`.
      */
     sealed interface TypeArg : Node, WithModifiers {
-        val typeRef: TypeRef?
+        val type: Type?
         val asterisk: Keyword.Asterisk?
 
         /**
          * AST node that represents a type projection.
          *
          * @property modifiers modifiers if exists, otherwise `null`.
-         * @property typeRef type reference.
+         * @property type type
          * @property asterisk always `null`.
          */
         data class TypeProjection(
             override val modifiers: Modifiers?,
-            override val typeRef: TypeRef,
+            override val type: Type,
             override var tag: Any? = null,
         ) : TypeArg {
             override val asterisk = null
@@ -878,7 +878,7 @@ sealed interface Node {
          * AST node that represents a star projection.
          *
          * @property modifiers always `null`.
-         * @property typeRef always `null`.
+         * @property type always `null`.
          * @property asterisk asterisk keyword.
          */
         data class StarProjection(
@@ -886,7 +886,7 @@ sealed interface Node {
             override var tag: Any? = null,
         ) : TypeArg {
             override val modifiers = null
-            override val typeRef = null
+            override val type = null
         }
     }
 
@@ -1060,7 +1060,7 @@ sealed interface Node {
         data class BinaryTypeExpression(
             val lhs: Expression,
             val operator: BinaryTypeOperator,
-            val rhs: TypeRef,
+            val rhs: Type,
             override var tag: Any? = null,
         ) : Expression {
             /**
@@ -1290,11 +1290,11 @@ sealed interface Node {
         /**
          * AST node corresponds to KtSuperExpression or KtConstructorDelegationReferenceExpression whose text is "super".
          *
-         * @property typeArgTypeRef type argument if exists, otherwise `null`.
+         * @property typeArgType type of type argument if exists, otherwise `null`.
          * @property label label of this expression if exists, otherwise `null`.
          */
         data class SuperExpression(
-            val typeArgTypeRef: TypeRef?,
+            val typeArgType: Type?,
             override val label: NameExpression?,
             override var tag: Any? = null,
         ) : Expression, WithLabel
@@ -1389,12 +1389,12 @@ sealed interface Node {
              *
              * @property operator operator of this condition if exists, otherwise `null`.
              * @property expression operand of [operator] or condition expression, otherwise `null`.
-             * @property typeRef operand of [operator], otherwise `null`.
+             * @property type operand of [operator], otherwise `null`.
              */
             sealed interface WhenCondition : Node {
                 val operator: WhenConditionOperator?
                 val expression: Expression?
-                val typeRef: TypeRef?
+                val type: Type?
             }
 
             /**
@@ -1402,14 +1402,14 @@ sealed interface Node {
              *
              * @property operator always `null`.
              * @property expression condition expression.
-             * @property typeRef always `null`.
+             * @property type always `null`.
              */
             data class ExpressionWhenCondition(
                 override val expression: Expression,
                 override var tag: Any? = null,
             ) : WhenCondition {
                 override val operator = null
-                override val typeRef = null
+                override val type = null
             }
 
             /**
@@ -1417,14 +1417,14 @@ sealed interface Node {
              *
              * @property operator operator of this condition.
              * @property expression operand of [operator].
-             * @property typeRef always `null`.
+             * @property type always `null`.
              */
             data class RangeWhenCondition(
                 override val operator: WhenConditionRangeOperator,
                 override val expression: Expression,
                 override var tag: Any? = null,
             ) : WhenCondition {
-                override val typeRef = null
+                override val type = null
             }
 
             /**
@@ -1432,11 +1432,11 @@ sealed interface Node {
              *
              * @property operator operator of this condition.
              * @property expression always `null`.
-             * @property typeRef operand of [operator].
+             * @property type operand of [operator].
              */
             data class TypeWhenCondition(
                 override val operator: WhenConditionTypeOperator,
-                override val typeRef: TypeRef,
+                override val type: Type,
                 override var tag: Any? = null,
             ) : WhenCondition {
                 override val expression = null
@@ -1634,7 +1634,7 @@ sealed interface Node {
      * @property trailingComma trailing comma of [variables] if exists, otherwise `null`.
      * @property rPar right parenthesis of this parameter if exists, otherwise `null`.
      * @property colon colon symbol if exists, otherwise `null`.
-     * @property destructTypeRef type reference of destructuring if exists, otherwise `null`.
+     * @property destructType type of destructuring if exists, otherwise `null`.
      */
     data class LambdaParam(
         val lPar: Keyword.LPar?,
@@ -1642,7 +1642,7 @@ sealed interface Node {
         val trailingComma: Keyword.Comma?,
         val rPar: Keyword.RPar?,
         val colon: Keyword.Colon?,
-        val destructTypeRef: TypeRef?,
+        val destructType: Type?,
         override var tag: Any? = null,
     ) : Node {
         init {
@@ -1740,12 +1740,12 @@ sealed interface Node {
              *
              * @property annotationSets list of annotation sets.
              * @property name name of this type constraint.
-             * @property typeRef type reference of this type constraint.
+             * @property type type of this type constraint.
              */
             data class TypeConstraint(
                 override val annotationSets: List<Modifier.AnnotationSet>,
                 val name: Expression.NameExpression,
-                val typeRef: TypeRef,
+                val type: Type,
                 override var tag: Any? = null,
             ) : Node, WithAnnotationSets
         }

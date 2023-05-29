@@ -169,10 +169,10 @@ open class Converter {
             modifiers = v.modifierList?.let(::convertModifiers),
             funKeyword = v.funKeyword?.let { convertKeyword(it) } ?: error("No fun keyword for $v"),
             typeParams = v.typeParameterList?.let(::convertTypeParams),
-            receiverTypeRef = v.receiverTypeReference?.let(::convertTypeRef),
+            receiverType = v.receiverTypeReference?.let(::convertType),
             name = v.nameIdentifier?.let(::convertName),
             params = v.valueParameterList?.let(::convertFuncParams),
-            returnTypeRef = v.typeReference?.let(::convertTypeRef),
+            returnType = v.typeReference?.let(::convertType),
             postModifiers = convertPostModifiers(v),
             equals = v.equalsToken?.let(::convertKeyword),
             body = v.bodyExpression?.let { convertExpression(it) },
@@ -188,7 +188,7 @@ open class Converter {
         modifiers = v.modifierList?.let(::convertModifiers),
         valOrVarKeyword = v.valOrVarKeyword?.let(::convertKeyword),
         name = v.nameIdentifier?.let(::convertName) ?: error("No param name"),
-        typeRef = v.typeReference?.let(::convertTypeRef),
+        type = v.typeReference?.let(::convertType),
         equals = v.equalsToken?.let(::convertKeyword),
         defaultValue = v.defaultValue?.let(::convertExpression),
     ).map(v)
@@ -197,7 +197,7 @@ open class Converter {
         modifiers = v.modifierList?.let(::convertModifiers),
         valOrVarKeyword = convertKeyword(v.valOrVarKeyword),
         typeParams = v.typeParameterList?.let(::convertTypeParams),
-        receiverTypeRef = v.receiverTypeReference?.let(::convertTypeRef),
+        receiverType = v.receiverTypeReference?.let(::convertType),
         lPar = null,
         variables = listOf(
             Node.Variable(
@@ -224,7 +224,7 @@ open class Converter {
         modifiers = v.modifierList?.let(::convertModifiers),
         valOrVarKeyword = v.valOrVarKeyword?.let(::convertKeyword) ?: error("Missing valOrVarKeyword"),
         typeParams = null,
-        receiverTypeRef = null,
+        receiverType = null,
         lPar = v.lPar?.let(::convertKeyword),
         variables = v.entries.map(::convertVariable),
         trailingComma = v.trailingComma?.let(::convertKeyword),
@@ -251,7 +251,7 @@ open class Converter {
         if (v.isGetter) Node.Declaration.PropertyDeclaration.Getter(
             modifiers = v.modifierList?.let(::convertModifiers),
             getKeyword = convertKeyword(v.getKeyword),
-            typeRef = v.returnTypeReference?.let(::convertTypeRef),
+            type = v.returnTypeReference?.let(::convertType),
             postModifiers = convertPostModifiers(v),
             equals = v.equalsToken?.let(::convertKeyword),
             body = v.bodyExpression?.let(::convertExpression),
@@ -309,7 +309,7 @@ open class Converter {
     open fun convertTypeParam(v: KtTypeParameter) = Node.TypeParam(
         modifiers = v.modifierList?.let(::convertModifiers),
         name = v.nameIdentifier?.let(::convertName) ?: error("No type param name for $v"),
-        typeRef = v.extendsBound?.let(::convertTypeRef)
+        type = v.extendsBound?.let(::convertType)
     ).map(v)
 
     open fun convertTypeArgs(v: KtTypeArgumentList) = Node.TypeArgs(
@@ -325,7 +325,7 @@ open class Converter {
         } else {
             Node.TypeArg.TypeProjection(
                 modifiers = v.modifierList?.let(::convertModifiers),
-                typeRef = convertTypeRef(v.typeReference ?: error("Missing type ref for $v")),
+                type = convertType(v.typeReference ?: error("Missing type ref for $v")),
             ).map(v)
         }
     }
@@ -388,7 +388,7 @@ open class Converter {
             }
         },
         name = v.subjectTypeParameterName?.let { convertName(it) } ?: error("No type constraint name for $v"),
-        typeRef = convertTypeRef(v.boundTypeReference ?: error("No type constraint type for $v"))
+        type = convertType(v.boundTypeReference ?: error("No type constraint type for $v"))
     ).map(v)
 
     open fun convertType(
@@ -401,10 +401,10 @@ open class Converter {
             lPar = lPar?.let(::convertKeyword),
             modifiers = modifierList?.let(::convertModifiers),
             contextReceivers = v.contextReceiverList?.let { convertContextReceivers(it) },
-            receiverTypeRef = v.receiver?.typeReference?.let(::convertTypeRef),
+            receiverType = v.receiver?.typeReference?.let(::convertType),
             dotSymbol = findChildByType(v, KtTokens.DOT)?.let(::convertKeyword),
             params = v.parameterList?.let(::convertTypeFunctionParams),
-            returnTypeRef = convertTypeRef(v.returnTypeReference ?: error("No return type")),
+            returnType = convertType(v.returnTypeReference ?: error("No return type")),
             rPar = rPar?.let(::convertKeyword),
         ).map(v)
         is KtUserType -> Node.Type.SimpleType(
@@ -455,10 +455,10 @@ open class Converter {
                 lPar = null,
                 modifiers = modifiers,
                 contextReceivers = typeEl.contextReceiverList?.let { convertContextReceivers(it) },
-                receiverTypeRef = typeEl.receiver?.typeReference?.let(::convertTypeRef),
+                receiverType = typeEl.receiver?.typeReference?.let(::convertType),
                 dotSymbol = findChildByType(typeEl, KtTokens.DOT)?.let(::convertKeyword),
                 params = typeEl.parameterList?.let(::convertTypeFunctionParams),
-                returnTypeRef = convertTypeRef(typeEl.returnTypeReference ?: error("No return type for $typeEl")),
+                returnType = convertType(typeEl.returnTypeReference ?: error("No return type for $typeEl")),
                 rPar = null,
             ).mapIfPossible(mapTarget)
             is KtUserType -> Node.Type.SimpleType(
@@ -487,7 +487,7 @@ open class Converter {
     ).map(v)
 
     open fun convertContextReceiver(v: KtContextReceiver) = Node.Type.FunctionType.ContextReceiver(
-        typeRef = convertTypeRef(v.typeReference() ?: error("Missing type reference for $v")),
+        type = convertType(v.typeReference() ?: error("Missing type reference for $v")),
     ).map(v)
 
     open fun convertContractEffects(v: KtContractEffectList) = Node.PostModifier.Contract.ContractEffects(
@@ -506,7 +506,7 @@ open class Converter {
 
     open fun convertTypeFunctionParam(v: KtParameter) = Node.Type.FunctionType.FunctionTypeParam(
         name = v.nameIdentifier?.let(::convertName),
-        typeRef = convertTypeRef(v.typeReference ?: error("No param type"))
+        type = convertType(v.typeReference ?: error("No param type"))
     ).map(v)
 
     open fun convertTypeSimpleQualifier(v: KtUserType) = Node.Type.SimpleType.SimpleTypeQualifier(
@@ -626,13 +626,13 @@ open class Converter {
     open fun convertBinaryType(v: KtBinaryExpressionWithTypeRHS) = Node.Expression.BinaryTypeExpression(
         lhs = convertExpression(v.left),
         operator = convertKeyword(v.operationReference),
-        rhs = convertTypeRef(v.right ?: error("No type op rhs for $v"))
+        rhs = convertType(v.right ?: error("No type op rhs for $v"))
     ).map(v)
 
     open fun convertBinaryType(v: KtIsExpression) = Node.Expression.BinaryTypeExpression(
         lhs = convertExpression(v.leftHandSide),
         operator = convertKeyword(v.operationReference),
-        rhs = convertTypeRef(v.typeReference ?: error("No type op rhs for $v"))
+        rhs = convertType(v.typeReference ?: error("No type op rhs for $v"))
     ).map(v)
 
     open fun convertCallableReference(v: KtCallableReferenceExpression) = Node.Expression.CallableReferenceExpression(
@@ -698,7 +698,7 @@ open class Converter {
                 trailingComma = destructuringDeclaration.trailingComma?.let(::convertKeyword),
                 rPar = destructuringDeclaration.rPar?.let(::convertKeyword),
                 colon = v.colon?.let(::convertKeyword),
-                destructTypeRef = v.typeReference?.let(::convertTypeRef),
+                destructType = v.typeReference?.let(::convertType),
             ).map(v)
         } else {
             Node.LambdaParam(
@@ -713,7 +713,7 @@ open class Converter {
                 trailingComma = null,
                 rPar = null,
                 colon = null,
-                destructTypeRef = null,
+                destructType = null,
             ).map(v)
         }
     }
@@ -727,7 +727,7 @@ open class Converter {
     ).map(v)
 
     open fun convertSuper(v: KtSuperExpression) = Node.Expression.SuperExpression(
-        typeArgTypeRef = v.superTypeQualifier?.let(::convertTypeRef),
+        typeArgType = v.superTypeQualifier?.let(::convertType),
         label = v.getTargetLabel()?.let(::convertName),
     ).map(v)
 
@@ -770,7 +770,7 @@ open class Converter {
                     ?: findChildByType(v, KtTokens.NOT_IS)
                     ?: error("No when is operator for $v")
             ),
-            typeRef = convertTypeRef(v.typeReference ?: error("No when is type for $v")),
+            type = convertType(v.typeReference ?: error("No when is type for $v")),
         ).map(v)
         else -> error("Unrecognized when cond of $v")
     }
@@ -819,7 +819,7 @@ open class Converter {
                 label = null,
             ).map(v)
             "super" -> Node.Expression.SuperExpression(
-                typeArgTypeRef = null,
+                typeArgType = null,
                 label = null,
             ).map(v)
             else -> error("Unrecognized this/super expr $v")

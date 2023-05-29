@@ -106,10 +106,10 @@ open class MutableVisitor(
                         modifiers = visitChildren(modifiers, newCh),
                         funKeyword = visitChildren(funKeyword, newCh),
                         typeParams = visitChildren(typeParams, newCh),
-                        receiverTypeRef = visitChildren(receiverTypeRef, newCh),
+                        receiverType = visitChildren(receiverType, newCh),
                         name = visitChildren(name, newCh),
                         params = visitChildren(params, newCh),
-                        returnTypeRef = visitChildren(returnTypeRef, newCh),
+                        returnType = visitChildren(returnType, newCh),
                         postModifiers = visitChildren(postModifiers, newCh),
                         equals = visitChildren(equals, newCh),
                         body = visitChildren(body, newCh),
@@ -122,7 +122,7 @@ open class MutableVisitor(
                         modifiers = visitChildren(modifiers, newCh),
                         valOrVarKeyword = visitChildren(valOrVarKeyword, newCh),
                         name = visitChildren(name, newCh),
-                        typeRef = visitChildren(typeRef, newCh),
+                        type = visitChildren(type, newCh),
                         equals = visitChildren(equals, newCh),
                         defaultValue = visitChildren(defaultValue, newCh),
                     )
@@ -130,7 +130,7 @@ open class MutableVisitor(
                         modifiers = visitChildren(modifiers, newCh),
                         valOrVarKeyword = visitChildren(valOrVarKeyword, newCh),
                         typeParams = visitChildren(typeParams, newCh),
-                        receiverTypeRef = visitChildren(receiverTypeRef, newCh),
+                        receiverType = visitChildren(receiverType, newCh),
                         lPar = visitChildren(lPar, newCh),
                         variables = visitChildren(variables, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
@@ -153,7 +153,7 @@ open class MutableVisitor(
                     is Node.Declaration.PropertyDeclaration.Getter -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         getKeyword = visitChildren(getKeyword, newCh),
-                        typeRef = visitChildren(typeRef, newCh),
+                        type = visitChildren(type, newCh),
                         postModifiers = visitChildren(postModifiers, newCh),
                         equals = visitChildren(equals, newCh),
                         body = visitChildren(body, newCh),
@@ -193,7 +193,7 @@ open class MutableVisitor(
                     is Node.TypeParam -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         name = visitChildren(name, newCh),
-                        typeRef = visitChildren(typeRef, newCh)
+                        type = visitChildren(type, newCh)
                     )
                     is Node.TypeArgs -> copy(
                         elements = visitChildren(elements, newCh),
@@ -201,7 +201,7 @@ open class MutableVisitor(
                     )
                     is Node.TypeArg.TypeProjection -> copy(
                         modifiers = visitChildren(modifiers, newCh),
-                        typeRef = visitChildren(typeRef, newCh),
+                        type = visitChildren(type, newCh),
                     )
                     is Node.TypeArg.StarProjection -> copy(
                         asterisk = visitChildren(asterisk, newCh),
@@ -216,10 +216,10 @@ open class MutableVisitor(
                         lPar = visitChildren(lPar, newCh),
                         modifiers = visitChildren(modifiers, newCh),
                         contextReceivers = visitChildren(contextReceivers, newCh),
-                        receiverTypeRef = visitChildren(receiverTypeRef, newCh),
+                        receiverType = visitChildren(receiverType, newCh),
                         dotSymbol = visitChildren(dotSymbol, newCh),
                         params = visitChildren(params, newCh),
-                        returnTypeRef = visitChildren(returnTypeRef, newCh),
+                        returnType = visitChildren(returnType, newCh),
                         rPar = visitChildren(rPar, newCh),
                     )
                     is Node.Type.FunctionType.ContextReceivers -> copy(
@@ -227,7 +227,7 @@ open class MutableVisitor(
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
                     is Node.Type.FunctionType.ContextReceiver -> copy(
-                        typeRef = visitChildren(typeRef, newCh),
+                        type = visitChildren(type, newCh),
                     )
                     is Node.Type.FunctionType.FunctionTypeParams -> copy(
                         elements = visitChildren(elements, newCh),
@@ -235,7 +235,7 @@ open class MutableVisitor(
                     )
                     is Node.Type.FunctionType.FunctionTypeParam -> copy(
                         name = visitChildren(name, newCh),
-                        typeRef = visitChildren(typeRef, newCh),
+                        type = visitChildren(type, newCh),
                     )
                     is Node.Type.SimpleType -> copy(
                         modifiers = visitChildren(modifiers, newCh),
@@ -343,7 +343,7 @@ open class MutableVisitor(
                         trailingComma = visitChildren(trailingComma, newCh),
                         rPar = visitChildren(rPar, newCh),
                         colon = visitChildren(colon, newCh),
-                        destructTypeRef = visitChildren(destructTypeRef, newCh),
+                        destructType = visitChildren(destructType, newCh),
                     )
                     is Node.Expression.LambdaExpression.LambdaBody -> copy(
                         statements = visitChildren(statements, newCh)
@@ -352,7 +352,7 @@ open class MutableVisitor(
                         label = visitChildren(label, newCh),
                     )
                     is Node.Expression.SuperExpression -> copy(
-                        typeArgTypeRef = visitChildren(typeArgTypeRef, newCh),
+                        typeArgType = visitChildren(typeArgType, newCh),
                         label = visitChildren(label, newCh),
                     )
                     is Node.Expression.WhenExpression -> copy(
@@ -380,7 +380,7 @@ open class MutableVisitor(
                     )
                     is Node.Expression.WhenExpression.TypeWhenCondition -> copy(
                         operator = visitChildren(operator, newCh),
-                        typeRef = visitChildren(typeRef, newCh),
+                        type = visitChildren(type, newCh),
                     )
                     is Node.Expression.ObjectLiteralExpression -> copy(
                         declaration = visitChildren(declaration, newCh),
@@ -461,7 +461,7 @@ open class MutableVisitor(
                     is Node.PostModifier.TypeConstraintSet.TypeConstraint -> copy(
                         annotationSets = visitChildren(annotationSets, newCh),
                         name = visitChildren(name, newCh),
-                        typeRef = visitChildren(typeRef, newCh)
+                        type = visitChildren(type, newCh)
                     )
                     is Node.PostModifier.Contract -> copy(
                         contractKeyword = visitChildren(contractKeyword, newCh),

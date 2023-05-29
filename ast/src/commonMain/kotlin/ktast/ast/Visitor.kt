@@ -100,10 +100,10 @@ open class Visitor {
                 visitChildren(modifiers)
                 visitChildren(funKeyword)
                 visitChildren(typeParams)
-                visitChildren(receiverTypeRef)
+                visitChildren(receiverType)
                 visitChildren(name)
                 visitChildren(params)
-                visitChildren(returnTypeRef)
+                visitChildren(returnType)
                 visitChildren(postModifiers)
                 visitChildren(equals)
                 visitChildren(body)
@@ -112,7 +112,7 @@ open class Visitor {
                 visitChildren(modifiers)
                 visitChildren(valOrVarKeyword)
                 visitChildren(name)
-                visitChildren(typeRef)
+                visitChildren(type)
                 visitChildren(equals)
                 visitChildren(defaultValue)
             }
@@ -120,7 +120,7 @@ open class Visitor {
                 visitChildren(modifiers)
                 visitChildren(valOrVarKeyword)
                 visitChildren(typeParams)
-                visitChildren(receiverTypeRef)
+                visitChildren(receiverType)
                 visitChildren(lPar)
                 visitChildren(variables)
                 visitChildren(trailingComma)
@@ -143,7 +143,7 @@ open class Visitor {
             is Node.Declaration.PropertyDeclaration.Getter -> {
                 visitChildren(modifiers)
                 visitChildren(getKeyword)
-                visitChildren(typeRef)
+                visitChildren(type)
                 visitChildren(postModifiers)
                 visitChildren(equals)
                 visitChildren(body)
@@ -179,11 +179,11 @@ open class Visitor {
             is Node.TypeParam -> {
                 visitChildren(modifiers)
                 visitChildren(name)
-                visitChildren(typeRef)
+                visitChildren(type)
             }
             is Node.TypeArg.TypeProjection -> {
                 visitChildren(modifiers)
-                visitChildren(typeRef)
+                visitChildren(type)
             }
             is Node.TypeArg.StarProjection -> {
                 visitChildren(asterisk)
@@ -198,18 +198,18 @@ open class Visitor {
                 visitChildren(lPar)
                 visitChildren(modifiers)
                 visitChildren(contextReceivers)
-                visitChildren(receiverTypeRef)
+                visitChildren(receiverType)
                 visitChildren(dotSymbol)
                 visitChildren(params)
-                visitChildren(returnTypeRef)
+                visitChildren(returnType)
                 visitChildren(rPar)
             }
             is Node.Type.FunctionType.ContextReceiver -> {
-                visitChildren(typeRef)
+                visitChildren(type)
             }
             is Node.Type.FunctionType.FunctionTypeParam -> {
                 visitChildren(name)
-                visitChildren(typeRef)
+                visitChildren(type)
             }
             is Node.Type.SimpleType -> {
                 visitChildren(modifiers)
@@ -309,7 +309,7 @@ open class Visitor {
                 visitChildren(trailingComma)
                 visitChildren(rPar)
                 visitChildren(colon)
-                visitChildren(destructTypeRef)
+                visitChildren(destructType)
             }
             is Node.Expression.LambdaExpression.LambdaBody -> {
                 visitChildren(statements)
@@ -318,7 +318,7 @@ open class Visitor {
                 visitChildren(label)
             }
             is Node.Expression.SuperExpression -> {
-                visitChildren(typeArgTypeRef)
+                visitChildren(typeArgType)
                 visitChildren(label)
             }
             is Node.Expression.WhenExpression -> {
@@ -346,7 +346,7 @@ open class Visitor {
             }
             is Node.Expression.WhenExpression.TypeWhenCondition -> {
                 visitChildren(operator)
-                visitChildren(typeRef)
+                visitChildren(type)
             }
             is Node.Expression.ObjectLiteralExpression -> {
                 visitChildren(declaration)
@@ -421,7 +421,7 @@ open class Visitor {
             is Node.PostModifier.TypeConstraintSet.TypeConstraint -> {
                 visitChildren(annotationSets)
                 visitChildren(name)
-                visitChildren(typeRef)
+                visitChildren(type)
             }
             is Node.PostModifier.Contract -> {
                 visitChildren(contractKeyword)
