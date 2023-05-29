@@ -701,10 +701,77 @@ sealed interface Node {
      */
     sealed interface Type : Node, WithModifiers {
 
+        /**
+         * Virtual AST node corresponds to KtTypeReference having `(` and `)` as children.
+         *
+         * @property modifiers modifiers if exists, otherwise `null`.
+         * @property lPar `(` symbol.
+         * @property type inner type.
+         * @property rPar `)` symbol.
+         */
+        data class ParenthesizedType(
+            override val modifiers: Modifiers?,
+            val lPar: Keyword.LPar,
+            val type: Type,
+            val rPar: Keyword.RPar,
+            override var tag: Any? = null,
+        ) : Type
+
+        /**
+         * AST node corresponds to KtNullableType.
+         *
+         * @property lPar `(` if exists, otherwise `null`.
+         * @property modifiers modifiers if exists, otherwise `null`.
+         * @property type type.
+         * @property rPar `)` if exists, otherwise `null`.
+         */
+        data class NullableType(
+            val lPar: Keyword.LPar?,
+            override val modifiers: Modifiers?,
+            val type: Type,
+            val rPar: Keyword.RPar?,
+            override var tag: Any? = null,
+        ) : Type, WithModifiers
+
         private interface NameWithTypeArgs {
             val name: Expression.NameExpression
             val typeArgs: TypeArgs?
         }
+
+        /**
+         * AST node corresponds to KtUserType.
+         *
+         * @property qualifiers list of qualifiers.
+         * @property name name of the type.
+         * @property typeArgs type arguments if exists, otherwise `null`.
+         */
+        data class SimpleType(
+            override val modifiers: Modifiers?,
+            val qualifiers: List<SimpleTypeQualifier>,
+            override val name: Expression.NameExpression,
+            override val typeArgs: TypeArgs?,
+            override var tag: Any? = null,
+        ) : Type, NameWithTypeArgs {
+            /**
+             * AST node corresponds to KtUserType used as a qualifier.
+             *
+             * @property name name of the qualifier.
+             * @property typeArgs type arguments if exists, otherwise `null`.
+             */
+            data class SimpleTypeQualifier(
+                override val name: Expression.NameExpression,
+                override val typeArgs: TypeArgs?,
+                override var tag: Any? = null,
+            ) : Node, NameWithTypeArgs
+        }
+
+        /**
+         * AST node corresponds to KtDynamicType.
+         */
+        data class DynamicType(
+            override val modifiers: Modifiers?,
+            override var tag: Any? = null,
+        ) : Type
 
         /**
          * AST node corresponds to KtFunctionType.
@@ -770,74 +837,6 @@ sealed interface Node {
                 override var tag: Any? = null,
             ) : Node
         }
-
-        /**
-         * AST node corresponds to KtUserType.
-         *
-         * @property qualifiers list of qualifiers.
-         * @property name name of the type.
-         * @property typeArgs type arguments if exists, otherwise `null`.
-         */
-        data class SimpleType(
-            override val modifiers: Modifiers?,
-            val qualifiers: List<SimpleTypeQualifier>,
-            override val name: Expression.NameExpression,
-            override val typeArgs: TypeArgs?,
-            override var tag: Any? = null,
-        ) : Type, NameWithTypeArgs {
-            /**
-             * AST node corresponds to KtUserType used as a qualifier.
-             *
-             * @property name name of the qualifier.
-             * @property typeArgs type arguments if exists, otherwise `null`.
-             */
-            data class SimpleTypeQualifier(
-                override val name: Expression.NameExpression,
-                override val typeArgs: TypeArgs?,
-                override var tag: Any? = null,
-            ) : Node, NameWithTypeArgs
-        }
-
-        /**
-         * AST node corresponds to KtNullableType.
-         *
-         * @property lPar `(` if exists, otherwise `null`.
-         * @property modifiers modifiers if exists, otherwise `null`.
-         * @property type type.
-         * @property rPar `)` if exists, otherwise `null`.
-         */
-        data class NullableType(
-            val lPar: Keyword.LPar?,
-            override val modifiers: Modifiers?,
-            val type: Type,
-            val rPar: Keyword.RPar?,
-            override var tag: Any? = null,
-        ) : Type, WithModifiers
-
-        /**
-         * Virtual AST node corresponds to KtTypeReference having `(` and `)` as children.
-         *
-         * @property modifiers modifiers if exists, otherwise `null`.
-         * @property lPar `(` symbol.
-         * @property type inner type.
-         * @property rPar `)` symbol.
-         */
-        data class ParenthesizedType(
-            override val modifiers: Modifiers?,
-            val lPar: Keyword.LPar,
-            val type: Type,
-            val rPar: Keyword.RPar,
-            override var tag: Any? = null,
-        ) : Type
-
-        /**
-         * AST node corresponds to KtDynamicType.
-         */
-        data class DynamicType(
-            override val modifiers: Modifiers?,
-            override var tag: Any? = null,
-        ) : Type
-
     }
 
     /**
