@@ -702,7 +702,7 @@ sealed interface Node {
     sealed interface Type : Node, WithModifiers {
 
         /**
-         * Virtual AST node corresponds to KtTypeReference having `(` and `)` as children.
+         * Virtual AST node corresponds to KtTypeReference or KtNullableType having `(` and `)` as children.
          *
          * @property modifiers modifiers if exists, otherwise `null`.
          * @property lPar `(` symbol.
