@@ -330,51 +330,6 @@ open class Converter {
         }
     }
 
-    open fun convertTypeRef(v: KtTypeReference): Node.TypeRef {
-        var lPar: PsiElement? = null
-        var rPar: PsiElement? = null
-        var allChildren = v.allChildren.toList()
-        if (v.firstChild.node.elementType == KtTokens.LPAR && v.lastChild.node.elementType == KtTokens.RPAR) {
-            lPar = v.firstChild
-            rPar = v.lastChild
-            allChildren = allChildren.subList(1, allChildren.size - 1)
-        }
-        var innerLPar: PsiElement? = null
-        var innerRPar: PsiElement? = null
-        var modifierList: KtModifierList? = null
-        var innerModifierList: KtModifierList? = null
-        allChildren.forEach {
-            when (it) {
-                is KtModifierList -> {
-                    if (innerLPar == null) {
-                        modifierList = it
-                    } else {
-                        innerModifierList = it
-                    }
-                }
-                else -> {
-                    when (it.node.elementType) {
-                        KtTokens.LPAR -> innerLPar = it
-                        KtTokens.RPAR -> innerRPar = it
-                        else -> {}
-                    }
-                }
-            }
-        }
-
-        return Node.TypeRef(
-            lPar = lPar?.let(::convertKeyword),
-            modifiers = modifierList?.let { convertModifiers(it) },
-            type = convertType(
-                v.typeElement ?: error("No type element for $v"),
-                innerLPar,
-                innerModifierList,
-                innerRPar
-            ),
-            rPar = rPar?.let(::convertKeyword),
-        ).map(v)
-    }
-
     open fun convertTypeConstraints(v: KtTypeConstraintList) = Node.PostModifier.TypeConstraintSet.TypeConstraints(
         elements = v.constraints.map(::convertTypeConstraint),
     ).map(v)
@@ -390,38 +345,6 @@ open class Converter {
         name = v.subjectTypeParameterName?.let { convertName(it) } ?: error("No type constraint name for $v"),
         type = convertType(v.boundTypeReference ?: error("No type constraint type for $v"))
     ).map(v)
-
-    open fun convertType(
-        v: KtTypeElement,
-        lPar: PsiElement? = null,
-        modifierList: KtModifierList? = null,
-        rPar: PsiElement? = null,
-    ): Node.Type = when (v) {
-        is KtFunctionType -> Node.Type.FunctionType(
-            modifiers = modifierList?.let(::convertModifiers),
-            contextReceivers = v.contextReceiverList?.let { convertContextReceivers(it) },
-            receiverType = v.receiver?.typeReference?.let(::convertType),
-            dotSymbol = findChildByType(v, KtTokens.DOT)?.let(::convertKeyword),
-            params = v.parameterList?.let(::convertTypeFunctionParams),
-            returnType = convertType(v.returnTypeReference ?: error("No return type")),
-        ).map(v)
-        is KtUserType -> Node.Type.SimpleType(
-            modifiers = modifierList?.let(::convertModifiers),
-            qualifiers = generateSequence(v.qualifier) { it.qualifier }.toList().reversed()
-                .map(::convertTypeSimpleQualifier),
-            name = convertName(v.referenceExpression ?: error("No type name for $v")),
-            typeArgs = v.typeArgumentList?.let(::convertTypeArgs),
-        ).map(v)
-        is KtNullableType -> Node.Type.NullableType(
-            modifiers = v.modifierList?.let(::convertModifiers),
-            type = convertType(v.innerType ?: error("No inner type for nullable")),
-            questionMark = convertKeyword(v.questionMarkNode.psi),
-        ).map(v)
-        is KtDynamicType -> Node.Type.DynamicType(
-            modifiers = modifierList?.let(::convertModifiers),
-        ).map(v)
-        else -> error("Unrecognized type of $v")
-    }
 
     open fun convertType(v: KtTypeReference): Node.Type {
         return convertType(v, v.nonExtraChildren(), mapTarget = v)
@@ -1007,11 +930,6 @@ open class Converter {
 
         internal val KtEnumEntry.comma: PsiElement?
             get() = findChildByType(this, KtTokens.COMMA)
-
-        internal val KtNullableType.leftParenthesis: PsiElement?
-            get() = findChildByType(this, KtTokens.LPAR)
-        internal val KtNullableType.rightParenthesis: PsiElement?
-            get() = findChildByType(this, KtTokens.RPAR)
 
         internal val KtContainerNode.expression: KtExpression
             get() = findChildByClass<KtExpression>(this) ?: error("No expression for $this")
