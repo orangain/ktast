@@ -126,18 +126,18 @@ open class Converter {
 
     open fun convertParent(v: KtSuperTypeListEntry) = when (v) {
         is KtSuperTypeCallEntry -> Node.Declaration.ClassDeclaration.ConstructorClassParent(
-            type = v.typeReference?.typeElement?.let(::convertType) as? Node.Type.SimpleType
+            type = v.typeReference?.let(::convertType) as? Node.Type.SimpleType
                 ?: error("Bad type on super call $v"),
             args = v.valueArgumentList?.let(::convertValueArgs) ?: error("No value arguments for $v"),
         ).map(v)
         is KtDelegatedSuperTypeEntry -> Node.Declaration.ClassDeclaration.DelegationClassParent(
-            type = v.typeReference?.typeElement?.let(::convertType)
+            type = v.typeReference?.let(::convertType)
                 ?: error("No type on delegated super type $v"),
             byKeyword = convertKeyword(v.byKeywordNode.psi),
             expression = convertExpression(v.delegateExpression ?: error("Missing delegateExpression for $v")),
         ).map(v)
         is KtSuperTypeEntry -> Node.Declaration.ClassDeclaration.TypeClassParent(
-            type = v.typeReference?.typeElement?.let(::convertType)
+            type = v.typeReference?.let(::convertType)
                 ?: error("No type on super type $v"),
         ).map(v)
         else -> error("Unknown super type entry $v")
@@ -927,8 +927,7 @@ open class Converter {
 
     open fun convertAnnotationWithoutMapping(v: KtAnnotationEntry) = Node.Modifier.AnnotationSet.Annotation(
         type = convertType(
-            v.calleeExpression?.typeReference?.typeElement
-                ?: error("No callee expression, type reference or type element for $v")
+            v.calleeExpression?.typeReference ?: error("No callee expression, type reference or type element for $v")
         ) as? Node.Type.SimpleType ?: error("calleeExpression is not simple type"),
         args = v.valueArgumentList?.let(::convertValueArgs),
     )
