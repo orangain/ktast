@@ -398,14 +398,12 @@ open class Converter {
         rPar: PsiElement? = null,
     ): Node.Type = when (v) {
         is KtFunctionType -> Node.Type.FunctionType(
-            lPar = lPar?.let(::convertKeyword),
             modifiers = modifierList?.let(::convertModifiers),
             contextReceivers = v.contextReceiverList?.let { convertContextReceivers(it) },
             receiverType = v.receiver?.typeReference?.let(::convertType),
             dotSymbol = findChildByType(v, KtTokens.DOT)?.let(::convertKeyword),
             params = v.parameterList?.let(::convertTypeFunctionParams),
             returnType = convertType(v.returnTypeReference ?: error("No return type")),
-            rPar = rPar?.let(::convertKeyword),
         ).map(v)
         is KtUserType -> Node.Type.SimpleType(
             modifiers = modifierList?.let(::convertModifiers),
@@ -415,10 +413,8 @@ open class Converter {
             typeArgs = v.typeArgumentList?.let(::convertTypeArgs),
         ).map(v)
         is KtNullableType -> Node.Type.NullableType(
-            lPar = v.leftParenthesis?.let(::convertKeyword),
             modifiers = v.modifierList?.let(::convertModifiers),
             type = convertType(v.innerType ?: error("No inner type for nullable")),
-            rPar = v.rightParenthesis?.let(::convertKeyword),
             questionMark = convertKeyword(v.questionMarkNode.psi),
         ).map(v)
         is KtDynamicType -> Node.Type.DynamicType(
@@ -453,14 +449,12 @@ open class Converter {
         val modifiers = modifierList?.let(::convertModifiers)
         return when (val typeEl = restChildren.first()) {
             is KtFunctionType -> Node.Type.FunctionType(
-                lPar = null,
                 modifiers = modifiers,
                 contextReceivers = typeEl.contextReceiverList?.let { convertContextReceivers(it) },
                 receiverType = typeEl.receiver?.typeReference?.let(::convertType),
                 dotSymbol = findChildByType(typeEl, KtTokens.DOT)?.let(::convertKeyword),
                 params = typeEl.parameterList?.let(::convertTypeFunctionParams),
                 returnType = convertType(typeEl.returnTypeReference ?: error("No return type for $typeEl")),
-                rPar = null,
             ).map(mapTarget ?: typeEl)
             is KtUserType -> Node.Type.SimpleType(
                 modifiers = modifiers,
@@ -470,10 +464,8 @@ open class Converter {
                 typeArgs = typeEl.typeArgumentList?.let(::convertTypeArgs),
             ).map(mapTarget ?: typeEl)
             is KtNullableType -> Node.Type.NullableType(
-                lPar = null,
                 modifiers = modifiers,
                 type = convertType(typeEl, typeEl.nonExtraChildren(), null),
-                rPar = null,
                 questionMark = convertKeyword(
                     findChildByType(typeEl, KtTokens.QUEST) ?: error("No question mark for $typeEl")
                 ),

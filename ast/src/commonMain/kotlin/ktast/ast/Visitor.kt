@@ -195,14 +195,12 @@ open class Visitor {
                 visitChildren(rPar)
             }
             is Node.Type.FunctionType -> {
-                visitChildren(lPar)
                 visitChildren(modifiers)
                 visitChildren(contextReceivers)
                 visitChildren(receiverType)
                 visitChildren(dotSymbol)
                 visitChildren(params)
                 visitChildren(returnType)
-                visitChildren(rPar)
             }
             is Node.Type.FunctionType.ContextReceiver -> {
                 visitChildren(type)
@@ -222,10 +220,8 @@ open class Visitor {
                 visitChildren(typeArgs)
             }
             is Node.Type.NullableType -> {
-                visitChildren(lPar)
                 visitChildren(modifiers)
                 visitChildren(type)
-                visitChildren(rPar)
                 visitChildren(questionMark)
             }
             is Node.Type.ParenthesizedType -> {

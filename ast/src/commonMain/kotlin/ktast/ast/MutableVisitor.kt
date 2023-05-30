@@ -213,14 +213,12 @@ open class MutableVisitor(
                         rPar = visitChildren(rPar, newCh),
                     )
                     is Node.Type.FunctionType -> copy(
-                        lPar = visitChildren(lPar, newCh),
                         modifiers = visitChildren(modifiers, newCh),
                         contextReceivers = visitChildren(contextReceivers, newCh),
                         receiverType = visitChildren(receiverType, newCh),
                         dotSymbol = visitChildren(dotSymbol, newCh),
                         params = visitChildren(params, newCh),
                         returnType = visitChildren(returnType, newCh),
-                        rPar = visitChildren(rPar, newCh),
                     )
                     is Node.Type.FunctionType.ContextReceivers -> copy(
                         elements = visitChildren(elements, newCh),
@@ -248,10 +246,8 @@ open class MutableVisitor(
                         typeArgs = visitChildren(typeArgs, newCh),
                     )
                     is Node.Type.NullableType -> copy(
-                        lPar = visitChildren(lPar, newCh),
                         modifiers = visitChildren(modifiers, newCh),
                         type = visitChildren(type, newCh),
-                        rPar = visitChildren(rPar, newCh),
                         questionMark = visitChildren(questionMark, newCh),
                     )
                     is Node.Type.ParenthesizedType -> copy(

@@ -253,7 +253,6 @@ open class Writer(
                     children(rPar)
                 }
                 is Node.Type.FunctionType -> {
-                    children(lPar)
                     children(modifiers)
                     if (contextReceivers != null) {
                         append("context")
@@ -265,7 +264,6 @@ open class Writer(
                         children(params).append("->")
                     }
                     children(returnType)
-                    children(rPar)
                 }
                 is Node.Type.FunctionType.ContextReceiver -> {
                     children(type)
@@ -288,10 +286,8 @@ open class Writer(
                     children(typeArgs)
                 }
                 is Node.Type.NullableType -> {
-                    children(lPar)
                     children(modifiers)
                     children(type)
-                    children(rPar)
                     children(questionMark)
                 }
                 is Node.Type.ParenthesizedType -> {

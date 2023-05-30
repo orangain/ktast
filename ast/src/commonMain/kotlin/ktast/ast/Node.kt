@@ -720,17 +720,13 @@ sealed interface Node {
         /**
          * AST node corresponds to KtNullableType.
          *
-         * @property lPar `(` if exists, otherwise `null`.
          * @property modifiers modifiers if exists, otherwise `null`.
          * @property type type.
-         * @property rPar `)` if exists, otherwise `null`.
          * @property questionMark `?` symbol.
          */
         data class NullableType(
-            val lPar: Keyword.LPar?,
             override val modifiers: Modifiers?,
             val type: Type,
-            val rPar: Keyword.RPar?,
             val questionMark: Keyword.Question,
             override var tag: Any? = null,
         ) : Type
@@ -743,6 +739,7 @@ sealed interface Node {
         /**
          * AST node corresponds to KtUserType.
          *
+         * @property modifiers modifiers if exists, otherwise `null`.
          * @property qualifiers list of qualifiers.
          * @property name name of the type.
          * @property typeArgs type arguments if exists, otherwise `null`.
@@ -769,6 +766,8 @@ sealed interface Node {
 
         /**
          * AST node corresponds to KtDynamicType.
+         *
+         * @property modifiers modifiers if exists, otherwise `null`.
          */
         data class DynamicType(
             override val modifiers: Modifiers?,
@@ -777,26 +776,21 @@ sealed interface Node {
 
         /**
          * AST node corresponds to KtFunctionType.
-         * Note that properties [lPar], [modifiers] and [rPar] correspond to those of parent KtTypeReference.
          *
-         * @property lPar `(` if exists, otherwise `null`.
          * @property modifiers modifiers if exists, otherwise `null`.
          * @property contextReceivers context receivers if exists, otherwise `null`.
          * @property receiverType receiver type if exists, otherwise `null`.
          * @property dotSymbol `.` if exists, otherwise `null`.
          * @property params parameters of the function type if exists, otherwise `null`.
          * @property returnType return type of the function type.
-         * @property rPar `)` if exists, otherwise `null`.
          */
         data class FunctionType(
-            val lPar: Keyword.LPar?,
             override val modifiers: Modifiers?,
             val contextReceivers: ContextReceivers?,
             val receiverType: Type?,
             val dotSymbol: Keyword.Dot?,
             val params: FunctionTypeParams?,
             val returnType: Type,
-            val rPar: Keyword.RPar?,
             override var tag: Any? = null,
         ) : Type {
             /**
