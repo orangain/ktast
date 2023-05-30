@@ -292,7 +292,7 @@ open class Writer(
                     children(modifiers)
                     children(type)
                     children(rPar)
-                    append('?')
+                    children(questionMark)
                 }
                 is Node.Type.ParenthesizedType -> {
                     children(modifiers)

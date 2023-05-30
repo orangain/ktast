@@ -419,6 +419,7 @@ open class Converter {
             modifiers = v.modifierList?.let(::convertModifiers),
             type = convertType(v.innerType ?: error("No inner type for nullable")),
             rPar = v.rightParenthesis?.let(::convertKeyword),
+            questionMark = convertKeyword(v.questionMarkNode.psi),
         ).map(v)
         is KtDynamicType -> Node.Type.DynamicType(
             modifiers = modifierList?.let(::convertModifiers),
@@ -460,23 +461,26 @@ open class Converter {
                 params = typeEl.parameterList?.let(::convertTypeFunctionParams),
                 returnType = convertType(typeEl.returnTypeReference ?: error("No return type for $typeEl")),
                 rPar = null,
-            ).mapIfPossible(mapTarget)
+            ).map(mapTarget ?: typeEl)
             is KtUserType -> Node.Type.SimpleType(
                 modifiers = modifiers,
                 qualifiers = generateSequence(typeEl.qualifier) { it.qualifier }.toList().reversed()
                     .map(::convertTypeSimpleQualifier),
                 name = convertName(typeEl.referenceExpression ?: error("No type name for $typeEl")),
                 typeArgs = typeEl.typeArgumentList?.let(::convertTypeArgs),
-            ).mapIfPossible(mapTarget)
+            ).map(mapTarget ?: typeEl)
             is KtNullableType -> Node.Type.NullableType(
                 lPar = null,
                 modifiers = modifiers,
-                type = convertType(typeEl, typeEl.nonExtraChildren(), typeEl),
+                type = convertType(typeEl, typeEl.nonExtraChildren(), null),
                 rPar = null,
-            ).mapIfPossible(mapTarget)
+                questionMark = convertKeyword(
+                    findChildByType(typeEl, KtTokens.QUEST) ?: error("No question mark for $typeEl")
+                ),
+            ).map(mapTarget ?: typeEl)
             is KtDynamicType -> Node.Type.DynamicType(
                 modifiers = modifiers,
-            ).mapIfPossible(mapTarget)
+            ).map(mapTarget ?: typeEl)
             else -> error("Unrecognized type of $typeEl")
         }
     }

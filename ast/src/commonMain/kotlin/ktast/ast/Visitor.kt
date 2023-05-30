@@ -226,6 +226,7 @@ open class Visitor {
                 visitChildren(modifiers)
                 visitChildren(type)
                 visitChildren(rPar)
+                visitChildren(questionMark)
             }
             is Node.Type.ParenthesizedType -> {
                 visitChildren(modifiers)

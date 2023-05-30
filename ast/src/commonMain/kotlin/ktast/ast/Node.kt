@@ -724,12 +724,14 @@ sealed interface Node {
          * @property modifiers modifiers if exists, otherwise `null`.
          * @property type type.
          * @property rPar `)` if exists, otherwise `null`.
+         * @property questionMark `?` symbol.
          */
         data class NullableType(
             val lPar: Keyword.LPar?,
             override val modifiers: Modifiers?,
             val type: Type,
             val rPar: Keyword.RPar?,
+            val questionMark: Keyword.Question,
             override var tag: Any? = null,
         ) : Type
 

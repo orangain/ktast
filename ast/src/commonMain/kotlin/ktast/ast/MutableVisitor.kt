@@ -252,6 +252,7 @@ open class MutableVisitor(
                         modifiers = visitChildren(modifiers, newCh),
                         type = visitChildren(type, newCh),
                         rPar = visitChildren(rPar, newCh),
+                        questionMark = visitChildren(questionMark, newCh),
                     )
                     is Node.Type.ParenthesizedType -> copy(
                         modifiers = visitChildren(modifiers, newCh),
