@@ -141,10 +141,10 @@ open class Writer(
                     children(modifiers)
                     children(funKeyword)
                     children(typeParams)
-                    if (receiverTypeRef != null) children(receiverTypeRef).append(".")
+                    if (receiverType != null) children(receiverType).append(".")
                     name?.also { children(it) }
                     children(params)
-                    if (returnTypeRef != null) append(":").also { children(returnTypeRef) }
+                    if (returnType != null) append(":").also { children(returnType) }
                     children(postModifiers)
                     children(equals)
                     children(body)
@@ -153,7 +153,7 @@ open class Writer(
                     children(modifiers)
                     children(valOrVarKeyword)
                     children(name)
-                    if (typeRef != null) append(":").also { children(typeRef) }
+                    if (type != null) append(":").also { children(type) }
                     children(equals)
                     children(defaultValue)
                 }
@@ -161,7 +161,7 @@ open class Writer(
                     children(modifiers)
                     children(valOrVarKeyword)
                     children(typeParams)
-                    if (receiverTypeRef != null) children(receiverTypeRef).append('.')
+                    if (receiverType != null) children(receiverType).append('.')
                     children(lPar)
                     children(variables, ",")
                     children(trailingComma)
@@ -179,14 +179,14 @@ open class Writer(
                 is Node.Variable -> {
                     children(modifiers)
                     children(name)
-                    if (typeRef != null) append(":").also { children(typeRef) }
+                    if (type != null) append(":").also { children(type) }
                 }
                 is Node.Declaration.PropertyDeclaration.Getter -> {
                     children(modifiers)
                     children(getKeyword)
                     if (body != null) {
                         append("()")
-                        if (typeRef != null) append(":").also { children(typeRef) }
+                        if (type != null) append(":").also { children(type) }
                         children(postModifiers)
                         children(equals)
                         children(body)
@@ -208,8 +208,9 @@ open class Writer(
                     children(modifiers)
                     append("typealias")
                     children(name)
-                    children(typeParams).append("=")
-                    children(typeRef)
+                    children(typeParams)
+                    children(equals)
+                    children(type)
                 }
                 is Node.Declaration.ClassDeclaration.ClassBody.SecondaryConstructor -> {
                     children(modifiers)
@@ -236,44 +237,37 @@ open class Writer(
                 is Node.TypeParam -> {
                     children(modifiers)
                     children(name)
-                    if (typeRef != null) append(":").also { children(typeRef) }
+                    if (type != null) append(":").also { children(type) }
                 }
                 is Node.TypeArg.TypeProjection -> {
                     children(modifiers)
-                    children(typeRef)
+                    children(type)
                 }
                 is Node.TypeArg.StarProjection -> {
                     children(asterisk)
                 }
-                is Node.TypeRef -> {
-                    children(lPar)
-                    children(modifiers)
-                    children(type)
-                    children(rPar)
-                }
                 is Node.Type.FunctionType -> {
-                    children(lPar)
                     children(modifiers)
                     if (contextReceivers != null) {
                         append("context")
                         children(contextReceivers)
                     }
-                    children(receiverTypeRef)
+                    children(receiverType)
                     children(dotSymbol)
                     if (params != null) {
                         children(params).append("->")
                     }
-                    children(returnTypeRef)
-                    children(rPar)
+                    children(returnType)
                 }
                 is Node.Type.FunctionType.ContextReceiver -> {
-                    children(typeRef)
+                    children(type)
                 }
                 is Node.Type.FunctionType.FunctionTypeParam -> {
                     if (name != null) children(name).append(":")
-                    children(typeRef)
+                    children(type)
                 }
                 is Node.Type.SimpleType -> {
+                    children(modifiers)
                     if (qualifiers.isNotEmpty()) {
                         children(qualifiers, ".")
                         append(".")
@@ -286,14 +280,20 @@ open class Writer(
                     children(typeArgs)
                 }
                 is Node.Type.NullableType -> {
-                    children(lPar)
                     children(modifiers)
                     children(type)
-                    children(rPar)
-                    append('?')
+                    children(questionMark)
                 }
-                is Node.Type.DynamicType ->
+                is Node.Type.ParenthesizedType -> {
+                    children(modifiers)
+                    children(lPar)
+                    children(type)
+                    children(rPar)
+                }
+                is Node.Type.DynamicType -> {
+                    children(modifiers)
                     append("dynamic")
+                }
                 is Node.ValueArg -> {
                     if (name != null) children(name).append("=")
                     children(asterisk)
@@ -379,7 +379,7 @@ open class Writer(
                     children(trailingComma)
                     children(rPar)
                     children(colon)
-                    children(destructTypeRef)
+                    children(destructType)
                 }
                 is Node.Expression.LambdaExpression.LambdaBody -> {
                     children(statements)
@@ -390,7 +390,7 @@ open class Writer(
                 }
                 is Node.Expression.SuperExpression -> {
                     append("super")
-                    if (typeArgTypeRef != null) append('<').also { children(typeArgTypeRef) }.append('>')
+                    if (typeArgType != null) append('<').also { children(typeArgType) }.append('>')
                     appendLabel(label)
                 }
                 is Node.Expression.WhenExpression -> {
@@ -416,7 +416,7 @@ open class Writer(
                 }
                 is Node.Expression.WhenExpression.TypeWhenCondition -> {
                     children(operator)
-                    children(typeRef)
+                    children(type)
                 }
                 is Node.Expression.ObjectLiteralExpression -> {
                     children(declaration)
@@ -498,7 +498,7 @@ open class Writer(
                     children(annotationSets)
                     children(name)
                     append(":")
-                    children(typeRef)
+                    children(type)
                 }
                 is Node.PostModifier.Contract -> {
                     children(contractKeyword)
