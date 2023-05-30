@@ -246,12 +246,6 @@ open class Writer(
                 is Node.TypeArg.StarProjection -> {
                     children(asterisk)
                 }
-                is Node.TypeRef -> {
-                    children(lPar)
-                    children(modifiers)
-                    children(type)
-                    children(rPar)
-                }
                 is Node.Type.FunctionType -> {
                     children(modifiers)
                     if (contextReceivers != null) {

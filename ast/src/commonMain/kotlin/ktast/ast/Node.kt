@@ -887,22 +887,6 @@ sealed interface Node {
     }
 
     /**
-     * AST node corresponds to KtTypeReference.
-     *
-     * @property lPar `(` if exists, otherwise `null`.
-     * @property modifiers modifiers if exists, otherwise `null`.
-     * @property type type.
-     * @property rPar `)` if exists, otherwise `null`.
-     */
-    data class TypeRef(
-        val lPar: Keyword.LPar?,
-        override val modifiers: Modifiers?,
-        val type: Type,
-        val rPar: Keyword.RPar?,
-        override var tag: Any? = null,
-    ) : Node, WithModifiers
-
-    /**
      * AST node corresponds to KtValueArgumentList or KtInitializerList.
      */
     data class ValueArgs(

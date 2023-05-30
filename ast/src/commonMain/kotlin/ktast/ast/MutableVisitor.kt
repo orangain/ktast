@@ -206,12 +206,6 @@ open class MutableVisitor(
                     is Node.TypeArg.StarProjection -> copy(
                         asterisk = visitChildren(asterisk, newCh),
                     )
-                    is Node.TypeRef -> copy(
-                        lPar = visitChildren(lPar, newCh),
-                        modifiers = visitChildren(modifiers, newCh),
-                        type = visitChildren(type, newCh),
-                        rPar = visitChildren(rPar, newCh),
-                    )
                     is Node.Type.FunctionType -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         contextReceivers = visitChildren(contextReceivers, newCh),

@@ -188,12 +188,6 @@ open class Visitor {
             is Node.TypeArg.StarProjection -> {
                 visitChildren(asterisk)
             }
-            is Node.TypeRef -> {
-                visitChildren(lPar)
-                visitChildren(modifiers)
-                visitChildren(type)
-                visitChildren(rPar)
-            }
             is Node.Type.FunctionType -> {
                 visitChildren(modifiers)
                 visitChildren(contextReceivers)
