@@ -18,7 +18,7 @@ open class Converter {
     open fun convertKotlinFile(v: KtFile) = Node.KotlinFile(
         annotationSets = convertAnnotationSets(v),
         packageDirective = v.packageDirective?.takeIf { it.packageNames.isNotEmpty() }?.let(::convertPackageDirective),
-        importDirectives = v.importList?.let(::convertImportDirectives),
+        importDirectives = v.importList?.imports?.map(::convertImportDirective) ?: listOf(),
         declarations = v.declarations.map(::convertDeclaration)
     ).map(v)
 
@@ -27,13 +27,6 @@ open class Converter {
         modifiers = v.modifierList?.let(::convertModifiers),
         names = v.packageNames.map(::convertName),
     ).map(v)
-
-    open fun convertImportDirectives(v: KtImportList): Node.ImportDirectives? = if (v.imports.isEmpty())
-        null // Explicitly returns null here. This is because, unlike other PsiElements, KtImportList does exist even when there is no import statement.
-    else
-        Node.ImportDirectives(
-            elements = v.imports.map(::convertImportDirective),
-        ).map(v)
 
     open fun convertImportDirective(v: KtImportDirective) = Node.ImportDirective(
         importKeyword = convertKeyword(v.importKeyword),

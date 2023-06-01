@@ -70,7 +70,7 @@ open class Writer(
                 is Node.KotlinFile -> {
                     children(annotationSets, skipWritingExtrasWithin = true)
                     children(packageDirective)
-                    children(importDirectives)
+                    children(importDirectives, skipWritingExtrasWithin = true)
                     children(declarations)
                 }
                 is Node.PackageDirective -> {

@@ -61,11 +61,11 @@ sealed interface Node {
      * Common interface for AST nodes that have package directives and import directives.
      *
      * @property packageDirective package directive if exists, otherwise `null`.
-     * @property importDirectives import directives if exist, otherwise `null`.
+     * @property importDirectives list of import directives.
      */
     interface KotlinEntry : WithAnnotationSets {
         val packageDirective: PackageDirective?
-        val importDirectives: ImportDirectives?
+        val importDirectives: List<ImportDirective>
     }
 
     /**
@@ -135,13 +135,13 @@ sealed interface Node {
      *
      * @property annotationSets list of annotation sets.
      * @property packageDirective package directive if exists, otherwise `null`.
-     * @property importDirectives import directives if exist, otherwise `null`.
+     * @property importDirectives list of import directives.
      * @property declarations list of declarations.
      */
     data class KotlinFile(
         override val annotationSets: List<Modifier.AnnotationSet>,
         override val packageDirective: PackageDirective?,
-        override val importDirectives: ImportDirectives?,
+        override val importDirectives: List<ImportDirective>,
         override val declarations: List<Declaration>,
         override var tag: Any? = null,
     ) : Node, KotlinEntry, DeclarationsContainer
@@ -149,13 +149,13 @@ sealed interface Node {
     /**
      * @property annotationSets list of annotation sets.
      * @property packageDirective package directive if exists, otherwise `null`.
-     * @property importDirectives import directives if exist, otherwise `null`.
+     * @property importDirectives list of import directives.
      * @property expressions list of expressions.
      */
     data class KotlinScript(
         override val annotationSets: List<Modifier.AnnotationSet>,
         override val packageDirective: PackageDirective?,
-        override val importDirectives: ImportDirectives?,
+        override val importDirectives: List<ImportDirective>,
         val expressions: List<Expression>,
         override var tag: Any? = null,
     ) : Node, KotlinEntry
@@ -173,14 +173,6 @@ sealed interface Node {
         val names: List<Expression.NameExpression>,
         override var tag: Any? = null,
     ) : Node, WithModifiers
-
-    /**
-     * AST node corresponds to KtImportList.
-     */
-    data class ImportDirectives(
-        override val elements: List<ImportDirective>,
-        override var tag: Any? = null,
-    ) : NodeList<ImportDirective>()
 
     /**
      * AST node corresponds to KtImportDirective.

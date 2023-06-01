@@ -29,9 +29,6 @@ open class MutableVisitor(
                         packageKeyword = visitChildren(packageKeyword, newCh),
                         names = visitChildren(names, newCh),
                     )
-                    is Node.ImportDirectives -> copy(
-                        elements = visitChildren(elements, newCh),
-                    )
                     is Node.ImportDirective -> copy(
                         importKeyword = visitChildren(importKeyword, newCh),
                         names = visitChildren(names, newCh),
