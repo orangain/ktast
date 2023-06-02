@@ -63,7 +63,7 @@ sealed interface Node {
      * @property packageDirective package directive if exists, otherwise `null`.
      * @property importDirectives list of import directives.
      */
-    interface KotlinEntry : WithAnnotationSets {
+    sealed interface KotlinEntry : Node, WithAnnotationSets {
         val packageDirective: PackageDirective?
         val importDirectives: List<ImportDirective>
     }
