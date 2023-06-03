@@ -74,12 +74,17 @@ class Dumper(
                 is Node.Expression.StringLiteralExpression.TemplateStringEntry -> mapOf("short" to short)
                 is Node.SimpleTextNode -> mapOf("text" to text)
                 else -> null
-            }?.let {
-                app.append(it.toString())
+            }?.let { m ->
+                app.append("{" + m.map { "${it.key}=\"${toEscapedString(it.value.toString())}\"" }
+                    .joinToString(", ") + "}")
             }
         }
         app.appendLine()
     }
+}
+
+private fun toEscapedString(s: String): String {
+    return s.map { it.toEscapedString() }.joinToString("")
 }
 
 private fun Char.toEscapedString(): String {
@@ -88,6 +93,7 @@ private fun Char.toEscapedString(): String {
         '\n' -> "\\n"
         '\r' -> "\\r"
         '\t' -> "\\t"
+        '"' -> "\\\""
         else -> this.toString()
     }
 }
