@@ -1271,10 +1271,10 @@ sealed interface Node {
 
             /**
              * AST node corresponds to KtBlockExpression in lambda body.
-             * In lambda expression, left and right braces are not included in [LambdaExpression.LambdaBody], but are included in Lambda.
+             * In lambda expression, left and right braces are not included in [LambdaBody], but are included in [LambdaExpression].
              * This means:
              *
-             * <Lambda> = { <Param>, <Param> -> <Body> }
+             * [LambdaExpression] = { [LambdaParam], [LambdaParam] -> [LambdaBody] }
              *
              * @property statements list of statements in the block.
              */
