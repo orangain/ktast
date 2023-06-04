@@ -501,7 +501,7 @@ open class Writer(
                 }
                 is Node.PostModifier.Contract -> {
                     children(contractKeyword)
-                    children(contractEffects)
+                    commaSeparatedChildren(lBracket, contractEffects, rBracket)
                 }
                 is Node.Keyword -> {
                     append(text)

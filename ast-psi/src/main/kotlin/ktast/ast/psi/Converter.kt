@@ -929,7 +929,9 @@ open class Converter {
                 ).mapNotCorrespondsPsiElement(v)
                 is KtContractEffectList -> Node.PostModifier.Contract(
                     contractKeyword = convertKeyword(prevPsi),
+                    lBracket = convertKeyword(psi.leftBracket),
                     contractEffects = convertContractEffects(psi),
+                    rBracket = convertKeyword(psi.rightBracket),
                 ).mapNotCorrespondsPsiElement(v)
                 else -> null
             }.also { prevPsi = psi }
@@ -1035,6 +1037,10 @@ open class Converter {
             get() = findChildByType(this, KtTokens.LPAR) ?: error("No left parenthesis for $this")
         internal val KtContextReceiverList.rightParenthesis: PsiElement
             get() = findChildByType(this, KtTokens.RPAR) ?: error("No right parenthesis for $this")
+        internal val KtContractEffectList.leftBracket: PsiElement
+            get() = findChildByType(this, KtTokens.LBRACKET) ?: error("No left bracket for $this")
+        internal val KtContractEffectList.rightBracket: PsiElement
+            get() = findChildByType(this, KtTokens.RBRACKET) ?: error("No right bracket for $this")
 
         private fun findChildByType(v: KtElement, type: IElementType): PsiElement? =
             v.node.findChildByType(type)?.psi

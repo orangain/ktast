@@ -1800,7 +1800,9 @@ sealed interface Node {
          */
         data class Contract(
             val contractKeyword: Keyword.Contract,
+            val lBracket: Keyword.LBracket,
             val contractEffects: ContractEffects,
+            val rBracket: Keyword.RBracket,
             override var tag: Any? = null,
         ) : PostModifier {
             /**

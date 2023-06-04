@@ -481,7 +481,9 @@ open class MutableVisitor(
                     )
                     is Node.PostModifier.Contract -> copy(
                         contractKeyword = visitChildren(contractKeyword, newCh),
+                        lBracket = visitChildren(lBracket, newCh),
                         contractEffects = visitChildren(contractEffects, newCh),
+                        rBracket = visitChildren(rBracket, newCh),
                     )
                     is Node.PostModifier.Contract.ContractEffects -> copy(
                         elements = visitChildren(elements, newCh),

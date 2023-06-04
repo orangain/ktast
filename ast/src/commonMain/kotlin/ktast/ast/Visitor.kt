@@ -442,7 +442,9 @@ open class Visitor {
             }
             is Node.PostModifier.Contract -> {
                 visitChildren(contractKeyword)
+                visitChildren(lBracket)
                 visitChildren(contractEffects)
+                visitChildren(rBracket)
             }
             is Node.Keyword -> {}
             is Node.Extra -> {}
