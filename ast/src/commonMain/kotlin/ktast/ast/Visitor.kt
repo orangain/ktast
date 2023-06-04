@@ -203,7 +203,9 @@ open class Visitor {
                 visitChildren(contextReceiver)
                 visitChildren(receiverType)
                 visitChildren(dotSymbol)
+                visitChildren(lPar)
                 visitChildren(params)
+                visitChildren(rPar)
                 visitChildren(returnType)
             }
             is Node.ContextReceiver -> {

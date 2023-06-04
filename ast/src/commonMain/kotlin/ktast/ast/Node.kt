@@ -837,7 +837,9 @@ sealed interface Node {
             val contextReceiver: ContextReceiver?,
             val receiverType: Type?,
             val dotSymbol: Keyword.Dot?,
+            val lPar: Keyword.LPar?,
             val params: FunctionTypeParams?,
+            val rPar: Keyword.RPar?,
             val returnType: Type,
             override var tag: Any? = null,
         ) : Type {

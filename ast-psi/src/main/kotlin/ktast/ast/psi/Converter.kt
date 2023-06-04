@@ -398,7 +398,9 @@ open class Converter {
                 contextReceiver = typeEl.contextReceiverList?.let(::convertContextReceiver),
                 receiverType = typeEl.receiver?.typeReference?.let(::convertType),
                 dotSymbol = findChildByType(typeEl, KtTokens.DOT)?.let(::convertKeyword),
+                lPar = typeEl.parameterList?.leftParenthesis?.let(::convertKeyword),
                 params = typeEl.parameterList?.let(::convertTypeFunctionParams),
+                rPar = typeEl.parameterList?.rightParenthesis?.let(::convertKeyword),
                 returnType = convertType(typeEl.returnTypeReference ?: error("No return type for $typeEl")),
             ).map(mapTarget ?: typeEl)
             is KtUserType -> Node.Type.SimpleType(

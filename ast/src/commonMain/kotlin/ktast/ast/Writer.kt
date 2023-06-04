@@ -252,7 +252,8 @@ open class Writer(
                     children(receiverType)
                     children(dotSymbol)
                     if (params != null) {
-                        children(params).append("->")
+                        commaSeparatedChildren(lPar, params, rPar)
+                        append("->")
                     }
                     children(returnType)
                 }

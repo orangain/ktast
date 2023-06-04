@@ -220,7 +220,9 @@ open class MutableVisitor(
                         contextReceiver = visitChildren(contextReceiver, newCh),
                         receiverType = visitChildren(receiverType, newCh),
                         dotSymbol = visitChildren(dotSymbol, newCh),
+                        lPar = visitChildren(lPar, newCh),
                         params = visitChildren(params, newCh),
+                        rPar = visitChildren(rPar, newCh),
                         returnType = visitChildren(returnType, newCh),
                     )
                     is Node.ContextReceiver -> copy(
