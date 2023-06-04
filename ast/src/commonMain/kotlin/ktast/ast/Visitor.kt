@@ -86,7 +86,9 @@ open class Visitor {
             is Node.Declaration.ClassDeclaration.PrimaryConstructor -> {
                 visitChildren(modifiers)
                 visitChildren(constructorKeyword)
+                visitChildren(lPar)
                 visitChildren(params)
+                visitChildren(rPar)
             }
             is Node.Declaration.ClassDeclaration.ClassBody -> {
                 visitChildren(enumEntries)
@@ -102,7 +104,9 @@ open class Visitor {
                 visitChildren(typeParams)
                 visitChildren(receiverType)
                 visitChildren(name)
+                visitChildren(lPar)
                 visitChildren(params)
+                visitChildren(rPar)
                 visitChildren(returnType)
                 visitChildren(postModifiers)
                 visitChildren(equals)
@@ -166,7 +170,9 @@ open class Visitor {
             is Node.Declaration.ClassDeclaration.ClassBody.SecondaryConstructor -> {
                 visitChildren(modifiers)
                 visitChildren(constructorKeyword)
+                visitChildren(lPar)
                 visitChildren(params)
+                visitChildren(rPar)
                 visitChildren(delegationCall)
                 visitChildren(block)
             }
@@ -248,7 +254,9 @@ open class Visitor {
             }
             is Node.Expression.TryExpression.CatchClause -> {
                 visitChildren(catchKeyword)
+                visitChildren(lPar)
                 visitChildren(params)
+                visitChildren(rPar)
                 visitChildren(block)
             }
             is Node.Expression.BinaryExpression -> {

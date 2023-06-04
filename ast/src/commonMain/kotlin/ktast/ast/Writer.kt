@@ -124,7 +124,7 @@ open class Writer(
                 is Node.Declaration.ClassDeclaration.PrimaryConstructor -> {
                     children(modifiers)
                     children(constructorKeyword)
-                    children(params)
+                    commaSeparatedChildren(lPar, params, rPar)
                 }
                 is Node.Declaration.ClassDeclaration.ClassBody -> {
                     append("{")
@@ -143,7 +143,7 @@ open class Writer(
                     children(typeParams)
                     if (receiverType != null) children(receiverType).append(".")
                     name?.also { children(it) }
-                    children(params)
+                    commaSeparatedChildren(lPar, params, rPar)
                     if (returnType != null) append(":").also { children(returnType) }
                     children(postModifiers)
                     children(equals)
@@ -215,7 +215,7 @@ open class Writer(
                 is Node.Declaration.ClassDeclaration.ClassBody.SecondaryConstructor -> {
                     children(modifiers)
                     children(constructorKeyword)
-                    children(params)
+                    commaSeparatedChildren(lPar, params, rPar)
                     if (delegationCall != null) append(":").also { children(delegationCall) }
                     children(block)
                 }
@@ -308,7 +308,7 @@ open class Writer(
                 }
                 is Node.Expression.TryExpression.CatchClause -> {
                     children(catchKeyword)
-                    children(params)
+                    commaSeparatedChildren(lPar, params, rPar)
                     children(block)
                 }
                 is Node.Expression.BinaryExpression -> {
@@ -513,6 +513,17 @@ open class Writer(
     }
 
     protected fun Node.children(vararg v: Node?) = this@Writer.also { v.forEach { visitChildren(it) } }
+
+    protected fun Node.commaSeparatedChildren(prefix: Node?, v: Node.CommaSeparatedNodeList<*>?, suffix: Node?) =
+        this@Writer.also {
+            if (v != null) {
+                v.writeExtrasBefore()
+                visitChildren(prefix)
+                children(v.elements, ",", trailingSeparator = v.trailingComma)
+                visitChildren(suffix)
+                v.writeExtrasAfter()
+            }
+        }
 
     protected fun Node.children(
         v: List<Node>,

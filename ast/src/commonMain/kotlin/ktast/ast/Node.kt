@@ -410,7 +410,9 @@ sealed interface Node {
             data class PrimaryConstructor(
                 override val modifiers: Modifiers?,
                 val constructorKeyword: Keyword.Constructor?,
+                val lPar: Keyword.LPar?,
                 val params: FunctionParams?,
+                val rPar: Keyword.RPar?,
                 override var tag: Any? = null,
             ) : Node, WithModifiers
 
@@ -468,7 +470,9 @@ sealed interface Node {
                 data class SecondaryConstructor(
                     override val modifiers: Modifiers?,
                     val constructorKeyword: Keyword.Constructor,
+                    val lPar: Keyword.LPar?,
                     val params: FunctionParams?,
+                    val rPar: Keyword.RPar?,
                     val delegationCall: Expression.CallExpression?,
                     val block: Expression.BlockExpression?,
                     override var tag: Any? = null,
@@ -496,7 +500,9 @@ sealed interface Node {
             val typeParams: TypeParams?,
             val receiverType: Type?,
             val name: Expression.NameExpression?,
+            val lPar: Keyword.LPar?,
             val params: FunctionParams?,
+            val rPar: Keyword.RPar?,
             val returnType: Type?,
             override val postModifiers: List<PostModifier>,
             override val equals: Keyword.Equal?,
@@ -637,7 +643,7 @@ sealed interface Node {
         override val elements: List<FunctionParam>,
         override val trailingComma: Keyword.Comma?,
         override var tag: Any? = null,
-    ) : CommaSeparatedNodeList<FunctionParam>("(", ")")
+    ) : CommaSeparatedNodeList<FunctionParam>("", "")
 
     /**
      * AST node that represents a formal function parameter of a function declaration. For example, `x: Int` in `fun f(x: Int)` is a function parameter. The node corresponds to KtParameter inside KtNamedFunction.
@@ -947,7 +953,9 @@ sealed interface Node {
              */
             data class CatchClause(
                 val catchKeyword: Keyword.Catch,
+                val lPar: Keyword.LPar,
                 val params: FunctionParams,
+                val rPar: Keyword.RPar,
                 val block: BlockExpression,
                 override var tag: Any? = null,
             ) : Node

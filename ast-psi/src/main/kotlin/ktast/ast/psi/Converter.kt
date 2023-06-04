@@ -146,7 +146,9 @@ open class Converter {
     open fun convertPrimaryConstructor(v: KtPrimaryConstructor) = Node.Declaration.ClassDeclaration.PrimaryConstructor(
         modifiers = v.modifierList?.let(::convertModifiers),
         constructorKeyword = v.getConstructorKeyword()?.let(::convertKeyword),
-        params = v.valueParameterList?.let(::convertFuncParams)
+        lPar = v.valueParameterList?.leftParenthesis?.let(::convertKeyword),
+        params = v.valueParameterList?.let(::convertFuncParams),
+        rPar = v.valueParameterList?.rightParenthesis?.let(::convertKeyword),
     ).map(v)
 
     open fun convertInit(v: KtAnonymousInitializer) = Node.Declaration.ClassDeclaration.ClassBody.Initializer(
@@ -171,7 +173,9 @@ open class Converter {
             typeParams = v.typeParameterList?.let(::convertTypeParams),
             receiverType = v.receiverTypeReference?.let(::convertType),
             name = v.nameIdentifier?.let(::convertName),
+            lPar = v.valueParameterList?.leftParenthesis?.let(::convertKeyword),
             params = v.valueParameterList?.let(::convertFuncParams),
+            rPar = v.valueParameterList?.rightParenthesis?.let(::convertKeyword),
             returnType = v.typeReference?.let(::convertType),
             postModifiers = convertPostModifiers(v),
             equals = v.equalsToken?.let(::convertKeyword),
@@ -276,7 +280,9 @@ open class Converter {
         Node.Declaration.ClassDeclaration.ClassBody.SecondaryConstructor(
             modifiers = v.modifierList?.let(::convertModifiers),
             constructorKeyword = convertKeyword(v.getConstructorKeyword()),
+            lPar = v.valueParameterList?.leftParenthesis?.let(::convertKeyword),
             params = v.valueParameterList?.let(::convertFuncParams),
+            rPar = v.valueParameterList?.rightParenthesis?.let(::convertKeyword),
             delegationCall = if (v.hasImplicitDelegationCall()) null else convertCall(
                 v.getDelegationCall()
             ),
@@ -519,7 +525,9 @@ open class Converter {
 
     open fun convertTryCatch(v: KtCatchClause) = Node.Expression.TryExpression.CatchClause(
         catchKeyword = convertKeyword(v.catchKeyword),
+        lPar = convertKeyword(v.parameterList?.leftParenthesis ?: error("No catch lpar for $v")),
         params = convertFuncParams(v.parameterList ?: error("No catch params for $v")),
+        rPar = convertKeyword(v.parameterList?.rightParenthesis ?: error("No catch rpar for $v")),
         block = convertBlock(v.catchBody as? KtBlockExpression ?: error("No catch block for $v")),
     ).map(v)
 
