@@ -841,7 +841,9 @@ open class Converter {
     ).map(v)
 
     open fun convertBlock(v: KtBlockExpression) = Node.Expression.BlockExpression(
-        statements = v.statements.map(::convertStatement)
+        lBrace = convertKeyword(v.lBrace ?: error("No left brace for $v")),
+        statements = v.statements.map(::convertStatement),
+        rBrace = convertKeyword(v.rBrace ?: error("No right brace for $v")),
     ).map(v)
 
     open fun convertAnnotationSets(v: KtElement): List<Node.Modifier.AnnotationSet> = v.children.flatMap { elem ->

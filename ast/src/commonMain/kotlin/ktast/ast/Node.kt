@@ -1623,7 +1623,9 @@ sealed interface Node {
          * @property statements list of statements.
          */
         data class BlockExpression(
+            val lBrace: Keyword.LBrace,
             override val statements: List<Statement>,
+            val rBrace: Keyword.RBrace,
             override var tag: Any? = null,
         ) : Expression, StatementsContainer
     }
@@ -1950,6 +1952,14 @@ sealed interface Node {
 
         data class RBracket(override var tag: Any? = null) : Keyword {
             override val text = "]"
+        }
+
+        data class LBrace(override var tag: Any? = null) : Keyword {
+            override val text = "{"
+        }
+
+        data class RBrace(override var tag: Any? = null) : Keyword {
+            override val text = "}"
         }
 
         data class At(override var tag: Any? = null) : Keyword {

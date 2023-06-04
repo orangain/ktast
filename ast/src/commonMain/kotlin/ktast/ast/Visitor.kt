@@ -415,7 +415,9 @@ open class Visitor {
                 visitChildren(property)
             }
             is Node.Expression.BlockExpression -> {
+                visitChildren(lBrace)
                 visitChildren(statements)
+                visitChildren(rBrace)
             }
             is Node.Modifier.AnnotationSet -> {
                 visitChildren(atSymbol)

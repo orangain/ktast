@@ -445,7 +445,9 @@ open class MutableVisitor(
                         property = visitChildren(property, newCh)
                     )
                     is Node.Expression.BlockExpression -> copy(
-                        statements = visitChildren(statements, newCh)
+                        lBrace = visitChildren(lBrace, newCh),
+                        statements = visitChildren(statements, newCh),
+                        rBrace = visitChildren(rBrace, newCh),
                     )
                     is Node.Modifiers -> copy(
                         elements = visitChildren(elements, newCh),

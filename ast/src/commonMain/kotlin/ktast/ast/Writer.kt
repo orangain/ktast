@@ -471,10 +471,9 @@ open class Writer(
                 is Node.Expression.PropertyExpression ->
                     children(property)
                 is Node.Expression.BlockExpression -> {
-                    append("{").run {
-                        children(statements)
-                    }
-                    append("}")
+                    children(lBrace)
+                    children(statements)
+                    children(rBrace)
                 }
                 is Node.Modifier.AnnotationSet -> {
                     children(atSymbol)
