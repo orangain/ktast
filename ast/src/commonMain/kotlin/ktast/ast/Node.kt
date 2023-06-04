@@ -890,10 +890,10 @@ sealed interface Node {
      * AST node corresponds to KtValueArgumentList or KtInitializerList.
      */
     data class ValueArgs(
-        override val elements: List<ValueArg>,
+        override val elements: List<FunctionArg>,
         override val trailingComma: Keyword.Comma?,
         override var tag: Any? = null,
-    ) : CommaSeparatedNodeList<ValueArg>("(", ")")
+    ) : CommaSeparatedNodeList<FunctionArg>("(", ")")
 
     /**
      * AST node that represents an actual value argument of a function call. For example, `foo(1, 2)` has two value arguments `1` and `2`. The node corresponds to KtValueArgument.
@@ -902,7 +902,7 @@ sealed interface Node {
      * @property asterisk spread operator if exists, otherwise `null`.
      * @property expression expression of the argument.
      */
-    data class ValueArg(
+    data class FunctionArg(
         val name: Expression.NameExpression?,
         val asterisk: Keyword.Asterisk?,
         val expression: Expression,

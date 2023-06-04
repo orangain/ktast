@@ -227,7 +227,7 @@ open class Visitor {
             is Node.Type.DynamicType -> {
                 visitChildren(modifiers)
             }
-            is Node.ValueArg -> {
+            is Node.FunctionArg -> {
                 visitChildren(name)
                 visitChildren(asterisk)
                 visitChildren(expression)

@@ -294,7 +294,7 @@ open class Writer(
                     children(modifiers)
                     append("dynamic")
                 }
-                is Node.ValueArg -> {
+                is Node.FunctionArg -> {
                     if (name != null) children(name).append("=")
                     children(asterisk)
                     children(expression)

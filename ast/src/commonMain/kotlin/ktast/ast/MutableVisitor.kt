@@ -257,7 +257,7 @@ open class MutableVisitor(
                         elements = visitChildren(elements, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
-                    is Node.ValueArg -> copy(
+                    is Node.FunctionArg -> copy(
                         name = visitChildren(name, newCh),
                         asterisk = visitChildren(asterisk, newCh),
                         expression = visitChildren(expression, newCh)

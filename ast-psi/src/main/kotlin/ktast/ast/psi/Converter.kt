@@ -447,7 +447,7 @@ open class Converter {
         ).map(v)
     }
 
-    open fun convertValueArg(v: KtValueArgument) = Node.ValueArg(
+    open fun convertValueArg(v: KtValueArgument) = Node.FunctionArg(
         name = v.getArgumentName()?.let(::convertValueArgName),
         asterisk = v.getSpreadElement()?.let(::convertKeyword),
         expression = convertExpression(v.getArgumentExpression() ?: error("No expr for value arg"))
