@@ -1735,7 +1735,9 @@ sealed interface Node {
      * @property receiverTypes receiver types.
      */
     data class ContextReceiver(
+        val lPar: Keyword.LPar,
         val receiverTypes: ContextReceiverTypes,
+        val rPar: Keyword.RPar,
         override var tag: Any? = null,
     ) : Node
 

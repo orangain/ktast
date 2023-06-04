@@ -224,7 +224,9 @@ open class MutableVisitor(
                         returnType = visitChildren(returnType, newCh),
                     )
                     is Node.ContextReceiver -> copy(
+                        lPar = visitChildren(lPar, newCh),
                         receiverTypes = visitChildren(receiverTypes, newCh),
+                        rPar = visitChildren(rPar, newCh),
                     )
                     is Node.ContextReceiverTypes -> copy(
                         elements = visitChildren(elements, newCh),

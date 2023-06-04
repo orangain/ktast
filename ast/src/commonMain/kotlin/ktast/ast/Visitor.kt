@@ -207,7 +207,9 @@ open class Visitor {
                 visitChildren(returnType)
             }
             is Node.ContextReceiver -> {
+                visitChildren(lPar)
                 visitChildren(receiverTypes)
+                visitChildren(rPar)
             }
             is Node.Type.FunctionType.FunctionTypeParam -> {
                 visitChildren(name)

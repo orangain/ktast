@@ -258,7 +258,7 @@ open class Writer(
                 }
                 is Node.ContextReceiver -> {
                     append("context")
-                    children(receiverTypes)
+                    commaSeparatedChildren(lPar, receiverTypes, rPar)
                 }
                 is Node.Type.FunctionType.FunctionTypeParam -> {
                     if (name != null) children(name).append(":")

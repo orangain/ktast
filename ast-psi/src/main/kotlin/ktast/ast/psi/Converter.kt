@@ -425,10 +425,12 @@ open class Converter {
     }
 
     open fun convertContextReceiver(v: KtContextReceiverList) = Node.ContextReceiver(
+        lPar = convertKeyword(v.leftParenthesis),
         receiverTypes = Node.ContextReceiverTypes(
             elements = v.contextReceivers().map(::convertType),
             trailingComma = null,
-        ).mapNotCorrespondsPsiElement(v)
+        ).mapNotCorrespondsPsiElement(v),
+        rPar = convertKeyword(v.rightParenthesis),
     ).map(v)
 
     open fun convertType(v: KtContextReceiver): Node.Type {
@@ -1026,6 +1028,11 @@ open class Converter {
             get() = findChildByType(this, KtTokens.RBRACKET)
         internal val KtAnnotationEntry.colon: PsiElement?
             get() = findChildByType(this, KtTokens.COLON)
+
+        internal val KtContextReceiverList.leftParenthesis: PsiElement
+            get() = findChildByType(this, KtTokens.LPAR) ?: error("No left parenthesis for $this")
+        internal val KtContextReceiverList.rightParenthesis: PsiElement
+            get() = findChildByType(this, KtTokens.RPAR) ?: error("No right parenthesis for $this")
 
         private fun findChildByType(v: KtElement, type: IElementType): PsiElement? =
             v.node.findChildByType(type)?.psi
