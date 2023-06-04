@@ -502,9 +502,6 @@ open class Writer(
                     children(contractKeyword)
                     children(contractEffects)
                 }
-                is Node.PostModifier.Contract.ContractEffect -> {
-                    children(expression)
-                }
                 is Node.Keyword -> {
                     append(text)
                 }

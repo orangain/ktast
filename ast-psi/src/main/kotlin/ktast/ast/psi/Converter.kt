@@ -190,7 +190,7 @@ open class Converter {
         name = v.nameIdentifier?.let(::convertName) ?: error("No param name"),
         type = v.typeReference?.let(::convertType),
         equals = v.equalsToken?.let(::convertKeyword),
-        defaultValue = v.defaultValue?.let(::convertExpression),
+        defaultValue = v.defaultValue?.let(this::convertExpression),
     ).map(v)
 
     open fun convertProperty(v: KtProperty) = Node.Declaration.PropertyDeclaration(
@@ -215,7 +215,7 @@ open class Converter {
             ).mapNotCorrespondsPsiElement(v)
         },
         equals = v.equalsToken?.let(::convertKeyword),
-        initializer = v.initializer?.let(::convertExpression),
+        initializer = v.initializer?.let(this::convertExpression),
         propertyDelegate = v.delegate?.let(::convertPropertyDelegate),
         accessors = v.accessors.map(::convertPropertyAccessor),
     ).map(v)
@@ -231,7 +231,7 @@ open class Converter {
         rPar = v.rPar?.let(::convertKeyword),
         typeConstraintSet = null,
         equals = convertKeyword(v.equalsToken),
-        initializer = v.initializer?.let(::convertExpression),
+        initializer = v.initializer?.let(this::convertExpression),
         propertyDelegate = null,
         accessors = listOf(),
     ).map(v)
@@ -254,14 +254,14 @@ open class Converter {
             type = v.returnTypeReference?.let(::convertType),
             postModifiers = convertPostModifiers(v),
             equals = v.equalsToken?.let(::convertKeyword),
-            body = v.bodyExpression?.let(::convertExpression),
+            body = v.bodyExpression?.let(this::convertExpression),
         ).map(v) else Node.Declaration.PropertyDeclaration.Setter(
             modifiers = v.modifierList?.let(::convertModifiers),
             setKeyword = convertKeyword(v.setKeyword),
             params = v.parameterList?.let(::convertLambdaParams),
             postModifiers = convertPostModifiers(v),
             equals = v.equalsToken?.let(::convertKeyword),
-            body = v.bodyExpression?.let(::convertExpression),
+            body = v.bodyExpression?.let(this::convertExpression),
         ).map(v)
 
     open fun convertTypeAlias(v: KtTypeAlias) = Node.Declaration.TypeAliasDeclaration(
@@ -417,13 +417,13 @@ open class Converter {
     }
 
     open fun convertContractEffects(v: KtContractEffectList) = Node.PostModifier.Contract.ContractEffects(
-        elements = v.children.filterIsInstance<KtContractEffect>().map(::convertContractEffect),
+        elements = v.children.filterIsInstance<KtContractEffect>().map(::convertExpression),
         trailingComma = findTrailingSeparator(v, KtTokens.COMMA)?.let(::convertKeyword),
     ).map(v)
 
-    open fun convertContractEffect(v: KtContractEffect) = Node.PostModifier.Contract.ContractEffect(
-        expression = convertExpression(v.getExpression()),
-    ).map(v)
+    open fun convertExpression(v: KtContractEffect): Node.Expression {
+        return convertExpression(v.getExpression()).map(v) // map will be called twice for this Expression
+    }
 
     open fun convertTypeFunctionParams(v: KtParameterList) = Node.Type.FunctionType.FunctionTypeParams(
         elements = v.parameters.map(::convertTypeFunctionParam),
@@ -508,7 +508,7 @@ open class Converter {
         rPar = convertKeyword(v.rightParenthesis ?: error("No right parenthesis on if for $v")),
         body = convertExpression(v.thenContainer.expression ?: error("No then body on if for $v")),
         elseKeyword = v.elseKeyword?.let(::convertKeyword),
-        elseBody = v.elseContainer?.expression?.let(::convertExpression),
+        elseBody = v.elseContainer?.expression?.let(this::convertExpression),
     ).map(v)
 
     open fun convertTry(v: KtTryExpression) = Node.Expression.TryExpression(
@@ -562,13 +562,13 @@ open class Converter {
     ).map(v)
 
     open fun convertCallableReference(v: KtCallableReferenceExpression) = Node.Expression.CallableReferenceExpression(
-        lhs = v.receiverExpression?.let(::convertExpression),
+        lhs = v.receiverExpression?.let(this::convertExpression),
         questionMarks = v.questionMarks.map(::convertKeyword),
         rhs = convertName(v.callableReference)
     ).map(v)
 
     open fun convertClassLiteral(v: KtClassLiteralExpression) = Node.Expression.ClassLiteralExpression(
-        lhs = v.receiverExpression?.let(::convertExpression),
+        lhs = v.receiverExpression?.let(this::convertExpression),
         questionMarks = v.questionMarks.map(::convertKeyword),
     ).map(v)
 
@@ -660,7 +660,7 @@ open class Converter {
     open fun convertWhen(v: KtWhenExpression) = Node.Expression.WhenExpression(
         whenKeyword = convertKeyword(v.whenKeyword),
         lPar = v.leftParenthesis?.let(::convertKeyword),
-        expression = v.subjectExpression?.let(::convertExpression),
+        expression = v.subjectExpression?.let(this::convertExpression),
         rPar = v.rightParenthesis?.let(::convertKeyword),
         whenBranches = v.entries.map(::convertWhenEntry),
     ).map(v)
@@ -711,7 +711,7 @@ open class Converter {
 
     open fun convertReturn(v: KtReturnExpression) = Node.Expression.ReturnExpression(
         label = v.getTargetLabel()?.let(::convertName),
-        expression = v.returnedExpression?.let(::convertExpression)
+        expression = v.returnedExpression?.let(this::convertExpression)
     ).map(v)
 
     open fun convertContinue(v: KtContinueExpression) = Node.Expression.ContinueExpression(
@@ -723,7 +723,7 @@ open class Converter {
     ).map(v)
 
     open fun convertCollLit(v: KtCollectionLiteralExpression) = Node.Expression.CollectionLiteralExpression(
-        expressions = v.getInnerExpressions().map(::convertExpression),
+        expressions = v.getInnerExpressions().map(this::convertExpression),
         trailingComma = v.trailingComma?.let(::convertKeyword),
     ).map(v)
 
@@ -798,7 +798,7 @@ open class Converter {
 
     open fun convertArrayAccess(v: KtArrayAccessExpression) = Node.Expression.IndexedAccessExpression(
         expression = convertExpression(v.arrayExpression ?: error("No array expr for $v")),
-        indices = v.indexExpressions.map(::convertExpression),
+        indices = v.indexExpressions.map(this::convertExpression),
         trailingComma = v.trailingComma?.let(::convertKeyword),
     ).map(v)
 
