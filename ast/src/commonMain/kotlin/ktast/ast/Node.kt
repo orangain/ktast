@@ -338,7 +338,7 @@ sealed interface Node {
              * AST node that represents a parent of the class. The node corresponds to KtSuperTypeListEntry.
              *
              * @property type type of the parent.
-             * @property args value arguments of the parent call if exists, otherwise `null`.
+             * @property args function arguments of the parent call if exists, otherwise `null`.
              * @property byKeyword `by` keyword if exists, otherwise `null`.
              * @property expression expression of the delegation if exists, otherwise `null`.
              */
@@ -353,7 +353,7 @@ sealed interface Node {
              * ClassParent node that represents constructor invocation. The node corresponds to KtSuperTypeCallEntry.
              *
              * @property type type of the parent.
-             * @property args value arguments of the parent call.
+             * @property args function arguments of the parent call.
              * @property byKeyword always `null`.
              * @property expression always `null`.
              */
@@ -433,7 +433,7 @@ sealed interface Node {
                  *
                  * @property modifiers modifiers if exists, otherwise `null`.
                  * @property name name of the enum entry.
-                 * @property args value arguments of the enum entry if exists, otherwise `null`.
+                 * @property args constructor arguments of the enum entry if exists, otherwise `null`.
                  * @property classBody class body of the enum entry if exists, otherwise `null`.
                  */
                 data class EnumEntry(
@@ -896,7 +896,7 @@ sealed interface Node {
     ) : CommaSeparatedNodeList<FunctionArg>("(", ")")
 
     /**
-     * AST node that represents an actual value argument of a function call. For example, `foo(1, 2)` has two value arguments `1` and `2`. The node corresponds to KtValueArgument.
+     * AST node that represents an actual function argument of a function call. For example, `foo(1, 2)` has two function arguments `1` and `2`. The node corresponds to KtValueArgument.
      *
      * @property name name of the argument if exists, otherwise `null`.
      * @property asterisk spread operator if exists, otherwise `null`.
@@ -1526,7 +1526,7 @@ sealed interface Node {
          *
          * @property calleeExpression callee expression.
          * @property typeArgs type arguments if exists, otherwise `null`.
-         * @property args value arguments if exists, otherwise `null`.
+         * @property args function arguments if exists, otherwise `null`.
          * @property lambdaArg lambda argument if exists, otherwise `null`.
          */
         data class CallExpression(
@@ -1675,7 +1675,7 @@ sealed interface Node {
              * AST node corresponds to KtAnnotationEntry under KtAnnotation or virtual AST node corresponds to KtAnnotationEntry not under KtAnnotation.
              *
              * @property type type of this annotation.
-             * @property args value arguments if exists, otherwise `null`.
+             * @property args function arguments if exists, otherwise `null`.
              */
             data class Annotation(
                 val type: Type.SimpleType,
