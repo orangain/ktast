@@ -96,6 +96,12 @@ sealed interface Node {
         val body: Expression?
     }
 
+    interface WithTypeParams {
+        val lAngle: Keyword.Less?
+        val typeParams: TypeParams?
+        val rAngle: Keyword.Greater?
+    }
+
     /**
      * Common interface for AST nodes that have statements.
      *
@@ -287,13 +293,15 @@ sealed interface Node {
             override val modifiers: Modifiers?,
             val classDeclarationKeyword: ClassDeclarationKeyword,
             val name: Expression.NameExpression?,
-            val typeParams: TypeParams?,
+            override val lAngle: Keyword.Less?,
+            override val typeParams: TypeParams?,
+            override val rAngle: Keyword.Greater?,
             val primaryConstructor: PrimaryConstructor?,
             val classParents: ClassParents?,
             val typeConstraintSet: PostModifier.TypeConstraintSet?,
             val classBody: ClassBody?,
             override var tag: Any? = null,
-        ) : Declaration, WithModifiers {
+        ) : Declaration, WithModifiers, WithTypeParams {
             /**
              * Returns `true` if the node is a class, `false` otherwise.
              */
@@ -497,7 +505,9 @@ sealed interface Node {
         data class FunctionDeclaration(
             override val modifiers: Modifiers?,
             val funKeyword: Keyword.Fun,
-            val typeParams: TypeParams?,
+            override val lAngle: Keyword.Less?,
+            override val typeParams: TypeParams?,
+            override val rAngle: Keyword.Greater?,
             val receiverType: Type?,
             val name: Expression.NameExpression?,
             val lPar: Keyword.LPar?,
@@ -508,7 +518,7 @@ sealed interface Node {
             override val equals: Keyword.Equal?,
             override val body: Expression?,
             override var tag: Any? = null,
-        ) : Declaration, WithModifiers, WithPostModifiers, WithFunctionBody
+        ) : Declaration, WithModifiers, WithPostModifiers, WithFunctionBody, WithTypeParams
 
         /**
          * AST node corresponds to KtProperty or KtDestructuringDeclaration.
@@ -530,7 +540,9 @@ sealed interface Node {
         data class PropertyDeclaration(
             override val modifiers: Modifiers?,
             val valOrVarKeyword: Keyword.ValOrVarKeyword,
-            val typeParams: TypeParams?,
+            override val lAngle: Keyword.Less?,
+            override val typeParams: TypeParams?,
+            override val rAngle: Keyword.Greater?,
             val receiverType: Type?,
             val lPar: Keyword.LPar?,
             val variables: List<Variable>,
@@ -542,7 +554,7 @@ sealed interface Node {
             val propertyDelegate: PropertyDelegate?,
             val accessors: List<Accessor>,
             override var tag: Any? = null,
-        ) : Declaration, WithModifiers {
+        ) : Declaration, WithModifiers, WithTypeParams {
             init {
                 if (propertyDelegate != null) {
                     require(equals == null && initializer == null) {
@@ -629,11 +641,13 @@ sealed interface Node {
         data class TypeAliasDeclaration(
             override val modifiers: Modifiers?,
             val name: Expression.NameExpression,
-            val typeParams: TypeParams?,
+            override val lAngle: Keyword.Less?,
+            override val typeParams: TypeParams?,
+            override val rAngle: Keyword.Greater?,
             val equals: Keyword.Equal,
             val type: Type,
             override var tag: Any? = null,
-        ) : Declaration, WithModifiers
+        ) : Declaration, WithModifiers, WithTypeParams
     }
 
     /**

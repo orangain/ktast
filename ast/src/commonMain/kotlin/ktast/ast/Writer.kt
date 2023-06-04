@@ -100,7 +100,7 @@ open class Writer(
                     children(modifiers)
                     children(classDeclarationKeyword)
                     children(name)
-                    children(typeParams)
+                    commaSeparatedChildren(lAngle, typeParams, rAngle)
                     children(primaryConstructor)
                     if (classParents != null) {
                         append(":")
@@ -140,7 +140,7 @@ open class Writer(
                 is Node.Declaration.FunctionDeclaration -> {
                     children(modifiers)
                     children(funKeyword)
-                    children(typeParams)
+                    commaSeparatedChildren(lAngle, typeParams, rAngle)
                     if (receiverType != null) children(receiverType).append(".")
                     name?.also { children(it) }
                     commaSeparatedChildren(lPar, params, rPar)
@@ -160,7 +160,7 @@ open class Writer(
                 is Node.Declaration.PropertyDeclaration -> {
                     children(modifiers)
                     children(valOrVarKeyword)
-                    children(typeParams)
+                    commaSeparatedChildren(lAngle, typeParams, rAngle)
                     if (receiverType != null) children(receiverType).append('.')
                     children(lPar)
                     children(variables, ",")
@@ -208,7 +208,7 @@ open class Writer(
                     children(modifiers)
                     append("typealias")
                     children(name)
-                    children(typeParams)
+                    commaSeparatedChildren(lAngle, typeParams, rAngle)
                     children(equals)
                     children(type)
                 }

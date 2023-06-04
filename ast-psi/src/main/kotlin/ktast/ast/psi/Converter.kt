@@ -108,7 +108,9 @@ open class Converter {
         classDeclarationKeyword = v.getDeclarationKeyword()?.let(::convertKeyword)
             ?: error("declarationKeyword not found"),
         name = v.nameIdentifier?.let(::convertName),
+        lAngle = v.typeParameterList?.leftAngle?.let(::convertKeyword),
         typeParams = v.typeParameterList?.let(::convertTypeParams),
+        rAngle = v.typeParameterList?.rightAngle?.let(::convertKeyword),
         primaryConstructor = v.primaryConstructor?.let(::convertPrimaryConstructor),
         classParents = v.getSuperTypeList()?.let(::convertParents),
         typeConstraintSet = v.typeConstraintList?.let { typeConstraintList ->
@@ -170,7 +172,9 @@ open class Converter {
         return Node.Declaration.FunctionDeclaration(
             modifiers = v.modifierList?.let(::convertModifiers),
             funKeyword = v.funKeyword?.let { convertKeyword(it) } ?: error("No fun keyword for $v"),
+            lAngle = v.typeParameterList?.leftAngle?.let(::convertKeyword),
             typeParams = v.typeParameterList?.let(::convertTypeParams),
+            rAngle = v.typeParameterList?.rightAngle?.let(::convertKeyword),
             receiverType = v.receiverTypeReference?.let(::convertType),
             name = v.nameIdentifier?.let(::convertName),
             lPar = v.valueParameterList?.leftParenthesis?.let(::convertKeyword),
@@ -200,7 +204,9 @@ open class Converter {
     open fun convertProperty(v: KtProperty) = Node.Declaration.PropertyDeclaration(
         modifiers = v.modifierList?.let(::convertModifiers),
         valOrVarKeyword = convertKeyword(v.valOrVarKeyword),
+        lAngle = v.typeParameterList?.leftAngle?.let(::convertKeyword),
         typeParams = v.typeParameterList?.let(::convertTypeParams),
+        rAngle = v.typeParameterList?.rightAngle?.let(::convertKeyword),
         receiverType = v.receiverTypeReference?.let(::convertType),
         lPar = null,
         variables = listOf(
@@ -227,7 +233,9 @@ open class Converter {
     open fun convertProperty(v: KtDestructuringDeclaration) = Node.Declaration.PropertyDeclaration(
         modifiers = v.modifierList?.let(::convertModifiers),
         valOrVarKeyword = v.valOrVarKeyword?.let(::convertKeyword) ?: error("Missing valOrVarKeyword"),
+        lAngle = null,
         typeParams = null,
+        rAngle = null,
         receiverType = null,
         lPar = v.lPar?.let(::convertKeyword),
         variables = v.entries.map(::convertVariable),
@@ -271,7 +279,9 @@ open class Converter {
     open fun convertTypeAlias(v: KtTypeAlias) = Node.Declaration.TypeAliasDeclaration(
         modifiers = v.modifierList?.let(::convertModifiers),
         name = v.nameIdentifier?.let(::convertName) ?: error("No type alias name for $v"),
+        lAngle = v.typeParameterList?.leftAngle?.let(::convertKeyword),
         typeParams = v.typeParameterList?.let(::convertTypeParams),
+        rAngle = v.typeParameterList?.rightAngle?.let(::convertKeyword),
         equals = convertKeyword(v.equalsToken),
         type = convertType(v.getTypeReference() ?: error("No type alias ref for $v"))
     ).map(v)
@@ -927,6 +937,10 @@ open class Converter {
         internal val KtImportDirective.asterisk: PsiElement?
             get() = findChildByType(this, KtTokens.MUL)
 
+        internal val KtTypeParameterList.leftAngle: PsiElement?
+            get() = findChildByType(this, KtTokens.LT)
+        internal val KtTypeParameterList.rightAngle: PsiElement?
+            get() = findChildByType(this, KtTokens.GT)
         internal val KtTypeParameterListOwner.whereKeyword: PsiElement
             get() = findChildByType(this, KtTokens.WHERE_KEYWORD) ?: error("No where keyword for $this")
 
