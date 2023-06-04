@@ -823,6 +823,7 @@ sealed interface Node {
 
             /**
              * AST node that represents a formal function parameter of a function type. For example, `x: Int` in `(x: Int) -> Unit` is a function parameter. The node corresponds to KtParameter inside KtFunctionType.
+             * Unlike [FunctionParam], [name] is optional, but [type] is mandatory.
              *
              * @property name name of the parameter if exists, otherwise `null`.
              * @property type type of the parameter.
