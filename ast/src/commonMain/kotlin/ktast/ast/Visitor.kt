@@ -73,7 +73,9 @@ open class Visitor {
             }
             is Node.Declaration.ClassDeclaration.ConstructorClassParent -> {
                 visitChildren(type)
+                visitChildren(lPar)
                 visitChildren(args)
+                visitChildren(rPar)
             }
             is Node.Declaration.ClassDeclaration.DelegationClassParent -> {
                 visitChildren(type)
@@ -179,7 +181,9 @@ open class Visitor {
             is Node.Declaration.ClassDeclaration.ClassBody.EnumEntry -> {
                 visitChildren(modifiers)
                 visitChildren(name)
+                visitChildren(lPar)
                 visitChildren(args)
+                visitChildren(rPar)
                 visitChildren(classBody)
             }
             is Node.TypeParam -> {
@@ -385,7 +389,9 @@ open class Visitor {
                 visitChildren(lAngle)
                 visitChildren(typeArgs)
                 visitChildren(rAngle)
+                visitChildren(lPar)
                 visitChildren(args)
+                visitChildren(rPar)
                 visitChildren(lambdaArg)
             }
             is Node.Expression.CallExpression.LambdaArg -> {
@@ -417,7 +423,9 @@ open class Visitor {
             }
             is Node.Modifier.AnnotationSet.Annotation -> {
                 visitChildren(type)
+                visitChildren(lPar)
                 visitChildren(args)
+                visitChildren(rPar)
             }
             is Node.PostModifier.TypeConstraintSet -> {
                 visitChildren(whereKeyword)

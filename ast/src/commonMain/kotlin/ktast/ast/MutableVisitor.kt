@@ -79,7 +79,9 @@ open class MutableVisitor(
                     )
                     is Node.Declaration.ClassDeclaration.ConstructorClassParent -> copy(
                         type = visitChildren(type, newCh),
+                        lPar = visitChildren(lPar, newCh),
                         args = visitChildren(args, newCh),
+                        rPar = visitChildren(rPar, newCh),
                     )
                     is Node.Declaration.ClassDeclaration.DelegationClassParent -> copy(
                         type = visitChildren(type, newCh),
@@ -188,7 +190,9 @@ open class MutableVisitor(
                     is Node.Declaration.ClassDeclaration.ClassBody.EnumEntry -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         name = visitChildren(name, newCh),
+                        lPar = visitChildren(lPar, newCh),
                         args = visitChildren(args, newCh),
+                        rPar = visitChildren(rPar, newCh),
                         classBody = visitChildren(classBody, newCh)
                     )
                     is Node.TypeParams -> copy(
@@ -418,8 +422,10 @@ open class MutableVisitor(
                         lAngle = visitChildren(lAngle, newCh),
                         typeArgs = visitChildren(typeArgs, newCh),
                         rAngle = visitChildren(rAngle, newCh),
+                        lPar = visitChildren(lPar, newCh),
                         args = visitChildren(args, newCh),
-                        lambdaArg = visitChildren(lambdaArg, newCh)
+                        rPar = visitChildren(rPar, newCh),
+                        lambdaArg = visitChildren(lambdaArg, newCh),
                     )
                     is Node.Expression.CallExpression.LambdaArg -> copy(
                         annotationSets = visitChildren(annotationSets, newCh),
@@ -453,7 +459,9 @@ open class MutableVisitor(
                     )
                     is Node.Modifier.AnnotationSet.Annotation -> copy(
                         type = visitChildren(type, newCh),
+                        lPar = visitChildren(lPar, newCh),
                         args = visitChildren(args, newCh),
+                        rPar = visitChildren(rPar, newCh),
                     )
                     is Node.PostModifier.TypeConstraintSet -> copy(
                         whereKeyword = visitChildren(whereKeyword, newCh),

@@ -114,6 +114,12 @@ sealed interface Node {
         val rAngle: Keyword.Greater?
     }
 
+    interface WithValueArgs {
+        val lPar: Keyword.LPar?
+        val args: ValueArgs?
+        val rPar: Keyword.RPar?
+    }
+
     /**
      * Common interface for AST nodes that have statements.
      *
@@ -362,9 +368,8 @@ sealed interface Node {
              * @property byKeyword `by` keyword if exists, otherwise `null`.
              * @property expression expression of the delegation if exists, otherwise `null`.
              */
-            sealed interface ClassParent : Node {
+            sealed interface ClassParent : Node, WithValueArgs {
                 val type: Type
-                val args: ValueArgs?
                 val byKeyword: Keyword.By?
                 val expression: Expression?
             }
@@ -379,7 +384,9 @@ sealed interface Node {
              */
             data class ConstructorClassParent(
                 override val type: Type.SimpleType,
+                override val lPar: Keyword.LPar,
                 override val args: ValueArgs,
+                override val rPar: Keyword.RPar,
                 override var tag: Any? = null,
             ) : ClassParent {
                 override val byKeyword: Keyword.By? = null
@@ -400,7 +407,9 @@ sealed interface Node {
                 override val expression: Expression,
                 override var tag: Any? = null,
             ) : ClassParent {
+                override val lPar: Keyword.LPar? = null
                 override val args: ValueArgs? = null
+                override val rPar: Keyword.RPar? = null
             }
 
             /**
@@ -415,7 +424,9 @@ sealed interface Node {
                 override val type: Type,
                 override var tag: Any? = null,
             ) : ClassParent {
+                override val lPar: Keyword.LPar? = null
                 override val args: ValueArgs? = null
+                override val rPar: Keyword.RPar? = null
                 override val byKeyword: Keyword.By? = null
                 override val expression: Expression? = null
             }
@@ -461,10 +472,12 @@ sealed interface Node {
                 data class EnumEntry(
                     override val modifiers: Modifiers?,
                     val name: Expression.NameExpression,
-                    val args: ValueArgs?,
+                    override val lPar: Keyword.LPar?,
+                    override val args: ValueArgs?,
+                    override val rPar: Keyword.RPar?,
                     val classBody: ClassBody?,
                     override var tag: Any? = null,
-                ) : Node, WithModifiers
+                ) : Node, WithModifiers, WithValueArgs
 
                 /**
                  * AST node that represents an init block, a.k.a. initializer. The node corresponds to KtAnonymousInitializer.
@@ -1554,10 +1567,12 @@ sealed interface Node {
             override val lAngle: Keyword.Less?,
             override val typeArgs: TypeArgs?,
             override val rAngle: Keyword.Greater?,
-            val args: ValueArgs?,
+            override val lPar: Keyword.LPar?,
+            override val args: ValueArgs?,
+            override val rPar: Keyword.RPar?,
             val lambdaArg: LambdaArg?,
             override var tag: Any? = null,
-        ) : Expression, WithTypeArgs {
+        ) : Expression, WithTypeArgs, WithValueArgs {
             /**
              * AST node corresponds to KtLambdaArgument.
              *
@@ -1701,9 +1716,11 @@ sealed interface Node {
              */
             data class Annotation(
                 val type: Type.SimpleType,
-                val args: ValueArgs?,
+                override val lPar: Keyword.LPar?,
+                override val args: ValueArgs?,
+                override val rPar: Keyword.RPar?,
                 override var tag: Any? = null,
-            ) : Node
+            ) : Node, WithValueArgs
         }
 
         /**

@@ -111,7 +111,7 @@ open class Writer(
                 }
                 is Node.Declaration.ClassDeclaration.ConstructorClassParent -> {
                     children(type)
-                    children(args)
+                    commaSeparatedChildren(lPar, args, rPar)
                 }
                 is Node.Declaration.ClassDeclaration.DelegationClassParent -> {
                     children(type)
@@ -222,7 +222,7 @@ open class Writer(
                 is Node.Declaration.ClassDeclaration.ClassBody.EnumEntry -> {
                     children(modifiers)
                     children(name)
-                    children(args)
+                    commaSeparatedChildren(lPar, args, rPar)
                     children(classBody)
                     check(parent is Node.Declaration.ClassDeclaration.ClassBody) // condition should always be true
                     val isLastEntry = parent.enumEntries.last() === this
@@ -448,7 +448,7 @@ open class Writer(
                 is Node.Expression.CallExpression -> {
                     children(calleeExpression)
                     commaSeparatedChildren(lAngle, typeArgs, rAngle)
-                    children(args)
+                    commaSeparatedChildren(lPar, args, rPar)
                     children(lambdaArg)
                 }
                 is Node.Expression.CallExpression.LambdaArg -> {
@@ -483,7 +483,7 @@ open class Writer(
                 }
                 is Node.Modifier.AnnotationSet.Annotation -> {
                     children(type)
-                    children(args)
+                    commaSeparatedChildren(lPar, args, rPar)
                     if (parent is Node.Modifier.AnnotationSet && parent.rBracket == null) {
                         nextHeuristicWhitespace = " " // Insert heuristic space after annotation if single form
                     }
@@ -519,7 +519,7 @@ open class Writer(
             if (v != null) {
                 v.writeExtrasBefore()
                 visitChildren(prefix)
-                children(v.elements, ",", trailingSeparator = v.trailingComma)
+                children(v.elements, ",", trailingSeparator = v.trailingComma, skipWritingExtrasWithin = true)
                 visitChildren(suffix)
                 v.writeExtrasAfter()
             }

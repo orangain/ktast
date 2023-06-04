@@ -130,7 +130,11 @@ open class Converter {
         is KtSuperTypeCallEntry -> Node.Declaration.ClassDeclaration.ConstructorClassParent(
             type = v.typeReference?.let(::convertType) as? Node.Type.SimpleType
                 ?: error("Bad type on super call $v"),
+            lPar = v.valueArgumentList?.leftParenthesis?.let(::convertKeyword)
+                ?: error("No left parenthesis for $v"),
             args = v.valueArgumentList?.let(::convertValueArgs) ?: error("No value arguments for $v"),
+            rPar = v.valueArgumentList?.rightParenthesis?.let(::convertKeyword)
+                ?: error("No right parenthesis for $v"),
         ).map(v)
         is KtDelegatedSuperTypeEntry -> Node.Declaration.ClassDeclaration.DelegationClassParent(
             type = v.typeReference?.let(::convertType)
@@ -303,7 +307,9 @@ open class Converter {
         Node.Declaration.ClassDeclaration.ClassBody.EnumEntry(
             modifiers = v.modifierList?.let(::convertModifiers),
             name = v.nameIdentifier?.let(::convertName) ?: error("Unnamed enum"),
+            lPar = v.initializerList?.valueArgumentList?.leftParenthesis?.let(::convertKeyword),
             args = v.initializerList?.let(::convertValueArgs),
+            rPar = v.initializerList?.valueArgumentList?.rightParenthesis?.let(::convertKeyword),
             classBody = v.body?.let(::convertClassBody),
         ).map(v)
 
@@ -466,11 +472,9 @@ open class Converter {
     ).map(v)
 
     open fun convertValueArgs(v: KtInitializerList): Node.ValueArgs {
-        val valueArgumentList = (v.initializers.firstOrNull() as? KtSuperTypeCallEntry)?.valueArgumentList
-            ?: error("No value arguments for $v")
         return Node.ValueArgs(
-            elements = (valueArgumentList.arguments).map(::convertValueArg),
-            trailingComma = valueArgumentList.trailingComma?.let(::convertKeyword),
+            elements = (v.valueArgumentList.arguments).map(::convertValueArg),
+            trailingComma = v.valueArgumentList.trailingComma?.let(::convertKeyword),
         ).map(v)
     }
 
@@ -788,7 +792,9 @@ open class Converter {
         lAngle = v.typeArgumentList?.leftAngle?.let(::convertKeyword),
         typeArgs = v.typeArgumentList?.let(::convertTypeArgs),
         rAngle = v.typeArgumentList?.rightAngle?.let(::convertKeyword),
+        lPar = v.valueArgumentList?.leftParenthesis?.let(::convertKeyword),
         args = v.valueArgumentList?.let(::convertValueArgs),
+        rPar = v.valueArgumentList?.rightParenthesis?.let(::convertKeyword),
         lambdaArg = v.lambdaArguments.also {
             if (it.size >= 2) {
                 // According to the Kotlin syntax, at most one lambda argument is allowed.
@@ -883,7 +889,9 @@ open class Converter {
         type = convertType(
             v.calleeExpression?.typeReference ?: error("No callee expression, type reference or type element for $v")
         ) as? Node.Type.SimpleType ?: error("calleeExpression is not simple type"),
+        lPar = v.valueArgumentList?.leftParenthesis?.let(::convertKeyword),
         args = v.valueArgumentList?.let(::convertValueArgs),
+        rPar = v.valueArgumentList?.rightParenthesis?.let(::convertKeyword),
     )
 
     open fun convertModifiers(v: KtModifierList): Node.Modifiers {
@@ -957,6 +965,9 @@ open class Converter {
 
         internal val KtDeclarationWithInitializer.equalsToken: PsiElement
             get() = findChildByType(this, KtTokens.EQ) ?: error("No equals token for $this")
+        internal val KtInitializerList.valueArgumentList: KtValueArgumentList
+            get() = (initializers.firstOrNull() as? KtSuperTypeCallEntry)?.valueArgumentList
+                ?: error("No value arguments for $this")
         internal val KtTypeAlias.equalsToken: PsiElement
             get() = findChildByType(this, KtTokens.EQ) ?: error("No equals token for $this")
 
