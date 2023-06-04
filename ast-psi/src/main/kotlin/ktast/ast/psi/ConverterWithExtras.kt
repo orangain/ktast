@@ -43,7 +43,7 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
     }
 
     protected open fun fillWholeExtras(rootNode: Node.KotlinEntry, rootElement: PsiElement) {
-        var lastNode: Node = rootNode
+        var lastNode: Node? = null
         val extraElementsSinceLastNode = mutableListOf<PsiElement>()
 
         val visitor = object : PsiElementVisitor() {
@@ -59,7 +59,9 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
             override fun onEndElement(element: PsiElement) {
                 val node = psiIdentitiesToNodes[System.identityHashCode(element)] ?: return
                 convertExtras(extraElementsSinceLastNode).also {
-                    if (it.isNotEmpty()) extrasAfter[lastNode] = (extrasAfter[lastNode] ?: listOf()) + it
+                    if (it.isNotEmpty()) {
+                        extrasAfter[lastNode] = (extrasAfter[lastNode] ?: listOf()) + it
+                    }
                 }
                 extraElementsSinceLastNode.clear()
                 lastNode = node
@@ -70,12 +72,21 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
                     extraElementsSinceLastNode.add(element)
                     return
                 }
-                val node = psiIdentitiesToNodes[System.identityHashCode(element)] ?: return
-                convertExtras(extraElementsSinceLastNode).also {
-                    if (it.isNotEmpty()) extrasBefore[node] = (extrasBefore[node] ?: listOf()) + it
+                val node = psiIdentitiesToNodes[System.identityHashCode(element)]
+                if (node == null) {
+                    if (lastNode != null && extrasAfter[lastNode] == null) {
+                        convertExtras(extraElementsSinceLastNode).also {
+                            if (it.isNotEmpty()) extrasAfter[lastNode] = (extrasAfter[lastNode] ?: listOf()) + it
+                        }
+                        extraElementsSinceLastNode.clear()
+                    }
+                } else {
+                    convertExtras(extraElementsSinceLastNode).also {
+                        if (it.isNotEmpty()) extrasBefore[node] = (extrasBefore[node] ?: listOf()) + it
+                    }
+                    extraElementsSinceLastNode.clear()
+                    lastNode = node
                 }
-                extraElementsSinceLastNode.clear()
-                lastNode = node
             }
         }
         visitor.visit(rootElement)
