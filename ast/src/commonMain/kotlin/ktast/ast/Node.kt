@@ -13,14 +13,9 @@ sealed interface Node {
      * Base class of all nodes that represent a list of nodes.
      *
      * @param E type of elements in the list
-     * @property prefix prefix of the list when converted to source code, e.g. `(`.
-     * @property suffix suffix of the list when converted to source code, e.g. `)`.
      * @property elements list of elements in the list.
      */
-    abstract class NodeList<out E : Node>(
-        val prefix: String = "",
-        val suffix: String = "",
-    ) : Node {
+    abstract class NodeList<out E : Node> : Node {
         abstract val elements: List<E>
     }
 
@@ -29,10 +24,7 @@ sealed interface Node {
      *
      * @property trailingComma trailing comma node of the list if exists.
      */
-    abstract class CommaSeparatedNodeList<out E : Node>(
-        prefix: String,
-        suffix: String,
-    ) : NodeList<E>(prefix, suffix) {
+    abstract class CommaSeparatedNodeList<out E : Node> : NodeList<E>() {
         abstract val trailingComma: Keyword.Comma?
     }
 
@@ -356,7 +348,7 @@ sealed interface Node {
             data class ClassParents(
                 override val elements: List<ClassParent>,
                 override var tag: Any? = null,
-            ) : CommaSeparatedNodeList<ClassParent>("", "") {
+            ) : CommaSeparatedNodeList<ClassParent>() {
                 override val trailingComma: Keyword.Comma? = null
             }
 
@@ -682,7 +674,7 @@ sealed interface Node {
         override val elements: List<FunctionParam>,
         override val trailingComma: Keyword.Comma?,
         override var tag: Any? = null,
-    ) : CommaSeparatedNodeList<FunctionParam>("", "")
+    ) : CommaSeparatedNodeList<FunctionParam>()
 
     /**
      * AST node that represents a formal function parameter of a function declaration. For example, `x: Int` in `fun f(x: Int)` is a function parameter. The node corresponds to KtParameter inside KtNamedFunction.
@@ -725,7 +717,7 @@ sealed interface Node {
         override val elements: List<TypeParam>,
         override val trailingComma: Keyword.Comma?,
         override var tag: Any? = null,
-    ) : CommaSeparatedNodeList<TypeParam>("<", ">")
+    ) : CommaSeparatedNodeList<TypeParam>()
 
     /**
      * AST node that represents a formal type parameter of a function or a class. For example, `T` in `fun <T> f()` is a type parameter. The node corresponds to KtTypeParameter.
@@ -851,7 +843,7 @@ sealed interface Node {
                 override val elements: List<FunctionTypeParam>,
                 override val trailingComma: Keyword.Comma?,
                 override var tag: Any? = null,
-            ) : CommaSeparatedNodeList<FunctionTypeParam>("(", ")")
+            ) : CommaSeparatedNodeList<FunctionTypeParam>()
 
             /**
              * AST node that represents a formal function parameter of a function type. For example, `x: Int` in `(x: Int) -> Unit` is a function parameter. The node corresponds to KtParameter inside KtFunctionType.
@@ -875,7 +867,7 @@ sealed interface Node {
         override val elements: List<TypeArg>,
         override val trailingComma: Keyword.Comma?,
         override var tag: Any? = null,
-    ) : CommaSeparatedNodeList<TypeArg>("<", ">")
+    ) : CommaSeparatedNodeList<TypeArg>()
 
     /**
      * Common interface for AST node that represents an actual type argument. For example, `Int` in `listOf<Int>()` is a type argument. The node corresponds to KtTypeProjection.
@@ -926,7 +918,7 @@ sealed interface Node {
         override val elements: List<ValueArg>,
         override val trailingComma: Keyword.Comma?,
         override var tag: Any? = null,
-    ) : CommaSeparatedNodeList<ValueArg>("(", ")")
+    ) : CommaSeparatedNodeList<ValueArg>()
 
     /**
      * AST node that represents an actual value argument of a function call. For example, `foo(1, 2)` has two value arguments `1` and `2`. The node corresponds to KtValueArgument.
@@ -1643,7 +1635,7 @@ sealed interface Node {
         override val elements: List<LambdaParam>,
         override val trailingComma: Keyword.Comma?,
         override var tag: Any? = null,
-    ) : CommaSeparatedNodeList<LambdaParam>("", "")
+    ) : CommaSeparatedNodeList<LambdaParam>()
 
     /**
      * AST node that represents a formal parameter of lambda expression. For example, `x` in `{ x -> ... }` is a lambda parameter. The node corresponds to KtParameter under KtLambdaExpression.
@@ -1750,7 +1742,7 @@ sealed interface Node {
         override val elements: List<Type>,
         override val trailingComma: Keyword.Comma?,
         override var tag: Any? = null,
-    ) : CommaSeparatedNodeList<Type>("(", ")")
+    ) : CommaSeparatedNodeList<Type>()
 
     /**
      * Common interface for post-modifiers.
@@ -1773,7 +1765,7 @@ sealed interface Node {
             data class TypeConstraints(
                 override val elements: List<TypeConstraint>,
                 override var tag: Any? = null,
-            ) : CommaSeparatedNodeList<TypeConstraint>("", "") {
+            ) : CommaSeparatedNodeList<TypeConstraint>() {
                 override val trailingComma: Keyword.Comma? = null // Trailing comma is not allowed.
             }
 
@@ -1812,7 +1804,7 @@ sealed interface Node {
                 override val elements: List<Expression>,
                 override val trailingComma: Keyword.Comma?,
                 override var tag: Any? = null,
-            ) : CommaSeparatedNodeList<Expression>("[", "]")
+            ) : CommaSeparatedNodeList<Expression>()
         }
     }
 

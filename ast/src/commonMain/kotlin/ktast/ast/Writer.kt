@@ -62,10 +62,10 @@ open class Writer(
         v.apply {
             when (this) {
                 is Node.CommaSeparatedNodeList<*> -> {
-                    children(elements, ",", prefix, suffix, trailingComma)
+                    children(elements, ",", trailingSeparator = trailingComma)
                 }
                 is Node.NodeList<*> -> {
-                    children(elements, prefix = prefix, suffix = suffix)
+                    children(elements)
                 }
                 is Node.KotlinFile -> {
                     children(annotationSets, skipWritingExtrasWithin = true)
