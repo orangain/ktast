@@ -102,6 +102,12 @@ sealed interface Node {
         val rAngle: Keyword.Greater?
     }
 
+    interface WithFunctionParams {
+        val lPar: Keyword.LPar?
+        val params: FunctionParams?
+        val rPar: Keyword.RPar?
+    }
+
     /**
      * Common interface for AST nodes that have statements.
      *
@@ -418,11 +424,11 @@ sealed interface Node {
             data class PrimaryConstructor(
                 override val modifiers: Modifiers?,
                 val constructorKeyword: Keyword.Constructor?,
-                val lPar: Keyword.LPar?,
-                val params: FunctionParams?,
-                val rPar: Keyword.RPar?,
+                override val lPar: Keyword.LPar?,
+                override val params: FunctionParams?,
+                override val rPar: Keyword.RPar?,
                 override var tag: Any? = null,
-            ) : Node, WithModifiers
+            ) : Node, WithModifiers, WithFunctionParams
 
             /**
              * AST node corresponds to KtClassBody.
@@ -478,13 +484,13 @@ sealed interface Node {
                 data class SecondaryConstructor(
                     override val modifiers: Modifiers?,
                     val constructorKeyword: Keyword.Constructor,
-                    val lPar: Keyword.LPar?,
-                    val params: FunctionParams?,
-                    val rPar: Keyword.RPar?,
+                    override val lPar: Keyword.LPar?,
+                    override val params: FunctionParams?,
+                    override val rPar: Keyword.RPar?,
                     val delegationCall: Expression.CallExpression?,
                     val block: Expression.BlockExpression?,
                     override var tag: Any? = null,
-                ) : Declaration, WithModifiers
+                ) : Declaration, WithModifiers, WithFunctionParams
             }
         }
 
@@ -510,15 +516,15 @@ sealed interface Node {
             override val rAngle: Keyword.Greater?,
             val receiverType: Type?,
             val name: Expression.NameExpression?,
-            val lPar: Keyword.LPar?,
-            val params: FunctionParams?,
-            val rPar: Keyword.RPar?,
+            override val lPar: Keyword.LPar?,
+            override val params: FunctionParams?,
+            override val rPar: Keyword.RPar?,
             val returnType: Type?,
             override val postModifiers: List<PostModifier>,
             override val equals: Keyword.Equal?,
             override val body: Expression?,
             override var tag: Any? = null,
-        ) : Declaration, WithModifiers, WithPostModifiers, WithFunctionBody, WithTypeParams
+        ) : Declaration, WithModifiers, WithTypeParams, WithFunctionParams, WithPostModifiers, WithFunctionBody
 
         /**
          * AST node corresponds to KtProperty or KtDestructuringDeclaration.
@@ -967,12 +973,12 @@ sealed interface Node {
              */
             data class CatchClause(
                 val catchKeyword: Keyword.Catch,
-                val lPar: Keyword.LPar,
-                val params: FunctionParams,
-                val rPar: Keyword.RPar,
+                override val lPar: Keyword.LPar,
+                override val params: FunctionParams,
+                override val rPar: Keyword.RPar,
                 val block: BlockExpression,
                 override var tag: Any? = null,
-            ) : Node
+            ) : Node, WithFunctionParams
         }
 
         /**
