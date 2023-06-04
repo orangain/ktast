@@ -344,7 +344,7 @@ sealed interface Node {
              */
             sealed interface ClassParent : Node {
                 val type: Type
-                val args: ValueArgs?
+                val args: FunctionArgs?
                 val byKeyword: Keyword.By?
                 val expression: Expression?
             }
@@ -359,7 +359,7 @@ sealed interface Node {
              */
             data class ConstructorClassParent(
                 override val type: Type.SimpleType,
-                override val args: ValueArgs,
+                override val args: FunctionArgs,
                 override var tag: Any? = null,
             ) : ClassParent {
                 override val byKeyword: Keyword.By? = null
@@ -380,7 +380,7 @@ sealed interface Node {
                 override val expression: Expression,
                 override var tag: Any? = null,
             ) : ClassParent {
-                override val args: ValueArgs? = null
+                override val args: FunctionArgs? = null
             }
 
             /**
@@ -395,7 +395,7 @@ sealed interface Node {
                 override val type: Type,
                 override var tag: Any? = null,
             ) : ClassParent {
-                override val args: ValueArgs? = null
+                override val args: FunctionArgs? = null
                 override val byKeyword: Keyword.By? = null
                 override val expression: Expression? = null
             }
@@ -439,7 +439,7 @@ sealed interface Node {
                 data class EnumEntry(
                     override val modifiers: Modifiers?,
                     val name: Expression.NameExpression,
-                    val args: ValueArgs?,
+                    val args: FunctionArgs?,
                     val classBody: ClassBody?,
                     override var tag: Any? = null,
                 ) : Node, WithModifiers
@@ -889,7 +889,7 @@ sealed interface Node {
     /**
      * AST node corresponds to KtValueArgumentList or KtInitializerList.
      */
-    data class ValueArgs(
+    data class FunctionArgs(
         override val elements: List<FunctionArg>,
         override val trailingComma: Keyword.Comma?,
         override var tag: Any? = null,
@@ -1532,7 +1532,7 @@ sealed interface Node {
         data class CallExpression(
             val calleeExpression: Expression,
             val typeArgs: TypeArgs?,
-            val args: ValueArgs?,
+            val args: FunctionArgs?,
             val lambdaArg: LambdaArg?,
             override var tag: Any? = null,
         ) : Expression {
@@ -1679,7 +1679,7 @@ sealed interface Node {
              */
             data class Annotation(
                 val type: Type.SimpleType,
-                val args: ValueArgs?,
+                val args: FunctionArgs?,
                 override var tag: Any? = null,
             ) : Node
         }

@@ -253,7 +253,7 @@ open class MutableVisitor(
                     is Node.Type.DynamicType -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                     )
-                    is Node.ValueArgs -> copy(
+                    is Node.FunctionArgs -> copy(
                         elements = visitChildren(elements, newCh),
                         trailingComma = visitChildren(trailingComma, newCh),
                     )
