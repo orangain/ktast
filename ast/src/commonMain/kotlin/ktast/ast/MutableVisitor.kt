@@ -96,8 +96,10 @@ open class MutableVisitor(
                         rPar = visitChildren(rPar, newCh),
                     )
                     is Node.Declaration.ClassDeclaration.ClassBody -> copy(
+                        lBrace = visitChildren(lBrace, newCh),
                         enumEntries = visitChildren(enumEntries, newCh),
                         declarations = visitChildren(declarations, newCh),
+                        rBrace = visitChildren(rBrace, newCh),
                     )
                     is Node.Declaration.ClassDeclaration.ClassBody.Initializer -> copy(
                         modifiers = visitChildren(modifiers, newCh),

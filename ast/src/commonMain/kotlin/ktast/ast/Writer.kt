@@ -127,10 +127,10 @@ open class Writer(
                     commaSeparatedChildren(lPar, params, rPar)
                 }
                 is Node.Declaration.ClassDeclaration.ClassBody -> {
-                    append("{")
+                    children(lBrace)
                     children(enumEntries, skipWritingExtrasWithin = true)
                     children(declarations)
-                    append("}")
+                    children(rBrace)
                 }
                 is Node.Declaration.ClassDeclaration.ClassBody.Initializer -> {
                     children(modifiers)

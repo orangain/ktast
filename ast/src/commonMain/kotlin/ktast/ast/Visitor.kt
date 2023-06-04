@@ -93,8 +93,10 @@ open class Visitor {
                 visitChildren(rPar)
             }
             is Node.Declaration.ClassDeclaration.ClassBody -> {
+                visitChildren(lBrace)
                 visitChildren(enumEntries)
                 visitChildren(declarations)
+                visitChildren(rBrace)
             }
             is Node.Declaration.ClassDeclaration.ClassBody.Initializer -> {
                 visitChildren(modifiers)
