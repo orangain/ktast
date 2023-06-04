@@ -400,8 +400,8 @@ open class Converter {
         }
     }
 
-    open fun convertContextReceiver(v: KtContextReceiverList) = Node.Type.FunctionType.ContextReceiver(
-        receiverTypes = Node.Type.FunctionType.ContextReceiverTypes(
+    open fun convertContextReceiver(v: KtContextReceiverList) = Node.ContextReceiver(
+        receiverTypes = Node.ContextReceiverTypes(
             elements = v.contextReceivers().map(::convertType),
             trailingComma = null,
         ).mapNotCorrespondsPsiElement(v)

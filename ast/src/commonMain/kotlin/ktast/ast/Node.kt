@@ -795,25 +795,6 @@ sealed interface Node {
         ) : Type {
 
             /**
-             * AST node that represents a context receiver. The node corresponds to KtContextReceiverList.
-             *
-             * @property receiverTypes receiver types.
-             */
-            data class ContextReceiver(
-                val receiverTypes: ContextReceiverTypes,
-                override var tag: Any? = null,
-            ) : Node
-
-            /**
-             * Virtual AST node that represents a list of context receiver types.
-             */
-            data class ContextReceiverTypes(
-                override val elements: List<Type>,
-                override val trailingComma: Keyword.Comma?,
-                override var tag: Any? = null,
-            ) : CommaSeparatedNodeList<Type>("(", ")")
-
-            /**
              * AST node corresponds to KtParameterList under KtFunctionType.
              */
             data class FunctionTypeParams(
@@ -1693,6 +1674,25 @@ sealed interface Node {
     }
 
     /**
+     * AST node that represents a context receiver. The node corresponds to KtContextReceiverList.
+     *
+     * @property receiverTypes receiver types.
+     */
+    data class ContextReceiver(
+        val receiverTypes: ContextReceiverTypes,
+        override var tag: Any? = null,
+    ) : Node
+
+    /**
+     * Virtual AST node that represents a list of context receiver types.
+     */
+    data class ContextReceiverTypes(
+        override val elements: List<Type>,
+        override val trailingComma: Keyword.Comma?,
+        override var tag: Any? = null,
+    ) : CommaSeparatedNodeList<Type>("(", ")")
+
+    /**
      * Common interface for post-modifiers.
      */
     sealed interface PostModifier : Node {
@@ -2222,5 +2222,4 @@ sealed interface Node {
             override val text = ";"
         }
     }
-
 }

@@ -196,7 +196,7 @@ open class Visitor {
                 visitChildren(params)
                 visitChildren(returnType)
             }
-            is Node.Type.FunctionType.ContextReceiver -> {
+            is Node.ContextReceiver -> {
                 visitChildren(receiverTypes)
             }
             is Node.Type.FunctionType.FunctionTypeParam -> {

@@ -256,7 +256,7 @@ open class Writer(
                     }
                     children(returnType)
                 }
-                is Node.Type.FunctionType.ContextReceiver -> {
+                is Node.ContextReceiver -> {
                     append("context")
                     children(receiverTypes)
                 }
