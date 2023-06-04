@@ -1265,7 +1265,9 @@ sealed interface Node {
          */
         data class LambdaExpression(
             val params: LambdaParams?,
+            val lBrace: Keyword.LBrace,
             val lambdaBody: LambdaBody?,
+            val rBrace: Keyword.RBrace,
             override var tag: Any? = null,
         ) : Expression {
 

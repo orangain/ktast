@@ -311,8 +311,10 @@ open class Visitor {
             }
             is Node.Expression.ConstantLiteralExpression -> {}
             is Node.Expression.LambdaExpression -> {
+                visitChildren(lBrace)
                 visitChildren(params)
                 visitChildren(lambdaBody)
+                visitChildren(rBrace)
             }
             is Node.LambdaParam -> {
                 visitChildren(lPar)

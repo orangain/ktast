@@ -366,13 +366,13 @@ open class Writer(
                 is Node.Expression.ConstantLiteralExpression ->
                     append(text)
                 is Node.Expression.LambdaExpression -> {
-                    append("{")
+                    children(lBrace)
                     if (params != null) {
                         commaSeparatedChildren(params)
                         append("->")
                     }
                     children(lambdaBody)
-                    append("}")
+                    children(rBrace)
                 }
                 is Node.LambdaParam -> {
                     children(lPar)

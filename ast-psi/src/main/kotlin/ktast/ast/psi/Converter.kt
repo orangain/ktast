@@ -629,8 +629,10 @@ open class Converter {
         }.map(v)
 
     open fun convertLambda(v: KtLambdaExpression) = Node.Expression.LambdaExpression(
+        lBrace = convertKeyword(v.lBrace),
         params = v.functionLiteral.valueParameterList?.let(::convertLambdaParams),
-        lambdaBody = v.bodyExpression?.let(::convertLambdaBody)
+        lambdaBody = v.bodyExpression?.let(::convertLambdaBody),
+        rBrace = convertKeyword(v.rBrace),
     ).map(v)
 
     open fun convertLambdaParams(v: KtParameterList) = Node.LambdaParams(
@@ -668,7 +670,7 @@ open class Converter {
     }
 
     open fun convertLambdaBody(v: KtBlockExpression) = Node.Expression.LambdaExpression.LambdaBody(
-        statements = v.statements.map(::convertStatement)
+        statements = v.statements.map(::convertStatement),
     ).map(v)
 
     open fun convertThis(v: KtThisExpression) = Node.Expression.ThisExpression(
@@ -1010,6 +1012,12 @@ open class Converter {
                     as? KtContainerNode ?: error("No condition for $this")
         internal val KtDoWhileExpression.doKeyword: PsiElement
             get() = findChildByType(this, KtTokens.DO_KEYWORD) ?: error("No do keyword for $this")
+
+        internal val KtLambdaExpression.lBrace: PsiElement
+            get() = leftCurlyBrace.psi ?: error("No lBrace for $this")
+        internal val KtLambdaExpression.rBrace: PsiElement
+            get() = rightCurlyBrace?.psi
+                ?: error("No rBrace for $this") // It seems funny, but lBrace is non-null, while rBrace is nullable.
 
         internal val KtDoubleColonExpression.questionMarks
             get() = allChildren
