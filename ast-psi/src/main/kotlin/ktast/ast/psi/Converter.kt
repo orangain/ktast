@@ -400,7 +400,9 @@ open class Converter {
                 qualifiers = generateSequence(typeEl.qualifier) { it.qualifier }.toList().reversed()
                     .map(::convertTypeSimpleQualifier),
                 name = convertName(typeEl.referenceExpression ?: error("No type name for $typeEl")),
+                lAngle = typeEl.typeArgumentList?.leftAngle?.let(::convertKeyword),
                 typeArgs = typeEl.typeArgumentList?.let(::convertTypeArgs),
+                rAngle = typeEl.typeArgumentList?.rightAngle?.let(::convertKeyword),
             ).map(mapTarget ?: typeEl)
             is KtNullableType -> Node.Type.NullableType(
                 modifiers = modifiers,
@@ -453,7 +455,9 @@ open class Converter {
 
     open fun convertTypeSimpleQualifier(v: KtUserType) = Node.Type.SimpleType.SimpleTypeQualifier(
         name = convertName(v.referenceExpression ?: error("No type name for $v")),
+        lAngle = v.typeArgumentList?.leftAngle?.let(::convertKeyword),
         typeArgs = v.typeArgumentList?.let(::convertTypeArgs),
+        rAngle = v.typeArgumentList?.rightAngle?.let(::convertKeyword),
     ).map(v)
 
     open fun convertValueArgs(v: KtValueArgumentList) = Node.ValueArgs(
@@ -781,7 +785,9 @@ open class Converter {
 
     open fun convertCall(v: KtCallElement) = Node.Expression.CallExpression(
         calleeExpression = convertExpression(v.calleeExpression ?: error("No call expr for $v")),
+        lAngle = v.typeArgumentList?.leftAngle?.let(::convertKeyword),
         typeArgs = v.typeArgumentList?.let(::convertTypeArgs),
+        rAngle = v.typeArgumentList?.rightAngle?.let(::convertKeyword),
         args = v.valueArgumentList?.let(::convertValueArgs),
         lambdaArg = v.lambdaArguments.also {
             if (it.size >= 2) {
@@ -943,6 +949,11 @@ open class Converter {
             get() = findChildByType(this, KtTokens.GT)
         internal val KtTypeParameterListOwner.whereKeyword: PsiElement
             get() = findChildByType(this, KtTokens.WHERE_KEYWORD) ?: error("No where keyword for $this")
+
+        internal val KtTypeArgumentList.leftAngle: PsiElement?
+            get() = findChildByType(this, KtTokens.LT)
+        internal val KtTypeArgumentList.rightAngle: PsiElement?
+            get() = findChildByType(this, KtTokens.GT)
 
         internal val KtDeclarationWithInitializer.equalsToken: PsiElement
             get() = findChildByType(this, KtTokens.EQ) ?: error("No equals token for $this")

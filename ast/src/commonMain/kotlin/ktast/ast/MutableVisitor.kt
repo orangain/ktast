@@ -238,11 +238,15 @@ open class MutableVisitor(
                         modifiers = visitChildren(modifiers, newCh),
                         qualifiers = visitChildren(qualifiers, newCh),
                         name = visitChildren(name, newCh),
+                        lAngle = visitChildren(lAngle, newCh),
                         typeArgs = visitChildren(typeArgs, newCh),
+                        rAngle = visitChildren(rAngle, newCh),
                     )
                     is Node.Type.SimpleType.SimpleTypeQualifier -> copy(
                         name = visitChildren(name, newCh),
+                        lAngle = visitChildren(lAngle, newCh),
                         typeArgs = visitChildren(typeArgs, newCh),
+                        rAngle = visitChildren(rAngle, newCh),
                     )
                     is Node.Type.NullableType -> copy(
                         modifiers = visitChildren(modifiers, newCh),
@@ -411,7 +415,9 @@ open class MutableVisitor(
                     )
                     is Node.Expression.CallExpression -> copy(
                         calleeExpression = visitChildren(calleeExpression, newCh),
+                        lAngle = visitChildren(lAngle, newCh),
                         typeArgs = visitChildren(typeArgs, newCh),
+                        rAngle = visitChildren(rAngle, newCh),
                         args = visitChildren(args, newCh),
                         lambdaArg = visitChildren(lambdaArg, newCh)
                     )

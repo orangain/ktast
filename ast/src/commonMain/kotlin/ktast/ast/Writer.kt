@@ -271,11 +271,11 @@ open class Writer(
                         append(".")
                     }
                     children(name)
-                    children(typeArgs)
+                    commaSeparatedChildren(lAngle, typeArgs, rAngle)
                 }
                 is Node.Type.SimpleType.SimpleTypeQualifier -> {
                     children(name)
-                    children(typeArgs)
+                    commaSeparatedChildren(lAngle, typeArgs, rAngle)
                 }
                 is Node.Type.NullableType -> {
                     children(modifiers)
@@ -447,7 +447,7 @@ open class Writer(
                     children(annotationSets).also { children(statement) }
                 is Node.Expression.CallExpression -> {
                     children(calleeExpression)
-                    children(typeArgs)
+                    commaSeparatedChildren(lAngle, typeArgs, rAngle)
                     children(args)
                     children(lambdaArg)
                 }

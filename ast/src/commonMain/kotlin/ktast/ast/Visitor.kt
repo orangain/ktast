@@ -213,11 +213,15 @@ open class Visitor {
                 visitChildren(modifiers)
                 visitChildren(qualifiers)
                 visitChildren(name)
+                visitChildren(lAngle)
                 visitChildren(typeArgs)
+                visitChildren(rAngle)
             }
             is Node.Type.SimpleType.SimpleTypeQualifier -> {
                 visitChildren(name)
+                visitChildren(lAngle)
                 visitChildren(typeArgs)
+                visitChildren(rAngle)
             }
             is Node.Type.NullableType -> {
                 visitChildren(modifiers)
@@ -378,7 +382,9 @@ open class Visitor {
             }
             is Node.Expression.CallExpression -> {
                 visitChildren(calleeExpression)
+                visitChildren(lAngle)
                 visitChildren(typeArgs)
+                visitChildren(rAngle)
                 visitChildren(args)
                 visitChildren(lambdaArg)
             }

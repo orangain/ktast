@@ -108,6 +108,12 @@ sealed interface Node {
         val rPar: Keyword.RPar?
     }
 
+    interface WithTypeArgs {
+        val lAngle: Keyword.Less?
+        val typeArgs: TypeArgs?
+        val rAngle: Keyword.Greater?
+    }
+
     /**
      * Common interface for AST nodes that have statements.
      *
@@ -757,9 +763,8 @@ sealed interface Node {
             override var tag: Any? = null,
         ) : Type
 
-        private interface NameWithTypeArgs {
+        private interface NameWithTypeArgs : WithTypeArgs {
             val name: Expression.NameExpression
-            val typeArgs: TypeArgs?
         }
 
         /**
@@ -774,7 +779,9 @@ sealed interface Node {
             override val modifiers: Modifiers?,
             val qualifiers: List<SimpleTypeQualifier>,
             override val name: Expression.NameExpression,
+            override val lAngle: Keyword.Less?,
             override val typeArgs: TypeArgs?,
+            override val rAngle: Keyword.Greater?,
             override var tag: Any? = null,
         ) : Type, NameWithTypeArgs {
             /**
@@ -785,7 +792,9 @@ sealed interface Node {
              */
             data class SimpleTypeQualifier(
                 override val name: Expression.NameExpression,
+                override val lAngle: Keyword.Less?,
                 override val typeArgs: TypeArgs?,
+                override val rAngle: Keyword.Greater?,
                 override var tag: Any? = null,
             ) : Node, NameWithTypeArgs
         }
@@ -1542,11 +1551,13 @@ sealed interface Node {
          */
         data class CallExpression(
             val calleeExpression: Expression,
-            val typeArgs: TypeArgs?,
+            override val lAngle: Keyword.Less?,
+            override val typeArgs: TypeArgs?,
+            override val rAngle: Keyword.Greater?,
             val args: ValueArgs?,
             val lambdaArg: LambdaArg?,
             override var tag: Any? = null,
-        ) : Expression {
+        ) : Expression, WithTypeArgs {
             /**
              * AST node corresponds to KtLambdaArgument.
              *
