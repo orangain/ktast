@@ -62,7 +62,7 @@ open class Writer(
         v.apply {
             when (this) {
                 is Node.CommaSeparatedNodeList<*> -> {
-                    children(elements, ",", trailingSeparator = trailingComma)
+                    error("CommaSeparatedNodeList should be handled by commaSeparatedChildren")
                 }
                 is Node.NodeList<*> -> {
                     children(elements)
@@ -104,7 +104,7 @@ open class Writer(
                     children(primaryConstructor)
                     if (classParents != null) {
                         append(":")
-                        children(classParents)
+                        commaSeparatedChildren(classParents)
                     }
                     children(typeConstraintSet)
                     children(classBody)
@@ -197,7 +197,7 @@ open class Writer(
                     children(setKeyword)
                     if (body != null) {
                         append("(")
-                        children(params)
+                        commaSeparatedChildren(params)
                         append(")")
                         children(postModifiers)
                         children(equals)
@@ -366,7 +366,7 @@ open class Writer(
                 is Node.Expression.LambdaExpression -> {
                     append("{")
                     if (params != null) {
-                        children(params)
+                        commaSeparatedChildren(params)
                         append("->")
                     }
                     children(lambdaBody)
@@ -491,7 +491,7 @@ open class Writer(
                 }
                 is Node.PostModifier.TypeConstraintSet -> {
                     children(whereKeyword)
-                    children(constraints)
+                    commaSeparatedChildren(constraints)
                 }
                 is Node.PostModifier.TypeConstraintSet.TypeConstraint -> {
                     children(annotationSets)
@@ -514,6 +514,9 @@ open class Writer(
     }
 
     protected fun Node.children(vararg v: Node?) = this@Writer.also { v.forEach { visitChildren(it) } }
+
+    protected fun Node.commaSeparatedChildren(v: Node.CommaSeparatedNodeList<*>?) =
+        commaSeparatedChildren(null, v, null)
 
     protected fun Node.commaSeparatedChildren(prefix: Node?, v: Node.CommaSeparatedNodeList<*>?, suffix: Node?) =
         this@Writer.also {
