@@ -196,6 +196,8 @@ open class Writer(
                     children(modifiers)
                     children(setKeyword)
                     if (body != null) {
+                        checkNotNull(params)
+
                         append("(")
                         commaSeparatedChildren(params)
                         append(")")
@@ -515,7 +517,7 @@ open class Writer(
 
     protected fun Node.children(vararg v: Node?) = this@Writer.also { v.forEach { visitChildren(it) } }
 
-    protected fun Node.commaSeparatedChildren(v: Node.CommaSeparatedNodeList<*>?) =
+    protected fun Node.commaSeparatedChildren(v: Node.CommaSeparatedNodeList<*>) =
         commaSeparatedChildren(null, v, null)
 
     protected fun Node.commaSeparatedChildren(prefix: Node?, v: Node.CommaSeparatedNodeList<*>?, suffix: Node?) =

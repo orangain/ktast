@@ -644,7 +644,15 @@ sealed interface Node {
                 override val equals: Keyword.Equal?,
                 override val body: Expression?,
                 override var tag: Any? = null,
-            ) : Accessor
+            ) : Accessor {
+                init {
+                    if (params == null) {
+                        require(equals == null && body == null) { "equals and body must be null when params is null" }
+                    } else {
+                        require(body != null) { "body must be non-null when params is non-null" }
+                    }
+                }
+            }
         }
 
         /**
