@@ -68,6 +68,9 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
             private fun fillExtrasFor(element: PsiElement) {
                 if (isExtra(element)) {
                     extraElementsSinceLastNode.add(element)
+                    if (isSemicolon(element) && lastNode != null) {
+                        fillExtrasAfter(lastNode!!)
+                    }
                     return
                 }
                 val node = psiIdentitiesToNodes[System.identityHashCode(element)]
@@ -107,7 +110,9 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
     }
 
     protected open fun isExtra(e: PsiElement) =
-        e is PsiWhiteSpace || e is PsiComment || e.node.elementType == KtTokens.SEMICOLON
+        e is PsiWhiteSpace || e is PsiComment || isSemicolon(e)
+
+    protected fun isSemicolon(e: PsiElement) = e.node.elementType == KtTokens.SEMICOLON
 
     protected open fun convertExtras(elems: List<PsiElement>): List<Node.Extra> = elems.mapNotNull { elem ->
         // Ignore elems we've done before
