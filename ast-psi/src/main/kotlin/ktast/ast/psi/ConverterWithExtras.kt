@@ -54,6 +54,8 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
                 val node = psiIdentitiesToNodes[System.identityHashCode(element)] ?: return
                 if (lastNode != null) {
                     fillExtrasAfterForLastNode()
+                } else if (node === rootNode) {
+                    fillExtrasWithin(node)
                 }
                 lastNode = node
             }
@@ -86,6 +88,13 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
             private fun fillExtrasAfterForLastNode() {
                 convertExtras(extraElementsSinceLastNode).also {
                     if (it.isNotEmpty()) extrasAfter[lastNode] = (extrasAfter[lastNode] ?: listOf()) + it
+                }
+                extraElementsSinceLastNode.clear()
+            }
+
+            private fun fillExtrasWithin(node: Node) {
+                convertExtras(extraElementsSinceLastNode).also {
+                    if (it.isNotEmpty()) extrasWithin[node] = (extrasWithin[node] ?: listOf()) + it
                 }
                 extraElementsSinceLastNode.clear()
             }
