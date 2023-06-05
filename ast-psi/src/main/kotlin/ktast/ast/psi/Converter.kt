@@ -463,7 +463,7 @@ open class Converter {
         lAngle = v.typeArgumentList?.leftAngle?.let(::convertKeyword),
         typeArgs = v.typeArgumentList?.let(::convertTypeArgs),
         rAngle = v.typeArgumentList?.rightAngle?.let(::convertKeyword),
-    ).map(v)
+    ).mapNotCorrespondsPsiElement(v) // Don't map v because v necessarily corresponds to a single name expression.
 
     open fun convertValueArgs(v: KtValueArgumentList) = Node.ValueArgs(
         elements = v.arguments.map(::convertValueArg),
