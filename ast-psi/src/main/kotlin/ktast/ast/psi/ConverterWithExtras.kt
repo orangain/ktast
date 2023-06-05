@@ -42,10 +42,11 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
     }
 
     protected open fun fillWholeExtras(rootNode: Node.KotlinEntry, rootElement: PsiElement) {
-        var lastNode: Node? = null
         val extraElementsSinceLastNode = mutableListOf<PsiElement>()
 
         val visitor = object : PsiElementVisitor() {
+            private var lastNode: Node? = null
+
             override fun onBeginElement(element: PsiElement) {
                 fillExtrasFor(element)
             }
@@ -53,7 +54,7 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
             override fun onEndElement(element: PsiElement) {
                 val node = psiIdentitiesToNodes[System.identityHashCode(element)] ?: return
                 if (lastNode != null) {
-                    fillExtrasAfterForLastNode()
+                    fillExtrasAfter(lastNode!!)
                 } else if (node === rootNode) {
                     fillExtrasWithin(node)
                 }
@@ -73,21 +74,24 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
 
                 if (node == null) {
                     if (lastNode != null) {
-                        fillExtrasAfterForLastNode()
+                        fillExtrasAfter(lastNode!!)
                     }
-                    lastNode = null
                 } else {
-                    convertExtras(extraElementsSinceLastNode).also {
-                        if (it.isNotEmpty()) extrasBefore[node] = (extrasBefore[node] ?: listOf()) + it
-                    }
-                    extraElementsSinceLastNode.clear()
-                    lastNode = node
+                    fillExtrasBefore(node)
                 }
+                lastNode = node
             }
 
-            private fun fillExtrasAfterForLastNode() {
+            private fun fillExtrasBefore(node: Node) {
                 convertExtras(extraElementsSinceLastNode).also {
-                    if (it.isNotEmpty()) extrasAfter[lastNode] = (extrasAfter[lastNode] ?: listOf()) + it
+                    if (it.isNotEmpty()) extrasBefore[node] = (extrasBefore[node] ?: listOf()) + it
+                }
+                extraElementsSinceLastNode.clear()
+            }
+
+            private fun fillExtrasAfter(node: Node) {
+                convertExtras(extraElementsSinceLastNode).also {
+                    if (it.isNotEmpty()) extrasAfter[node] = (extrasAfter[node] ?: listOf()) + it
                 }
                 extraElementsSinceLastNode.clear()
             }
