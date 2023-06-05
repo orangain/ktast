@@ -52,12 +52,9 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
 
             override fun onEndElement(element: PsiElement) {
                 val node = psiIdentitiesToNodes[System.identityHashCode(element)] ?: return
-                convertExtras(extraElementsSinceLastNode).also {
-                    if (it.isNotEmpty()) {
-                        extrasAfter[lastNode] = (extrasAfter[lastNode] ?: listOf()) + it
-                    }
+                if (lastNode != null) {
+                    fillExtrasAfterForLastNode()
                 }
-                extraElementsSinceLastNode.clear()
                 lastNode = node
             }
 
@@ -73,12 +70,10 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
                 val node = psiIdentitiesToNodes[System.identityHashCode(element)]
 
                 if (node == null) {
-                    if (lastNode != null && extrasAfter[lastNode] == null) {
-                        convertExtras(extraElementsSinceLastNode).also {
-                            if (it.isNotEmpty()) extrasAfter[lastNode] = (extrasAfter[lastNode] ?: listOf()) + it
-                        }
-                        extraElementsSinceLastNode.clear()
+                    if (lastNode != null) {
+                        fillExtrasAfterForLastNode()
                     }
+                    lastNode = null
                 } else {
                     convertExtras(extraElementsSinceLastNode).also {
                         if (it.isNotEmpty()) extrasBefore[node] = (extrasBefore[node] ?: listOf()) + it
@@ -86,6 +81,13 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
                     extraElementsSinceLastNode.clear()
                     lastNode = node
                 }
+            }
+
+            private fun fillExtrasAfterForLastNode() {
+                convertExtras(extraElementsSinceLastNode).also {
+                    if (it.isNotEmpty()) extrasAfter[lastNode] = (extrasAfter[lastNode] ?: listOf()) + it
+                }
+                extraElementsSinceLastNode.clear()
             }
         }
         visitor.visit(rootElement)
