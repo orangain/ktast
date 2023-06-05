@@ -5,7 +5,7 @@ import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.kdoc.psi.api.KDocElement
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
 
-open class PsiElementVisitor {
+internal open class PsiElementVisitor {
     fun visit(element: PsiElement) {
         if (element is LeafPsiElement || element is KDocElement) {
             onLeafElement(element)
