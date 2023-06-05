@@ -416,6 +416,7 @@ open class Converter {
             ).mapNotCorrespondsPsiElement(typeEl)
             is KtDynamicType -> Node.Type.DynamicType(
                 modifiers = modifiers,
+                dynamicKeyword = convertKeyword(typeEl.dynamicKeyword),
             ).mapNotCorrespondsPsiElement(typeEl)
             else -> error("Unrecognized type of $typeEl")
         }
@@ -1026,6 +1027,9 @@ open class Converter {
                 .takeWhile { it.node.elementType != KtTokens.COLONCOLON }
                 .filter { it.node.elementType == KtTokens.QUEST }
                 .toList()
+
+        internal val KtDynamicType.dynamicKeyword: PsiElement
+            get() = findChildByType(this, KtTokens.DYNAMIC_KEYWORD) ?: error("No dynamic keyword for $this")
 
         internal val KtAnnotation.atSymbol: PsiElement?
             get() = findChildByType(this, KtTokens.AT)

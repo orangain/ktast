@@ -246,6 +246,7 @@ open class Visitor {
             }
             is Node.Type.DynamicType -> {
                 visitChildren(modifiers)
+                visitChildren(dynamicKeyword)
             }
             is Node.ValueArg -> {
                 visitChildren(name)

@@ -293,7 +293,7 @@ open class Writer(
                 }
                 is Node.Type.DynamicType -> {
                     children(modifiers)
-                    append("dynamic")
+                    children(dynamicKeyword)
                 }
                 is Node.ValueArg -> {
                     if (name != null) children(name).append("=")
