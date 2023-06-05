@@ -5,7 +5,6 @@ import ktast.ast.Node
 import org.jetbrains.kotlin.com.intellij.psi.PsiComment
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
-import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.lexer.KtTokens
 import java.util.*
 
@@ -48,12 +47,7 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
 
         val visitor = object : PsiElementVisitor() {
             override fun onBeginElement(element: PsiElement) {
-                val node = psiIdentitiesToNodes[System.identityHashCode(element)] ?: return
-                convertExtras(extraElementsSinceLastNode).also {
-                    if (it.isNotEmpty()) extrasBefore[node] = (extrasBefore[node] ?: listOf()) + it
-                }
-                extraElementsSinceLastNode.clear()
-                lastNode = node
+                fillExtrasFor(element)
             }
 
             override fun onEndElement(element: PsiElement) {
@@ -67,12 +61,17 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
                 lastNode = node
             }
 
-            override fun onLeafElement(element: LeafPsiElement) {
+            override fun onLeafElement(element: PsiElement) {
+                fillExtrasFor(element)
+            }
+
+            private fun fillExtrasFor(element: PsiElement) {
                 if (isExtra(element)) {
                     extraElementsSinceLastNode.add(element)
                     return
                 }
                 val node = psiIdentitiesToNodes[System.identityHashCode(element)]
+
                 if (node == null) {
                     if (lastNode != null && extrasAfter[lastNode] == null) {
                         convertExtras(extraElementsSinceLastNode).also {
