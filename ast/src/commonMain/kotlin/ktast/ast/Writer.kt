@@ -201,8 +201,6 @@ open class Writer(
                     children(modifiers)
                     children(setKeyword)
                     if (body != null) {
-                        checkNotNull(params)
-
                         append("(")
                         commaSeparatedChildren(params)
                         append(")")
@@ -249,10 +247,8 @@ open class Writer(
                     children(contextReceiver)
                     children(receiverType)
                     children(dotSymbol)
-                    if (params != null) {
-                        commaSeparatedChildren(lPar, params, rPar)
-                        append("->")
-                    }
+                    commaSeparatedChildren(lPar, params, rPar)
+                    append("->")
                     children(returnType)
                 }
                 is Node.ContextReceiver -> {
@@ -363,8 +359,8 @@ open class Writer(
                     append(text)
                 is Node.Expression.LambdaExpression -> {
                     children(lBrace)
-                    if (params != null) {
-                        commaSeparatedChildren(params)
+                    commaSeparatedChildren(params)
+                    if (params.isNotEmpty()) {
                         append("->")
                     }
                     children(lambdaBody)

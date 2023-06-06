@@ -612,17 +612,17 @@ sealed interface Node {
             data class Setter(
                 override val modifiers: List<Modifier>,
                 val setKeyword: Keyword.Set,
-                val params: LambdaParams?,
+                val params: List<LambdaParam>,
                 override val postModifiers: List<PostModifier>,
                 override val equals: Keyword.Equal?,
                 override val body: Expression?,
                 override var tag: Any? = null,
             ) : Accessor {
                 init {
-                    if (params == null) {
-                        require(equals == null && body == null) { "equals and body must be null when params is null" }
+                    if (params.isEmpty()) {
+                        require(equals == null && body == null) { "equals and body must be null when params is empty" }
                     } else {
-                        require(body != null) { "body must be non-null when params is non-null" }
+                        require(body != null) { "body must be non-null when params is non-empty" }
                     }
                 }
             }
@@ -795,19 +795,11 @@ sealed interface Node {
             val receiverType: Type?,
             val dotSymbol: Keyword.Dot?,
             val lPar: Keyword.LPar?,
-            val params: FunctionTypeParams?,
+            val params: List<FunctionTypeParam>,
             val rPar: Keyword.RPar?,
             val returnType: Type,
             override var tag: Any? = null,
         ) : Type {
-
-            /**
-             * AST node corresponds to KtParameterList under KtFunctionType.
-             */
-            data class FunctionTypeParams(
-                override val elements: List<FunctionTypeParam>,
-                override var tag: Any? = null,
-            ) : CommaSeparatedNodeList<FunctionTypeParam>()
 
             /**
              * AST node that represents a formal function parameter of a function type. For example, `x: Int` in `(x: Int) -> Unit` is a function parameter. The node corresponds to KtParameter inside KtFunctionType.
@@ -1214,7 +1206,7 @@ sealed interface Node {
          * @property lambdaBody body of the lambda expression.
          */
         data class LambdaExpression(
-            val params: LambdaParams?,
+            val params: List<LambdaParam>,
             val lBrace: Keyword.LBrace,
             val lambdaBody: LambdaBody?,
             val rBrace: Keyword.RBrace,
@@ -1573,14 +1565,6 @@ sealed interface Node {
     }
 
     /**
-     * AST node corresponds to KtParameterList under KtLambdaExpression.
-     */
-    data class LambdaParams(
-        override val elements: List<LambdaParam>,
-        override var tag: Any? = null,
-    ) : CommaSeparatedNodeList<LambdaParam>()
-
-    /**
      * AST node that represents a formal parameter of lambda expression. For example, `x` in `{ x -> ... }` is a lambda parameter. The node corresponds to KtParameter under KtLambdaExpression.
      *
      * @property lPar left parenthesis of this parameter if exists, otherwise `null`.
@@ -1656,22 +1640,14 @@ sealed interface Node {
     /**
      * AST node that represents a context receiver. The node corresponds to KtContextReceiverList.
      *
-     * @property receiverTypes receiver types.
+     * @property receiverTypes list of receiver types.
      */
     data class ContextReceiver(
         val lPar: Keyword.LPar,
-        val receiverTypes: ContextReceiverTypes,
+        val receiverTypes: List<Type>,
         val rPar: Keyword.RPar,
         override var tag: Any? = null,
     ) : Node
-
-    /**
-     * Virtual AST node that represents a list of context receiver types.
-     */
-    data class ContextReceiverTypes(
-        override val elements: List<Type>,
-        override var tag: Any? = null,
-    ) : CommaSeparatedNodeList<Type>()
 
     /**
      * Common interface for post-modifiers.
@@ -1685,16 +1661,9 @@ sealed interface Node {
          */
         data class TypeConstraintSet(
             val whereKeyword: Keyword.Where,
-            val constraints: TypeConstraints,
+            val constraints: List<TypeConstraint>,
             override var tag: Any? = null,
         ) : PostModifier {
-            /**
-             * AST node corresponds to KtTypeConstraintList.
-             */
-            data class TypeConstraints(
-                override val elements: List<TypeConstraint>,
-                override var tag: Any? = null,
-            ) : CommaSeparatedNodeList<TypeConstraint>()
 
             /**
              * AST node corresponds to KtTypeConstraint.
@@ -1720,18 +1689,10 @@ sealed interface Node {
         data class Contract(
             val contractKeyword: Keyword.Contract,
             val lBracket: Keyword.LBracket,
-            val contractEffects: ContractEffects,
+            val contractEffects: List<Expression>,
             val rBracket: Keyword.RBracket,
             override var tag: Any? = null,
-        ) : PostModifier {
-            /**
-             * AST node corresponds to KtContractEffectList.
-             */
-            data class ContractEffects(
-                override val elements: List<Expression>,
-                override var tag: Any? = null,
-            ) : CommaSeparatedNodeList<Expression>()
-        }
+        ) : PostModifier
     }
 
     /**

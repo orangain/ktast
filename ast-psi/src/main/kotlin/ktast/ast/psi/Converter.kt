@@ -262,7 +262,7 @@ open class Converter {
         ).map(v) else Node.Declaration.PropertyDeclaration.Setter(
             modifiers = convertModifiers(v.modifierList),
             setKeyword = convertKeyword(v.setKeyword),
-            params = v.parameterList?.let(::convertLambdaParams),
+            params = convertLambdaParams(v.parameterList),
             postModifiers = convertPostModifiers(v),
             equals = v.equalsToken?.let(::convertKeyword),
             body = v.bodyExpression?.let(this::convertExpression),
@@ -336,9 +336,8 @@ open class Converter {
         }
     }
 
-    open fun convertTypeConstraints(v: KtTypeConstraintList) = Node.PostModifier.TypeConstraintSet.TypeConstraints(
-        elements = v.constraints.map(::convertTypeConstraint),
-    ).mapNotCorrespondsPsiElement(v)
+    open fun convertTypeConstraints(v: KtTypeConstraintList): List<Node.PostModifier.TypeConstraintSet.TypeConstraint> =
+        v.constraints.map(::convertTypeConstraint)
 
     open fun convertTypeConstraint(v: KtTypeConstraint) = Node.PostModifier.TypeConstraintSet.TypeConstraint(
         annotationSets = v.children.mapNotNull {
@@ -383,7 +382,7 @@ open class Converter {
                 receiverType = typeEl.receiver?.typeReference?.let(::convertType),
                 dotSymbol = findChildByType(typeEl, KtTokens.DOT)?.let(::convertKeyword),
                 lPar = typeEl.parameterList?.leftParenthesis?.let(::convertKeyword),
-                params = typeEl.parameterList?.let(::convertTypeFunctionParams),
+                params = convertTypeFunctionParams(typeEl.parameterList),
                 rPar = typeEl.parameterList?.rightParenthesis?.let(::convertKeyword),
                 returnType = convertType(typeEl.returnTypeReference ?: error("No return type for $typeEl")),
             ).mapNotCorrespondsPsiElement(typeEl)
@@ -413,9 +412,7 @@ open class Converter {
 
     open fun convertContextReceiver(v: KtContextReceiverList) = Node.ContextReceiver(
         lPar = convertKeyword(v.leftParenthesis),
-        receiverTypes = Node.ContextReceiverTypes(
-            elements = v.contextReceivers().map(::convertType),
-        ).mapNotCorrespondsPsiElement(v),
+        receiverTypes = v.contextReceivers().map(::convertType),
         rPar = convertKeyword(v.rightParenthesis),
     ).mapNotCorrespondsPsiElement(v)
 
@@ -428,17 +425,15 @@ open class Converter {
         )
     }
 
-    open fun convertContractEffects(v: KtContractEffectList) = Node.PostModifier.Contract.ContractEffects(
-        elements = v.children.filterIsInstance<KtContractEffect>().map(::convertExpression),
-    ).mapNotCorrespondsPsiElement(v)
+    open fun convertContractEffects(v: KtContractEffectList): List<Node.Expression> =
+        v.children.filterIsInstance<KtContractEffect>().map(::convertExpression)
 
     open fun convertExpression(v: KtContractEffect): Node.Expression {
         return convertExpression(v.getExpression()).map(v) // map will be called twice for this Expression
     }
 
-    open fun convertTypeFunctionParams(v: KtParameterList) = Node.Type.FunctionType.FunctionTypeParams(
-        elements = v.parameters.map(::convertTypeFunctionParam),
-    ).mapNotCorrespondsPsiElement(v)
+    open fun convertTypeFunctionParams(v: KtParameterList?): List<Node.Type.FunctionType.FunctionTypeParam> =
+        v?.parameters.orEmpty().map(::convertTypeFunctionParam)
 
     open fun convertTypeFunctionParam(v: KtParameter) = Node.Type.FunctionType.FunctionTypeParam(
         name = v.nameIdentifier?.let(::convertName),
@@ -613,14 +608,13 @@ open class Converter {
 
     open fun convertLambda(v: KtLambdaExpression) = Node.Expression.LambdaExpression(
         lBrace = convertKeyword(v.lBrace),
-        params = v.functionLiteral.valueParameterList?.let(::convertLambdaParams),
+        params = convertLambdaParams(v.functionLiteral.valueParameterList),
         lambdaBody = v.bodyExpression?.let(::convertLambdaBody),
         rBrace = convertKeyword(v.rBrace),
     ).map(v)
 
-    open fun convertLambdaParams(v: KtParameterList) = Node.LambdaParams(
-        elements = v.parameters.map(::convertLambdaParam),
-    ).mapNotCorrespondsPsiElement(v)
+    open fun convertLambdaParams(v: KtParameterList?): List<Node.LambdaParam> =
+        v?.parameters.orEmpty().map(::convertLambdaParam)
 
     open fun convertLambdaParam(v: KtParameter): Node.LambdaParam {
         val destructuringDeclaration = v.destructuringDeclaration

@@ -213,12 +213,6 @@ open class MutableVisitor(
                         receiverTypes = visitChildren(receiverTypes, newCh),
                         rPar = visitChildren(rPar, newCh),
                     )
-                    is Node.ContextReceiverTypes -> copy(
-                        elements = visitChildren(elements, newCh),
-                    )
-                    is Node.Type.FunctionType.FunctionTypeParams -> copy(
-                        elements = visitChildren(elements, newCh),
-                    )
                     is Node.Type.FunctionType.FunctionTypeParam -> copy(
                         name = visitChildren(name, newCh),
                         type = visitChildren(type, newCh),
@@ -322,9 +316,6 @@ open class MutableVisitor(
                         params = visitChildren(params, newCh),
                         lambdaBody = visitChildren(lambdaBody, newCh),
                         rBrace = visitChildren(rBrace, newCh),
-                    )
-                    is Node.LambdaParams -> copy(
-                        elements = visitChildren(elements, newCh),
                     )
                     is Node.LambdaParam -> copy(
                         lPar = visitChildren(lPar, newCh),
@@ -445,9 +436,6 @@ open class MutableVisitor(
                         whereKeyword = visitChildren(whereKeyword, newCh),
                         constraints = visitChildren(constraints, newCh),
                     )
-                    is Node.PostModifier.TypeConstraintSet.TypeConstraints -> copy(
-                        elements = visitChildren(elements, newCh),
-                    )
                     is Node.PostModifier.TypeConstraintSet.TypeConstraint -> copy(
                         annotationSets = visitChildren(annotationSets, newCh),
                         name = visitChildren(name, newCh),
@@ -458,9 +446,6 @@ open class MutableVisitor(
                         lBracket = visitChildren(lBracket, newCh),
                         contractEffects = visitChildren(contractEffects, newCh),
                         rBracket = visitChildren(rBracket, newCh),
-                    )
-                    is Node.PostModifier.Contract.ContractEffects -> copy(
-                        elements = visitChildren(elements, newCh),
                     )
                     is Node.Keyword -> this
                     is Node.Extra -> this
