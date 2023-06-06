@@ -360,9 +360,7 @@ open class Writer(
                 is Node.Expression.LambdaExpression -> {
                     children(lBrace)
                     commaSeparatedChildren(params)
-                    if (params.isNotEmpty()) {
-                        append("->")
-                    }
+                    children(arrow)
                     children(lambdaBody)
                     children(rBrace)
                 }

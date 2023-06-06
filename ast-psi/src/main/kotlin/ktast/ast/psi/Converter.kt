@@ -609,6 +609,7 @@ open class Converter {
     open fun convertLambda(v: KtLambdaExpression) = Node.Expression.LambdaExpression(
         lBrace = convertKeyword(v.lBrace),
         params = convertLambdaParams(v.functionLiteral.valueParameterList),
+        arrow = v.functionLiteral.arrow?.let(::convertKeyword),
         lambdaBody = v.bodyExpression?.let(::convertLambdaBody),
         rBrace = convertKeyword(v.rBrace),
     ).map(v)

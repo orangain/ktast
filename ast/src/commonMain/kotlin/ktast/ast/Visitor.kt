@@ -314,6 +314,7 @@ open class Visitor {
             is Node.Expression.LambdaExpression -> {
                 visitChildren(lBrace)
                 visitChildren(params)
+                visitChildren(arrow)
                 visitChildren(lambdaBody)
                 visitChildren(rBrace)
             }

@@ -1206,8 +1206,9 @@ sealed interface Node {
          * @property lambdaBody body of the lambda expression.
          */
         data class LambdaExpression(
-            val params: List<LambdaParam>,
             val lBrace: Keyword.LBrace,
+            val params: List<LambdaParam>,
+            val arrow: Keyword.Arrow?,
             val lambdaBody: LambdaBody?,
             val rBrace: Keyword.RBrace,
             override var tag: Any? = null,
@@ -1849,6 +1850,10 @@ sealed interface Node {
 
         data class At(override var tag: Any? = null) : Keyword {
             override val text = "@"
+        }
+
+        data class Arrow(override var tag: Any? = null) : Keyword {
+            override val text = "->"
         }
 
         data class Asterisk(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
