@@ -908,7 +908,7 @@ open class Converter {
                     else -> convertKeyword<Node.Modifier.KeywordModifier>(psi)
                 }
             }.toList(),
-        ).map(v)
+        ).mapNotCorrespondsPsiElement(v)
     }
 
     open fun convertPostModifiers(v: KtElement): List<Node.PostModifier> {
