@@ -1747,20 +1747,10 @@ sealed interface Node {
              * AST node corresponds to KtContractEffectList.
              */
             data class ContractEffects(
-                override val elements: List<ContractEffect>,
+                override val elements: List<Expression>,
                 override val trailingComma: Keyword.Comma?,
                 override var tag: Any? = null,
-            ) : CommaSeparatedNodeList<ContractEffect>("[", "]")
-
-            /**
-             * AST node corresponds to KtContractEffect.
-             *
-             * @property expression expression of this contract effect.
-             */
-            data class ContractEffect(
-                val expression: Expression,
-                override var tag: Any? = null,
-            ) : Node
+            ) : CommaSeparatedNodeList<Expression>("[", "]")
         }
     }
 

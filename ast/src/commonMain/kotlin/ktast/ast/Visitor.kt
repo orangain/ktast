@@ -418,9 +418,6 @@ open class Visitor {
                 visitChildren(contractKeyword)
                 visitChildren(contractEffects)
             }
-            is Node.PostModifier.Contract.ContractEffect -> {
-                visitChildren(expression)
-            }
             is Node.Keyword -> {}
             is Node.Extra -> {}
         }
