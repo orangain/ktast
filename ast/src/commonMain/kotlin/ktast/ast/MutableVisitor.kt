@@ -116,9 +116,6 @@ open class MutableVisitor(
                         equals = visitChildren(equals, newCh),
                         body = visitChildren(body, newCh),
                     )
-                    is Node.FunctionParams -> copy(
-                        elements = visitChildren(elements, newCh),
-                    )
                     is Node.FunctionParam -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         valOrVarKeyword = visitChildren(valOrVarKeyword, newCh),
@@ -189,16 +186,10 @@ open class MutableVisitor(
                         rPar = visitChildren(rPar, newCh),
                         classBody = visitChildren(classBody, newCh)
                     )
-                    is Node.TypeParams -> copy(
-                        elements = visitChildren(elements, newCh),
-                    )
                     is Node.TypeParam -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         name = visitChildren(name, newCh),
                         type = visitChildren(type, newCh)
-                    )
-                    is Node.TypeArgs -> copy(
-                        elements = visitChildren(elements, newCh),
                     )
                     is Node.TypeArg.TypeProjection -> copy(
                         modifiers = visitChildren(modifiers, newCh),
@@ -260,9 +251,6 @@ open class MutableVisitor(
                     is Node.Type.DynamicType -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         dynamicKeyword = visitChildren(dynamicKeyword, newCh),
-                    )
-                    is Node.ValueArgs -> copy(
-                        elements = visitChildren(elements, newCh),
                     )
                     is Node.ValueArg -> copy(
                         name = visitChildren(name, newCh),
