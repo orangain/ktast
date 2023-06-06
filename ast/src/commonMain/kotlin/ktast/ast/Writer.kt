@@ -545,7 +545,7 @@ open class Writer(
                 if (index < v.size - 1) append(sep)
                 writeHeuristicExtraAfterChild(t, v.getOrNull(index + 1), this)
             }
-            children(trailingSeparator)
+//            children(trailingSeparator)
             if (!skipWritingExtrasWithin) {
                 writeExtrasWithin()
             }

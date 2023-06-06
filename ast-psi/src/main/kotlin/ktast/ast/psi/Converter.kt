@@ -236,7 +236,7 @@ open class Converter {
         receiverType = null,
         lPar = v.lPar?.let(::convertKeyword),
         variables = v.entries.map(::convertVariable),
-        trailingComma = v.trailingComma?.let(::convertKeyword),
+        trailingComma = null, //v.trailingComma?.let(::convertKeyword),
         rPar = v.rPar?.let(::convertKeyword),
         typeConstraintSet = null,
         equals = convertKeyword(v.equalsToken),
@@ -647,7 +647,7 @@ open class Converter {
             Node.LambdaParam(
                 lPar = destructuringDeclaration.lPar?.let(::convertKeyword),
                 variables = destructuringDeclaration.entries.map(::convertVariable),
-                trailingComma = destructuringDeclaration.trailingComma?.let(::convertKeyword),
+                trailingComma = null,//destructuringDeclaration.trailingComma?.let(::convertKeyword),
                 rPar = destructuringDeclaration.rPar?.let(::convertKeyword),
                 colon = v.colon?.let(::convertKeyword),
                 destructType = v.typeReference?.let(::convertType),

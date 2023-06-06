@@ -2285,5 +2285,14 @@ sealed interface Node {
         ) : Extra {
             override val text = ";"
         }
+
+        /**
+         * AST node that represents a trailing comma of a list.
+         */
+        data class TrailingComma(
+            override var tag: Any? = null,
+        ) : Extra {
+            override val text = ","
+        }
     }
 }
