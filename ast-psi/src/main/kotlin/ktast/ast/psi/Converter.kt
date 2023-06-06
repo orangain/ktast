@@ -309,7 +309,6 @@ open class Converter {
         return Node.Declaration.ClassDeclaration.ClassBody(
             lBrace = convertKeyword(v.lBrace ?: error("Missing lBrace for $v")),
             enumEntries = ktEnumEntries.map(::convertEnumEntry),
-            hasTrailingCommaInEnumEntries = ktEnumEntries.lastOrNull()?.comma != null,
             declarations = declarationsExcludingKtEnumEntry.map(::convertDeclaration),
             rBrace = convertKeyword(v.rBrace ?: error("Missing rBrace for $v")),
         ).map(v)

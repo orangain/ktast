@@ -6,6 +6,7 @@ import org.jetbrains.kotlin.com.intellij.psi.PsiComment
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
 import org.jetbrains.kotlin.lexer.KtTokens
+import org.jetbrains.kotlin.psi.KtClassBody
 import org.jetbrains.kotlin.psi.KtEnumEntry
 import org.jetbrains.kotlin.psi.psiUtil.siblings
 import java.util.*
@@ -136,7 +137,12 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
 
     protected fun isTrailingComma(e: PsiElement): Boolean {
         if (e.node.elementType != KtTokens.COMMA) return false
-        if (e.parent is KtEnumEntry) return false // EnumEntry contains comma for each entry, so ignore it.
+        if (e.parent is KtEnumEntry) {
+            // EnumEntry contains comma for each entry, so we only want the last one.
+            check(e.parent.parent is KtClassBody)
+            val lastEnumEntry = e.parent.parent.children.findLast { it is KtEnumEntry }
+            return lastEnumEntry == e.parent
+        }
         val nextNonExtraElement = e.node.siblings(forward = true)
             .filterNot { it is PsiWhiteSpace || it is PsiComment }.firstOrNull()?.psi
         return nextNonExtraElement == null || suffixTokens.contains(nextNonExtraElement.node.elementType)

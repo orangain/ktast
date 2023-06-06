@@ -227,7 +227,7 @@ open class Writer(
                     children(classBody)
                     check(parent is Node.Declaration.ClassDeclaration.ClassBody) // condition should always be true
                     val isLastEntry = parent.enumEntries.last() === this
-                    if (!isLastEntry || parent.hasTrailingCommaInEnumEntries) {
+                    if (!isLastEntry) {
                         append(",")
                     }
                     writeExtrasWithin() // Semicolon after trailing comma is avaialbe as extrasWithin

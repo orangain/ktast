@@ -429,13 +429,11 @@ sealed interface Node {
              * AST node corresponds to KtClassBody.
              *
              * @property enumEntries list of enum entries.
-             * @property hasTrailingCommaInEnumEntries `true` if the last enum entry has a trailing comma, `false` otherwise.
              * @property declarations list of declarations.
              */
             data class ClassBody(
                 val lBrace: Keyword.LBrace,
                 val enumEntries: List<EnumEntry>,
-                val hasTrailingCommaInEnumEntries: Boolean,
                 override val declarations: List<Declaration>,
                 val rBrace: Keyword.RBrace,
                 override var tag: Any? = null,
