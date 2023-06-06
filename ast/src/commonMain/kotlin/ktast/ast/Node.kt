@@ -778,7 +778,7 @@ sealed interface Node {
          * AST node corresponds to KtFunctionType.
          *
          * @property modifiers modifiers if exists, otherwise `null`.
-         * @property contextReceivers context receivers if exists, otherwise `null`.
+         * @property contextReceiver context receivers if exists, otherwise `null`.
          * @property receiverType receiver type if exists, otherwise `null`.
          * @property dotSymbol `.` if exists, otherwise `null`.
          * @property params parameters of the function type if exists, otherwise `null`.
@@ -786,31 +786,13 @@ sealed interface Node {
          */
         data class FunctionType(
             override val modifiers: Modifiers?,
-            val contextReceivers: ContextReceivers?,
+            val contextReceiver: ContextReceiver?,
             val receiverType: Type?,
             val dotSymbol: Keyword.Dot?,
             val params: FunctionTypeParams?,
             val returnType: Type,
             override var tag: Any? = null,
         ) : Type {
-            /**
-             * AST node corresponds to KtContextReceiverList.
-             */
-            data class ContextReceivers(
-                override val elements: List<ContextReceiver>,
-                override val trailingComma: Keyword.Comma?,
-                override var tag: Any? = null,
-            ) : CommaSeparatedNodeList<ContextReceiver>("(", ")")
-
-            /**
-             * AST node corresponds to KtContextReceiver.
-             *
-             * @property type type of the context receiver.
-             */
-            data class ContextReceiver(
-                val type: Type,
-                override var tag: Any? = null,
-            ) : Node
 
             /**
              * AST node corresponds to KtParameterList under KtFunctionType.
@@ -1692,6 +1674,25 @@ sealed interface Node {
     }
 
     /**
+     * AST node that represents a context receiver. The node corresponds to KtContextReceiverList.
+     *
+     * @property receiverTypes receiver types.
+     */
+    data class ContextReceiver(
+        val receiverTypes: ContextReceiverTypes,
+        override var tag: Any? = null,
+    ) : Node
+
+    /**
+     * Virtual AST node that represents a list of context receiver types.
+     */
+    data class ContextReceiverTypes(
+        override val elements: List<Type>,
+        override val trailingComma: Keyword.Comma?,
+        override var tag: Any? = null,
+    ) : CommaSeparatedNodeList<Type>("(", ")")
+
+    /**
      * Common interface for post-modifiers.
      */
     sealed interface PostModifier : Node {
@@ -2221,5 +2222,4 @@ sealed interface Node {
             override val text = ";"
         }
     }
-
 }

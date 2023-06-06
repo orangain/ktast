@@ -248,10 +248,7 @@ open class Writer(
                 }
                 is Node.Type.FunctionType -> {
                     children(modifiers)
-                    if (contextReceivers != null) {
-                        append("context")
-                        children(contextReceivers)
-                    }
+                    children(contextReceiver)
                     children(receiverType)
                     children(dotSymbol)
                     if (params != null) {
@@ -259,8 +256,9 @@ open class Writer(
                     }
                     children(returnType)
                 }
-                is Node.Type.FunctionType.ContextReceiver -> {
-                    children(type)
+                is Node.ContextReceiver -> {
+                    append("context")
+                    children(receiverTypes)
                 }
                 is Node.Type.FunctionType.FunctionTypeParam -> {
                     if (name != null) children(name).append(":")

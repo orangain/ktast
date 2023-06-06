@@ -373,7 +373,7 @@ open class Converter {
         return when (val typeEl = restChildren.first()) {
             is KtFunctionType -> Node.Type.FunctionType(
                 modifiers = modifiers,
-                contextReceivers = typeEl.contextReceiverList?.let { convertContextReceivers(it) },
+                contextReceiver = typeEl.contextReceiverList?.let(::convertContextReceiver),
                 receiverType = typeEl.receiver?.typeReference?.let(::convertType),
                 dotSymbol = findChildByType(typeEl, KtTokens.DOT)?.let(::convertKeyword),
                 params = typeEl.parameterList?.let(::convertTypeFunctionParams),
@@ -400,14 +400,21 @@ open class Converter {
         }
     }
 
-    open fun convertContextReceivers(v: KtContextReceiverList) = Node.Type.FunctionType.ContextReceivers(
-        elements = v.contextReceivers().map(::convertContextReceiver),
-        trailingComma = null,
+    open fun convertContextReceiver(v: KtContextReceiverList) = Node.ContextReceiver(
+        receiverTypes = Node.ContextReceiverTypes(
+            elements = v.contextReceivers().map(::convertType),
+            trailingComma = null,
+        ).mapNotCorrespondsPsiElement(v)
     ).map(v)
 
-    open fun convertContextReceiver(v: KtContextReceiver) = Node.Type.FunctionType.ContextReceiver(
-        type = convertType(v.typeReference() ?: error("Missing type reference for $v")),
-    ).map(v)
+    open fun convertType(v: KtContextReceiver): Node.Type {
+        val typeRef = v.typeReference() ?: error("No type ref for $v")
+        return convertType(
+            typeRef,
+            typeRef.nonExtraChildren(),
+            mapTarget = v,
+        )
+    }
 
     open fun convertContractEffects(v: KtContractEffectList) = Node.PostModifier.Contract.ContractEffects(
         elements = v.children.filterIsInstance<KtContractEffect>().map(::convertContractEffect),
