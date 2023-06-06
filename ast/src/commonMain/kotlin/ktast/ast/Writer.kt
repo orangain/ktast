@@ -128,7 +128,7 @@ open class Writer(
                 }
                 is Node.Declaration.ClassDeclaration.ClassBody -> {
                     children(lBrace)
-                    children(enumEntries, skipWritingExtrasWithin = true)
+                    children(enumEntries, ",", skipWritingExtrasWithin = true)
                     children(declarations)
                     children(rBrace)
                 }
@@ -227,9 +227,6 @@ open class Writer(
                     children(classBody)
                     check(parent is Node.Declaration.ClassDeclaration.ClassBody) // condition should always be true
                     val isLastEntry = parent.enumEntries.last() === this
-                    if (!isLastEntry) {
-                        append(",")
-                    }
                     writeExtrasWithin() // Semicolon after trailing comma is avaialbe as extrasWithin
                     if (parent.declarations.isNotEmpty() && isLastEntry && !containsSemicolon(extrasSinceLastNonSymbol)) {
                         append(";") // Insert heuristic semicolon after the last enum entry
