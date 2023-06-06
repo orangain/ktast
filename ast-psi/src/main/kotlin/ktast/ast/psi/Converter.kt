@@ -105,7 +105,7 @@ open class Converter {
         typeParams = v.typeParameterList?.let(::convertTypeParams),
         rAngle = v.typeParameterList?.rightAngle?.let(::convertKeyword),
         primaryConstructor = v.primaryConstructor?.let(::convertPrimaryConstructor),
-        classParents = v.getSuperTypeList()?.let(::convertParents),
+        classParents = convertParents(v.getSuperTypeList()),
         typeConstraintSet = v.typeConstraintList?.let { typeConstraintList ->
             Node.PostModifier.TypeConstraintSet(
                 whereKeyword = convertKeyword(v.whereKeyword),
@@ -115,9 +115,8 @@ open class Converter {
         classBody = v.body?.let(::convertClassBody),
     ).map(v)
 
-    open fun convertParents(v: KtSuperTypeList) = Node.Declaration.ClassDeclaration.ClassParents(
-        elements = v.entries.map(::convertParent),
-    ).mapNotCorrespondsPsiElement(v)
+    open fun convertParents(v: KtSuperTypeList?): List<Node.Declaration.ClassDeclaration.ClassParent> =
+        v?.entries.orEmpty().map(::convertParent)
 
     open fun convertParent(v: KtSuperTypeListEntry) = when (v) {
         is KtSuperTypeCallEntry -> Node.Declaration.ClassDeclaration.ConstructorClassParent(

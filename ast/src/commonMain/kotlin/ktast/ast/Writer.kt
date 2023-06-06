@@ -102,10 +102,10 @@ open class Writer(
                     children(name)
                     commaSeparatedChildren(lAngle, typeParams, rAngle)
                     children(primaryConstructor)
-                    if (classParents != null) {
+                    if (classParents.isNotEmpty()) {
                         append(":")
-                        commaSeparatedChildren(classParents)
                     }
+                    commaSeparatedChildren(classParents)
                     children(typeConstraintSet)
                     children(classBody)
                 }
@@ -514,6 +514,9 @@ open class Writer(
     protected fun Node.commaSeparatedChildren(v: Node.CommaSeparatedNodeList<*>) =
         commaSeparatedChildren(null, v, null)
 
+    protected fun Node.commaSeparatedChildren(elements: List<Node>) =
+        commaSeparatedChildren(null, elements, null)
+
     protected fun Node.commaSeparatedChildren(prefix: Node?, v: Node.CommaSeparatedNodeList<*>?, suffix: Node?) =
         this@Writer.also {
             if (v != null) {
@@ -523,6 +526,13 @@ open class Writer(
                 visitChildren(suffix)
                 v.writeExtrasAfter()
             }
+        }
+
+    protected fun Node.commaSeparatedChildren(prefix: Node?, elements: List<Node>, suffix: Node?) =
+        this@Writer.also {
+            visitChildren(prefix)
+            children(elements, ",", skipWritingExtrasWithin = true)
+            visitChildren(suffix)
         }
 
     protected fun Node.children(

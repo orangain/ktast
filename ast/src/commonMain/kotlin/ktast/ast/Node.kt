@@ -283,7 +283,7 @@ sealed interface Node {
          * @property name name of the class. If the object is anonymous, the name is `null`.
          * @property typeParams type parameters if exist, otherwise `null`.
          * @property primaryConstructor primary constructor if exists, otherwise `null`.
-         * @property classParents class parents if exist, otherwise `null`.
+         * @property classParents list of class parents.
          * @property typeConstraintSet type constraint set if exists, otherwise `null`.
          * @property classBody class body if exists, otherwise `null`.
          */
@@ -295,7 +295,7 @@ sealed interface Node {
             override val typeParams: TypeParams?,
             override val rAngle: Keyword.Greater?,
             val primaryConstructor: PrimaryConstructor?,
-            val classParents: ClassParents?,
+            val classParents: List<ClassParent>,
             val typeConstraintSet: PostModifier.TypeConstraintSet?,
             val classBody: ClassBody?,
             override var tag: Any? = null,
@@ -329,14 +329,6 @@ sealed interface Node {
              * Common interface for keyword nodes that are used to declare a class.
              */
             sealed interface ClassDeclarationKeyword : Keyword
-
-            /**
-             * AST node corresponds to KtSuperTypeList.
-             */
-            data class ClassParents(
-                override val elements: List<ClassParent>,
-                override var tag: Any? = null,
-            ) : CommaSeparatedNodeList<ClassParent>()
 
             /**
              * AST node that represents a parent of the class. The node corresponds to KtSuperTypeListEntry.

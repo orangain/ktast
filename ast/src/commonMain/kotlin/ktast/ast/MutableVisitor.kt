@@ -71,9 +71,6 @@ open class MutableVisitor(
                         typeConstraintSet = visitChildren(typeConstraintSet, newCh),
                         classBody = visitChildren(classBody, newCh)
                     )
-                    is Node.Declaration.ClassDeclaration.ClassParents -> copy(
-                        elements = visitChildren(elements, newCh),
-                    )
                     is Node.Declaration.ClassDeclaration.ConstructorClassParent -> copy(
                         type = visitChildren(type, newCh),
                         lPar = visitChildren(lPar, newCh),
