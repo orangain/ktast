@@ -128,7 +128,7 @@ open class Writer(
                 }
                 is Node.Declaration.ClassDeclaration.ClassBody -> {
                     children(lBrace)
-                    children(enumEntries, ",", skipWritingExtrasWithin = true)
+                    children(enumEntries, ",")
                     if (enumEntries.isNotEmpty() && declarations.isNotEmpty() && !containsSemicolon(
                             extrasSinceLastNonSymbol
                         )
@@ -231,7 +231,6 @@ open class Writer(
                     children(name)
                     commaSeparatedChildren(lPar, args, rPar)
                     children(classBody)
-                    writeExtrasWithin() // Semicolon after trailing comma is avaialbe as extrasWithin
                 }
                 is Node.TypeParam -> {
                     children(modifiers)
