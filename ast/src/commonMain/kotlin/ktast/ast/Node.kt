@@ -1906,10 +1906,6 @@ sealed interface Node {
             override val text = "="
         }
 
-        data class Comma(override var tag: Any? = null) : Keyword {
-            override val text = ","
-        }
-
         data class LPar(override var tag: Any? = null) : Keyword {
             override val text = "("
         }
