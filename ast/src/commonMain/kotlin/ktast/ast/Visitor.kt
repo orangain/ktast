@@ -7,7 +7,6 @@ open class Visitor {
         when (this) {
             is Node.CommaSeparatedNodeList<*> -> {
                 visitChildren(elements)
-                visitChildren(trailingComma)
             }
             is Node.NodeList<*> -> {
                 visitChildren(elements)
@@ -131,7 +130,6 @@ open class Visitor {
                 visitChildren(receiverType)
                 visitChildren(lPar)
                 visitChildren(variables)
-                visitChildren(trailingComma)
                 visitChildren(rPar)
                 visitChildren(typeConstraintSet)
                 visitChildren(equals)
@@ -322,7 +320,6 @@ open class Visitor {
             is Node.LambdaParam -> {
                 visitChildren(lPar)
                 visitChildren(variables)
-                visitChildren(trailingComma)
                 visitChildren(rPar)
                 visitChildren(colon)
                 visitChildren(destructType)
@@ -346,7 +343,6 @@ open class Visitor {
             }
             is Node.Expression.WhenExpression.ConditionalWhenBranch -> {
                 visitChildren(whenConditions)
-                visitChildren(trailingComma)
                 visitChildren(body)
             }
             is Node.Expression.WhenExpression.ElseWhenBranch -> {
@@ -382,7 +378,6 @@ open class Visitor {
             }
             is Node.Expression.CollectionLiteralExpression -> {
                 visitChildren(expressions)
-                visitChildren(trailingComma)
             }
             is Node.Expression.NameExpression -> {}
             is Node.Expression.LabeledExpression -> {
@@ -411,7 +406,6 @@ open class Visitor {
             is Node.Expression.IndexedAccessExpression -> {
                 visitChildren(expression)
                 visitChildren(indices)
-                visitChildren(trailingComma)
             }
             is Node.Expression.AnonymousFunctionExpression -> {
                 visitChildren(function)

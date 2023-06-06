@@ -21,12 +21,8 @@ sealed interface Node {
 
     /**
      * Specialization of [NodeList] for comma-separated lists.
-     *
-     * @property trailingComma trailing comma node of the list if exists.
      */
-    abstract class CommaSeparatedNodeList<out E : Node> : NodeList<E>() {
-        abstract val trailingComma: Keyword.Comma?
-    }
+    abstract class CommaSeparatedNodeList<out E : Node> : NodeList<E>()
 
     /**
      * Common interface for AST nodes that have a simple text representation.
@@ -340,9 +336,7 @@ sealed interface Node {
             data class ClassParents(
                 override val elements: List<ClassParent>,
                 override var tag: Any? = null,
-            ) : CommaSeparatedNodeList<ClassParent>() {
-                override val trailingComma: Keyword.Comma? = null
-            }
+            ) : CommaSeparatedNodeList<ClassParent>()
 
             /**
              * AST node that represents a parent of the class. The node corresponds to KtSuperTypeListEntry.
@@ -540,7 +534,6 @@ sealed interface Node {
          * @property receiverType receiver type of the property if exists, otherwise `null`.
          * @property lPar `(` keyword if exists, otherwise `null`. When there are two or more variables, the keyword must exist.
          * @property variables variables of the property. Always at least one, more than one means destructuring.
-         * @property trailingComma trailing comma of the variables if exists, otherwise `null`.
          * @property rPar `)` keyword if exists, otherwise `null`. When there are two or more variables, the keyword must exist.
          * @property typeConstraintSet type constraint set of the property if exists, otherwise `null`.
          * @property equals `=` keyword if exists, otherwise `null`. When the property has an initializer, the keyword must exist.
@@ -557,7 +550,6 @@ sealed interface Node {
             val receiverType: Type?,
             val lPar: Keyword.LPar?,
             val variables: List<Variable>,
-            val trailingComma: Keyword.Comma?,
             val rPar: Keyword.RPar?,
             val typeConstraintSet: PostModifier.TypeConstraintSet?,
             val equals: Keyword.Equal?,
@@ -577,9 +569,6 @@ sealed interface Node {
                 }
                 if (variables.size >= 2) {
                     require(lPar != null && rPar != null) { "lPar and rPar are required when there are multiple variables" }
-                }
-                if (trailingComma != null) {
-                    require(lPar != null && rPar != null) { "lPar and rPar are required when trailing comma exists" }
                 }
             }
 
@@ -674,7 +663,6 @@ sealed interface Node {
      */
     data class FunctionParams(
         override val elements: List<FunctionParam>,
-        override val trailingComma: Keyword.Comma?,
         override var tag: Any? = null,
     ) : CommaSeparatedNodeList<FunctionParam>()
 
@@ -717,7 +705,6 @@ sealed interface Node {
      */
     data class TypeParams(
         override val elements: List<TypeParam>,
-        override val trailingComma: Keyword.Comma?,
         override var tag: Any? = null,
     ) : CommaSeparatedNodeList<TypeParam>()
 
@@ -845,7 +832,6 @@ sealed interface Node {
              */
             data class FunctionTypeParams(
                 override val elements: List<FunctionTypeParam>,
-                override val trailingComma: Keyword.Comma?,
                 override var tag: Any? = null,
             ) : CommaSeparatedNodeList<FunctionTypeParam>()
 
@@ -869,7 +855,6 @@ sealed interface Node {
      */
     data class TypeArgs(
         override val elements: List<TypeArg>,
-        override val trailingComma: Keyword.Comma?,
         override var tag: Any? = null,
     ) : CommaSeparatedNodeList<TypeArg>()
 
@@ -920,7 +905,6 @@ sealed interface Node {
      */
     data class ValueArgs(
         override val elements: List<ValueArg>,
-        override val trailingComma: Keyword.Comma?,
         override var tag: Any? = null,
     ) : CommaSeparatedNodeList<ValueArg>()
 
@@ -1333,13 +1317,11 @@ sealed interface Node {
              * AST node corresponds to KtWhenEntry.
              *
              * @property whenConditions list of conditions.
-             * @property trailingComma trailing comma of conditions if exists, otherwise `null`.
              * @property elseKeyword else keyword if exists, otherwise `null`.
              * @property body body expression of this branch.
              */
             sealed interface WhenBranch : Node {
                 val whenConditions: List<WhenCondition>
-                val trailingComma: Keyword.Comma?
                 val elseKeyword: Keyword.Else?
                 val body: Expression
             }
@@ -1348,13 +1330,11 @@ sealed interface Node {
              * AST node that represents when branch with conditions.
              *
              * @property whenConditions non-empty list of conditions.
-             * @property trailingComma trailing comma of conditions if exists, otherwise `null`.
              * @property elseKeyword always `null`.
              * @property body body expression of this branch.
              */
             data class ConditionalWhenBranch(
                 override val whenConditions: List<WhenCondition>,
-                override val trailingComma: Keyword.Comma?,
                 override val body: Expression,
                 override var tag: Any? = null,
             ) : WhenBranch {
@@ -1369,7 +1349,6 @@ sealed interface Node {
              * AST node that represents when branch with else keyword.
              *
              * @property whenConditions always empty list.
-             * @property trailingComma always `null`.
              * @property elseKeyword else keyword.
              * @property body body expression of this branch.
              */
@@ -1379,7 +1358,6 @@ sealed interface Node {
                 override var tag: Any? = null,
             ) : WhenBranch {
                 override val whenConditions = listOf<WhenCondition>()
-                override val trailingComma = null
             }
 
             /**
@@ -1512,11 +1490,9 @@ sealed interface Node {
          * AST node corresponds to KtCollectionLiteralExpression.
          *
          * @property expressions list of element expressions.
-         * @property trailingComma trailing comma of [expressions] if exists, otherwise `null`.
          */
         data class CollectionLiteralExpression(
             val expressions: List<Expression>,
-            val trailingComma: Keyword.Comma?,
             override var tag: Any? = null,
         ) : Expression
 
@@ -1593,12 +1569,10 @@ sealed interface Node {
          *
          * @property expression collection expression.
          * @property indices list of index expressions.
-         * @property trailingComma trailing comma of [indices] if exists, otherwise `null`.
          */
         data class IndexedAccessExpression(
             val expression: Expression,
             val indices: List<Expression>,
-            val trailingComma: Keyword.Comma?,
             override var tag: Any? = null,
         ) : Expression
 
@@ -1641,7 +1615,6 @@ sealed interface Node {
      */
     data class LambdaParams(
         override val elements: List<LambdaParam>,
-        override val trailingComma: Keyword.Comma?,
         override var tag: Any? = null,
     ) : CommaSeparatedNodeList<LambdaParam>()
 
@@ -1650,7 +1623,6 @@ sealed interface Node {
      *
      * @property lPar left parenthesis of this parameter if exists, otherwise `null`.
      * @property variables list of variables.
-     * @property trailingComma trailing comma of [variables] if exists, otherwise `null`.
      * @property rPar right parenthesis of this parameter if exists, otherwise `null`.
      * @property colon colon symbol if exists, otherwise `null`.
      * @property destructType type of destructuring if exists, otherwise `null`.
@@ -1658,7 +1630,6 @@ sealed interface Node {
     data class LambdaParam(
         val lPar: Keyword.LPar?,
         val variables: List<Variable>,
-        val trailingComma: Keyword.Comma?,
         val rPar: Keyword.RPar?,
         val colon: Keyword.Colon?,
         val destructType: Type?,
@@ -1667,9 +1638,6 @@ sealed interface Node {
         init {
             if (variables.size >= 2) {
                 require(lPar != null && rPar != null) { "lPar and rPar are required when there are multiple variables" }
-            }
-            if (trailingComma != null) {
-                require(lPar != null && rPar != null) { "lPar and rPar are required when trailing comma exists" }
             }
         }
     }
@@ -1748,7 +1716,6 @@ sealed interface Node {
      */
     data class ContextReceiverTypes(
         override val elements: List<Type>,
-        override val trailingComma: Keyword.Comma?,
         override var tag: Any? = null,
     ) : CommaSeparatedNodeList<Type>()
 
@@ -1773,9 +1740,7 @@ sealed interface Node {
             data class TypeConstraints(
                 override val elements: List<TypeConstraint>,
                 override var tag: Any? = null,
-            ) : CommaSeparatedNodeList<TypeConstraint>() {
-                override val trailingComma: Keyword.Comma? = null // Trailing comma is not allowed.
-            }
+            ) : CommaSeparatedNodeList<TypeConstraint>()
 
             /**
              * AST node corresponds to KtTypeConstraint.
@@ -1810,7 +1775,6 @@ sealed interface Node {
              */
             data class ContractEffects(
                 override val elements: List<Expression>,
-                override val trailingComma: Keyword.Comma?,
                 override var tag: Any? = null,
             ) : CommaSeparatedNodeList<Expression>()
         }

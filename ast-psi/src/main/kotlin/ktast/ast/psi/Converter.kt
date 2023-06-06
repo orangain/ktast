@@ -186,7 +186,6 @@ open class Converter {
 
     open fun convertFuncParams(v: KtParameterList) = Node.FunctionParams(
         elements = v.parameters.map(::convertFuncParam),
-        trailingComma = v.trailingComma?.let(::convertKeyword),
     ).mapNotCorrespondsPsiElement(v)
 
     open fun convertFuncParam(v: KtParameter) = Node.FunctionParam(
@@ -213,7 +212,6 @@ open class Converter {
                 type = v.typeReference?.let(::convertType)
             ).mapNotCorrespondsPsiElement(v)
         ),
-        trailingComma = null,
         rPar = null,
         typeConstraintSet = v.typeConstraintList?.let { typeConstraintList ->
             Node.PostModifier.TypeConstraintSet(
@@ -236,7 +234,6 @@ open class Converter {
         receiverType = null,
         lPar = v.lPar?.let(::convertKeyword),
         variables = v.entries.map(::convertVariable),
-        trailingComma = null, //v.trailingComma?.let(::convertKeyword),
         rPar = v.rPar?.let(::convertKeyword),
         typeConstraintSet = null,
         equals = convertKeyword(v.equalsToken),
@@ -320,7 +317,6 @@ open class Converter {
 
     open fun convertTypeParams(v: KtTypeParameterList) = Node.TypeParams(
         elements = v.parameters.map(::convertTypeParam),
-        trailingComma = v.trailingComma?.let(::convertKeyword),
     ).mapNotCorrespondsPsiElement(v)
 
     open fun convertTypeParam(v: KtTypeParameter) = Node.TypeParam(
@@ -331,7 +327,6 @@ open class Converter {
 
     open fun convertTypeArgs(v: KtTypeArgumentList) = Node.TypeArgs(
         elements = v.arguments.map(::convertTypeArg),
-        trailingComma = v.trailingComma?.let(::convertKeyword),
     ).mapNotCorrespondsPsiElement(v)
 
     open fun convertTypeArg(v: KtTypeProjection): Node.TypeArg {
@@ -426,7 +421,6 @@ open class Converter {
         lPar = convertKeyword(v.leftParenthesis),
         receiverTypes = Node.ContextReceiverTypes(
             elements = v.contextReceivers().map(::convertType),
-            trailingComma = null,
         ).mapNotCorrespondsPsiElement(v),
         rPar = convertKeyword(v.rightParenthesis),
     ).mapNotCorrespondsPsiElement(v)
@@ -442,7 +436,6 @@ open class Converter {
 
     open fun convertContractEffects(v: KtContractEffectList) = Node.PostModifier.Contract.ContractEffects(
         elements = v.children.filterIsInstance<KtContractEffect>().map(::convertExpression),
-        trailingComma = findTrailingSeparator(v, KtTokens.COMMA)?.let(::convertKeyword),
     ).mapNotCorrespondsPsiElement(v)
 
     open fun convertExpression(v: KtContractEffect): Node.Expression {
@@ -451,7 +444,6 @@ open class Converter {
 
     open fun convertTypeFunctionParams(v: KtParameterList) = Node.Type.FunctionType.FunctionTypeParams(
         elements = v.parameters.map(::convertTypeFunctionParam),
-        trailingComma = v.trailingComma?.let(::convertKeyword)
     ).mapNotCorrespondsPsiElement(v)
 
     open fun convertTypeFunctionParam(v: KtParameter) = Node.Type.FunctionType.FunctionTypeParam(
@@ -468,12 +460,10 @@ open class Converter {
 
     open fun convertValueArgs(v: KtValueArgumentList) = Node.ValueArgs(
         elements = v.arguments.map(::convertValueArg),
-        trailingComma = v.trailingComma?.let(::convertKeyword),
     ).mapNotCorrespondsPsiElement(v)
 
     open fun convertValueArgs(v: KtInitializerList) = Node.ValueArgs(
         elements = (v.valueArgumentList.arguments).map(::convertValueArg),
-        trailingComma = v.valueArgumentList.trailingComma?.let(::convertKeyword),
     ).mapNotCorrespondsPsiElement(v)
 
     open fun convertValueArg(v: KtValueArgument) = Node.ValueArg(
@@ -638,7 +628,6 @@ open class Converter {
 
     open fun convertLambdaParams(v: KtParameterList) = Node.LambdaParams(
         elements = v.parameters.map(::convertLambdaParam),
-        trailingComma = v.trailingComma?.let(::convertKeyword),
     ).mapNotCorrespondsPsiElement(v)
 
     open fun convertLambdaParam(v: KtParameter): Node.LambdaParam {
@@ -647,7 +636,6 @@ open class Converter {
             Node.LambdaParam(
                 lPar = destructuringDeclaration.lPar?.let(::convertKeyword),
                 variables = destructuringDeclaration.entries.map(::convertVariable),
-                trailingComma = null,//destructuringDeclaration.trailingComma?.let(::convertKeyword),
                 rPar = destructuringDeclaration.rPar?.let(::convertKeyword),
                 colon = v.colon?.let(::convertKeyword),
                 destructType = v.typeReference?.let(::convertType),
@@ -662,7 +650,6 @@ open class Converter {
                         type = v.typeReference?.let(::convertType),
                     ).mapNotCorrespondsPsiElement(v)
                 ),
-                trailingComma = null,
                 rPar = null,
                 colon = null,
                 destructType = null,
@@ -697,7 +684,6 @@ open class Converter {
         return if (elseKeyword == null) {
             Node.Expression.WhenExpression.ConditionalWhenBranch(
                 whenConditions = v.conditions.map(::convertWhenCondition),
-                trailingComma = v.trailingComma?.let(::convertKeyword),
                 body = body,
             ).map(v)
         } else {
@@ -750,7 +736,6 @@ open class Converter {
 
     open fun convertCollLit(v: KtCollectionLiteralExpression) = Node.Expression.CollectionLiteralExpression(
         expressions = v.getInnerExpressions().map(this::convertExpression),
-        trailingComma = v.trailingComma?.let(::convertKeyword),
     ).map(v)
 
     open fun convertValueArgName(v: KtValueArgumentName) = Node.Expression.NameExpression(
@@ -829,7 +814,6 @@ open class Converter {
     open fun convertArrayAccess(v: KtArrayAccessExpression) = Node.Expression.IndexedAccessExpression(
         expression = convertExpression(v.arrayExpression ?: error("No array expr for $v")),
         indices = v.indexExpressions.map(this::convertExpression),
-        trailingComma = v.trailingComma?.let(::convertKeyword),
     ).map(v)
 
     open fun convertAnonymousFunction(v: KtNamedFunction) =
