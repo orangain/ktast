@@ -10,21 +10,6 @@ sealed interface Node {
     var tag: Any?
 
     /**
-     * Base class of all nodes that represent a list of nodes.
-     *
-     * @param E type of elements in the list
-     * @property elements list of elements in the list.
-     */
-    abstract class NodeList<out E : Node> : Node {
-        abstract val elements: List<E>
-    }
-
-    /**
-     * Specialization of [NodeList] for comma-separated lists.
-     */
-    abstract class CommaSeparatedNodeList<out E : Node> : NodeList<E>()
-
-    /**
      * Common interface for AST nodes that have a simple text representation.
      *
      * @property text text representation of the node.
