@@ -61,12 +61,6 @@ open class Writer(
         writeHeuristicSpace()
         v.apply {
             when (this) {
-                is Node.CommaSeparatedNodeList<*> -> {
-                    error("CommaSeparatedNodeList should be handled by commaSeparatedChildren")
-                }
-                is Node.NodeList<*> -> {
-                    children(elements)
-                }
                 is Node.KotlinFile -> {
                     children(annotationSets, skipWritingExtrasWithin = true)
                     children(packageDirective)
@@ -102,10 +96,10 @@ open class Writer(
                     children(name)
                     commaSeparatedChildren(lAngle, typeParams, rAngle)
                     children(primaryConstructor)
-                    if (classParents != null) {
+                    if (classParents.isNotEmpty()) {
                         append(":")
-                        commaSeparatedChildren(classParents)
                     }
+                    commaSeparatedChildren(classParents)
                     children(typeConstraintSet)
                     children(classBody)
                 }
@@ -201,8 +195,6 @@ open class Writer(
                     children(modifiers)
                     children(setKeyword)
                     if (body != null) {
-                        checkNotNull(params)
-
                         append("(")
                         commaSeparatedChildren(params)
                         append(")")
@@ -249,10 +241,8 @@ open class Writer(
                     children(contextReceiver)
                     children(receiverType)
                     children(dotSymbol)
-                    if (params != null) {
-                        commaSeparatedChildren(lPar, params, rPar)
-                        append("->")
-                    }
+                    commaSeparatedChildren(lPar, params, rPar)
+                    append("->")
                     children(returnType)
                 }
                 is Node.ContextReceiver -> {
@@ -363,10 +353,8 @@ open class Writer(
                     append(text)
                 is Node.Expression.LambdaExpression -> {
                     children(lBrace)
-                    if (params != null) {
-                        commaSeparatedChildren(params)
-                        append("->")
-                    }
+                    commaSeparatedChildren(params)
+                    children(arrow)
                     children(lambdaBody)
                     children(rBrace)
                 }
@@ -511,18 +499,14 @@ open class Writer(
 
     protected fun Node.children(vararg v: Node?) = this@Writer.also { v.forEach { visitChildren(it) } }
 
-    protected fun Node.commaSeparatedChildren(v: Node.CommaSeparatedNodeList<*>) =
-        commaSeparatedChildren(null, v, null)
+    protected fun Node.commaSeparatedChildren(elements: List<Node>) =
+        commaSeparatedChildren(null, elements, null)
 
-    protected fun Node.commaSeparatedChildren(prefix: Node?, v: Node.CommaSeparatedNodeList<*>?, suffix: Node?) =
+    protected fun Node.commaSeparatedChildren(prefix: Node?, elements: List<Node>, suffix: Node?) =
         this@Writer.also {
-            if (v != null) {
-                v.writeExtrasBefore()
-                visitChildren(prefix)
-                children(v.elements, ",", skipWritingExtrasWithin = true)
-                visitChildren(suffix)
-                v.writeExtrasAfter()
-            }
+            visitChildren(prefix)
+            children(elements, ",", skipWritingExtrasWithin = true)
+            visitChildren(suffix)
         }
 
     protected fun Node.children(

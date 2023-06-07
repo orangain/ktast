@@ -5,12 +5,6 @@ open class Visitor {
 
     protected open fun visit(v: Node, parent: Node?) = v.run {
         when (this) {
-            is Node.CommaSeparatedNodeList<*> -> {
-                visitChildren(elements)
-            }
-            is Node.NodeList<*> -> {
-                visitChildren(elements)
-            }
             is Node.KotlinFile -> {
                 visitChildren(annotationSets)
                 visitChildren(packageDirective)
@@ -314,6 +308,7 @@ open class Visitor {
             is Node.Expression.LambdaExpression -> {
                 visitChildren(lBrace)
                 visitChildren(params)
+                visitChildren(arrow)
                 visitChildren(lambdaBody)
                 visitChildren(rBrace)
             }

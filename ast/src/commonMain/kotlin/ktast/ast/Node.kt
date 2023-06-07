@@ -10,21 +10,6 @@ sealed interface Node {
     var tag: Any?
 
     /**
-     * Base class of all nodes that represent a list of nodes.
-     *
-     * @param E type of elements in the list
-     * @property elements list of elements in the list.
-     */
-    abstract class NodeList<out E : Node> : Node {
-        abstract val elements: List<E>
-    }
-
-    /**
-     * Specialization of [NodeList] for comma-separated lists.
-     */
-    abstract class CommaSeparatedNodeList<out E : Node> : NodeList<E>()
-
-    /**
      * Common interface for AST nodes that have a simple text representation.
      *
      * @property text text representation of the node.
@@ -48,9 +33,9 @@ sealed interface Node {
      * @property modifiers list of modifiers.
      */
     interface WithModifiers : WithAnnotationSets {
-        val modifiers: Modifiers?
+        val modifiers: List<Modifier>
         override val annotationSets: List<Modifier.AnnotationSet>
-            get() = modifiers?.elements.orEmpty().mapNotNull { it as? Modifier.AnnotationSet }
+            get() = modifiers.mapNotNull { it as? Modifier.AnnotationSet }
     }
 
     /**
@@ -86,25 +71,25 @@ sealed interface Node {
 
     interface WithTypeParams {
         val lAngle: Keyword.Less?
-        val typeParams: TypeParams?
+        val typeParams: List<TypeParam>
         val rAngle: Keyword.Greater?
     }
 
     interface WithFunctionParams {
         val lPar: Keyword.LPar?
-        val params: FunctionParams?
+        val params: List<FunctionParam>
         val rPar: Keyword.RPar?
     }
 
     interface WithTypeArgs {
         val lAngle: Keyword.Less?
-        val typeArgs: TypeArgs?
+        val typeArgs: List<TypeArg>
         val rAngle: Keyword.Greater?
     }
 
     interface WithValueArgs {
         val lPar: Keyword.LPar?
-        val args: ValueArgs?
+        val args: List<ValueArg>
         val rPar: Keyword.RPar?
     }
 
@@ -159,12 +144,12 @@ sealed interface Node {
     /**
      * AST node corresponds to KtPackageDirective.
      *
-     * @property modifiers modifiers if exists, otherwise `null`.
+     * @property modifiers list of modifiers.
      * @property packageKeyword package keyword.
      * @property names list of names separated by dots.
      */
     data class PackageDirective(
-        override val modifiers: Modifiers?,
+        override val modifiers: List<Modifier>,
         val packageKeyword: Keyword.Package,
         val names: List<Expression.NameExpression>,
         override var tag: Any? = null,
@@ -278,24 +263,24 @@ sealed interface Node {
         /**
          * AST node that represents a class, object or interface. The node corresponds to KtClassOrObject.
          *
-         * @property modifiers modifiers if exists, otherwise `null`.
+         * @property modifiers list of modifiers.
          * @property classDeclarationKeyword class declaration keyword.
          * @property name name of the class. If the object is anonymous, the name is `null`.
-         * @property typeParams type parameters if exist, otherwise `null`.
+         * @property typeParams list of type parameters.
          * @property primaryConstructor primary constructor if exists, otherwise `null`.
-         * @property classParents class parents if exist, otherwise `null`.
+         * @property classParents list of class parents.
          * @property typeConstraintSet type constraint set if exists, otherwise `null`.
          * @property classBody class body if exists, otherwise `null`.
          */
         data class ClassDeclaration(
-            override val modifiers: Modifiers?,
+            override val modifiers: List<Modifier>,
             val classDeclarationKeyword: ClassDeclarationKeyword,
             val name: Expression.NameExpression?,
             override val lAngle: Keyword.Less?,
-            override val typeParams: TypeParams?,
+            override val typeParams: List<TypeParam>,
             override val rAngle: Keyword.Greater?,
             val primaryConstructor: PrimaryConstructor?,
-            val classParents: ClassParents?,
+            val classParents: List<ClassParent>,
             val typeConstraintSet: PostModifier.TypeConstraintSet?,
             val classBody: ClassBody?,
             override var tag: Any? = null,
@@ -318,12 +303,12 @@ sealed interface Node {
             /**
              * Returns `true` if the node has a companion modifier, `false` otherwise.
              */
-            val isCompanion = modifiers?.elements.orEmpty().any { it is Keyword.Companion }
+            val isCompanion = modifiers.any { it is Keyword.Companion }
 
             /**
              * Returns `true` if the node has an enum modifier, `false` otherwise.
              */
-            val isEnum = modifiers?.elements.orEmpty().any { it is Keyword.Enum }
+            val isEnum = modifiers.any { it is Keyword.Enum }
 
             /**
              * Common interface for keyword nodes that are used to declare a class.
@@ -331,18 +316,10 @@ sealed interface Node {
             sealed interface ClassDeclarationKeyword : Keyword
 
             /**
-             * AST node corresponds to KtSuperTypeList.
-             */
-            data class ClassParents(
-                override val elements: List<ClassParent>,
-                override var tag: Any? = null,
-            ) : CommaSeparatedNodeList<ClassParent>()
-
-            /**
              * AST node that represents a parent of the class. The node corresponds to KtSuperTypeListEntry.
              *
              * @property type type of the parent.
-             * @property args value arguments of the parent call if exists, otherwise `null`.
+             * @property args list of value arguments of the parent call.
              * @property byKeyword `by` keyword if exists, otherwise `null`.
              * @property expression expression of the delegation if exists, otherwise `null`.
              */
@@ -356,14 +333,14 @@ sealed interface Node {
              * ClassParent node that represents constructor invocation. The node corresponds to KtSuperTypeCallEntry.
              *
              * @property type type of the parent.
-             * @property args value arguments of the parent call.
+             * @property args list of value arguments of the parent call.
              * @property byKeyword always `null`.
              * @property expression always `null`.
              */
             data class ConstructorClassParent(
                 override val type: Type.SimpleType,
                 override val lPar: Keyword.LPar,
-                override val args: ValueArgs,
+                override val args: List<ValueArg>,
                 override val rPar: Keyword.RPar,
                 override var tag: Any? = null,
             ) : ClassParent {
@@ -375,7 +352,7 @@ sealed interface Node {
              * ClassParent node that represents explicit delegation. The node corresponds to KtDelegatedSuperTypeEntry.
              *
              * @property type type of the interface delegated to.
-             * @property args always `null`.
+             * @property args always empty list.
              * @property byKeyword `by` keyword.
              * @property expression expression of the delegation.
              */
@@ -386,7 +363,7 @@ sealed interface Node {
                 override var tag: Any? = null,
             ) : ClassParent {
                 override val lPar: Keyword.LPar? = null
-                override val args: ValueArgs? = null
+                override val args: List<ValueArg> = listOf()
                 override val rPar: Keyword.RPar? = null
             }
 
@@ -394,7 +371,7 @@ sealed interface Node {
              * ClassParent node that represents just a type. The node corresponds to KtSuperTypeEntry.
              *
              * @property type type of the parent.
-             * @property args always `null`.
+             * @property args always empty list.
              * @property byKeyword always `null`.
              * @property expression always `null`.
              */
@@ -403,7 +380,7 @@ sealed interface Node {
                 override var tag: Any? = null,
             ) : ClassParent {
                 override val lPar: Keyword.LPar? = null
-                override val args: ValueArgs? = null
+                override val args: List<ValueArg> = listOf()
                 override val rPar: Keyword.RPar? = null
                 override val byKeyword: Keyword.By? = null
                 override val expression: Expression? = null
@@ -412,15 +389,15 @@ sealed interface Node {
             /**
              * AST node corresponds to KtPrimaryConstructor.
              *
-             * @property modifiers modifiers if exists, otherwise `null`.
+             * @property modifiers list of modifiers.
              * @property constructorKeyword `constructor` keyword if exists, otherwise `null`.
-             * @property params parameters of the constructor if exists, otherwise `null`.
+             * @property params list of parameters of the constructor.
              */
             data class PrimaryConstructor(
-                override val modifiers: Modifiers?,
+                override val modifiers: List<Modifier>,
                 val constructorKeyword: Keyword.Constructor?,
                 override val lPar: Keyword.LPar?,
-                override val params: FunctionParams?,
+                override val params: List<FunctionParam>,
                 override val rPar: Keyword.RPar?,
                 override var tag: Any? = null,
             ) : Node, WithModifiers, WithFunctionParams
@@ -442,16 +419,16 @@ sealed interface Node {
                 /**
                  * AST node corresponds to KtEnumEntry.
                  *
-                 * @property modifiers modifiers if exists, otherwise `null`.
+                 * @property modifiers list of modifiers.
                  * @property name name of the enum entry.
-                 * @property args value arguments of the enum entry if exists, otherwise `null`.
+                 * @property args list of value arguments of the enum entry if exists, otherwise `null`.
                  * @property classBody class body of the enum entry if exists, otherwise `null`.
                  */
                 data class EnumEntry(
-                    override val modifiers: Modifiers?,
+                    override val modifiers: List<Modifier>,
                     val name: Expression.NameExpression,
                     override val lPar: Keyword.LPar?,
-                    override val args: ValueArgs?,
+                    override val args: List<ValueArg>,
                     override val rPar: Keyword.RPar?,
                     val classBody: ClassBody?,
                     override var tag: Any? = null,
@@ -460,11 +437,11 @@ sealed interface Node {
                 /**
                  * AST node that represents an init block, a.k.a. initializer. The node corresponds to KtAnonymousInitializer.
                  *
-                 * @property modifiers modifiers if exists, otherwise `null`.
+                 * @property modifiers list of modifiers.
                  * @property block block of the initializer.
                  */
                 data class Initializer(
-                    override val modifiers: Modifiers?,
+                    override val modifiers: List<Modifier>,
                     val block: Expression.BlockExpression,
                     override var tag: Any? = null,
                 ) : Declaration, WithModifiers
@@ -472,17 +449,17 @@ sealed interface Node {
                 /**
                  * AST node corresponds to KtSecondaryConstructor.
                  *
-                 * @property modifiers modifiers if exists, otherwise `null`.
+                 * @property modifiers list of modifiers.
                  * @property constructorKeyword `constructor` keyword.
-                 * @property params parameters of the secondary constructor if exists, otherwise `null`.
+                 * @property params list of parameters of the secondary constructor.
                  * @property delegationCall delegation call expression of the secondary constructor if exists, otherwise `null`.
                  * @property block block of the constructor if exists, otherwise `null`.
                  */
                 data class SecondaryConstructor(
-                    override val modifiers: Modifiers?,
+                    override val modifiers: List<Modifier>,
                     val constructorKeyword: Keyword.Constructor,
                     override val lPar: Keyword.LPar?,
-                    override val params: FunctionParams?,
+                    override val params: List<FunctionParam>,
                     override val rPar: Keyword.RPar?,
                     val delegationCall: Expression.CallExpression?,
                     val block: Expression.BlockExpression?,
@@ -494,27 +471,27 @@ sealed interface Node {
         /**
          * AST node that represents function declaration. The node corresponds to KtNamedFunction.
          *
-         * @property modifiers modifiers if exists, otherwise `null`.
+         * @property modifiers list of modifiers.
          * @property funKeyword `fun` keyword.
-         * @property typeParams type parameters of the function if exists, otherwise `null`.
+         * @property typeParams list of type parameters of the function.
          * @property receiverType receiver type of the function if exists, otherwise `null`.
          * @property name name of the function. If the function is anonymous, the name is `null`.
-         * @property params parameters of the function if exists, otherwise `null`.
+         * @property params list of parameters of the function.
          * @property returnType return type of the function if exists, otherwise `null`.
          * @property postModifiers post-modifiers of the function.
          * @property equals `=` keyword if exists, otherwise `null`.
          * @property body body of the function if exists, otherwise `null`.
          */
         data class FunctionDeclaration(
-            override val modifiers: Modifiers?,
+            override val modifiers: List<Modifier>,
             val funKeyword: Keyword.Fun,
             override val lAngle: Keyword.Less?,
-            override val typeParams: TypeParams?,
+            override val typeParams: List<TypeParam>,
             override val rAngle: Keyword.Greater?,
             val receiverType: Type?,
             val name: Expression.NameExpression?,
             override val lPar: Keyword.LPar?,
-            override val params: FunctionParams?,
+            override val params: List<FunctionParam>,
             override val rPar: Keyword.RPar?,
             val returnType: Type?,
             override val postModifiers: List<PostModifier>,
@@ -526,9 +503,9 @@ sealed interface Node {
         /**
          * AST node corresponds to KtProperty or KtDestructuringDeclaration.
          *
-         * @property modifiers modifiers if exists, otherwise `null`.
+         * @property modifiers list of modifiers.
          * @property valOrVarKeyword `val` or `var` keyword.
-         * @property typeParams type parameters of the property if exists, otherwise `null`.
+         * @property typeParams list of type parameters of the property.
          * @property receiverType receiver type of the property if exists, otherwise `null`.
          * @property lPar `(` keyword if exists, otherwise `null`. When there are two or more variables, the keyword must exist.
          * @property variables variables of the property. Always at least one, more than one means destructuring.
@@ -540,10 +517,10 @@ sealed interface Node {
          * @property accessors accessors of the property.
          */
         data class PropertyDeclaration(
-            override val modifiers: Modifiers?,
+            override val modifiers: List<Modifier>,
             val valOrVarKeyword: Keyword.ValOrVarKeyword,
             override val lAngle: Keyword.Less?,
-            override val typeParams: TypeParams?,
+            override val typeParams: List<TypeParam>,
             override val rAngle: Keyword.Greater?,
             val receiverType: Type?,
             val lPar: Keyword.LPar?,
@@ -590,7 +567,7 @@ sealed interface Node {
             /**
              * AST node that represents a property getter.
              *
-             * @property modifiers modifiers if exists, otherwise `null`.
+             * @property modifiers list of modifiers.
              * @property getKeyword `get` keyword.
              * @property type return type of the getter if exists, otherwise `null`.
              * @property postModifiers post-modifiers of the getter.
@@ -598,7 +575,7 @@ sealed interface Node {
              * @property body body of the getter if exists, otherwise `null`.
              */
             data class Getter(
-                override val modifiers: Modifiers?,
+                override val modifiers: List<Modifier>,
                 val getKeyword: Keyword.Get,
                 val type: Type?,
                 override val postModifiers: List<PostModifier>,
@@ -610,27 +587,27 @@ sealed interface Node {
             /**
              * AST node that represents a property setter.
              *
-             * @property modifiers modifiers if exists, otherwise `null`.
+             * @property modifiers list of modifiers.
              * @property setKeyword `set` keyword.
-             * @property params parameters of the setter if exists, otherwise `null`.
+             * @property params list of parameters of the setter.
              * @property postModifiers post-modifiers of the setter.
              * @property equals `=` keyword if exists, otherwise `null`.
              * @property body body of the setter if exists, otherwise `null`.
              */
             data class Setter(
-                override val modifiers: Modifiers?,
+                override val modifiers: List<Modifier>,
                 val setKeyword: Keyword.Set,
-                val params: LambdaParams?,
+                val params: List<LambdaParam>,
                 override val postModifiers: List<PostModifier>,
                 override val equals: Keyword.Equal?,
                 override val body: Expression?,
                 override var tag: Any? = null,
             ) : Accessor {
                 init {
-                    if (params == null) {
-                        require(equals == null && body == null) { "equals and body must be null when params is null" }
+                    if (params.isEmpty()) {
+                        require(equals == null && body == null) { "equals and body must be null when params is empty" }
                     } else {
-                        require(body != null) { "body must be non-null when params is non-null" }
+                        require(body != null) { "body must be non-null when params is non-empty" }
                     }
                 }
             }
@@ -639,16 +616,16 @@ sealed interface Node {
         /**
          * AST node corresponds to KtTypeAlias.
          *
-         * @property modifiers modifiers if exists, otherwise `null`.
+         * @property modifiers list of modifiers.
          * @property name name of the type alias.
-         * @property typeParams type parameters of the type alias if exists, otherwise `null`.
+         * @property typeParams list of type parameters of the type alias.
          * @property type existing type of the type alias.
          */
         data class TypeAliasDeclaration(
-            override val modifiers: Modifiers?,
+            override val modifiers: List<Modifier>,
             val name: Expression.NameExpression,
             override val lAngle: Keyword.Less?,
-            override val typeParams: TypeParams?,
+            override val typeParams: List<TypeParam>,
             override val rAngle: Keyword.Greater?,
             val equals: Keyword.Equal,
             val type: Type,
@@ -657,17 +634,9 @@ sealed interface Node {
     }
 
     /**
-     * AST node corresponds to KtParameterList under KtNamedFunction.
-     */
-    data class FunctionParams(
-        override val elements: List<FunctionParam>,
-        override var tag: Any? = null,
-    ) : CommaSeparatedNodeList<FunctionParam>()
-
-    /**
      * AST node that represents a formal function parameter of a function declaration. For example, `x: Int` in `fun f(x: Int)` is a function parameter. The node corresponds to KtParameter inside KtNamedFunction.
      *
-     * @property modifiers modifiers if exists, otherwise `null`.
+     * @property modifiers list of modifiers.
      * @property valOrVarKeyword `val` or `var` keyword if exists, otherwise `null`.
      * @property name name of the parameter.
      * @property type type of the parameter. Can be `null` for anonymous function parameters.
@@ -675,7 +644,7 @@ sealed interface Node {
      * @property defaultValue default value of the parameter if exists, otherwise `null`.
      */
     data class FunctionParam(
-        override val modifiers: Modifiers?,
+        override val modifiers: List<Modifier>,
         val valOrVarKeyword: Keyword.ValOrVarKeyword?,
         val name: Expression.NameExpression,
         val type: Type?,
@@ -687,34 +656,26 @@ sealed interface Node {
     /**
      * AST node corresponds to KtDestructuringDeclarationEntry, virtual AST node corresponds a part of KtProperty, or virtual AST node corresponds to KtParameter whose child is IDENTIFIER.
      *
-     * @property modifiers modifiers if exists, otherwise `null`.
+     * @property modifiers list of modifiers.
      * @property name name of the variable.
      * @property type type of the variable if exists, otherwise `null`.
      */
     data class Variable(
-        override val modifiers: Modifiers?,
+        override val modifiers: List<Modifier>,
         val name: Expression.NameExpression,
         val type: Type?,
         override var tag: Any? = null,
     ) : Node, WithModifiers
 
     /**
-     * AST node corresponds to KtTypeParameterList.
-     */
-    data class TypeParams(
-        override val elements: List<TypeParam>,
-        override var tag: Any? = null,
-    ) : CommaSeparatedNodeList<TypeParam>()
-
-    /**
      * AST node that represents a formal type parameter of a function or a class. For example, `T` in `fun <T> f()` is a type parameter. The node corresponds to KtTypeParameter.
      *
-     * @property modifiers modifiers if exists, otherwise `null`.
+     * @property modifiers list of modifiers.
      * @property name name of the type parameter.
      * @property type type of the type parameter if exists, otherwise `null`.
      */
     data class TypeParam(
-        override val modifiers: Modifiers?,
+        override val modifiers: List<Modifier>,
         val name: Expression.NameExpression,
         val type: Type?,
         override var tag: Any? = null,
@@ -728,13 +689,13 @@ sealed interface Node {
         /**
          * Virtual AST node corresponds to KtTypeReference or KtNullableType having `(` and `)` as children.
          *
-         * @property modifiers modifiers if exists, otherwise `null`.
+         * @property modifiers list of modifiers.
          * @property lPar `(` symbol.
          * @property type inner type.
          * @property rPar `)` symbol.
          */
         data class ParenthesizedType(
-            override val modifiers: Modifiers?,
+            override val modifiers: List<Modifier>,
             val lPar: Keyword.LPar,
             val type: Type,
             val rPar: Keyword.RPar,
@@ -744,12 +705,12 @@ sealed interface Node {
         /**
          * AST node corresponds to KtNullableType.
          *
-         * @property modifiers modifiers if exists, otherwise `null`.
+         * @property modifiers list of modifiers.
          * @property type type.
          * @property questionMark `?` symbol.
          */
         data class NullableType(
-            override val modifiers: Modifiers?,
+            override val modifiers: List<Modifier>,
             val type: Type,
             val questionMark: Keyword.Question,
             override var tag: Any? = null,
@@ -762,17 +723,17 @@ sealed interface Node {
         /**
          * AST node corresponds to KtUserType.
          *
-         * @property modifiers modifiers if exists, otherwise `null`.
+         * @property modifiers list of modifiers.
          * @property qualifiers list of qualifiers.
          * @property name name of the type.
-         * @property typeArgs type arguments if exists, otherwise `null`.
+         * @property typeArgs list of type arguments.
          */
         data class SimpleType(
-            override val modifiers: Modifiers?,
+            override val modifiers: List<Modifier>,
             val qualifiers: List<SimpleTypeQualifier>,
             override val name: Expression.NameExpression,
             override val lAngle: Keyword.Less?,
-            override val typeArgs: TypeArgs?,
+            override val typeArgs: List<TypeArg>,
             override val rAngle: Keyword.Greater?,
             override var tag: Any? = null,
         ) : Type, NameWithTypeArgs {
@@ -780,12 +741,12 @@ sealed interface Node {
              * AST node corresponds to KtUserType used as a qualifier.
              *
              * @property name name of the qualifier.
-             * @property typeArgs type arguments if exists, otherwise `null`.
+             * @property typeArgs list of type arguments.
              */
             data class SimpleTypeQualifier(
                 override val name: Expression.NameExpression,
                 override val lAngle: Keyword.Less?,
-                override val typeArgs: TypeArgs?,
+                override val typeArgs: List<TypeArg>,
                 override val rAngle: Keyword.Greater?,
                 override var tag: Any? = null,
             ) : Node, NameWithTypeArgs
@@ -794,11 +755,11 @@ sealed interface Node {
         /**
          * AST node corresponds to KtDynamicType.
          *
-         * @property modifiers modifiers if exists, otherwise `null`.
+         * @property modifiers list of modifiers.
          * @property dynamicKeyword `dynamic` keyword.
          */
         data class DynamicType(
-            override val modifiers: Modifiers?,
+            override val modifiers: List<Modifier>,
             val dynamicKeyword: Keyword.Dynamic,
             override var tag: Any? = null,
         ) : Type
@@ -806,32 +767,24 @@ sealed interface Node {
         /**
          * AST node corresponds to KtFunctionType.
          *
-         * @property modifiers modifiers if exists, otherwise `null`.
+         * @property modifiers list of modifiers.
          * @property contextReceiver context receivers if exists, otherwise `null`.
          * @property receiverType receiver type if exists, otherwise `null`.
          * @property dotSymbol `.` if exists, otherwise `null`.
-         * @property params parameters of the function type if exists, otherwise `null`.
+         * @property params list of parameters of the function type.
          * @property returnType return type of the function type.
          */
         data class FunctionType(
-            override val modifiers: Modifiers?,
+            override val modifiers: List<Modifier>,
             val contextReceiver: ContextReceiver?,
             val receiverType: Type?,
             val dotSymbol: Keyword.Dot?,
             val lPar: Keyword.LPar?,
-            val params: FunctionTypeParams?,
+            val params: List<FunctionTypeParam>,
             val rPar: Keyword.RPar?,
             val returnType: Type,
             override var tag: Any? = null,
         ) : Type {
-
-            /**
-             * AST node corresponds to KtParameterList under KtFunctionType.
-             */
-            data class FunctionTypeParams(
-                override val elements: List<FunctionTypeParam>,
-                override var tag: Any? = null,
-            ) : CommaSeparatedNodeList<FunctionTypeParam>()
 
             /**
              * AST node that represents a formal function parameter of a function type. For example, `x: Int` in `(x: Int) -> Unit` is a function parameter. The node corresponds to KtParameter inside KtFunctionType.
@@ -849,17 +802,9 @@ sealed interface Node {
     }
 
     /**
-     * AST node corresponds to KtTypeArgumentList.
-     */
-    data class TypeArgs(
-        override val elements: List<TypeArg>,
-        override var tag: Any? = null,
-    ) : CommaSeparatedNodeList<TypeArg>()
-
-    /**
      * Common interface for AST node that represents an actual type argument. For example, `Int` in `listOf<Int>()` is a type argument. The node corresponds to KtTypeProjection.
      *
-     * @property modifiers modifiers if exists, otherwise `null`.
+     * @property modifiers list of modifiers.
      * @property type type if exists, otherwise `null`.
      * @property asterisk `*` if exists, otherwise `null`.
      */
@@ -870,12 +815,12 @@ sealed interface Node {
         /**
          * AST node that represents a type projection.
          *
-         * @property modifiers modifiers if exists, otherwise `null`.
+         * @property modifiers list of modifiers.
          * @property type type
          * @property asterisk always `null`.
          */
         data class TypeProjection(
-            override val modifiers: Modifiers?,
+            override val modifiers: List<Modifier>,
             override val type: Type,
             override var tag: Any? = null,
         ) : TypeArg {
@@ -893,18 +838,10 @@ sealed interface Node {
             override val asterisk: Keyword.Asterisk,
             override var tag: Any? = null,
         ) : TypeArg {
-            override val modifiers = null
+            override val modifiers = listOf<Modifier>()
             override val type = null
         }
     }
-
-    /**
-     * AST node corresponds to KtValueArgumentList or KtInitializerList.
-     */
-    data class ValueArgs(
-        override val elements: List<ValueArg>,
-        override var tag: Any? = null,
-    ) : CommaSeparatedNodeList<ValueArg>()
 
     /**
      * AST node that represents an actual value argument of a function call. For example, `foo(1, 2)` has two value arguments `1` and `2`. The node corresponds to KtValueArgument.
@@ -970,17 +907,21 @@ sealed interface Node {
              * AST node corresponds to KtCatchClause.
              *
              * @property catchKeyword `catch` keyword.
-             * @property params parameters of the catch clause.
+             * @property params list of parameters of the catch clause.
              * @property block block expression.
              */
             data class CatchClause(
                 val catchKeyword: Keyword.Catch,
                 override val lPar: Keyword.LPar,
-                override val params: FunctionParams,
+                override val params: List<FunctionParam>,
                 override val rPar: Keyword.RPar,
                 val block: BlockExpression,
                 override var tag: Any? = null,
-            ) : Node, WithFunctionParams
+            ) : Node, WithFunctionParams {
+                init {
+                    require(params.isNotEmpty()) { "catch clause must have at least one parameter" }
+                }
+            }
         }
 
         /**
@@ -1246,12 +1187,13 @@ sealed interface Node {
         /**
          * AST node corresponds to KtLambdaExpression.
          *
-         * @property params parameters of the lambda expression.
+         * @property params list of parameters of the lambda expression.
          * @property lambdaBody body of the lambda expression.
          */
         data class LambdaExpression(
-            val params: LambdaParams?,
             val lBrace: Keyword.LBrace,
+            val params: List<LambdaParam>,
+            val arrow: Keyword.Arrow?,
             val lambdaBody: LambdaBody?,
             val rBrace: Keyword.RBrace,
             override var tag: Any? = null,
@@ -1532,17 +1474,17 @@ sealed interface Node {
          * AST node corresponds to KtCallElement.
          *
          * @property calleeExpression callee expression.
-         * @property typeArgs type arguments if exists, otherwise `null`.
-         * @property args value arguments if exists, otherwise `null`.
+         * @property typeArgs list of type arguments.
+         * @property args list of value arguments.
          * @property lambdaArg lambda argument if exists, otherwise `null`.
          */
         data class CallExpression(
             val calleeExpression: Expression,
             override val lAngle: Keyword.Less?,
-            override val typeArgs: TypeArgs?,
+            override val typeArgs: List<TypeArg>,
             override val rAngle: Keyword.Greater?,
             override val lPar: Keyword.LPar?,
-            override val args: ValueArgs?,
+            override val args: List<ValueArg>,
             override val rPar: Keyword.RPar?,
             val lambdaArg: LambdaArg?,
             override var tag: Any? = null,
@@ -1609,14 +1551,6 @@ sealed interface Node {
     }
 
     /**
-     * AST node corresponds to KtParameterList under KtLambdaExpression.
-     */
-    data class LambdaParams(
-        override val elements: List<LambdaParam>,
-        override var tag: Any? = null,
-    ) : CommaSeparatedNodeList<LambdaParam>()
-
-    /**
      * AST node that represents a formal parameter of lambda expression. For example, `x` in `{ x -> ... }` is a lambda parameter. The node corresponds to KtParameter under KtLambdaExpression.
      *
      * @property lPar left parenthesis of this parameter if exists, otherwise `null`.
@@ -1639,14 +1573,6 @@ sealed interface Node {
             }
         }
     }
-
-    /**
-     * AST node corresponds to KtModifierList.
-     */
-    data class Modifiers(
-        override val elements: List<Modifier>,
-        override var tag: Any? = null,
-    ) : NodeList<Modifier>()
 
     /**
      * Common interface for modifiers.
@@ -1680,12 +1606,12 @@ sealed interface Node {
              * AST node corresponds to KtAnnotationEntry under KtAnnotation or virtual AST node corresponds to KtAnnotationEntry not under KtAnnotation.
              *
              * @property type type of this annotation.
-             * @property args value arguments if exists, otherwise `null`.
+             * @property args list of value arguments.
              */
             data class Annotation(
                 val type: Type.SimpleType,
                 override val lPar: Keyword.LPar?,
-                override val args: ValueArgs?,
+                override val args: List<ValueArg>,
                 override val rPar: Keyword.RPar?,
                 override var tag: Any? = null,
             ) : Node, WithValueArgs
@@ -1700,22 +1626,14 @@ sealed interface Node {
     /**
      * AST node that represents a context receiver. The node corresponds to KtContextReceiverList.
      *
-     * @property receiverTypes receiver types.
+     * @property receiverTypes list of receiver types.
      */
     data class ContextReceiver(
         val lPar: Keyword.LPar,
-        val receiverTypes: ContextReceiverTypes,
+        val receiverTypes: List<Type>,
         val rPar: Keyword.RPar,
         override var tag: Any? = null,
     ) : Node
-
-    /**
-     * Virtual AST node that represents a list of context receiver types.
-     */
-    data class ContextReceiverTypes(
-        override val elements: List<Type>,
-        override var tag: Any? = null,
-    ) : CommaSeparatedNodeList<Type>()
 
     /**
      * Common interface for post-modifiers.
@@ -1729,16 +1647,9 @@ sealed interface Node {
          */
         data class TypeConstraintSet(
             val whereKeyword: Keyword.Where,
-            val constraints: TypeConstraints,
+            val constraints: List<TypeConstraint>,
             override var tag: Any? = null,
         ) : PostModifier {
-            /**
-             * AST node corresponds to KtTypeConstraintList.
-             */
-            data class TypeConstraints(
-                override val elements: List<TypeConstraint>,
-                override var tag: Any? = null,
-            ) : CommaSeparatedNodeList<TypeConstraint>()
 
             /**
              * AST node corresponds to KtTypeConstraint.
@@ -1764,18 +1675,10 @@ sealed interface Node {
         data class Contract(
             val contractKeyword: Keyword.Contract,
             val lBracket: Keyword.LBracket,
-            val contractEffects: ContractEffects,
+            val contractEffects: List<Expression>,
             val rBracket: Keyword.RBracket,
             override var tag: Any? = null,
-        ) : PostModifier {
-            /**
-             * AST node corresponds to KtContractEffectList.
-             */
-            data class ContractEffects(
-                override val elements: List<Expression>,
-                override var tag: Any? = null,
-            ) : CommaSeparatedNodeList<Expression>()
-        }
+        ) : PostModifier
     }
 
     /**
@@ -1932,6 +1835,10 @@ sealed interface Node {
 
         data class At(override var tag: Any? = null) : Keyword {
             override val text = "@"
+        }
+
+        data class Arrow(override var tag: Any? = null) : Keyword {
+            override val text = "->"
         }
 
         data class Asterisk(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
