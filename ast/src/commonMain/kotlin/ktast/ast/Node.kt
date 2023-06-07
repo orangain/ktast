@@ -63,7 +63,7 @@ sealed interface Node {
      * @property packageDirective package directive if exists, otherwise `null`.
      * @property importDirectives list of import directives.
      */
-    interface KotlinEntry : WithAnnotationSets {
+    sealed interface KotlinEntry : Node, WithAnnotationSets {
         val packageDirective: PackageDirective?
         val importDirectives: List<ImportDirective>
     }
@@ -810,9 +810,11 @@ sealed interface Node {
          * AST node corresponds to KtDynamicType.
          *
          * @property modifiers modifiers if exists, otherwise `null`.
+         * @property dynamicKeyword `dynamic` keyword.
          */
         data class DynamicType(
             override val modifiers: Modifiers?,
+            val dynamicKeyword: Keyword.Dynamic,
             override var tag: Any? = null,
         ) : Type
 
@@ -1856,6 +1858,10 @@ sealed interface Node {
 
         data class Var(override var tag: Any? = null) : Keyword, ValOrVarKeyword {
             override val text = "var"
+        }
+
+        data class Dynamic(override var tag: Any? = null) : Keyword {
+            override val text = "dynamic"
         }
 
         data class For(override var tag: Any? = null) : Keyword {

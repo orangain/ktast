@@ -6,9 +6,6 @@ import org.jetbrains.kotlin.com.intellij.psi.PsiComment
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
 import org.jetbrains.kotlin.lexer.KtTokens
-import org.jetbrains.kotlin.psi.KtImportList
-import org.jetbrains.kotlin.psi.psiUtil.allChildren
-import org.jetbrains.kotlin.psi.psiUtil.siblings
 import java.util.*
 
 open class ConverterWithExtras : Converter(), ExtrasMap {
@@ -17,14 +14,13 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
     // keep PSI elems around, we hold a map to the element's identity hash code. Then we use that number to tie
     // to the extras to keep duplicates out. Usually using identity hash codes would be problematic due to
     // potential reuse, we know the PSI objects are all around at the same time so it's good enough.
-    protected val nodesToPsiIdentities = IdentityHashMap<Node, Int>()
     protected val psiIdentitiesToNodes = mutableMapOf<Int, Node>()
     protected val extrasBefore = IdentityHashMap<Node, List<Node.Extra>>()
     protected val extrasWithin = IdentityHashMap<Node, List<Node.Extra>>()
     protected val extrasAfter = IdentityHashMap<Node, List<Node.Extra>>()
 
     // This keeps track of ws nodes we've seen before so we don't duplicate them
-    protected val seenExtraPsiIdentities = mutableSetOf<Int>()
+    private val seenExtraPsiIdentities = mutableSetOf<Int>()
 
     override fun extrasBefore(v: Node) = extrasBefore[v] ?: emptyList()
     override fun extrasWithin(v: Node) = extrasWithin[v] ?: emptyList()
@@ -38,41 +34,85 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
         if (psiIdentitiesToNodes.contains(elemId)) {
             return
         }
-        nodesToPsiIdentities[node] = elemId
-        psiIdentitiesToNodes.put(elemId, node)
-        // Since we've never done this element before, grab its extras and persist
-        val (beforeElems, withinElems, afterElems) = nodeExtraElems(elem)
-        convertExtras(beforeElems).also { if (it.isNotEmpty()) extrasBefore[node] = it }
-        convertExtras(withinElems).also { if (it.isNotEmpty()) extrasWithin[node] = it }
-        convertExtras(afterElems).also { if (it.isNotEmpty()) extrasAfter[node] = it }
+        psiIdentitiesToNodes[elemId] = node
+
+        if (node is Node.KotlinEntry) {
+            fillWholeExtras(node, elem)
+        }
     }
 
-    protected open fun nodeExtraElems(elem: PsiElement): Triple<List<PsiElement>, List<PsiElement>, List<PsiElement>> {
-        // Before starts with all directly above ws/comments (reversed to be top-down)
-        val before = elem.siblings(forward = false, withItself = false)
-            .filterNot(::shouldSkip)
-            .takeWhile(::isExtra)
-            .toList().reversed()
+    protected open fun fillWholeExtras(rootNode: Node.KotlinEntry, rootElement: PsiElement) {
+        val extraElementsSinceLastNode = mutableListOf<PsiElement>()
 
-        // Go over every child...
-        val within = elem.allChildren
-            .filterNot(::shouldSkip)
-            .filter(::isExtra)
-            .toList()
+        val visitor = object : PsiElementVisitor() {
+            private var lastNode: Node? = null
 
-        val after = elem.siblings(forward = true, withItself = false)
-            .filterNot(::shouldSkip)
-            .takeWhile(::isExtra)
-            .toList()
+            override fun onBeginElement(element: PsiElement) {
+                fillExtrasFor(element)
+            }
 
-        return Triple(before, within, after)
+            override fun onEndElement(element: PsiElement) {
+                val node = psiIdentitiesToNodes[System.identityHashCode(element)] ?: return
+                if (lastNode != null) {
+                    fillExtrasAfter(lastNode!!)
+                } else {
+                    fillExtrasWithin(node)
+                }
+                lastNode = node
+            }
+
+            override fun onLeafElement(element: PsiElement) {
+                fillExtrasFor(element)
+            }
+
+            private fun fillExtrasFor(element: PsiElement) {
+                if (isExtra(element)) {
+                    extraElementsSinceLastNode.add(element)
+                    if (isSemicolon(element) && lastNode != null) {
+                        fillExtrasAfter(lastNode!!)
+                    }
+                    return
+                }
+                val node = psiIdentitiesToNodes[System.identityHashCode(element)]
+
+                if (node == null) {
+                    if (lastNode != null) {
+                        fillExtrasAfter(lastNode!!)
+                    }
+                } else {
+                    fillExtrasBefore(node)
+                }
+                lastNode = node
+            }
+
+            private fun fillExtrasBefore(node: Node) {
+                convertExtras(extraElementsSinceLastNode).also {
+                    if (it.isNotEmpty()) extrasBefore[node] = (extrasBefore[node] ?: listOf()) + it
+                }
+                extraElementsSinceLastNode.clear()
+            }
+
+            private fun fillExtrasAfter(node: Node) {
+                convertExtras(extraElementsSinceLastNode).also {
+                    if (it.isNotEmpty()) extrasAfter[node] = (extrasAfter[node] ?: listOf()) + it
+                }
+                extraElementsSinceLastNode.clear()
+            }
+
+            private fun fillExtrasWithin(node: Node) {
+                convertExtras(extraElementsSinceLastNode).also {
+                    if (it.isNotEmpty()) extrasWithin[node] = (extrasWithin[node] ?: listOf()) + it
+                }
+                extraElementsSinceLastNode.clear()
+            }
+        }
+        visitor.visit(rootElement)
     }
-
-    protected open fun shouldSkip(e: PsiElement) =
-        e is KtImportList && e.imports.isEmpty()
 
     protected open fun isExtra(e: PsiElement) =
-        e is PsiWhiteSpace || e is PsiComment || e.node.elementType == KtTokens.SEMICOLON
+        e is PsiWhiteSpace || e is PsiComment || isSemicolon(e)
+
+    protected fun isSemicolon(e: PsiElement) = e.node.elementType == KtTokens.SEMICOLON
 
     protected open fun convertExtras(elems: List<PsiElement>): List<Node.Extra> = elems.mapNotNull { elem ->
         // Ignore elems we've done before

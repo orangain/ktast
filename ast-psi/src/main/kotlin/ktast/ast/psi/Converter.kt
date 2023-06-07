@@ -383,7 +383,7 @@ open class Converter {
                 lPar = convertKeyword(restChildren.first()),
                 type = convertType(v, restChildren.subList(1, restChildren.size - 1), mapTarget = null),
                 rPar = convertKeyword(restChildren.last()),
-            ).mapIfPossible(mapTarget)
+            ).mapNotCorrespondsPsiElement(v)
         }
 
         val modifiers = modifierList?.let(::convertModifiers)
@@ -397,7 +397,7 @@ open class Converter {
                 params = typeEl.parameterList?.let(::convertTypeFunctionParams),
                 rPar = typeEl.parameterList?.rightParenthesis?.let(::convertKeyword),
                 returnType = convertType(typeEl.returnTypeReference ?: error("No return type for $typeEl")),
-            ).map(mapTarget ?: typeEl)
+            ).mapNotCorrespondsPsiElement(typeEl)
             is KtUserType -> Node.Type.SimpleType(
                 modifiers = modifiers,
                 qualifiers = generateSequence(typeEl.qualifier) { it.qualifier }.toList().reversed()
@@ -406,17 +406,18 @@ open class Converter {
                 lAngle = typeEl.typeArgumentList?.leftAngle?.let(::convertKeyword),
                 typeArgs = typeEl.typeArgumentList?.let(::convertTypeArgs),
                 rAngle = typeEl.typeArgumentList?.rightAngle?.let(::convertKeyword),
-            ).map(mapTarget ?: typeEl)
+            ).mapNotCorrespondsPsiElement(typeEl)
             is KtNullableType -> Node.Type.NullableType(
                 modifiers = modifiers,
                 type = convertType(typeEl, typeEl.nonExtraChildren(), null),
                 questionMark = convertKeyword(
                     findChildByType(typeEl, KtTokens.QUEST) ?: error("No question mark for $typeEl")
                 ),
-            ).map(mapTarget ?: typeEl)
+            ).mapNotCorrespondsPsiElement(typeEl)
             is KtDynamicType -> Node.Type.DynamicType(
                 modifiers = modifiers,
-            ).map(mapTarget ?: typeEl)
+                dynamicKeyword = convertKeyword(typeEl.dynamicKeyword),
+            ).mapNotCorrespondsPsiElement(typeEl)
             else -> error("Unrecognized type of $typeEl")
         }
     }
@@ -463,7 +464,7 @@ open class Converter {
         lAngle = v.typeArgumentList?.leftAngle?.let(::convertKeyword),
         typeArgs = v.typeArgumentList?.let(::convertTypeArgs),
         rAngle = v.typeArgumentList?.rightAngle?.let(::convertKeyword),
-    ).map(v)
+    ).mapNotCorrespondsPsiElement(v) // Don't map v because v necessarily corresponds to a single name expression.
 
     open fun convertValueArgs(v: KtValueArgumentList) = Node.ValueArgs(
         elements = v.arguments.map(::convertValueArg),
@@ -1026,6 +1027,9 @@ open class Converter {
                 .takeWhile { it.node.elementType != KtTokens.COLONCOLON }
                 .filter { it.node.elementType == KtTokens.QUEST }
                 .toList()
+
+        internal val KtDynamicType.dynamicKeyword: PsiElement
+            get() = findChildByType(this, KtTokens.DYNAMIC_KEYWORD) ?: error("No dynamic keyword for $this")
 
         internal val KtAnnotation.atSymbol: PsiElement?
             get() = findChildByType(this, KtTokens.AT)
