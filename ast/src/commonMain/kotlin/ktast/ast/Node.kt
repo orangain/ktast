@@ -703,7 +703,7 @@ sealed interface Node {
         ) : Type
 
         /**
-         * AST node corresponds to KtNullableType.
+         * Virtual AST node that represents nullable type. The node corresponds to KtNullableType and modifiers of its parent.
          *
          * @property modifiers list of modifiers.
          * @property type type.
@@ -721,7 +721,7 @@ sealed interface Node {
         }
 
         /**
-         * AST node corresponds to KtUserType.
+         * Virtual AST node that represents a simple type. The node corresponds to KtUserType and modifiers of its parent.
          *
          * @property modifiers list of modifiers.
          * @property qualifiers list of qualifiers.
@@ -753,7 +753,7 @@ sealed interface Node {
         }
 
         /**
-         * AST node corresponds to KtDynamicType.
+         * Virtual AST node that represents a dynamic type. The node corresponds to KtDynamicType and modifiers of its parent.
          *
          * @property modifiers list of modifiers.
          * @property dynamicKeyword `dynamic` keyword.
@@ -765,7 +765,7 @@ sealed interface Node {
         ) : Type
 
         /**
-         * AST node corresponds to KtFunctionType.
+         * Virtual AST node that represents a function type. The node corresponds to KtFunctionType and modifiers of its parent.
          *
          * @property modifiers list of modifiers.
          * @property contextReceiver context receivers if exists, otherwise `null`.
