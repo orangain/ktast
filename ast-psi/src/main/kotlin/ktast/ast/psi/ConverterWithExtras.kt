@@ -6,6 +6,9 @@ import org.jetbrains.kotlin.com.intellij.psi.PsiComment
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
 import org.jetbrains.kotlin.lexer.KtTokens
+import org.jetbrains.kotlin.psi.KtClassBody
+import org.jetbrains.kotlin.psi.KtEnumEntry
+import org.jetbrains.kotlin.psi.psiUtil.siblings
 import java.util.*
 import kotlin.collections.ArrayDeque
 
@@ -120,9 +123,30 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
     }
 
     protected open fun isExtra(e: PsiElement) =
-        e is PsiWhiteSpace || e is PsiComment || isSemicolon(e)
+        e is PsiWhiteSpace || e is PsiComment || isSemicolon(e) || isTrailingComma(e)
 
     protected fun isSemicolon(e: PsiElement) = e.node.elementType == KtTokens.SEMICOLON
+
+    private val suffixTokens = setOf(
+        KtTokens.RPAR, // End of ")"
+        KtTokens.RBRACE, // End of "}"
+        KtTokens.RBRACKET, // End of "]"
+        KtTokens.GT, // End of ">"
+        KtTokens.ARROW, // For when conditions, e.g. "1, 2, -> null"
+    )
+
+    protected fun isTrailingComma(e: PsiElement): Boolean {
+        if (e.node.elementType != KtTokens.COMMA) return false
+        if (e.parent is KtEnumEntry) {
+            // EnumEntry contains comma for each entry, so we only want the last one.
+            check(e.parent.parent is KtClassBody)
+            val lastEnumEntry = e.parent.parent.children.findLast { it is KtEnumEntry }
+            return lastEnumEntry == e.parent
+        }
+        val nextNonExtraElement = e.node.siblings(forward = true)
+            .filterNot { it is PsiWhiteSpace || it is PsiComment }.firstOrNull()?.psi
+        return nextNonExtraElement == null || suffixTokens.contains(nextNonExtraElement.node.elementType)
+    }
 
     protected open fun convertExtras(elems: List<PsiElement>): List<Node.Extra> = elems.mapNotNull { elem ->
         // Ignore elems we've done before
@@ -131,6 +155,7 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
             elem is PsiWhiteSpace -> Node.Extra.Whitespace(elem.text)
             elem is PsiComment -> Node.Extra.Comment(elem.text)
             elem.node.elementType == KtTokens.SEMICOLON -> Node.Extra.Semicolon()
+            elem.node.elementType == KtTokens.COMMA -> Node.Extra.TrailingComma()
             else -> error("elems must contain only PsiWhiteSpace or PsiComment or SEMICOLON elements.")
         }
     }

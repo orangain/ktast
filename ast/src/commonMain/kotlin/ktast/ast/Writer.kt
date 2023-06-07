@@ -128,7 +128,13 @@ open class Writer(
                 }
                 is Node.Declaration.ClassDeclaration.ClassBody -> {
                     children(lBrace)
-                    children(enumEntries, skipWritingExtrasWithin = true)
+                    children(enumEntries, ",")
+                    if (enumEntries.isNotEmpty() && declarations.isNotEmpty() && !containsSemicolon(
+                            extrasSinceLastNonSymbol
+                        )
+                    ) {
+                        append(";") // Insert heuristic semicolon after the last enum entry
+                    }
                     children(declarations)
                     children(rBrace)
                 }
@@ -164,7 +170,6 @@ open class Writer(
                     if (receiverType != null) children(receiverType).append('.')
                     children(lPar)
                     children(variables, ",")
-                    children(trailingComma)
                     children(rPar)
                     children(typeConstraintSet)
                     children(equals)
@@ -226,15 +231,6 @@ open class Writer(
                     children(name)
                     commaSeparatedChildren(lPar, args, rPar)
                     children(classBody)
-                    check(parent is Node.Declaration.ClassDeclaration.ClassBody) // condition should always be true
-                    val isLastEntry = parent.enumEntries.last() === this
-                    if (!isLastEntry || parent.hasTrailingCommaInEnumEntries) {
-                        append(",")
-                    }
-                    writeExtrasWithin() // Semicolon after trailing comma is avaialbe as extrasWithin
-                    if (parent.declarations.isNotEmpty() && isLastEntry && !containsSemicolon(extrasSinceLastNonSymbol)) {
-                        append(";") // Insert heuristic semicolon after the last enum entry
-                    }
                 }
                 is Node.TypeParam -> {
                     children(modifiers)
@@ -377,7 +373,6 @@ open class Writer(
                 is Node.LambdaParam -> {
                     children(lPar)
                     children(variables, ",")
-                    children(trailingComma)
                     children(rPar)
                     children(colon)
                     children(destructType)
@@ -401,7 +396,7 @@ open class Writer(
                     append("}")
                 }
                 is Node.Expression.WhenExpression.ConditionalWhenBranch -> {
-                    children(whenConditions, ",", trailingSeparator = trailingComma)
+                    children(whenConditions, ",")
                     append("->").also { children(body) }
                 }
                 is Node.Expression.WhenExpression.ElseWhenBranch -> {
@@ -438,7 +433,7 @@ open class Writer(
                     appendLabel(label)
                 }
                 is Node.Expression.CollectionLiteralExpression ->
-                    children(expressions, ",", "[", "]", trailingComma)
+                    children(expressions, ",", "[", "]")
                 is Node.Expression.NameExpression ->
                     append(text)
                 is Node.Expression.LabeledExpression -> {
@@ -464,7 +459,7 @@ open class Writer(
                 }
                 is Node.Expression.IndexedAccessExpression -> {
                     children(expression)
-                    children(indices, ",", "[", "]", trailingComma)
+                    children(indices, ",", "[", "]")
                 }
                 is Node.Expression.AnonymousFunctionExpression ->
                     children(function)
@@ -524,7 +519,7 @@ open class Writer(
             if (v != null) {
                 v.writeExtrasBefore()
                 visitChildren(prefix)
-                children(v.elements, ",", trailingSeparator = v.trailingComma, skipWritingExtrasWithin = true)
+                children(v.elements, ",", skipWritingExtrasWithin = true)
                 visitChildren(suffix)
                 v.writeExtrasAfter()
             }
@@ -535,7 +530,6 @@ open class Writer(
         sep: String = "",
         prefix: String = "",
         suffix: String = "",
-        trailingSeparator: Node? = null,
         skipWritingExtrasWithin: Boolean = false,
     ) =
         this@Writer.also {
@@ -545,7 +539,6 @@ open class Writer(
                 if (index < v.size - 1) append(sep)
                 writeHeuristicExtraAfterChild(t, v.getOrNull(index + 1), this)
             }
-            children(trailingSeparator)
             if (!skipWritingExtrasWithin) {
                 writeExtrasWithin()
             }
