@@ -73,7 +73,9 @@ open class Visitor {
             }
             is Node.Declaration.ClassDeclaration.ConstructorClassParent -> {
                 visitChildren(type)
+                visitChildren(lPar)
                 visitChildren(args)
+                visitChildren(rPar)
             }
             is Node.Declaration.ClassDeclaration.DelegationClassParent -> {
                 visitChildren(type)
@@ -86,7 +88,9 @@ open class Visitor {
             is Node.Declaration.ClassDeclaration.PrimaryConstructor -> {
                 visitChildren(modifiers)
                 visitChildren(constructorKeyword)
+                visitChildren(lPar)
                 visitChildren(params)
+                visitChildren(rPar)
             }
             is Node.Declaration.ClassDeclaration.ClassBody -> {
                 visitChildren(enumEntries)
@@ -102,7 +106,9 @@ open class Visitor {
                 visitChildren(typeParams)
                 visitChildren(receiverType)
                 visitChildren(name)
+                visitChildren(lPar)
                 visitChildren(params)
+                visitChildren(rPar)
                 visitChildren(returnType)
                 visitChildren(postModifiers)
                 visitChildren(equals)
@@ -166,14 +172,18 @@ open class Visitor {
             is Node.Declaration.ClassDeclaration.ClassBody.SecondaryConstructor -> {
                 visitChildren(modifiers)
                 visitChildren(constructorKeyword)
+                visitChildren(lPar)
                 visitChildren(params)
+                visitChildren(rPar)
                 visitChildren(delegationCall)
                 visitChildren(block)
             }
             is Node.Declaration.ClassDeclaration.ClassBody.EnumEntry -> {
                 visitChildren(modifiers)
                 visitChildren(name)
+                visitChildren(lPar)
                 visitChildren(args)
+                visitChildren(rPar)
                 visitChildren(classBody)
             }
             is Node.TypeParam -> {
@@ -193,11 +203,15 @@ open class Visitor {
                 visitChildren(contextReceiver)
                 visitChildren(receiverType)
                 visitChildren(dotSymbol)
+                visitChildren(lPar)
                 visitChildren(params)
+                visitChildren(rPar)
                 visitChildren(returnType)
             }
             is Node.ContextReceiver -> {
+                visitChildren(lPar)
                 visitChildren(receiverTypes)
+                visitChildren(rPar)
             }
             is Node.Type.FunctionType.FunctionTypeParam -> {
                 visitChildren(name)
@@ -207,11 +221,15 @@ open class Visitor {
                 visitChildren(modifiers)
                 visitChildren(qualifiers)
                 visitChildren(name)
+                visitChildren(lAngle)
                 visitChildren(typeArgs)
+                visitChildren(rAngle)
             }
             is Node.Type.SimpleType.SimpleTypeQualifier -> {
                 visitChildren(name)
+                visitChildren(lAngle)
                 visitChildren(typeArgs)
+                visitChildren(rAngle)
             }
             is Node.Type.NullableType -> {
                 visitChildren(modifiers)
@@ -248,7 +266,9 @@ open class Visitor {
             }
             is Node.Expression.TryExpression.CatchClause -> {
                 visitChildren(catchKeyword)
+                visitChildren(lPar)
                 visitChildren(params)
+                visitChildren(rPar)
                 visitChildren(block)
             }
             is Node.Expression.BinaryExpression -> {
@@ -370,8 +390,12 @@ open class Visitor {
             }
             is Node.Expression.CallExpression -> {
                 visitChildren(calleeExpression)
+                visitChildren(lAngle)
                 visitChildren(typeArgs)
+                visitChildren(rAngle)
+                visitChildren(lPar)
                 visitChildren(args)
+                visitChildren(rPar)
                 visitChildren(lambdaArg)
             }
             is Node.Expression.CallExpression.LambdaArg -> {
@@ -403,7 +427,9 @@ open class Visitor {
             }
             is Node.Modifier.AnnotationSet.Annotation -> {
                 visitChildren(type)
+                visitChildren(lPar)
                 visitChildren(args)
+                visitChildren(rPar)
             }
             is Node.PostModifier.TypeConstraintSet -> {
                 visitChildren(whereKeyword)
@@ -416,7 +442,9 @@ open class Visitor {
             }
             is Node.PostModifier.Contract -> {
                 visitChildren(contractKeyword)
+                visitChildren(lBracket)
                 visitChildren(contractEffects)
+                visitChildren(rBracket)
             }
             is Node.Keyword -> {}
             is Node.Extra -> {}

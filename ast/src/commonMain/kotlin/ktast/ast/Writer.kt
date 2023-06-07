@@ -62,10 +62,10 @@ open class Writer(
         v.apply {
             when (this) {
                 is Node.CommaSeparatedNodeList<*> -> {
-                    children(elements, ",", prefix, suffix, trailingComma)
+                    error("CommaSeparatedNodeList should be handled by commaSeparatedChildren")
                 }
                 is Node.NodeList<*> -> {
-                    children(elements, prefix = prefix, suffix = suffix)
+                    children(elements)
                 }
                 is Node.KotlinFile -> {
                     children(annotationSets, skipWritingExtrasWithin = true)
@@ -100,18 +100,18 @@ open class Writer(
                     children(modifiers)
                     children(classDeclarationKeyword)
                     children(name)
-                    children(typeParams)
+                    commaSeparatedChildren(lAngle, typeParams, rAngle)
                     children(primaryConstructor)
                     if (classParents != null) {
                         append(":")
-                        children(classParents)
+                        commaSeparatedChildren(classParents)
                     }
                     children(typeConstraintSet)
                     children(classBody)
                 }
                 is Node.Declaration.ClassDeclaration.ConstructorClassParent -> {
                     children(type)
-                    children(args)
+                    commaSeparatedChildren(lPar, args, rPar)
                 }
                 is Node.Declaration.ClassDeclaration.DelegationClassParent -> {
                     children(type)
@@ -124,7 +124,7 @@ open class Writer(
                 is Node.Declaration.ClassDeclaration.PrimaryConstructor -> {
                     children(modifiers)
                     children(constructorKeyword)
-                    children(params)
+                    commaSeparatedChildren(lPar, params, rPar)
                 }
                 is Node.Declaration.ClassDeclaration.ClassBody -> {
                     append("{")
@@ -140,10 +140,10 @@ open class Writer(
                 is Node.Declaration.FunctionDeclaration -> {
                     children(modifiers)
                     children(funKeyword)
-                    children(typeParams)
+                    commaSeparatedChildren(lAngle, typeParams, rAngle)
                     if (receiverType != null) children(receiverType).append(".")
                     name?.also { children(it) }
-                    children(params)
+                    commaSeparatedChildren(lPar, params, rPar)
                     if (returnType != null) append(":").also { children(returnType) }
                     children(postModifiers)
                     children(equals)
@@ -160,7 +160,7 @@ open class Writer(
                 is Node.Declaration.PropertyDeclaration -> {
                     children(modifiers)
                     children(valOrVarKeyword)
-                    children(typeParams)
+                    commaSeparatedChildren(lAngle, typeParams, rAngle)
                     if (receiverType != null) children(receiverType).append('.')
                     children(lPar)
                     children(variables, ",")
@@ -196,8 +196,10 @@ open class Writer(
                     children(modifiers)
                     children(setKeyword)
                     if (body != null) {
+                        checkNotNull(params)
+
                         append("(")
-                        children(params)
+                        commaSeparatedChildren(params)
                         append(")")
                         children(postModifiers)
                         children(equals)
@@ -208,21 +210,21 @@ open class Writer(
                     children(modifiers)
                     append("typealias")
                     children(name)
-                    children(typeParams)
+                    commaSeparatedChildren(lAngle, typeParams, rAngle)
                     children(equals)
                     children(type)
                 }
                 is Node.Declaration.ClassDeclaration.ClassBody.SecondaryConstructor -> {
                     children(modifiers)
                     children(constructorKeyword)
-                    children(params)
+                    commaSeparatedChildren(lPar, params, rPar)
                     if (delegationCall != null) append(":").also { children(delegationCall) }
                     children(block)
                 }
                 is Node.Declaration.ClassDeclaration.ClassBody.EnumEntry -> {
                     children(modifiers)
                     children(name)
-                    children(args)
+                    commaSeparatedChildren(lPar, args, rPar)
                     children(classBody)
                     check(parent is Node.Declaration.ClassDeclaration.ClassBody) // condition should always be true
                     val isLastEntry = parent.enumEntries.last() === this
@@ -252,13 +254,14 @@ open class Writer(
                     children(receiverType)
                     children(dotSymbol)
                     if (params != null) {
-                        children(params).append("->")
+                        commaSeparatedChildren(lPar, params, rPar)
+                        append("->")
                     }
                     children(returnType)
                 }
                 is Node.ContextReceiver -> {
                     append("context")
-                    children(receiverTypes)
+                    commaSeparatedChildren(lPar, receiverTypes, rPar)
                 }
                 is Node.Type.FunctionType.FunctionTypeParam -> {
                     if (name != null) children(name).append(":")
@@ -271,11 +274,11 @@ open class Writer(
                         append(".")
                     }
                     children(name)
-                    children(typeArgs)
+                    commaSeparatedChildren(lAngle, typeArgs, rAngle)
                 }
                 is Node.Type.SimpleType.SimpleTypeQualifier -> {
                     children(name)
-                    children(typeArgs)
+                    commaSeparatedChildren(lAngle, typeArgs, rAngle)
                 }
                 is Node.Type.NullableType -> {
                     children(modifiers)
@@ -308,7 +311,7 @@ open class Writer(
                 }
                 is Node.Expression.TryExpression.CatchClause -> {
                     children(catchKeyword)
-                    children(params)
+                    commaSeparatedChildren(lPar, params, rPar)
                     children(block)
                 }
                 is Node.Expression.BinaryExpression -> {
@@ -365,7 +368,7 @@ open class Writer(
                 is Node.Expression.LambdaExpression -> {
                     append("{")
                     if (params != null) {
-                        children(params)
+                        commaSeparatedChildren(params)
                         append("->")
                     }
                     children(lambdaBody)
@@ -447,8 +450,8 @@ open class Writer(
                     children(annotationSets).also { children(statement) }
                 is Node.Expression.CallExpression -> {
                     children(calleeExpression)
-                    children(typeArgs)
-                    children(args)
+                    commaSeparatedChildren(lAngle, typeArgs, rAngle)
+                    commaSeparatedChildren(lPar, args, rPar)
                     children(lambdaArg)
                 }
                 is Node.Expression.CallExpression.LambdaArg -> {
@@ -483,14 +486,14 @@ open class Writer(
                 }
                 is Node.Modifier.AnnotationSet.Annotation -> {
                     children(type)
-                    children(args)
+                    commaSeparatedChildren(lPar, args, rPar)
                     if (parent is Node.Modifier.AnnotationSet && parent.rBracket == null) {
                         nextHeuristicWhitespace = " " // Insert heuristic space after annotation if single form
                     }
                 }
                 is Node.PostModifier.TypeConstraintSet -> {
                     children(whereKeyword)
-                    children(constraints)
+                    commaSeparatedChildren(constraints)
                 }
                 is Node.PostModifier.TypeConstraintSet.TypeConstraint -> {
                     children(annotationSets)
@@ -500,7 +503,7 @@ open class Writer(
                 }
                 is Node.PostModifier.Contract -> {
                     children(contractKeyword)
-                    children(contractEffects)
+                    commaSeparatedChildren(lBracket, contractEffects, rBracket)
                 }
                 is Node.Keyword -> {
                     append(text)
@@ -513,6 +516,20 @@ open class Writer(
     }
 
     protected fun Node.children(vararg v: Node?) = this@Writer.also { v.forEach { visitChildren(it) } }
+
+    protected fun Node.commaSeparatedChildren(v: Node.CommaSeparatedNodeList<*>) =
+        commaSeparatedChildren(null, v, null)
+
+    protected fun Node.commaSeparatedChildren(prefix: Node?, v: Node.CommaSeparatedNodeList<*>?, suffix: Node?) =
+        this@Writer.also {
+            if (v != null) {
+                v.writeExtrasBefore()
+                visitChildren(prefix)
+                children(v.elements, ",", trailingSeparator = v.trailingComma, skipWritingExtrasWithin = true)
+                visitChildren(suffix)
+                v.writeExtrasAfter()
+            }
+        }
 
     protected fun Node.children(
         v: List<Node>,

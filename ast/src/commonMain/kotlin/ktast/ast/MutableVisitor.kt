@@ -79,7 +79,9 @@ open class MutableVisitor(
                     )
                     is Node.Declaration.ClassDeclaration.ConstructorClassParent -> copy(
                         type = visitChildren(type, newCh),
+                        lPar = visitChildren(lPar, newCh),
                         args = visitChildren(args, newCh),
+                        rPar = visitChildren(rPar, newCh),
                     )
                     is Node.Declaration.ClassDeclaration.DelegationClassParent -> copy(
                         type = visitChildren(type, newCh),
@@ -92,7 +94,9 @@ open class MutableVisitor(
                     is Node.Declaration.ClassDeclaration.PrimaryConstructor -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         constructorKeyword = visitChildren(constructorKeyword, newCh),
-                        params = visitChildren(params, newCh)
+                        lPar = visitChildren(lPar, newCh),
+                        params = visitChildren(params, newCh),
+                        rPar = visitChildren(rPar, newCh),
                     )
                     is Node.Declaration.ClassDeclaration.ClassBody -> copy(
                         enumEntries = visitChildren(enumEntries, newCh),
@@ -108,7 +112,9 @@ open class MutableVisitor(
                         typeParams = visitChildren(typeParams, newCh),
                         receiverType = visitChildren(receiverType, newCh),
                         name = visitChildren(name, newCh),
+                        lPar = visitChildren(lPar, newCh),
                         params = visitChildren(params, newCh),
+                        rPar = visitChildren(rPar, newCh),
                         returnType = visitChildren(returnType, newCh),
                         postModifiers = visitChildren(postModifiers, newCh),
                         equals = visitChildren(equals, newCh),
@@ -176,14 +182,17 @@ open class MutableVisitor(
                     is Node.Declaration.ClassDeclaration.ClassBody.SecondaryConstructor -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         constructorKeyword = visitChildren(constructorKeyword, newCh),
+                        lPar = visitChildren(lPar, newCh),
                         params = visitChildren(params, newCh),
-                        delegationCall = visitChildren(delegationCall, newCh),
+                        rPar = visitChildren(rPar, newCh), delegationCall = visitChildren(delegationCall, newCh),
                         block = visitChildren(block, newCh)
                     )
                     is Node.Declaration.ClassDeclaration.ClassBody.EnumEntry -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         name = visitChildren(name, newCh),
+                        lPar = visitChildren(lPar, newCh),
                         args = visitChildren(args, newCh),
+                        rPar = visitChildren(rPar, newCh),
                         classBody = visitChildren(classBody, newCh)
                     )
                     is Node.TypeParams -> copy(
@@ -211,11 +220,15 @@ open class MutableVisitor(
                         contextReceiver = visitChildren(contextReceiver, newCh),
                         receiverType = visitChildren(receiverType, newCh),
                         dotSymbol = visitChildren(dotSymbol, newCh),
+                        lPar = visitChildren(lPar, newCh),
                         params = visitChildren(params, newCh),
+                        rPar = visitChildren(rPar, newCh),
                         returnType = visitChildren(returnType, newCh),
                     )
                     is Node.ContextReceiver -> copy(
+                        lPar = visitChildren(lPar, newCh),
                         receiverTypes = visitChildren(receiverTypes, newCh),
+                        rPar = visitChildren(rPar, newCh),
                     )
                     is Node.ContextReceiverTypes -> copy(
                         elements = visitChildren(elements, newCh),
@@ -233,11 +246,15 @@ open class MutableVisitor(
                         modifiers = visitChildren(modifiers, newCh),
                         qualifiers = visitChildren(qualifiers, newCh),
                         name = visitChildren(name, newCh),
+                        lAngle = visitChildren(lAngle, newCh),
                         typeArgs = visitChildren(typeArgs, newCh),
+                        rAngle = visitChildren(rAngle, newCh),
                     )
                     is Node.Type.SimpleType.SimpleTypeQualifier -> copy(
                         name = visitChildren(name, newCh),
+                        lAngle = visitChildren(lAngle, newCh),
                         typeArgs = visitChildren(typeArgs, newCh),
+                        rAngle = visitChildren(rAngle, newCh),
                     )
                     is Node.Type.NullableType -> copy(
                         modifiers = visitChildren(modifiers, newCh),
@@ -278,7 +295,9 @@ open class MutableVisitor(
                     )
                     is Node.Expression.TryExpression.CatchClause -> copy(
                         catchKeyword = visitChildren(catchKeyword, newCh),
+                        lPar = visitChildren(lPar, newCh),
                         params = visitChildren(params, newCh),
+                        rPar = visitChildren(rPar, newCh),
                         block = visitChildren(block, newCh),
                     )
                     is Node.Expression.BinaryExpression -> copy(
@@ -404,9 +423,13 @@ open class MutableVisitor(
                     )
                     is Node.Expression.CallExpression -> copy(
                         calleeExpression = visitChildren(calleeExpression, newCh),
+                        lAngle = visitChildren(lAngle, newCh),
                         typeArgs = visitChildren(typeArgs, newCh),
+                        rAngle = visitChildren(rAngle, newCh),
+                        lPar = visitChildren(lPar, newCh),
                         args = visitChildren(args, newCh),
-                        lambdaArg = visitChildren(lambdaArg, newCh)
+                        rPar = visitChildren(rPar, newCh),
+                        lambdaArg = visitChildren(lambdaArg, newCh),
                     )
                     is Node.Expression.CallExpression.LambdaArg -> copy(
                         annotationSets = visitChildren(annotationSets, newCh),
@@ -440,7 +463,9 @@ open class MutableVisitor(
                     )
                     is Node.Modifier.AnnotationSet.Annotation -> copy(
                         type = visitChildren(type, newCh),
+                        lPar = visitChildren(lPar, newCh),
                         args = visitChildren(args, newCh),
+                        rPar = visitChildren(rPar, newCh),
                     )
                     is Node.PostModifier.TypeConstraintSet -> copy(
                         whereKeyword = visitChildren(whereKeyword, newCh),
@@ -456,7 +481,9 @@ open class MutableVisitor(
                     )
                     is Node.PostModifier.Contract -> copy(
                         contractKeyword = visitChildren(contractKeyword, newCh),
+                        lBracket = visitChildren(lBracket, newCh),
                         contractEffects = visitChildren(contractEffects, newCh),
+                        rBracket = visitChildren(rBracket, newCh),
                     )
                     is Node.PostModifier.Contract.ContractEffects -> copy(
                         elements = visitChildren(elements, newCh),

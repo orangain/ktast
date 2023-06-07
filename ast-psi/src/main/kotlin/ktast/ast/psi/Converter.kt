@@ -108,7 +108,9 @@ open class Converter {
         classDeclarationKeyword = v.getDeclarationKeyword()?.let(::convertKeyword)
             ?: error("declarationKeyword not found"),
         name = v.nameIdentifier?.let(::convertName),
+        lAngle = v.typeParameterList?.leftAngle?.let(::convertKeyword),
         typeParams = v.typeParameterList?.let(::convertTypeParams),
+        rAngle = v.typeParameterList?.rightAngle?.let(::convertKeyword),
         primaryConstructor = v.primaryConstructor?.let(::convertPrimaryConstructor),
         classParents = v.getSuperTypeList()?.let(::convertParents),
         typeConstraintSet = v.typeConstraintList?.let { typeConstraintList ->
@@ -128,7 +130,11 @@ open class Converter {
         is KtSuperTypeCallEntry -> Node.Declaration.ClassDeclaration.ConstructorClassParent(
             type = v.typeReference?.let(::convertType) as? Node.Type.SimpleType
                 ?: error("Bad type on super call $v"),
+            lPar = v.valueArgumentList?.leftParenthesis?.let(::convertKeyword)
+                ?: error("No left parenthesis for $v"),
             args = v.valueArgumentList?.let(::convertValueArgs) ?: error("No value arguments for $v"),
+            rPar = v.valueArgumentList?.rightParenthesis?.let(::convertKeyword)
+                ?: error("No right parenthesis for $v"),
         ).map(v)
         is KtDelegatedSuperTypeEntry -> Node.Declaration.ClassDeclaration.DelegationClassParent(
             type = v.typeReference?.let(::convertType)
@@ -146,7 +152,9 @@ open class Converter {
     open fun convertPrimaryConstructor(v: KtPrimaryConstructor) = Node.Declaration.ClassDeclaration.PrimaryConstructor(
         modifiers = v.modifierList?.let(::convertModifiers),
         constructorKeyword = v.getConstructorKeyword()?.let(::convertKeyword),
-        params = v.valueParameterList?.let(::convertFuncParams)
+        lPar = v.valueParameterList?.leftParenthesis?.let(::convertKeyword),
+        params = v.valueParameterList?.let(::convertFuncParams),
+        rPar = v.valueParameterList?.rightParenthesis?.let(::convertKeyword),
     ).map(v)
 
     open fun convertInit(v: KtAnonymousInitializer) = Node.Declaration.ClassDeclaration.ClassBody.Initializer(
@@ -168,10 +176,14 @@ open class Converter {
         return Node.Declaration.FunctionDeclaration(
             modifiers = v.modifierList?.let(::convertModifiers),
             funKeyword = v.funKeyword?.let { convertKeyword(it) } ?: error("No fun keyword for $v"),
+            lAngle = v.typeParameterList?.leftAngle?.let(::convertKeyword),
             typeParams = v.typeParameterList?.let(::convertTypeParams),
+            rAngle = v.typeParameterList?.rightAngle?.let(::convertKeyword),
             receiverType = v.receiverTypeReference?.let(::convertType),
             name = v.nameIdentifier?.let(::convertName),
+            lPar = v.valueParameterList?.leftParenthesis?.let(::convertKeyword),
             params = v.valueParameterList?.let(::convertFuncParams),
+            rPar = v.valueParameterList?.rightParenthesis?.let(::convertKeyword),
             returnType = v.typeReference?.let(::convertType),
             postModifiers = convertPostModifiers(v),
             equals = v.equalsToken?.let(::convertKeyword),
@@ -196,7 +208,9 @@ open class Converter {
     open fun convertProperty(v: KtProperty) = Node.Declaration.PropertyDeclaration(
         modifiers = v.modifierList?.let(::convertModifiers),
         valOrVarKeyword = convertKeyword(v.valOrVarKeyword),
+        lAngle = v.typeParameterList?.leftAngle?.let(::convertKeyword),
         typeParams = v.typeParameterList?.let(::convertTypeParams),
+        rAngle = v.typeParameterList?.rightAngle?.let(::convertKeyword),
         receiverType = v.receiverTypeReference?.let(::convertType),
         lPar = null,
         variables = listOf(
@@ -223,7 +237,9 @@ open class Converter {
     open fun convertProperty(v: KtDestructuringDeclaration) = Node.Declaration.PropertyDeclaration(
         modifiers = v.modifierList?.let(::convertModifiers),
         valOrVarKeyword = v.valOrVarKeyword?.let(::convertKeyword) ?: error("Missing valOrVarKeyword"),
+        lAngle = null,
         typeParams = null,
+        rAngle = null,
         receiverType = null,
         lPar = v.lPar?.let(::convertKeyword),
         variables = v.entries.map(::convertVariable),
@@ -267,7 +283,9 @@ open class Converter {
     open fun convertTypeAlias(v: KtTypeAlias) = Node.Declaration.TypeAliasDeclaration(
         modifiers = v.modifierList?.let(::convertModifiers),
         name = v.nameIdentifier?.let(::convertName) ?: error("No type alias name for $v"),
+        lAngle = v.typeParameterList?.leftAngle?.let(::convertKeyword),
         typeParams = v.typeParameterList?.let(::convertTypeParams),
+        rAngle = v.typeParameterList?.rightAngle?.let(::convertKeyword),
         equals = convertKeyword(v.equalsToken),
         type = convertType(v.getTypeReference() ?: error("No type alias ref for $v"))
     ).map(v)
@@ -276,7 +294,9 @@ open class Converter {
         Node.Declaration.ClassDeclaration.ClassBody.SecondaryConstructor(
             modifiers = v.modifierList?.let(::convertModifiers),
             constructorKeyword = convertKeyword(v.getConstructorKeyword()),
+            lPar = v.valueParameterList?.leftParenthesis?.let(::convertKeyword),
             params = v.valueParameterList?.let(::convertFuncParams),
+            rPar = v.valueParameterList?.rightParenthesis?.let(::convertKeyword),
             delegationCall = if (v.hasImplicitDelegationCall()) null else convertCall(
                 v.getDelegationCall()
             ),
@@ -287,7 +307,9 @@ open class Converter {
         Node.Declaration.ClassDeclaration.ClassBody.EnumEntry(
             modifiers = v.modifierList?.let(::convertModifiers),
             name = v.nameIdentifier?.let(::convertName) ?: error("Unnamed enum"),
+            lPar = v.initializerList?.valueArgumentList?.leftParenthesis?.let(::convertKeyword),
             args = v.initializerList?.let(::convertValueArgs),
+            rPar = v.initializerList?.valueArgumentList?.rightParenthesis?.let(::convertKeyword),
             classBody = v.body?.let(::convertClassBody),
         ).map(v)
 
@@ -376,7 +398,9 @@ open class Converter {
                 contextReceiver = typeEl.contextReceiverList?.let(::convertContextReceiver),
                 receiverType = typeEl.receiver?.typeReference?.let(::convertType),
                 dotSymbol = findChildByType(typeEl, KtTokens.DOT)?.let(::convertKeyword),
+                lPar = typeEl.parameterList?.leftParenthesis?.let(::convertKeyword),
                 params = typeEl.parameterList?.let(::convertTypeFunctionParams),
+                rPar = typeEl.parameterList?.rightParenthesis?.let(::convertKeyword),
                 returnType = convertType(typeEl.returnTypeReference ?: error("No return type for $typeEl")),
             ).map(mapTarget ?: typeEl)
             is KtUserType -> Node.Type.SimpleType(
@@ -384,7 +408,9 @@ open class Converter {
                 qualifiers = generateSequence(typeEl.qualifier) { it.qualifier }.toList().reversed()
                     .map(::convertTypeSimpleQualifier),
                 name = convertName(typeEl.referenceExpression ?: error("No type name for $typeEl")),
+                lAngle = typeEl.typeArgumentList?.leftAngle?.let(::convertKeyword),
                 typeArgs = typeEl.typeArgumentList?.let(::convertTypeArgs),
+                rAngle = typeEl.typeArgumentList?.rightAngle?.let(::convertKeyword),
             ).map(mapTarget ?: typeEl)
             is KtNullableType -> Node.Type.NullableType(
                 modifiers = modifiers,
@@ -401,10 +427,12 @@ open class Converter {
     }
 
     open fun convertContextReceiver(v: KtContextReceiverList) = Node.ContextReceiver(
+        lPar = convertKeyword(v.leftParenthesis),
         receiverTypes = Node.ContextReceiverTypes(
             elements = v.contextReceivers().map(::convertType),
             trailingComma = null,
-        ).mapNotCorrespondsPsiElement(v)
+        ).mapNotCorrespondsPsiElement(v),
+        rPar = convertKeyword(v.rightParenthesis),
     ).map(v)
 
     open fun convertType(v: KtContextReceiver): Node.Type {
@@ -437,7 +465,9 @@ open class Converter {
 
     open fun convertTypeSimpleQualifier(v: KtUserType) = Node.Type.SimpleType.SimpleTypeQualifier(
         name = convertName(v.referenceExpression ?: error("No type name for $v")),
+        lAngle = v.typeArgumentList?.leftAngle?.let(::convertKeyword),
         typeArgs = v.typeArgumentList?.let(::convertTypeArgs),
+        rAngle = v.typeArgumentList?.rightAngle?.let(::convertKeyword),
     ).map(v)
 
     open fun convertValueArgs(v: KtValueArgumentList) = Node.ValueArgs(
@@ -446,11 +476,9 @@ open class Converter {
     ).map(v)
 
     open fun convertValueArgs(v: KtInitializerList): Node.ValueArgs {
-        val valueArgumentList = (v.initializers.firstOrNull() as? KtSuperTypeCallEntry)?.valueArgumentList
-            ?: error("No value arguments for $v")
         return Node.ValueArgs(
-            elements = (valueArgumentList.arguments).map(::convertValueArg),
-            trailingComma = valueArgumentList.trailingComma?.let(::convertKeyword),
+            elements = (v.valueArgumentList.arguments).map(::convertValueArg),
+            trailingComma = v.valueArgumentList.trailingComma?.let(::convertKeyword),
         ).map(v)
     }
 
@@ -519,7 +547,9 @@ open class Converter {
 
     open fun convertTryCatch(v: KtCatchClause) = Node.Expression.TryExpression.CatchClause(
         catchKeyword = convertKeyword(v.catchKeyword),
+        lPar = convertKeyword(v.parameterList?.leftParenthesis ?: error("No catch lpar for $v")),
         params = convertFuncParams(v.parameterList ?: error("No catch params for $v")),
+        rPar = convertKeyword(v.parameterList?.rightParenthesis ?: error("No catch rpar for $v")),
         block = convertBlock(v.catchBody as? KtBlockExpression ?: error("No catch block for $v")),
     ).map(v)
 
@@ -763,8 +793,12 @@ open class Converter {
 
     open fun convertCall(v: KtCallElement) = Node.Expression.CallExpression(
         calleeExpression = convertExpression(v.calleeExpression ?: error("No call expr for $v")),
+        lAngle = v.typeArgumentList?.leftAngle?.let(::convertKeyword),
         typeArgs = v.typeArgumentList?.let(::convertTypeArgs),
+        rAngle = v.typeArgumentList?.rightAngle?.let(::convertKeyword),
+        lPar = v.valueArgumentList?.leftParenthesis?.let(::convertKeyword),
         args = v.valueArgumentList?.let(::convertValueArgs),
+        rPar = v.valueArgumentList?.rightParenthesis?.let(::convertKeyword),
         lambdaArg = v.lambdaArguments.also {
             if (it.size >= 2) {
                 // According to the Kotlin syntax, at most one lambda argument is allowed.
@@ -859,7 +893,9 @@ open class Converter {
         type = convertType(
             v.calleeExpression?.typeReference ?: error("No callee expression, type reference or type element for $v")
         ) as? Node.Type.SimpleType ?: error("calleeExpression is not simple type"),
+        lPar = v.valueArgumentList?.leftParenthesis?.let(::convertKeyword),
         args = v.valueArgumentList?.let(::convertValueArgs),
+        rPar = v.valueArgumentList?.rightParenthesis?.let(::convertKeyword),
     )
 
     open fun convertModifiers(v: KtModifierList): Node.Modifiers {
@@ -893,7 +929,9 @@ open class Converter {
                 ).mapNotCorrespondsPsiElement(v)
                 is KtContractEffectList -> Node.PostModifier.Contract(
                     contractKeyword = convertKeyword(prevPsi),
+                    lBracket = convertKeyword(psi.leftBracket),
                     contractEffects = convertContractEffects(psi),
+                    rBracket = convertKeyword(psi.rightBracket),
                 ).mapNotCorrespondsPsiElement(v)
                 else -> null
             }.also { prevPsi = psi }
@@ -919,11 +957,23 @@ open class Converter {
         internal val KtImportDirective.asterisk: PsiElement?
             get() = findChildByType(this, KtTokens.MUL)
 
+        internal val KtTypeParameterList.leftAngle: PsiElement?
+            get() = findChildByType(this, KtTokens.LT)
+        internal val KtTypeParameterList.rightAngle: PsiElement?
+            get() = findChildByType(this, KtTokens.GT)
         internal val KtTypeParameterListOwner.whereKeyword: PsiElement
             get() = findChildByType(this, KtTokens.WHERE_KEYWORD) ?: error("No where keyword for $this")
 
+        internal val KtTypeArgumentList.leftAngle: PsiElement?
+            get() = findChildByType(this, KtTokens.LT)
+        internal val KtTypeArgumentList.rightAngle: PsiElement?
+            get() = findChildByType(this, KtTokens.GT)
+
         internal val KtDeclarationWithInitializer.equalsToken: PsiElement
             get() = findChildByType(this, KtTokens.EQ) ?: error("No equals token for $this")
+        internal val KtInitializerList.valueArgumentList: KtValueArgumentList
+            get() = (initializers.firstOrNull() as? KtSuperTypeCallEntry)?.valueArgumentList
+                ?: error("No value arguments for $this")
         internal val KtTypeAlias.equalsToken: PsiElement
             get() = findChildByType(this, KtTokens.EQ) ?: error("No equals token for $this")
 
@@ -982,6 +1032,15 @@ open class Converter {
             get() = findChildByType(this, KtTokens.RBRACKET)
         internal val KtAnnotationEntry.colon: PsiElement?
             get() = findChildByType(this, KtTokens.COLON)
+
+        internal val KtContextReceiverList.leftParenthesis: PsiElement
+            get() = findChildByType(this, KtTokens.LPAR) ?: error("No left parenthesis for $this")
+        internal val KtContextReceiverList.rightParenthesis: PsiElement
+            get() = findChildByType(this, KtTokens.RPAR) ?: error("No right parenthesis for $this")
+        internal val KtContractEffectList.leftBracket: PsiElement
+            get() = findChildByType(this, KtTokens.LBRACKET) ?: error("No left bracket for $this")
+        internal val KtContractEffectList.rightBracket: PsiElement
+            get() = findChildByType(this, KtTokens.RBRACKET) ?: error("No right bracket for $this")
 
         private fun findChildByType(v: KtElement, type: IElementType): PsiElement? =
             v.node.findChildByType(type)?.psi

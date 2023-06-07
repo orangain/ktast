@@ -13,14 +13,9 @@ sealed interface Node {
      * Base class of all nodes that represent a list of nodes.
      *
      * @param E type of elements in the list
-     * @property prefix prefix of the list when converted to source code, e.g. `(`.
-     * @property suffix suffix of the list when converted to source code, e.g. `)`.
      * @property elements list of elements in the list.
      */
-    abstract class NodeList<out E : Node>(
-        val prefix: String = "",
-        val suffix: String = "",
-    ) : Node {
+    abstract class NodeList<out E : Node> : Node {
         abstract val elements: List<E>
     }
 
@@ -29,10 +24,7 @@ sealed interface Node {
      *
      * @property trailingComma trailing comma node of the list if exists.
      */
-    abstract class CommaSeparatedNodeList<out E : Node>(
-        prefix: String,
-        suffix: String,
-    ) : NodeList<E>(prefix, suffix) {
+    abstract class CommaSeparatedNodeList<out E : Node> : NodeList<E>() {
         abstract val trailingComma: Keyword.Comma?
     }
 
@@ -94,6 +86,30 @@ sealed interface Node {
     interface WithFunctionBody {
         val equals: Keyword.Equal?
         val body: Expression?
+    }
+
+    interface WithTypeParams {
+        val lAngle: Keyword.Less?
+        val typeParams: TypeParams?
+        val rAngle: Keyword.Greater?
+    }
+
+    interface WithFunctionParams {
+        val lPar: Keyword.LPar?
+        val params: FunctionParams?
+        val rPar: Keyword.RPar?
+    }
+
+    interface WithTypeArgs {
+        val lAngle: Keyword.Less?
+        val typeArgs: TypeArgs?
+        val rAngle: Keyword.Greater?
+    }
+
+    interface WithValueArgs {
+        val lPar: Keyword.LPar?
+        val args: ValueArgs?
+        val rPar: Keyword.RPar?
     }
 
     /**
@@ -287,13 +303,15 @@ sealed interface Node {
             override val modifiers: Modifiers?,
             val classDeclarationKeyword: ClassDeclarationKeyword,
             val name: Expression.NameExpression?,
-            val typeParams: TypeParams?,
+            override val lAngle: Keyword.Less?,
+            override val typeParams: TypeParams?,
+            override val rAngle: Keyword.Greater?,
             val primaryConstructor: PrimaryConstructor?,
             val classParents: ClassParents?,
             val typeConstraintSet: PostModifier.TypeConstraintSet?,
             val classBody: ClassBody?,
             override var tag: Any? = null,
-        ) : Declaration, WithModifiers {
+        ) : Declaration, WithModifiers, WithTypeParams {
             /**
              * Returns `true` if the node is a class, `false` otherwise.
              */
@@ -330,7 +348,7 @@ sealed interface Node {
             data class ClassParents(
                 override val elements: List<ClassParent>,
                 override var tag: Any? = null,
-            ) : CommaSeparatedNodeList<ClassParent>("", "") {
+            ) : CommaSeparatedNodeList<ClassParent>() {
                 override val trailingComma: Keyword.Comma? = null
             }
 
@@ -342,9 +360,8 @@ sealed interface Node {
              * @property byKeyword `by` keyword if exists, otherwise `null`.
              * @property expression expression of the delegation if exists, otherwise `null`.
              */
-            sealed interface ClassParent : Node {
+            sealed interface ClassParent : Node, WithValueArgs {
                 val type: Type
-                val args: ValueArgs?
                 val byKeyword: Keyword.By?
                 val expression: Expression?
             }
@@ -359,7 +376,9 @@ sealed interface Node {
              */
             data class ConstructorClassParent(
                 override val type: Type.SimpleType,
+                override val lPar: Keyword.LPar,
                 override val args: ValueArgs,
+                override val rPar: Keyword.RPar,
                 override var tag: Any? = null,
             ) : ClassParent {
                 override val byKeyword: Keyword.By? = null
@@ -380,7 +399,9 @@ sealed interface Node {
                 override val expression: Expression,
                 override var tag: Any? = null,
             ) : ClassParent {
+                override val lPar: Keyword.LPar? = null
                 override val args: ValueArgs? = null
+                override val rPar: Keyword.RPar? = null
             }
 
             /**
@@ -395,7 +416,9 @@ sealed interface Node {
                 override val type: Type,
                 override var tag: Any? = null,
             ) : ClassParent {
+                override val lPar: Keyword.LPar? = null
                 override val args: ValueArgs? = null
+                override val rPar: Keyword.RPar? = null
                 override val byKeyword: Keyword.By? = null
                 override val expression: Expression? = null
             }
@@ -410,9 +433,11 @@ sealed interface Node {
             data class PrimaryConstructor(
                 override val modifiers: Modifiers?,
                 val constructorKeyword: Keyword.Constructor?,
-                val params: FunctionParams?,
+                override val lPar: Keyword.LPar?,
+                override val params: FunctionParams?,
+                override val rPar: Keyword.RPar?,
                 override var tag: Any? = null,
-            ) : Node, WithModifiers
+            ) : Node, WithModifiers, WithFunctionParams
 
             /**
              * AST node corresponds to KtClassBody.
@@ -439,10 +464,12 @@ sealed interface Node {
                 data class EnumEntry(
                     override val modifiers: Modifiers?,
                     val name: Expression.NameExpression,
-                    val args: ValueArgs?,
+                    override val lPar: Keyword.LPar?,
+                    override val args: ValueArgs?,
+                    override val rPar: Keyword.RPar?,
                     val classBody: ClassBody?,
                     override var tag: Any? = null,
-                ) : Node, WithModifiers
+                ) : Node, WithModifiers, WithValueArgs
 
                 /**
                  * AST node that represents an init block, a.k.a. initializer. The node corresponds to KtAnonymousInitializer.
@@ -468,11 +495,13 @@ sealed interface Node {
                 data class SecondaryConstructor(
                     override val modifiers: Modifiers?,
                     val constructorKeyword: Keyword.Constructor,
-                    val params: FunctionParams?,
+                    override val lPar: Keyword.LPar?,
+                    override val params: FunctionParams?,
+                    override val rPar: Keyword.RPar?,
                     val delegationCall: Expression.CallExpression?,
                     val block: Expression.BlockExpression?,
                     override var tag: Any? = null,
-                ) : Declaration, WithModifiers
+                ) : Declaration, WithModifiers, WithFunctionParams
             }
         }
 
@@ -493,16 +522,20 @@ sealed interface Node {
         data class FunctionDeclaration(
             override val modifiers: Modifiers?,
             val funKeyword: Keyword.Fun,
-            val typeParams: TypeParams?,
+            override val lAngle: Keyword.Less?,
+            override val typeParams: TypeParams?,
+            override val rAngle: Keyword.Greater?,
             val receiverType: Type?,
             val name: Expression.NameExpression?,
-            val params: FunctionParams?,
+            override val lPar: Keyword.LPar?,
+            override val params: FunctionParams?,
+            override val rPar: Keyword.RPar?,
             val returnType: Type?,
             override val postModifiers: List<PostModifier>,
             override val equals: Keyword.Equal?,
             override val body: Expression?,
             override var tag: Any? = null,
-        ) : Declaration, WithModifiers, WithPostModifiers, WithFunctionBody
+        ) : Declaration, WithModifiers, WithTypeParams, WithFunctionParams, WithPostModifiers, WithFunctionBody
 
         /**
          * AST node corresponds to KtProperty or KtDestructuringDeclaration.
@@ -524,7 +557,9 @@ sealed interface Node {
         data class PropertyDeclaration(
             override val modifiers: Modifiers?,
             val valOrVarKeyword: Keyword.ValOrVarKeyword,
-            val typeParams: TypeParams?,
+            override val lAngle: Keyword.Less?,
+            override val typeParams: TypeParams?,
+            override val rAngle: Keyword.Greater?,
             val receiverType: Type?,
             val lPar: Keyword.LPar?,
             val variables: List<Variable>,
@@ -536,7 +571,7 @@ sealed interface Node {
             val propertyDelegate: PropertyDelegate?,
             val accessors: List<Accessor>,
             override var tag: Any? = null,
-        ) : Declaration, WithModifiers {
+        ) : Declaration, WithModifiers, WithTypeParams {
             init {
                 if (propertyDelegate != null) {
                     require(equals == null && initializer == null) {
@@ -609,7 +644,15 @@ sealed interface Node {
                 override val equals: Keyword.Equal?,
                 override val body: Expression?,
                 override var tag: Any? = null,
-            ) : Accessor
+            ) : Accessor {
+                init {
+                    if (params == null) {
+                        require(equals == null && body == null) { "equals and body must be null when params is null" }
+                    } else {
+                        require(body != null) { "body must be non-null when params is non-null" }
+                    }
+                }
+            }
         }
 
         /**
@@ -623,11 +666,13 @@ sealed interface Node {
         data class TypeAliasDeclaration(
             override val modifiers: Modifiers?,
             val name: Expression.NameExpression,
-            val typeParams: TypeParams?,
+            override val lAngle: Keyword.Less?,
+            override val typeParams: TypeParams?,
+            override val rAngle: Keyword.Greater?,
             val equals: Keyword.Equal,
             val type: Type,
             override var tag: Any? = null,
-        ) : Declaration, WithModifiers
+        ) : Declaration, WithModifiers, WithTypeParams
     }
 
     /**
@@ -637,7 +682,7 @@ sealed interface Node {
         override val elements: List<FunctionParam>,
         override val trailingComma: Keyword.Comma?,
         override var tag: Any? = null,
-    ) : CommaSeparatedNodeList<FunctionParam>("(", ")")
+    ) : CommaSeparatedNodeList<FunctionParam>()
 
     /**
      * AST node that represents a formal function parameter of a function declaration. For example, `x: Int` in `fun f(x: Int)` is a function parameter. The node corresponds to KtParameter inside KtNamedFunction.
@@ -680,7 +725,7 @@ sealed interface Node {
         override val elements: List<TypeParam>,
         override val trailingComma: Keyword.Comma?,
         override var tag: Any? = null,
-    ) : CommaSeparatedNodeList<TypeParam>("<", ">")
+    ) : CommaSeparatedNodeList<TypeParam>()
 
     /**
      * AST node that represents a formal type parameter of a function or a class. For example, `T` in `fun <T> f()` is a type parameter. The node corresponds to KtTypeParameter.
@@ -731,9 +776,8 @@ sealed interface Node {
             override var tag: Any? = null,
         ) : Type
 
-        private interface NameWithTypeArgs {
+        private interface NameWithTypeArgs : WithTypeArgs {
             val name: Expression.NameExpression
-            val typeArgs: TypeArgs?
         }
 
         /**
@@ -748,7 +792,9 @@ sealed interface Node {
             override val modifiers: Modifiers?,
             val qualifiers: List<SimpleTypeQualifier>,
             override val name: Expression.NameExpression,
+            override val lAngle: Keyword.Less?,
             override val typeArgs: TypeArgs?,
+            override val rAngle: Keyword.Greater?,
             override var tag: Any? = null,
         ) : Type, NameWithTypeArgs {
             /**
@@ -759,7 +805,9 @@ sealed interface Node {
              */
             data class SimpleTypeQualifier(
                 override val name: Expression.NameExpression,
+                override val lAngle: Keyword.Less?,
                 override val typeArgs: TypeArgs?,
+                override val rAngle: Keyword.Greater?,
                 override var tag: Any? = null,
             ) : Node, NameWithTypeArgs
         }
@@ -789,7 +837,9 @@ sealed interface Node {
             val contextReceiver: ContextReceiver?,
             val receiverType: Type?,
             val dotSymbol: Keyword.Dot?,
+            val lPar: Keyword.LPar?,
             val params: FunctionTypeParams?,
+            val rPar: Keyword.RPar?,
             val returnType: Type,
             override var tag: Any? = null,
         ) : Type {
@@ -801,7 +851,7 @@ sealed interface Node {
                 override val elements: List<FunctionTypeParam>,
                 override val trailingComma: Keyword.Comma?,
                 override var tag: Any? = null,
-            ) : CommaSeparatedNodeList<FunctionTypeParam>("(", ")")
+            ) : CommaSeparatedNodeList<FunctionTypeParam>()
 
             /**
              * AST node that represents a formal function parameter of a function type. For example, `x: Int` in `(x: Int) -> Unit` is a function parameter. The node corresponds to KtParameter inside KtFunctionType.
@@ -825,7 +875,7 @@ sealed interface Node {
         override val elements: List<TypeArg>,
         override val trailingComma: Keyword.Comma?,
         override var tag: Any? = null,
-    ) : CommaSeparatedNodeList<TypeArg>("<", ">")
+    ) : CommaSeparatedNodeList<TypeArg>()
 
     /**
      * Common interface for AST node that represents an actual type argument. For example, `Int` in `listOf<Int>()` is a type argument. The node corresponds to KtTypeProjection.
@@ -876,7 +926,7 @@ sealed interface Node {
         override val elements: List<ValueArg>,
         override val trailingComma: Keyword.Comma?,
         override var tag: Any? = null,
-    ) : CommaSeparatedNodeList<ValueArg>("(", ")")
+    ) : CommaSeparatedNodeList<ValueArg>()
 
     /**
      * AST node that represents an actual value argument of a function call. For example, `foo(1, 2)` has two value arguments `1` and `2`. The node corresponds to KtValueArgument.
@@ -947,10 +997,12 @@ sealed interface Node {
              */
             data class CatchClause(
                 val catchKeyword: Keyword.Catch,
-                val params: FunctionParams,
+                override val lPar: Keyword.LPar,
+                override val params: FunctionParams,
+                override val rPar: Keyword.RPar,
                 val block: BlockExpression,
                 override var tag: Any? = null,
-            ) : Node
+            ) : Node, WithFunctionParams
         }
 
         /**
@@ -1514,11 +1566,15 @@ sealed interface Node {
          */
         data class CallExpression(
             val calleeExpression: Expression,
-            val typeArgs: TypeArgs?,
-            val args: ValueArgs?,
+            override val lAngle: Keyword.Less?,
+            override val typeArgs: TypeArgs?,
+            override val rAngle: Keyword.Greater?,
+            override val lPar: Keyword.LPar?,
+            override val args: ValueArgs?,
+            override val rPar: Keyword.RPar?,
             val lambdaArg: LambdaArg?,
             override var tag: Any? = null,
-        ) : Expression {
+        ) : Expression, WithTypeArgs, WithValueArgs {
             /**
              * AST node corresponds to KtLambdaArgument.
              *
@@ -1587,7 +1643,7 @@ sealed interface Node {
         override val elements: List<LambdaParam>,
         override val trailingComma: Keyword.Comma?,
         override var tag: Any? = null,
-    ) : CommaSeparatedNodeList<LambdaParam>("", "")
+    ) : CommaSeparatedNodeList<LambdaParam>()
 
     /**
      * AST node that represents a formal parameter of lambda expression. For example, `x` in `{ x -> ... }` is a lambda parameter. The node corresponds to KtParameter under KtLambdaExpression.
@@ -1662,9 +1718,11 @@ sealed interface Node {
              */
             data class Annotation(
                 val type: Type.SimpleType,
-                val args: ValueArgs?,
+                override val lPar: Keyword.LPar?,
+                override val args: ValueArgs?,
+                override val rPar: Keyword.RPar?,
                 override var tag: Any? = null,
-            ) : Node
+            ) : Node, WithValueArgs
         }
 
         /**
@@ -1679,7 +1737,9 @@ sealed interface Node {
      * @property receiverTypes receiver types.
      */
     data class ContextReceiver(
+        val lPar: Keyword.LPar,
         val receiverTypes: ContextReceiverTypes,
+        val rPar: Keyword.RPar,
         override var tag: Any? = null,
     ) : Node
 
@@ -1690,7 +1750,7 @@ sealed interface Node {
         override val elements: List<Type>,
         override val trailingComma: Keyword.Comma?,
         override var tag: Any? = null,
-    ) : CommaSeparatedNodeList<Type>("(", ")")
+    ) : CommaSeparatedNodeList<Type>()
 
     /**
      * Common interface for post-modifiers.
@@ -1713,7 +1773,7 @@ sealed interface Node {
             data class TypeConstraints(
                 override val elements: List<TypeConstraint>,
                 override var tag: Any? = null,
-            ) : CommaSeparatedNodeList<TypeConstraint>("", "") {
+            ) : CommaSeparatedNodeList<TypeConstraint>() {
                 override val trailingComma: Keyword.Comma? = null // Trailing comma is not allowed.
             }
 
@@ -1740,7 +1800,9 @@ sealed interface Node {
          */
         data class Contract(
             val contractKeyword: Keyword.Contract,
+            val lBracket: Keyword.LBracket,
             val contractEffects: ContractEffects,
+            val rBracket: Keyword.RBracket,
             override var tag: Any? = null,
         ) : PostModifier {
             /**
@@ -1750,7 +1812,7 @@ sealed interface Node {
                 override val elements: List<Expression>,
                 override val trailingComma: Keyword.Comma?,
                 override var tag: Any? = null,
-            ) : CommaSeparatedNodeList<Expression>("[", "]")
+            ) : CommaSeparatedNodeList<Expression>()
         }
     }
 
