@@ -61,11 +61,11 @@ sealed interface Node {
      * Common interface for AST nodes that have package directives and import directives.
      *
      * @property packageDirective package directive if exists, otherwise `null`.
-     * @property importDirectives import directives if exist, otherwise `null`.
+     * @property importDirectives list of import directives.
      */
     interface KotlinEntry : WithAnnotationSets {
         val packageDirective: PackageDirective?
-        val importDirectives: ImportDirectives?
+        val importDirectives: List<ImportDirective>
     }
 
     /**
@@ -135,13 +135,13 @@ sealed interface Node {
      *
      * @property annotationSets list of annotation sets.
      * @property packageDirective package directive if exists, otherwise `null`.
-     * @property importDirectives import directives if exist, otherwise `null`.
+     * @property importDirectives list of import directives.
      * @property declarations list of declarations.
      */
     data class KotlinFile(
         override val annotationSets: List<Modifier.AnnotationSet>,
         override val packageDirective: PackageDirective?,
-        override val importDirectives: ImportDirectives?,
+        override val importDirectives: List<ImportDirective>,
         override val declarations: List<Declaration>,
         override var tag: Any? = null,
     ) : Node, KotlinEntry, DeclarationsContainer
@@ -149,13 +149,13 @@ sealed interface Node {
     /**
      * @property annotationSets list of annotation sets.
      * @property packageDirective package directive if exists, otherwise `null`.
-     * @property importDirectives import directives if exist, otherwise `null`.
+     * @property importDirectives list of import directives.
      * @property expressions list of expressions.
      */
     data class KotlinScript(
         override val annotationSets: List<Modifier.AnnotationSet>,
         override val packageDirective: PackageDirective?,
-        override val importDirectives: ImportDirectives?,
+        override val importDirectives: List<ImportDirective>,
         val expressions: List<Expression>,
         override var tag: Any? = null,
     ) : Node, KotlinEntry
@@ -173,14 +173,6 @@ sealed interface Node {
         val names: List<Expression.NameExpression>,
         override var tag: Any? = null,
     ) : Node, WithModifiers
-
-    /**
-     * AST node corresponds to KtImportList.
-     */
-    data class ImportDirectives(
-        override val elements: List<ImportDirective>,
-        override var tag: Any? = null,
-    ) : NodeList<ImportDirective>()
 
     /**
      * AST node corresponds to KtImportDirective.
@@ -447,9 +439,11 @@ sealed interface Node {
              * @property declarations list of declarations.
              */
             data class ClassBody(
+                val lBrace: Keyword.LBrace,
                 val enumEntries: List<EnumEntry>,
                 val hasTrailingCommaInEnumEntries: Boolean,
                 override val declarations: List<Declaration>,
+                val rBrace: Keyword.RBrace,
                 override var tag: Any? = null,
             ) : Node, DeclarationsContainer {
 
@@ -1273,16 +1267,18 @@ sealed interface Node {
          */
         data class LambdaExpression(
             val params: LambdaParams?,
+            val lBrace: Keyword.LBrace,
             val lambdaBody: LambdaBody?,
+            val rBrace: Keyword.RBrace,
             override var tag: Any? = null,
         ) : Expression {
 
             /**
              * AST node corresponds to KtBlockExpression in lambda body.
-             * In lambda expression, left and right braces are not included in [LambdaExpression.LambdaBody], but are included in Lambda.
+             * In lambda expression, left and right braces are not included in [LambdaBody], but are included in [LambdaExpression].
              * This means:
              *
-             * <Lambda> = { <Param>, <Param> -> <Body> }
+             * [LambdaExpression] = { [LambdaParam], [LambdaParam] -> [LambdaBody] }
              *
              * @property statements list of statements in the block.
              */
@@ -1631,7 +1627,9 @@ sealed interface Node {
          * @property statements list of statements.
          */
         data class BlockExpression(
+            val lBrace: Keyword.LBrace,
             override val statements: List<Statement>,
+            val rBrace: Keyword.RBrace,
             override var tag: Any? = null,
         ) : Expression, StatementsContainer
     }
@@ -1958,6 +1956,14 @@ sealed interface Node {
 
         data class RBracket(override var tag: Any? = null) : Keyword {
             override val text = "]"
+        }
+
+        data class LBrace(override var tag: Any? = null) : Keyword {
+            override val text = "{"
+        }
+
+        data class RBrace(override var tag: Any? = null) : Keyword {
+            override val text = "}"
         }
 
         data class At(override var tag: Any? = null) : Keyword {

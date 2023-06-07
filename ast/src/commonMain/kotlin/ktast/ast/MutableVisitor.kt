@@ -29,9 +29,6 @@ open class MutableVisitor(
                         packageKeyword = visitChildren(packageKeyword, newCh),
                         names = visitChildren(names, newCh),
                     )
-                    is Node.ImportDirectives -> copy(
-                        elements = visitChildren(elements, newCh),
-                    )
                     is Node.ImportDirective -> copy(
                         importKeyword = visitChildren(importKeyword, newCh),
                         names = visitChildren(names, newCh),
@@ -99,8 +96,10 @@ open class MutableVisitor(
                         rPar = visitChildren(rPar, newCh),
                     )
                     is Node.Declaration.ClassDeclaration.ClassBody -> copy(
+                        lBrace = visitChildren(lBrace, newCh),
                         enumEntries = visitChildren(enumEntries, newCh),
                         declarations = visitChildren(declarations, newCh),
+                        rBrace = visitChildren(rBrace, newCh),
                     )
                     is Node.Declaration.ClassDeclaration.ClassBody.Initializer -> copy(
                         modifiers = visitChildren(modifiers, newCh),
@@ -340,8 +339,10 @@ open class MutableVisitor(
                     )
                     is Node.Expression.ConstantLiteralExpression -> this
                     is Node.Expression.LambdaExpression -> copy(
+                        lBrace = visitChildren(lBrace, newCh),
                         params = visitChildren(params, newCh),
-                        lambdaBody = visitChildren(lambdaBody, newCh)
+                        lambdaBody = visitChildren(lambdaBody, newCh),
+                        rBrace = visitChildren(rBrace, newCh),
                     )
                     is Node.LambdaParams -> copy(
                         elements = visitChildren(elements, newCh),
@@ -448,7 +449,9 @@ open class MutableVisitor(
                         property = visitChildren(property, newCh)
                     )
                     is Node.Expression.BlockExpression -> copy(
-                        statements = visitChildren(statements, newCh)
+                        lBrace = visitChildren(lBrace, newCh),
+                        statements = visitChildren(statements, newCh),
+                        rBrace = visitChildren(rBrace, newCh),
                     )
                     is Node.Modifiers -> copy(
                         elements = visitChildren(elements, newCh),

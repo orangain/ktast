@@ -70,7 +70,7 @@ open class Writer(
                 is Node.KotlinFile -> {
                     children(annotationSets, skipWritingExtrasWithin = true)
                     children(packageDirective)
-                    children(importDirectives)
+                    children(importDirectives, skipWritingExtrasWithin = true)
                     children(declarations)
                 }
                 is Node.PackageDirective -> {
@@ -127,10 +127,10 @@ open class Writer(
                     commaSeparatedChildren(lPar, params, rPar)
                 }
                 is Node.Declaration.ClassDeclaration.ClassBody -> {
-                    append("{")
+                    children(lBrace)
                     children(enumEntries, skipWritingExtrasWithin = true)
                     children(declarations)
-                    append("}")
+                    children(rBrace)
                 }
                 is Node.Declaration.ClassDeclaration.ClassBody.Initializer -> {
                     children(modifiers)
@@ -366,13 +366,13 @@ open class Writer(
                 is Node.Expression.ConstantLiteralExpression ->
                     append(text)
                 is Node.Expression.LambdaExpression -> {
-                    append("{")
+                    children(lBrace)
                     if (params != null) {
                         commaSeparatedChildren(params)
                         append("->")
                     }
                     children(lambdaBody)
-                    append("}")
+                    children(rBrace)
                 }
                 is Node.LambdaParam -> {
                     children(lPar)
@@ -471,10 +471,9 @@ open class Writer(
                 is Node.Expression.PropertyExpression ->
                     children(property)
                 is Node.Expression.BlockExpression -> {
-                    append("{").run {
-                        children(statements)
-                    }
-                    append("}")
+                    children(lBrace)
+                    children(statements)
+                    children(rBrace)
                 }
                 is Node.Modifier.AnnotationSet -> {
                     children(atSymbol)

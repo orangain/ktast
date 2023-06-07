@@ -18,7 +18,7 @@ open class Converter {
     open fun convertKotlinFile(v: KtFile) = Node.KotlinFile(
         annotationSets = convertAnnotationSets(v),
         packageDirective = v.packageDirective?.takeIf { it.packageNames.isNotEmpty() }?.let(::convertPackageDirective),
-        importDirectives = v.importList?.let(::convertImportDirectives),
+        importDirectives = v.importList?.imports?.map(::convertImportDirective) ?: listOf(),
         declarations = v.declarations.map(::convertDeclaration)
     ).map(v)
 
@@ -27,13 +27,6 @@ open class Converter {
         modifiers = v.modifierList?.let(::convertModifiers),
         names = v.packageNames.map(::convertName),
     ).map(v)
-
-    open fun convertImportDirectives(v: KtImportList): Node.ImportDirectives? = if (v.imports.isEmpty())
-        null // Explicitly returns null here. This is because, unlike other PsiElements, KtImportList does exist even when there is no import statement.
-    else
-        Node.ImportDirectives(
-            elements = v.imports.map(::convertImportDirective),
-        ).map(v)
 
     open fun convertImportDirective(v: KtImportDirective) = Node.ImportDirective(
         importKeyword = convertKeyword(v.importKeyword),
@@ -317,9 +310,11 @@ open class Converter {
         val ktEnumEntries = v.declarations.filterIsInstance<KtEnumEntry>()
         val declarationsExcludingKtEnumEntry = v.declarations.filter { it !is KtEnumEntry }
         return Node.Declaration.ClassDeclaration.ClassBody(
+            lBrace = convertKeyword(v.lBrace ?: error("Missing lBrace for $v")),
             enumEntries = ktEnumEntries.map(::convertEnumEntry),
             hasTrailingCommaInEnumEntries = ktEnumEntries.lastOrNull()?.comma != null,
             declarations = declarationsExcludingKtEnumEntry.map(::convertDeclaration),
+            rBrace = convertKeyword(v.rBrace ?: error("Missing rBrace for $v")),
         ).map(v)
     }
 
@@ -636,8 +631,10 @@ open class Converter {
         }.map(v)
 
     open fun convertLambda(v: KtLambdaExpression) = Node.Expression.LambdaExpression(
+        lBrace = convertKeyword(v.lBrace),
         params = v.functionLiteral.valueParameterList?.let(::convertLambdaParams),
-        lambdaBody = v.bodyExpression?.let(::convertLambdaBody)
+        lambdaBody = v.bodyExpression?.let(::convertLambdaBody),
+        rBrace = convertKeyword(v.rBrace),
     ).map(v)
 
     open fun convertLambdaParams(v: KtParameterList) = Node.LambdaParams(
@@ -675,7 +672,7 @@ open class Converter {
     }
 
     open fun convertLambdaBody(v: KtBlockExpression) = Node.Expression.LambdaExpression.LambdaBody(
-        statements = v.statements.map(::convertStatement)
+        statements = v.statements.map(::convertStatement),
     ).map(v)
 
     open fun convertThis(v: KtThisExpression) = Node.Expression.ThisExpression(
@@ -848,7 +845,9 @@ open class Converter {
     ).map(v)
 
     open fun convertBlock(v: KtBlockExpression) = Node.Expression.BlockExpression(
-        statements = v.statements.map(::convertStatement)
+        lBrace = convertKeyword(v.lBrace ?: error("No left brace for $v")),
+        statements = v.statements.map(::convertStatement),
+        rBrace = convertKeyword(v.rBrace ?: error("No right brace for $v")),
     ).map(v)
 
     open fun convertAnnotationSets(v: KtElement): List<Node.Modifier.AnnotationSet> = v.children.flatMap { elem ->
@@ -1015,6 +1014,12 @@ open class Converter {
                     as? KtContainerNode ?: error("No condition for $this")
         internal val KtDoWhileExpression.doKeyword: PsiElement
             get() = findChildByType(this, KtTokens.DO_KEYWORD) ?: error("No do keyword for $this")
+
+        internal val KtLambdaExpression.lBrace: PsiElement
+            get() = leftCurlyBrace.psi ?: error("No lBrace for $this")
+        internal val KtLambdaExpression.rBrace: PsiElement
+            get() = rightCurlyBrace?.psi
+                ?: error("No rBrace for $this") // It seems funny, but lBrace is non-null, while rBrace is nullable.
 
         internal val KtDoubleColonExpression.questionMarks
             get() = allChildren
