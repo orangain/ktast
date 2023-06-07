@@ -530,12 +530,12 @@ open class Writer(
         }
 
     protected open fun Node.writeHeuristicNewline(parent: Node?) {
-        if (parent is Node.StatementsContainer && this is Node.Statement) {
+        if (parent is Node.WithStatements && this is Node.Statement) {
             if (parent.statements.first() !== this && !containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
                 append("\n")
             }
         }
-        if (parent is Node.DeclarationsContainer && this is Node.Declaration) {
+        if (parent is Node.WithDeclarations && this is Node.Declaration) {
             if (parent.declarations.first() !== this && !containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
                 append("\n")
             }
@@ -606,7 +606,7 @@ open class Writer(
     )
 
     protected open fun writeHeuristicExtraAfterChild(v: Node, next: Node?, parent: Node?) {
-        if (v is Node.Expression.NameExpression && modifierKeywords.contains(v.text) && next is Node.Declaration && parent is Node.StatementsContainer) {
+        if (v is Node.Expression.NameExpression && modifierKeywords.contains(v.text) && next is Node.Declaration && parent is Node.WithStatements) {
             // Insert heuristic semicolon after name expression whose name is the same as the modifier keyword and next
             // is declaration to avoid ambiguity with keyword modifier.
             if (!containsSemicolon(extrasSinceLastNonSymbol)) {

@@ -126,7 +126,7 @@ sealed interface Node {
      *
      * @property statements list of statements.
      */
-    interface StatementsContainer {
+    interface WithStatements {
         val statements: List<Statement>
     }
 
@@ -135,7 +135,7 @@ sealed interface Node {
      *
      * @property declarations list of declarations.
      */
-    interface DeclarationsContainer {
+    interface WithDeclarations {
         val declarations: List<Declaration>
     }
 
@@ -153,7 +153,7 @@ sealed interface Node {
         override val importDirectives: List<ImportDirective>,
         override val declarations: List<Declaration>,
         override var tag: Any? = null,
-    ) : Node, KotlinEntry, DeclarationsContainer
+    ) : Node, KotlinEntry, WithDeclarations
 
     /**
      * @property annotationSets list of annotation sets.
@@ -442,7 +442,7 @@ sealed interface Node {
                 override val declarations: List<Declaration>,
                 val rBrace: Keyword.RBrace,
                 override var tag: Any? = null,
-            ) : Node, DeclarationsContainer {
+            ) : Node, WithDeclarations {
 
                 /**
                  * AST node corresponds to KtEnumEntry.
@@ -1239,7 +1239,7 @@ sealed interface Node {
             data class LambdaBody(
                 override val statements: List<Statement>,
                 override var tag: Any? = null,
-            ) : Expression, StatementsContainer
+            ) : Expression, WithStatements
         }
 
         /**
@@ -1575,7 +1575,7 @@ sealed interface Node {
             override val statements: List<Statement>,
             val rBrace: Keyword.RBrace,
             override var tag: Any? = null,
-        ) : Expression, StatementsContainer
+        ) : Expression, WithStatements
     }
 
     /**
