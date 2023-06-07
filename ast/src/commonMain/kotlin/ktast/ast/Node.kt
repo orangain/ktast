@@ -421,7 +421,7 @@ sealed interface Node {
                  *
                  * @property modifiers list of modifiers.
                  * @property name name of the enum entry.
-                 * @property args list of value arguments of the enum entry if exists, otherwise `null`.
+                 * @property args list of value arguments of the enum entry.
                  * @property classBody class body of the enum entry if exists, otherwise `null`.
                  */
                 data class EnumEntry(
