@@ -69,24 +69,52 @@ sealed interface Node {
         val body: Expression?
     }
 
+    /**
+     * Common interface for AST nodes that have type parameters.
+     *
+     * @property lAngle less than sign if exists, otherwise `null`.
+     * @property typeParams list of type parameters.
+     * @property rAngle greater than sign if exists, otherwise `null`.
+     */
     interface WithTypeParams {
         val lAngle: Keyword.Less?
         val typeParams: List<TypeParam>
         val rAngle: Keyword.Greater?
     }
 
+    /**
+     * Common interface for AST nodes that have function parameters.
+     *
+     * @property lPar left parenthesis if exists, otherwise `null`.
+     * @property params list of function parameters.
+     * @property rPar right parenthesis if exists, otherwise `null`.
+     */
     interface WithFunctionParams {
         val lPar: Keyword.LPar?
         val params: List<FunctionParam>
         val rPar: Keyword.RPar?
     }
 
+    /**
+     * Common interface for AST nodes that have type arguments.
+     *
+     * @property lAngle left angle bracket if exists, otherwise `null`.
+     * @property typeArgs list of type arguments.
+     * @property rAngle right angle bracket if exists, otherwise `null`.
+     */
     interface WithTypeArgs {
         val lAngle: Keyword.Less?
         val typeArgs: List<TypeArg>
         val rAngle: Keyword.Greater?
     }
 
+    /**
+     * Common interface for AST nodes that have value arguments.
+     *
+     * @property lPar left parenthesis if exists, otherwise `null`.
+     * @property args list of value arguments.
+     * @property rPar right parenthesis if exists, otherwise `null`.
+     */
     interface WithValueArgs {
         val lPar: Keyword.LPar?
         val args: List<ValueArg>
