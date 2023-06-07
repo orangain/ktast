@@ -352,11 +352,11 @@ open class Converter {
     ).map(v)
 
     open fun convertType(v: KtTypeReference): Node.Type {
-        return convertType(v, v.nonExtraChildren(), mapTarget = v)
+        return convertType(v, v.nonExtraChildren())
     }
 
     // Actually, type of v is KtTypeReference or KtNullableType.
-    open fun convertType(v: KtElement, targetChildren: List<PsiElement>, mapTarget: KtElement?): Node.Type {
+    protected open fun convertType(v: KtElement, targetChildren: List<PsiElement>): Node.Type {
         val modifierListElements = targetChildren.takeWhile { it is KtModifierList }
         check(modifierListElements.size <= 1) { "Multiple modifier lists in type children: $targetChildren" }
         val modifierList = modifierListElements.firstOrNull() as? KtModifierList
@@ -369,7 +369,7 @@ open class Converter {
             return Node.Type.ParenthesizedType(
                 modifiers = convertModifiers(modifierList),
                 lPar = convertKeyword(restChildren.first()),
-                type = convertType(v, restChildren.subList(1, restChildren.size - 1), mapTarget = null),
+                type = convertType(v, restChildren.subList(1, restChildren.size - 1)),
                 rPar = convertKeyword(restChildren.last()),
             ).mapNotCorrespondsPsiElement(v)
         }
@@ -397,7 +397,7 @@ open class Converter {
             ).mapNotCorrespondsPsiElement(typeEl)
             is KtNullableType -> Node.Type.NullableType(
                 modifiers = modifiers,
-                type = convertType(typeEl, typeEl.nonExtraChildren(), null),
+                type = convertType(typeEl, typeEl.nonExtraChildren()),
                 questionMark = convertKeyword(
                     findChildByType(typeEl, KtTokens.QUEST) ?: error("No question mark for $typeEl")
                 ),
@@ -418,11 +418,7 @@ open class Converter {
 
     open fun convertType(v: KtContextReceiver): Node.Type {
         val typeRef = v.typeReference() ?: error("No type ref for $v")
-        return convertType(
-            typeRef,
-            typeRef.nonExtraChildren(),
-            mapTarget = v,
-        )
+        return convertType(typeRef, typeRef.nonExtraChildren())
     }
 
     open fun convertContractEffects(v: KtContractEffectList): List<Node.Expression> =
