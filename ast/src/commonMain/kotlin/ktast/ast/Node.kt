@@ -39,17 +39,6 @@ sealed interface Node {
     }
 
     /**
-     * Common interface for AST nodes that have package directives and import directives.
-     *
-     * @property packageDirective package directive if exists, otherwise `null`.
-     * @property importDirectives list of import directives.
-     */
-    sealed interface KotlinEntry : Node, WithAnnotationSets {
-        val packageDirective: PackageDirective?
-        val importDirectives: List<ImportDirective>
-    }
-
-    /**
      * Common interface for AST nodes that have post-modifiers.
      *
      * @property postModifiers list of post-modifiers.
@@ -72,9 +61,9 @@ sealed interface Node {
     /**
      * Common interface for AST nodes that have type parameters.
      *
-     * @property lAngle less than sign if exists, otherwise `null`.
+     * @property lAngle left angle bracket of the type parameters if exists, otherwise `null`.
      * @property typeParams list of type parameters.
-     * @property rAngle greater than sign if exists, otherwise `null`.
+     * @property rAngle right angle bracket of the type parameters if exists, otherwise `null`.
      */
     interface WithTypeParams {
         val lAngle: Keyword.Less?
@@ -85,9 +74,9 @@ sealed interface Node {
     /**
      * Common interface for AST nodes that have function parameters.
      *
-     * @property lPar left parenthesis if exists, otherwise `null`.
+     * @property lPar left parenthesis of the function parameters if exists, otherwise `null`.
      * @property params list of function parameters.
-     * @property rPar right parenthesis if exists, otherwise `null`.
+     * @property rPar right parenthesis of the function parameters if exists, otherwise `null`.
      */
     interface WithFunctionParams {
         val lPar: Keyword.LPar?
@@ -98,9 +87,9 @@ sealed interface Node {
     /**
      * Common interface for AST nodes that have type arguments.
      *
-     * @property lAngle left angle bracket if exists, otherwise `null`.
+     * @property lAngle left angle bracket of the type arguments if exists, otherwise `null`.
      * @property typeArgs list of type arguments.
-     * @property rAngle right angle bracket if exists, otherwise `null`.
+     * @property rAngle right angle bracket of the type arguments if exists, otherwise `null`.
      */
     interface WithTypeArgs {
         val lAngle: Keyword.Less?
@@ -111,9 +100,9 @@ sealed interface Node {
     /**
      * Common interface for AST nodes that have value arguments.
      *
-     * @property lPar left parenthesis if exists, otherwise `null`.
+     * @property lPar left parenthesis of the value arguments if exists, otherwise `null`.
      * @property args list of value arguments.
-     * @property rPar right parenthesis if exists, otherwise `null`.
+     * @property rPar right parenthesis of the value arguments if exists, otherwise `null`.
      */
     interface WithValueArgs {
         val lPar: Keyword.LPar?
@@ -137,6 +126,17 @@ sealed interface Node {
      */
     interface WithDeclarations {
         val declarations: List<Declaration>
+    }
+
+    /**
+     * Common interface for AST nodes that can be root node.
+     *
+     * @property packageDirective package directive if exists, otherwise `null`.
+     * @property importDirectives list of import directives.
+     */
+    sealed interface KotlinEntry : Node, WithAnnotationSets {
+        val packageDirective: PackageDirective?
+        val importDirectives: List<ImportDirective>
     }
 
     /**
@@ -221,11 +221,11 @@ sealed interface Node {
          * ```
          *
          * @property forKeyword `for` keyword.
-         * @property lPar left parenthesis.
+         * @property lPar left parenthesis of the loop condition.
          * @property loopParam loop parameter before `in` keyword.
          * @property inKeyword `in` keyword.
          * @property loopRange loop range expression after `in` keyword.
-         * @property rPar right parenthesis.
+         * @property rPar right parenthesis of the loop condition.
          * @property body body expression.
          */
         data class ForStatement(
@@ -241,6 +241,12 @@ sealed interface Node {
 
         /**
          * Common interface for [WhileStatement] and [DoWhileStatement].
+         *
+         * @property whileKeyword `while` keyword.
+         * @property lPar left parenthesis of the condition.
+         * @property condition condition expression.
+         * @property rPar right parenthesis of the condition.
+         * @property body body expression.
          */
         sealed interface WhileStatementBase : Statement {
             val whileKeyword: Keyword.While
@@ -252,10 +258,6 @@ sealed interface Node {
 
         /**
          * AST node corresponds to KtWhileExpression.
-         *
-         * @property whileKeyword `while` keyword.
-         * @property condition condition expression.
-         * @property body body expression.
          */
         data class WhileStatement(
             override val whileKeyword: Keyword.While,
@@ -269,9 +271,7 @@ sealed interface Node {
         /**
          * AST node corresponds to KtDoWhileExpression.
          *
-         * @property body body expression.
-         * @property whileKeyword `while` keyword.
-         * @property condition condition expression.
+         * @property doKeyword `do` keyword.
          */
         data class DoWhileStatement(
             val doKeyword: Keyword.Do,
@@ -294,7 +294,9 @@ sealed interface Node {
          * @property modifiers list of modifiers.
          * @property classDeclarationKeyword class declaration keyword.
          * @property name name of the class. If the object is anonymous, the name is `null`.
+         * @property lAngle left angle bracket of the type parameters.
          * @property typeParams list of type parameters.
+         * @property rAngle right angle bracket of the type parameters.
          * @property primaryConstructor primary constructor if exists, otherwise `null`.
          * @property classParents list of class parents.
          * @property typeConstraintSet type constraint set if exists, otherwise `null`.
@@ -347,7 +349,9 @@ sealed interface Node {
              * AST node that represents a parent of the class. The node corresponds to KtSuperTypeListEntry.
              *
              * @property type type of the parent.
+             * @property lPar left parenthesis of the value arguments.
              * @property args list of value arguments of the parent call.
+             * @property rPar right parenthesis of the value arguments.
              * @property byKeyword `by` keyword if exists, otherwise `null`.
              * @property expression expression of the delegation if exists, otherwise `null`.
              */
@@ -399,7 +403,9 @@ sealed interface Node {
              * ClassParent node that represents just a type. The node corresponds to KtSuperTypeEntry.
              *
              * @property type type of the parent.
+             * @property lPar always `null`.
              * @property args always empty list.
+             * @property rPar always `null`.
              * @property byKeyword always `null`.
              * @property expression always `null`.
              */
@@ -799,7 +805,9 @@ sealed interface Node {
          * @property contextReceiver context receivers if exists, otherwise `null`.
          * @property receiverType receiver type if exists, otherwise `null`.
          * @property dotSymbol `.` if exists, otherwise `null`.
+         * @property lPar left parenthesis if exists, otherwise `null`.
          * @property params list of parameters of the function type.
+         * @property rPar right parenthesis if exists, otherwise `null`.
          * @property returnType return type of the function type.
          */
         data class FunctionType(
@@ -832,7 +840,6 @@ sealed interface Node {
     /**
      * Common interface for AST node that represents an actual type argument. For example, `Int` in `listOf<Int>()` is a type argument. The node corresponds to KtTypeProjection.
      *
-     * @property modifiers list of modifiers.
      * @property type type if exists, otherwise `null`.
      * @property asterisk `*` if exists, otherwise `null`.
      */
@@ -858,7 +865,7 @@ sealed interface Node {
         /**
          * AST node that represents a star projection.
          *
-         * @property modifiers always `null`.
+         * @property modifiers always empty list.
          * @property type always `null`.
          * @property asterisk asterisk keyword.
          */
@@ -903,8 +910,11 @@ sealed interface Node {
          * AST node corresponds to KtIfExpression.
          *
          * @property ifKeyword `if` keyword.
+         * @property lPar left parenthesis of the condition.
          * @property condition condition expression.
+         * @property rPar right parenthesis of the condition.
          * @property body body expression.
+         * @property elseKeyword `else` keyword if exists, otherwise `null`.
          * @property elseBody else body expression if exists, otherwise `null`.
          */
         data class IfExpression(
@@ -1215,8 +1225,11 @@ sealed interface Node {
         /**
          * AST node corresponds to KtLambdaExpression.
          *
+         * @property lBrace left brace of the lambda expression.
          * @property params list of parameters of the lambda expression.
+         * @property arrow arrow symbol of the lambda expression.
          * @property lambdaBody body of the lambda expression.
+         * @property rBrace right brace of the lambda expression.
          */
         data class LambdaExpression(
             val lBrace: Keyword.LBrace,
@@ -1568,7 +1581,9 @@ sealed interface Node {
         /**
          * AST node corresponds to KtBlockExpression.
          *
+         * @property lBrace left brace symbol of the block.
          * @property statements list of statements.
+         * @property rBrace right brace symbol of the block.
          */
         data class BlockExpression(
             val lBrace: Keyword.LBrace,
@@ -1654,7 +1669,9 @@ sealed interface Node {
     /**
      * AST node that represents a context receiver. The node corresponds to KtContextReceiverList.
      *
+     * @property lPar left parenthesis of the receiver types.
      * @property receiverTypes list of receiver types.
+     * @property rPar right parenthesis of the receiver types.
      */
     data class ContextReceiver(
         val lPar: Keyword.LPar,
@@ -1698,7 +1715,9 @@ sealed interface Node {
          * Virtual AST node corresponds to a pair of "contract" keyword and KtContractEffectList.
          *
          * @property contractKeyword "contract" keyword.
+         * @property lBracket left bracket symbol of the contract effects.
          * @property contractEffects contract effects.
+         * @property rBracket right bracket symbol of the contract effects.
          */
         data class Contract(
             val contractKeyword: Keyword.Contract,
@@ -2171,7 +2190,7 @@ sealed interface Node {
         /**
          * AST node corresponds to PsiElement whose elementType is SEMICOLON.
          *
-         * @property text string representation of the node.
+         * @property text always be ";".
          */
         data class Semicolon(
             override var tag: Any? = null,
@@ -2181,6 +2200,8 @@ sealed interface Node {
 
         /**
          * AST node that represents a trailing comma of a list.
+         *
+         * @property text always be ",".
          */
         data class TrailingComma(
             override var tag: Any? = null,
