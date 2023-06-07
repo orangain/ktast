@@ -62,9 +62,9 @@ open class Writer(
         v.apply {
             when (this) {
                 is Node.KotlinFile -> {
-                    children(annotationSets, skipWritingExtrasWithin = true)
+                    children(annotationSets)
                     children(packageDirective)
-                    children(importDirectives, skipWritingExtrasWithin = true)
+                    children(importDirectives)
                     children(declarations)
                 }
                 is Node.PackageDirective -> {
@@ -494,6 +494,7 @@ open class Writer(
                     error("Unrecognized node type: $this")
             }
         }
+        v.writeExtrasWithin()
         v.writeExtrasAfter()
     }
 
@@ -505,7 +506,7 @@ open class Writer(
     protected fun Node.commaSeparatedChildren(prefix: Node?, elements: List<Node>, suffix: Node?) =
         this@Writer.also {
             visitChildren(prefix)
-            children(elements, ",", skipWritingExtrasWithin = true)
+            children(elements, ",")
             visitChildren(suffix)
         }
 
@@ -514,7 +515,6 @@ open class Writer(
         sep: String = "",
         prefix: String = "",
         suffix: String = "",
-        skipWritingExtrasWithin: Boolean = false,
     ) =
         this@Writer.also {
             append(prefix)
@@ -522,9 +522,6 @@ open class Writer(
                 visit(t, this)
                 if (index < v.size - 1) append(sep)
                 writeHeuristicExtraAfterChild(t, v.getOrNull(index + 1), this)
-            }
-            if (!skipWritingExtrasWithin) {
-                writeExtrasWithin()
             }
             append(suffix)
         }
