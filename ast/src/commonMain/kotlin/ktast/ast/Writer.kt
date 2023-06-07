@@ -268,13 +268,13 @@ open class Writer(
                 }
                 is Node.Type.NullableType -> {
                     children(modifiers)
-                    children(type)
+                    children(innerType)
                     children(questionMark)
                 }
                 is Node.Type.ParenthesizedType -> {
                     children(modifiers)
                     children(lPar)
-                    children(type)
+                    children(innerType)
                     children(rPar)
                 }
                 is Node.Type.DynamicType -> {

@@ -691,13 +691,13 @@ sealed interface Node {
          *
          * @property modifiers list of modifiers.
          * @property lPar `(` symbol.
-         * @property type inner type.
+         * @property innerType inner type.
          * @property rPar `)` symbol.
          */
         data class ParenthesizedType(
             override val modifiers: List<Modifier>,
             val lPar: Keyword.LPar,
-            val type: Type,
+            val innerType: Type,
             val rPar: Keyword.RPar,
             override var tag: Any? = null,
         ) : Type
@@ -706,12 +706,12 @@ sealed interface Node {
          * Virtual AST node that represents nullable type. The node corresponds to KtNullableType and modifiers of its parent.
          *
          * @property modifiers list of modifiers.
-         * @property type type.
+         * @property innerType inner type.
          * @property questionMark `?` symbol.
          */
         data class NullableType(
             override val modifiers: List<Modifier>,
-            val type: Type,
+            val innerType: Type,
             val questionMark: Keyword.Question,
             override var tag: Any? = null,
         ) : Type

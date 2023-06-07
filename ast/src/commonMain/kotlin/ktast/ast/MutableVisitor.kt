@@ -233,13 +233,13 @@ open class MutableVisitor(
                     )
                     is Node.Type.NullableType -> copy(
                         modifiers = visitChildren(modifiers, newCh),
-                        type = visitChildren(type, newCh),
+                        innerType = visitChildren(innerType, newCh),
                         questionMark = visitChildren(questionMark, newCh),
                     )
                     is Node.Type.ParenthesizedType -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         lPar = visitChildren(lPar, newCh),
-                        type = visitChildren(type, newCh),
+                        innerType = visitChildren(innerType, newCh),
                         rPar = visitChildren(rPar, newCh),
                     )
                     is Node.Type.DynamicType -> copy(

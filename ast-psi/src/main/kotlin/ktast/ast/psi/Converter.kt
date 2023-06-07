@@ -369,7 +369,7 @@ open class Converter {
             return Node.Type.ParenthesizedType(
                 modifiers = convertModifiers(modifierList),
                 lPar = convertKeyword(restChildren.first()),
-                type = convertType(v, restChildren.subList(1, restChildren.size - 1)),
+                innerType = convertType(v, restChildren.subList(1, restChildren.size - 1)),
                 rPar = convertKeyword(restChildren.last()),
             ).mapNotCorrespondsPsiElement(v)
         }
@@ -397,7 +397,7 @@ open class Converter {
             ).mapNotCorrespondsPsiElement(typeEl)
             is KtNullableType -> Node.Type.NullableType(
                 modifiers = modifiers,
-                type = convertType(typeEl, typeEl.nonExtraChildren()),
+                innerType = convertType(typeEl, typeEl.nonExtraChildren()),
                 questionMark = convertKeyword(
                     findChildByType(typeEl, KtTokens.QUEST) ?: error("No question mark for $typeEl")
                 ),
