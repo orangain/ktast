@@ -635,19 +635,16 @@ open class Writer(
 
     protected open fun Node.writeExtrasBefore() {
         if (extrasMap == null) return
-        // Write everything before
         writeExtras(extrasMap.extrasBefore(this))
     }
 
     protected open fun Node.writeExtrasWithin() {
         if (extrasMap == null) return
-        // Write everything within
         writeExtras(extrasMap.extrasWithin(this))
     }
 
     protected open fun Node.writeExtrasAfter() {
         if (extrasMap == null) return
-        // Write everything after that doesn't start a line or end a line
         writeExtras(extrasMap.extrasAfter(this))
     }
 
