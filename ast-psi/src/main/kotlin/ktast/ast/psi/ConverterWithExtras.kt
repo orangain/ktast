@@ -7,6 +7,7 @@ import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
 import org.jetbrains.kotlin.lexer.KtTokens
 import java.util.*
+import kotlin.collections.ArrayDeque
 
 open class ConverterWithExtras : Converter(), ExtrasMap {
     // Sometimes many nodes are created from the same element, but we only want the last node we're given. We
@@ -46,9 +47,14 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
 
         val visitor = object : PsiElementVisitor() {
             private var lastNode: Node? = null
+            private val ancestors = ArrayDeque<Node>()
 
             override fun onBeginElement(element: PsiElement) {
                 fillExtrasFor(element)
+                val node = psiIdentitiesToNodes[System.identityHashCode(element)]
+                if (node != null) {
+                    ancestors.add(node)
+                }
             }
 
             override fun onEndElement(element: PsiElement) {
@@ -59,6 +65,7 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
                     fillExtrasWithin(node)
                 }
                 lastNode = node
+                ancestors.removeLast()
             }
 
             override fun onLeafElement(element: PsiElement) {
@@ -77,6 +84,9 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
 
                 if (node == null) {
                     if (lastNode != null) {
+                        if (ancestors.contains(lastNode)) {
+                            return // Don't update lastNode if lastNode is an ancestor of this node
+                        }
                         fillExtrasAfter(lastNode!!)
                     }
                 } else {

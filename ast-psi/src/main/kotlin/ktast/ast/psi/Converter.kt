@@ -117,7 +117,7 @@ open class Converter {
 
     open fun convertParents(v: KtSuperTypeList) = Node.Declaration.ClassDeclaration.ClassParents(
         elements = v.entries.map(::convertParent),
-    ).map(v)
+    ).mapNotCorrespondsPsiElement(v)
 
     open fun convertParent(v: KtSuperTypeListEntry) = when (v) {
         is KtSuperTypeCallEntry -> Node.Declaration.ClassDeclaration.ConstructorClassParent(
@@ -187,7 +187,7 @@ open class Converter {
     open fun convertFuncParams(v: KtParameterList) = Node.FunctionParams(
         elements = v.parameters.map(::convertFuncParam),
         trailingComma = v.trailingComma?.let(::convertKeyword),
-    ).map(v)
+    ).mapNotCorrespondsPsiElement(v)
 
     open fun convertFuncParam(v: KtParameter) = Node.FunctionParam(
         modifiers = v.modifierList?.let(::convertModifiers),
@@ -321,7 +321,7 @@ open class Converter {
     open fun convertTypeParams(v: KtTypeParameterList) = Node.TypeParams(
         elements = v.parameters.map(::convertTypeParam),
         trailingComma = v.trailingComma?.let(::convertKeyword),
-    ).map(v)
+    ).mapNotCorrespondsPsiElement(v)
 
     open fun convertTypeParam(v: KtTypeParameter) = Node.TypeParam(
         modifiers = v.modifierList?.let(::convertModifiers),
@@ -332,7 +332,7 @@ open class Converter {
     open fun convertTypeArgs(v: KtTypeArgumentList) = Node.TypeArgs(
         elements = v.arguments.map(::convertTypeArg),
         trailingComma = v.trailingComma?.let(::convertKeyword),
-    ).map(v)
+    ).mapNotCorrespondsPsiElement(v)
 
     open fun convertTypeArg(v: KtTypeProjection): Node.TypeArg {
         return if (v.projectionKind == KtProjectionKind.STAR) {
@@ -349,7 +349,7 @@ open class Converter {
 
     open fun convertTypeConstraints(v: KtTypeConstraintList) = Node.PostModifier.TypeConstraintSet.TypeConstraints(
         elements = v.constraints.map(::convertTypeConstraint),
-    ).map(v)
+    ).mapNotCorrespondsPsiElement(v)
 
     open fun convertTypeConstraint(v: KtTypeConstraint) = Node.PostModifier.TypeConstraintSet.TypeConstraint(
         annotationSets = v.children.mapNotNull {
@@ -429,7 +429,7 @@ open class Converter {
             trailingComma = null,
         ).mapNotCorrespondsPsiElement(v),
         rPar = convertKeyword(v.rightParenthesis),
-    ).map(v)
+    ).mapNotCorrespondsPsiElement(v)
 
     open fun convertType(v: KtContextReceiver): Node.Type {
         val typeRef = v.typeReference() ?: error("No type ref for $v")
@@ -443,7 +443,7 @@ open class Converter {
     open fun convertContractEffects(v: KtContractEffectList) = Node.PostModifier.Contract.ContractEffects(
         elements = v.children.filterIsInstance<KtContractEffect>().map(::convertExpression),
         trailingComma = findTrailingSeparator(v, KtTokens.COMMA)?.let(::convertKeyword),
-    ).map(v)
+    ).mapNotCorrespondsPsiElement(v)
 
     open fun convertExpression(v: KtContractEffect): Node.Expression {
         return convertExpression(v.getExpression()).map(v) // map will be called twice for this Expression
@@ -452,7 +452,7 @@ open class Converter {
     open fun convertTypeFunctionParams(v: KtParameterList) = Node.Type.FunctionType.FunctionTypeParams(
         elements = v.parameters.map(::convertTypeFunctionParam),
         trailingComma = v.trailingComma?.let(::convertKeyword)
-    ).map(v)
+    ).mapNotCorrespondsPsiElement(v)
 
     open fun convertTypeFunctionParam(v: KtParameter) = Node.Type.FunctionType.FunctionTypeParam(
         name = v.nameIdentifier?.let(::convertName),
@@ -469,14 +469,12 @@ open class Converter {
     open fun convertValueArgs(v: KtValueArgumentList) = Node.ValueArgs(
         elements = v.arguments.map(::convertValueArg),
         trailingComma = v.trailingComma?.let(::convertKeyword),
-    ).map(v)
+    ).mapNotCorrespondsPsiElement(v)
 
-    open fun convertValueArgs(v: KtInitializerList): Node.ValueArgs {
-        return Node.ValueArgs(
-            elements = (v.valueArgumentList.arguments).map(::convertValueArg),
-            trailingComma = v.valueArgumentList.trailingComma?.let(::convertKeyword),
-        ).map(v)
-    }
+    open fun convertValueArgs(v: KtInitializerList) = Node.ValueArgs(
+        elements = (v.valueArgumentList.arguments).map(::convertValueArg),
+        trailingComma = v.valueArgumentList.trailingComma?.let(::convertKeyword),
+    ).mapNotCorrespondsPsiElement(v)
 
     open fun convertValueArg(v: KtValueArgument) = Node.ValueArg(
         name = v.getArgumentName()?.let(::convertValueArgName),
@@ -641,7 +639,7 @@ open class Converter {
     open fun convertLambdaParams(v: KtParameterList) = Node.LambdaParams(
         elements = v.parameters.map(::convertLambdaParam),
         trailingComma = v.trailingComma?.let(::convertKeyword),
-    ).map(v)
+    ).mapNotCorrespondsPsiElement(v)
 
     open fun convertLambdaParam(v: KtParameter): Node.LambdaParam {
         val destructuringDeclaration = v.destructuringDeclaration
@@ -910,7 +908,7 @@ open class Converter {
                     else -> convertKeyword<Node.Modifier.KeywordModifier>(psi)
                 }
             }.toList(),
-        ).map(v)
+        ).mapNotCorrespondsPsiElement(v)
     }
 
     open fun convertPostModifiers(v: KtElement): List<Node.PostModifier> {
