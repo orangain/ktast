@@ -1101,6 +1101,129 @@ sealed interface Node {
         }
 
         /**
+         * AST node corresponds to KtThrowExpression.
+         *
+         * @property expression expression to be thrown.
+         */
+        data class ThrowExpression(
+            val expression: Expression,
+            override var tag: Any? = null,
+        ) : Expression
+
+        /**
+         * AST node corresponds to KtReturnExpression.
+         *
+         * @property label label of this return expression if exists, otherwise `null`.
+         * @property expression expression to be returned if exists, otherwise `null`.
+         */
+        data class ReturnExpression(
+            override val label: NameExpression?,
+            val expression: Expression?,
+            override var tag: Any? = null,
+        ) : Expression, WithLabel
+
+        /**
+         * AST node corresponds to KtContinueExpression.
+         *
+         * @property label label of this continue expression if exists, otherwise `null`.
+         */
+        data class ContinueExpression(
+            override val label: NameExpression?,
+            override var tag: Any? = null,
+        ) : Expression, WithLabel
+
+        /**
+         * AST node corresponds to KtBreakExpression.
+         *
+         * @property label label of this break expression if exists, otherwise `null`.
+         */
+        data class BreakExpression(
+            override val label: NameExpression?,
+            override var tag: Any? = null,
+        ) : Expression, WithLabel
+
+        /**
+         * AST node corresponds to KtBlockExpression.
+         *
+         * @property lBrace left brace symbol of the block.
+         * @property statements list of statements.
+         * @property rBrace right brace symbol of the block.
+         */
+        data class BlockExpression(
+            val lBrace: Keyword.LBrace,
+            override val statements: List<Statement>,
+            val rBrace: Keyword.RBrace,
+            override var tag: Any? = null,
+        ) : Expression, WithStatements
+
+        /**
+         * AST node corresponds to KtCallElement.
+         *
+         * @property calleeExpression callee expression.
+         * @property typeArgs list of type arguments.
+         * @property args list of value arguments.
+         * @property lambdaArg lambda argument if exists, otherwise `null`.
+         */
+        data class CallExpression(
+            val calleeExpression: Expression,
+            override val lAngle: Keyword.Less?,
+            override val typeArgs: List<TypeArg>,
+            override val rAngle: Keyword.Greater?,
+            override val lPar: Keyword.LPar?,
+            override val args: List<ValueArg>,
+            override val rPar: Keyword.RPar?,
+            val lambdaArg: LambdaArg?,
+            override var tag: Any? = null,
+        ) : Expression, WithTypeArgs, WithValueArgs {
+            /**
+             * AST node corresponds to KtLambdaArgument.
+             *
+             * @property annotationSets list of annotation sets.
+             * @property label label of this lambda argument if exists, otherwise `null`.
+             * @property expression lambda expression.
+             */
+            data class LambdaArg(
+                override val annotationSets: List<Modifier.AnnotationSet>,
+                override val label: NameExpression?,
+                val expression: LambdaExpression,
+                override var tag: Any? = null,
+            ) : Node, WithAnnotationSets, WithLabel
+        }
+
+        /**
+         * AST node corresponds to KtLambdaExpression.
+         *
+         * @property lBrace left brace of the lambda expression.
+         * @property params list of parameters of the lambda expression.
+         * @property arrow arrow symbol of the lambda expression.
+         * @property lambdaBody body of the lambda expression.
+         * @property rBrace right brace of the lambda expression.
+         */
+        data class LambdaExpression(
+            val lBrace: Keyword.LBrace,
+            val params: List<LambdaParam>,
+            val arrow: Keyword.Arrow?,
+            val lambdaBody: LambdaBody?,
+            val rBrace: Keyword.RBrace,
+            override var tag: Any? = null,
+        ) : Expression {
+
+            /**
+             * AST node corresponds to KtBlockExpression in lambda body.
+             * In lambda expression, left and right braces are not included in [LambdaBody], but are included in [LambdaExpression].
+             * This means:
+             *
+             * [LambdaExpression] = { [LambdaParam], [LambdaParam] -> [LambdaBody] }
+             *
+             * @property statements list of statements in the block.
+             */
+            data class LambdaBody(
+                override val statements: List<Statement>,
+                override var tag: Any? = null,
+            ) : Expression, WithStatements
+        }
+
+        /**
          * AST node corresponds to KtBinaryExpression or KtQualifiedExpression.
          *
          * @property lhs left-hand side expression.
@@ -1361,37 +1484,24 @@ sealed interface Node {
         }
 
         /**
-         * AST node corresponds to KtLambdaExpression.
+         * AST node corresponds to KtObjectLiteralExpression.
          *
-         * @property lBrace left brace of the lambda expression.
-         * @property params list of parameters of the lambda expression.
-         * @property arrow arrow symbol of the lambda expression.
-         * @property lambdaBody body of the lambda expression.
-         * @property rBrace right brace of the lambda expression.
+         * @property declaration class declaration of this object literal expression.
          */
-        data class LambdaExpression(
-            val lBrace: Keyword.LBrace,
-            val params: List<LambdaParam>,
-            val arrow: Keyword.Arrow?,
-            val lambdaBody: LambdaBody?,
-            val rBrace: Keyword.RBrace,
+        data class ObjectLiteralExpression(
+            val declaration: Declaration.ClassDeclaration,
             override var tag: Any? = null,
-        ) : Expression {
+        ) : Expression
 
-            /**
-             * AST node corresponds to KtBlockExpression in lambda body.
-             * In lambda expression, left and right braces are not included in [LambdaBody], but are included in [LambdaExpression].
-             * This means:
-             *
-             * [LambdaExpression] = { [LambdaParam], [LambdaParam] -> [LambdaBody] }
-             *
-             * @property statements list of statements in the block.
-             */
-            data class LambdaBody(
-                override val statements: List<Statement>,
-                override var tag: Any? = null,
-            ) : Expression, WithStatements
-        }
+        /**
+         * AST node corresponds to KtCollectionLiteralExpression.
+         *
+         * @property expressions list of element expressions.
+         */
+        data class CollectionLiteralExpression(
+            val expressions: List<Expression>,
+            override var tag: Any? = null,
+        ) : Expression
 
         /**
          * AST node corresponds to KtThisExpression or KtConstructorDelegationReferenceExpression whose text is "this".
@@ -1414,68 +1524,6 @@ sealed interface Node {
             override val label: NameExpression?,
             override var tag: Any? = null,
         ) : Expression, WithLabel
-
-        /**
-         * AST node corresponds to KtObjectLiteralExpression.
-         *
-         * @property declaration class declaration of this object literal expression.
-         */
-        data class ObjectLiteralExpression(
-            val declaration: Declaration.ClassDeclaration,
-            override var tag: Any? = null,
-        ) : Expression
-
-        /**
-         * AST node corresponds to KtThrowExpression.
-         *
-         * @property expression expression to be thrown.
-         */
-        data class ThrowExpression(
-            val expression: Expression,
-            override var tag: Any? = null,
-        ) : Expression
-
-        /**
-         * AST node corresponds to KtReturnExpression.
-         *
-         * @property label label of this return expression if exists, otherwise `null`.
-         * @property expression expression to be returned if exists, otherwise `null`.
-         */
-        data class ReturnExpression(
-            override val label: NameExpression?,
-            val expression: Expression?,
-            override var tag: Any? = null,
-        ) : Expression, WithLabel
-
-        /**
-         * AST node corresponds to KtContinueExpression.
-         *
-         * @property label label of this continue expression if exists, otherwise `null`.
-         */
-        data class ContinueExpression(
-            override val label: NameExpression?,
-            override var tag: Any? = null,
-        ) : Expression, WithLabel
-
-        /**
-         * AST node corresponds to KtBreakExpression.
-         *
-         * @property label label of this break expression if exists, otherwise `null`.
-         */
-        data class BreakExpression(
-            override val label: NameExpression?,
-            override var tag: Any? = null,
-        ) : Expression, WithLabel
-
-        /**
-         * AST node corresponds to KtCollectionLiteralExpression.
-         *
-         * @property expressions list of element expressions.
-         */
-        data class CollectionLiteralExpression(
-            val expressions: List<Expression>,
-            override var tag: Any? = null,
-        ) : Expression
 
         /**
          * AST node corresponds to KtValueArgumentName, KtSimpleNameExpression or PsiElement whose elementType is IDENTIFIER.
@@ -1512,40 +1560,6 @@ sealed interface Node {
         ) : Expression, WithAnnotationSets
 
         /**
-         * AST node corresponds to KtCallElement.
-         *
-         * @property calleeExpression callee expression.
-         * @property typeArgs list of type arguments.
-         * @property args list of value arguments.
-         * @property lambdaArg lambda argument if exists, otherwise `null`.
-         */
-        data class CallExpression(
-            val calleeExpression: Expression,
-            override val lAngle: Keyword.Less?,
-            override val typeArgs: List<TypeArg>,
-            override val rAngle: Keyword.Greater?,
-            override val lPar: Keyword.LPar?,
-            override val args: List<ValueArg>,
-            override val rPar: Keyword.RPar?,
-            val lambdaArg: LambdaArg?,
-            override var tag: Any? = null,
-        ) : Expression, WithTypeArgs, WithValueArgs {
-            /**
-             * AST node corresponds to KtLambdaArgument.
-             *
-             * @property annotationSets list of annotation sets.
-             * @property label label of this lambda argument if exists, otherwise `null`.
-             * @property expression lambda expression.
-             */
-            data class LambdaArg(
-                override val annotationSets: List<Modifier.AnnotationSet>,
-                override val label: NameExpression?,
-                val expression: LambdaExpression,
-                override var tag: Any? = null,
-            ) : Node, WithAnnotationSets, WithLabel
-        }
-
-        /**
          * AST node corresponds to KtArrayAccessExpression.
          *
          * @property expression collection expression.
@@ -1577,20 +1591,6 @@ sealed interface Node {
             val property: Declaration.PropertyDeclaration,
             override var tag: Any? = null,
         ) : Expression
-
-        /**
-         * AST node corresponds to KtBlockExpression.
-         *
-         * @property lBrace left brace symbol of the block.
-         * @property statements list of statements.
-         * @property rBrace right brace symbol of the block.
-         */
-        data class BlockExpression(
-            val lBrace: Keyword.LBrace,
-            override val statements: List<Statement>,
-            val rBrace: Keyword.RBrace,
-            override var tag: Any? = null,
-        ) : Expression, WithStatements
     }
 
     /**
