@@ -336,6 +336,11 @@ open class Converter {
         type = v.extendsBound?.let(::convertType)
     ).map(v)
 
+    open fun convertType(v: KtContextReceiver): Node.Type {
+        val typeRef = v.typeReference() ?: error("No type ref for $v")
+        return convertType(typeRef, typeRef.nonExtraChildren())
+    }
+
     open fun convertType(v: KtTypeReference): Node.Type {
         return convertType(v, v.nonExtraChildren())
     }
@@ -387,6 +392,14 @@ open class Converter {
         rAngle = v.typeArgumentList?.rightAngle?.let(::convertKeyword),
     ).mapNotCorrespondsPsiElement(v)
 
+    open fun convertTypeSimpleQualifier(v: KtUserType) = Node.Type.SimpleType.SimpleTypeQualifier(
+        name = convertName(v.referenceExpression ?: error("No type name for $v")),
+        lAngle = v.typeArgumentList?.leftAngle?.let(::convertKeyword),
+        typeArgs = convertTypeArgs(v.typeArgumentList),
+        rAngle = v.typeArgumentList?.rightAngle?.let(::convertKeyword),
+    ).mapNotCorrespondsPsiElement(v) // Don't map v because v necessarily corresponds to a single name expression.
+
+
     protected fun convertDynamicType(modifierList: KtModifierList?, v: KtDynamicType) = Node.Type.DynamicType(
         modifiers = convertModifiers(modifierList),
         dynamicKeyword = convertKeyword(v.dynamicKeyword),
@@ -403,6 +416,13 @@ open class Converter {
         returnType = convertType(v.returnTypeReference ?: error("No return type for $v")),
     ).mapNotCorrespondsPsiElement(v)
 
+    open fun convertTypeFunctionParams(v: KtParameterList?): List<Node.Type.FunctionType.FunctionTypeParam> =
+        v?.parameters.orEmpty().map(::convertTypeFunctionParam)
+
+    open fun convertTypeFunctionParam(v: KtParameter) = Node.Type.FunctionType.FunctionTypeParam(
+        name = v.nameIdentifier?.let(::convertName),
+        type = convertType(v.typeReference ?: error("No param type"))
+    ).map(v)
 
     open fun convertTypeArgs(v: KtTypeArgumentList?): List<Node.TypeArg> = v?.arguments.orEmpty().map(::convertTypeArg)
 
@@ -420,54 +440,6 @@ open class Converter {
         type = convertType(v.typeReference ?: error("Missing type ref for $v")),
     ).map(v)
 
-    open fun convertTypeConstraints(v: KtTypeConstraintList): List<Node.PostModifier.TypeConstraintSet.TypeConstraint> =
-        v.constraints.map(::convertTypeConstraint)
-
-    open fun convertTypeConstraint(v: KtTypeConstraint) = Node.PostModifier.TypeConstraintSet.TypeConstraint(
-        annotationSets = v.children.mapNotNull {
-            when (it) {
-                is KtAnnotationEntry -> convertAnnotationSet(it)
-                is KtAnnotation -> convertAnnotationSet(it)
-                else -> null
-            }
-        },
-        name = v.subjectTypeParameterName?.let { convertName(it) } ?: error("No type constraint name for $v"),
-        type = convertType(v.boundTypeReference ?: error("No type constraint type for $v"))
-    ).map(v)
-
-    open fun convertContextReceiver(v: KtContextReceiverList) = Node.ContextReceiver(
-        lPar = convertKeyword(v.leftParenthesis),
-        receiverTypes = v.contextReceivers().map(::convertType),
-        rPar = convertKeyword(v.rightParenthesis),
-    ).mapNotCorrespondsPsiElement(v)
-
-    open fun convertType(v: KtContextReceiver): Node.Type {
-        val typeRef = v.typeReference() ?: error("No type ref for $v")
-        return convertType(typeRef, typeRef.nonExtraChildren())
-    }
-
-    open fun convertContractEffects(v: KtContractEffectList): List<Node.Expression> =
-        v.children.filterIsInstance<KtContractEffect>().map(::convertExpression)
-
-    open fun convertExpression(v: KtContractEffect): Node.Expression {
-        return convertExpression(v.getExpression()).map(v) // map will be called twice for this Expression
-    }
-
-    open fun convertTypeFunctionParams(v: KtParameterList?): List<Node.Type.FunctionType.FunctionTypeParam> =
-        v?.parameters.orEmpty().map(::convertTypeFunctionParam)
-
-    open fun convertTypeFunctionParam(v: KtParameter) = Node.Type.FunctionType.FunctionTypeParam(
-        name = v.nameIdentifier?.let(::convertName),
-        type = convertType(v.typeReference ?: error("No param type"))
-    ).map(v)
-
-    open fun convertTypeSimpleQualifier(v: KtUserType) = Node.Type.SimpleType.SimpleTypeQualifier(
-        name = convertName(v.referenceExpression ?: error("No type name for $v")),
-        lAngle = v.typeArgumentList?.leftAngle?.let(::convertKeyword),
-        typeArgs = convertTypeArgs(v.typeArgumentList),
-        rAngle = v.typeArgumentList?.rightAngle?.let(::convertKeyword),
-    ).mapNotCorrespondsPsiElement(v) // Don't map v because v necessarily corresponds to a single name expression.
-
     open fun convertValueArgs(v: KtValueArgumentList?): List<Node.ValueArg> =
         v?.arguments.orEmpty().map(::convertValueArg)
 
@@ -479,6 +451,10 @@ open class Converter {
         asterisk = v.getSpreadElement()?.let(::convertKeyword),
         expression = convertExpression(v.getArgumentExpression() ?: error("No expr for value arg"))
     ).map(v)
+
+    open fun convertExpression(v: KtContractEffect): Node.Expression {
+        return convertExpression(v.getExpression()).map(v) // map will be called twice for this Expression
+    }
 
     open fun convertExpression(v: KtExpression): Node.Expression = when (v) {
         is KtIfExpression -> convertIf(v)
@@ -904,6 +880,12 @@ open class Converter {
         }.toList()
     }
 
+    open fun convertContextReceiver(v: KtContextReceiverList) = Node.ContextReceiver(
+        lPar = convertKeyword(v.leftParenthesis),
+        receiverTypes = v.contextReceivers().map(::convertType),
+        rPar = convertKeyword(v.rightParenthesis),
+    ).mapNotCorrespondsPsiElement(v)
+
     open fun convertPostModifiers(v: KtElement): List<Node.PostModifier> {
         val nonExtraChildren = v.allChildren.filterNot { it is PsiComment || it is PsiWhiteSpace }.toList()
 
@@ -928,6 +910,24 @@ open class Converter {
             }.also { prevPsi = psi }
         }
     }
+
+    open fun convertTypeConstraints(v: KtTypeConstraintList): List<Node.PostModifier.TypeConstraintSet.TypeConstraint> =
+        v.constraints.map(::convertTypeConstraint)
+
+    open fun convertTypeConstraint(v: KtTypeConstraint) = Node.PostModifier.TypeConstraintSet.TypeConstraint(
+        annotationSets = v.children.mapNotNull {
+            when (it) {
+                is KtAnnotationEntry -> convertAnnotationSet(it)
+                is KtAnnotation -> convertAnnotationSet(it)
+                else -> null
+            }
+        },
+        name = v.subjectTypeParameterName?.let { convertName(it) } ?: error("No type constraint name for $v"),
+        type = convertType(v.boundTypeReference ?: error("No type constraint type for $v"))
+    ).map(v)
+
+    open fun convertContractEffects(v: KtContractEffectList): List<Node.Expression> =
+        v.children.filterIsInstance<KtContractEffect>().map(::convertExpression)
 
     protected val mapTextToKeywordKClass =
         Node.Keyword::class.sealedSubclasses.filter { it.isData }.associateBy { it.createInstance().text }
