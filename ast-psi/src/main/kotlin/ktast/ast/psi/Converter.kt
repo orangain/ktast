@@ -974,9 +974,6 @@ open class Converter {
         internal val KtPropertyAccessor.getKeyword: PsiElement
             get() = findChildByType(this, KtTokens.GET_KEYWORD) ?: error("No get keyword for $this")
 
-        internal val KtEnumEntry.comma: PsiElement?
-            get() = findChildByType(this, KtTokens.COMMA)
-
         internal val KtContainerNode.expression: KtExpression
             get() = findChildByClass<KtExpression>(this) ?: error("No expression for $this")
 
