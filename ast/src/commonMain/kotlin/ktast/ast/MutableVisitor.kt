@@ -300,7 +300,7 @@ open class MutableVisitor(
                         questionMarks = visitChildren(questionMarks, newCh),
                     )
                     is Node.Expression.ParenthesizedExpression -> copy(
-                        expression = visitChildren(expression, newCh)
+                        innerExpression = visitChildren(innerExpression, newCh)
                     )
                     is Node.Expression.StringLiteralExpression -> copy(
                         entries = visitChildren(entries, newCh)

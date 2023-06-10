@@ -612,7 +612,7 @@ open class Converter {
     ).map(v)
 
     open fun convertParenthesizedExpression(v: KtParenthesizedExpression) = Node.Expression.ParenthesizedExpression(
-        expression = convertExpression(v.expression ?: error("No expression for $v"))
+        innerExpression = convertExpression(v.expression ?: error("No expression for $v"))
     ).map(v)
 
     open fun convertStringLiteralExpression(v: KtStringTemplateExpression) = Node.Expression.StringLiteralExpression(

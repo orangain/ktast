@@ -294,7 +294,7 @@ open class Visitor {
                 visitChildren(questionMarks)
             }
             is Node.Expression.ParenthesizedExpression -> {
-                visitChildren(expression)
+                visitChildren(innerExpression)
             }
             is Node.Expression.StringLiteralExpression -> {
                 visitChildren(entries)

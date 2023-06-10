@@ -1220,10 +1220,10 @@ sealed interface Node {
         /**
          * AST node corresponds to KtParenthesizedExpression.
          *
-         * @property expression expression inside parentheses.
+         * @property innerExpression expression inside parentheses.
          */
         data class ParenthesizedExpression(
-            val expression: Expression,
+            val innerExpression: Expression,
             override var tag: Any? = null,
         ) : Expression
 

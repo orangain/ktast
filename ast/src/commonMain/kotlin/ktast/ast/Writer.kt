@@ -322,7 +322,7 @@ open class Writer(
                     append("class")
                 }
                 is Node.Expression.ParenthesizedExpression ->
-                    append('(').also { children(expression) }.append(')')
+                    append('(').also { children(innerExpression) }.append(')')
                 is Node.Expression.StringLiteralExpression -> {
                     if (raw) {
                         append("\"\"\"")
