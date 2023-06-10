@@ -275,22 +275,29 @@ open class Converter {
         expression = convertExpression(v.expression ?: error("Missing expression for $v")),
     ).map(v)
 
-    open fun convertPropertyAccessor(v: KtPropertyAccessor) =
-        if (v.isGetter) Node.Declaration.PropertyDeclaration.Getter(
-            modifiers = convertModifiers(v.modifierList),
-            getKeyword = convertKeyword(v.getKeyword),
-            type = v.returnTypeReference?.let(::convertType),
-            postModifiers = convertPostModifiers(v),
-            equals = v.equalsToken?.let(::convertKeyword),
-            body = v.bodyExpression?.let(this::convertExpression),
-        ).map(v) else Node.Declaration.PropertyDeclaration.Setter(
-            modifiers = convertModifiers(v.modifierList),
-            setKeyword = convertKeyword(v.setKeyword),
-            params = convertLambdaParams(v.parameterList),
-            postModifiers = convertPostModifiers(v),
-            equals = v.equalsToken?.let(::convertKeyword),
-            body = v.bodyExpression?.let(this::convertExpression),
-        ).map(v)
+    open fun convertPropertyAccessor(v: KtPropertyAccessor): Node.Declaration.PropertyDeclaration.Accessor =
+        when (v.isGetter) {
+            true -> convertGetter(v)
+            false -> convertSetter(v)
+        }
+
+    open fun convertGetter(v: KtPropertyAccessor) = Node.Declaration.PropertyDeclaration.Getter(
+        modifiers = convertModifiers(v.modifierList),
+        getKeyword = convertKeyword(v.getKeyword),
+        type = v.returnTypeReference?.let(::convertType),
+        postModifiers = convertPostModifiers(v),
+        equals = v.equalsToken?.let(::convertKeyword),
+        body = v.bodyExpression?.let(::convertExpression),
+    ).map(v)
+
+    open fun convertSetter(v: KtPropertyAccessor) = Node.Declaration.PropertyDeclaration.Setter(
+        modifiers = convertModifiers(v.modifierList),
+        setKeyword = convertKeyword(v.setKeyword),
+        params = convertLambdaParams(v.parameterList),
+        postModifiers = convertPostModifiers(v),
+        equals = v.equalsToken?.let(::convertKeyword),
+        body = v.bodyExpression?.let(::convertExpression),
+    ).map(v)
 
     open fun convertTypeAliasDeclaration(v: KtTypeAlias) = Node.Declaration.TypeAliasDeclaration(
         modifiers = convertModifiers(v.modifierList),
