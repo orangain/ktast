@@ -8,7 +8,7 @@ data class NodePath(
         fun rootPath(node: Node): NodePath = NodePath(node, null)
     }
 
-    fun ancestors(): Sequence<NodePath> = generateSequence(parent) { it.parent }
+    fun ancestors(): Sequence<Node> = generateSequence(parent) { it.parent }.map { it.node }
 
     fun childPath(child: Node): NodePath = NodePath(child, this)
 }
