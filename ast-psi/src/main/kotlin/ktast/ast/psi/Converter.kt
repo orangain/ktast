@@ -982,10 +982,10 @@ open class Converter {
             get() = findChildByType(this, KtTokens.DO_KEYWORD) ?: error("No do keyword for $this")
 
         internal val KtLambdaExpression.lBrace: PsiElement
-            get() = leftCurlyBrace.psi ?: error("No lBrace for $this")
+            get() = leftCurlyBrace.psi
         internal val KtLambdaExpression.rBrace: PsiElement
             get() = rightCurlyBrace?.psi
-                ?: error("No rBrace for $this") // It seems funny, but lBrace is non-null, while rBrace is nullable.
+                ?: error("No rBrace for $this") // It seems funny, but leftCurlyBrace is non-null, while rightCurlyBrace is nullable.
 
         internal val KtDoubleColonExpression.questionMarks
             get() = allChildren
