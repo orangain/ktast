@@ -441,7 +441,7 @@ open class Converter {
         v?.arguments.orEmpty().map(::convertValueArg)
 
     open fun convertValueArg(v: KtValueArgument) = Node.ValueArg(
-        name = v.getArgumentName()?.let(::convertValueArgName),
+        name = v.getArgumentName()?.referenceExpression?.let(::convertNameExpression),
         asterisk = v.getSpreadElement()?.let(::convertKeyword),
         expression = convertExpression(v.getArgumentExpression() ?: error("No expr for value arg"))
     ).map(v)
@@ -757,10 +757,6 @@ open class Converter {
             ).map(v)
             else -> error("Unrecognized this/super expr $v")
         }
-
-    open fun convertValueArgName(v: KtValueArgumentName) = Node.Expression.NameExpression(
-        text = (v.referenceExpression.getIdentifier() ?: error("No identifier for $v")).text,
-    ).map(v)
 
     open fun convertNameExpression(v: KtSimpleNameExpression) = Node.Expression.NameExpression(
         text = (v.getIdentifier() ?: error("No identifier for $v")).text,
