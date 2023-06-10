@@ -50,14 +50,14 @@ open class Converter {
     ).map(v)
 
     open fun convertStatement(v: KtExpression): Node.Statement = when (v) {
-        is KtForExpression -> convertFor(v)
-        is KtWhileExpression -> convertWhile(v)
-        is KtDoWhileExpression -> convertDoWhile(v)
+        is KtForExpression -> convertForStatement(v)
+        is KtWhileExpression -> convertWhileStatement(v)
+        is KtDoWhileExpression -> convertDoWhileStatement(v)
         is KtDeclaration -> convertDeclaration(v)
         else -> convertExpression(v) as? Node.Statement ?: error("Unrecognized statement $v")
     }
 
-    open fun convertFor(v: KtForExpression) = Node.Statement.ForStatement(
+    open fun convertForStatement(v: KtForExpression) = Node.Statement.ForStatement(
         forKeyword = convertKeyword(v.forKeyword),
         lPar = convertKeyword(v.leftParenthesis ?: error("No left parenthesis for $v")),
         loopParam = convertLambdaParam(v.loopParameter ?: error("No param on for $v")),
@@ -67,7 +67,7 @@ open class Converter {
         body = convertExpression(v.bodyContainer.expression ?: error("No body expression for $v")),
     ).map(v)
 
-    open fun convertWhile(v: KtWhileExpression) = Node.Statement.WhileStatement(
+    open fun convertWhileStatement(v: KtWhileExpression) = Node.Statement.WhileStatement(
         whileKeyword = convertKeyword(v.whileKeyword),
         lPar = convertKeyword(v.leftParenthesis ?: error("No left parenthesis for $v")),
         condition = convertExpression(v.conditionContainer.expression),
@@ -75,7 +75,7 @@ open class Converter {
         body = convertExpression(v.bodyContainer.expression ?: error("No body expression for $v")),
     ).map(v)
 
-    open fun convertDoWhile(v: KtDoWhileExpression) = Node.Statement.DoWhileStatement(
+    open fun convertDoWhileStatement(v: KtDoWhileExpression) = Node.Statement.DoWhileStatement(
         doKeyword = convertKeyword(v.doKeyword),
         body = convertExpression(v.bodyContainer.expression ?: error("No body expression for $v")),
         whileKeyword = convertKeyword(v.whileKeyword ?: error("No while keyword for $v")),
