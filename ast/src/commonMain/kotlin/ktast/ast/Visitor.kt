@@ -1,7 +1,7 @@
 package ktast.ast
 
 open class Visitor {
-    fun visit(node: Node) = visit(NodePath.rootPath(node))
+    fun visit(node: Node) = visit(NodePath.rootPathOf(node))
 
     protected open fun visit(path: NodePath): Unit = path.run {
         node.run {
@@ -449,12 +449,12 @@ open class Visitor {
 
     protected fun NodePath.visitChildren(child: Node?) {
         if (child != null) {
-            visit(childPath(child))
+            visit(childPathOf(child))
         }
     }
 
     protected fun NodePath.visitChildren(elements: List<Node>) {
-        elements.forEach { child -> visit(childPath(child)) }
+        elements.forEach { child -> visit(childPathOf(child)) }
     }
 
     companion object {

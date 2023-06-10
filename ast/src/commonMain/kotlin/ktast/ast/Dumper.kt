@@ -32,19 +32,19 @@ class Dumper(
 
     private fun NodePath.writeExtrasBefore() {
         if (extrasMap == null || parent == null) return
-        val extraPaths = extrasMap.extrasBefore(node).map { parent.childPath(it) }
+        val extraPaths = extrasMap.extrasBefore(node).map { parent.childPathOf(it) }
         writeExtras(extraPaths, ExtraType.BEFORE)
     }
 
     private fun NodePath.writeExtrasWithin() {
         if (extrasMap == null) return
-        val extraPaths = extrasMap.extrasWithin(node).map { childPath(it) }
+        val extraPaths = extrasMap.extrasWithin(node).map { childPathOf(it) }
         writeExtras(extraPaths, ExtraType.WITHIN)
     }
 
     private fun NodePath.writeExtrasAfter() {
         if (extrasMap == null || parent == null) return
-        val extraPaths = extrasMap.extrasAfter(node).map { parent.childPath(it) }
+        val extraPaths = extrasMap.extrasAfter(node).map { parent.childPathOf(it) }
         writeExtras(extraPaths, ExtraType.AFTER)
     }
 

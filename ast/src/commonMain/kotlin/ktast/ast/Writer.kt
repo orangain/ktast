@@ -519,7 +519,7 @@ open class Writer(
         this@Writer.also {
             append(prefix)
             v.forEachIndexed { index, child ->
-                val childPath = childPath(child)
+                val childPath = childPathOf(child)
                 visit(childPath)
                 if (index < v.size - 1) append(sep)
                 childPath.writeHeuristicExtraAfterChild(v.getOrNull(index + 1))

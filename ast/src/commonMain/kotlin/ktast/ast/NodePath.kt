@@ -17,7 +17,7 @@ data class NodePath(
          * @param node the node
          * @return the root path
          */
-        fun rootPath(node: Node): NodePath = NodePath(node, null)
+        fun rootPathOf(node: Node): NodePath = NodePath(node, null)
     }
 
     /**
@@ -31,5 +31,5 @@ data class NodePath(
      * @param child the child node
      * @return the child path
      */
-    fun childPath(child: Node): NodePath = NodePath(child, this)
+    fun childPathOf(child: Node): NodePath = NodePath(child, this)
 }
