@@ -838,38 +838,16 @@ sealed interface Node {
     }
 
     /**
-     * Common interface for AST node that represents an actual type argument. For example, `Int` in `listOf<Int>()` is a type argument. The node corresponds to KtTypeProjection.
+     * AST node that represents an actual type argument. For example, `Int` in `listOf<Int>()` is a type argument. The node corresponds to KtTypeProjection.
      *
-     * @property type type
+     * @property modifiers list of modifiers.
+     * @property type projection type. If the type argument is a star projection, this is [Type.SimpleType] whose name is "*".
      */
-    sealed interface TypeArg : Node, WithModifiers {
-        val type: Type
-
-        /**
-         * AST node that represents a type projection.
-         *
-         * @property modifiers list of modifiers.
-         * @property type type
-         */
-        data class TypeProjection(
-            override val modifiers: List<Modifier>,
-            override val type: Type,
-            override var tag: Any? = null,
-        ) : TypeArg
-
-        /**
-         * AST node that represents a star projection.
-         *
-         * @property modifiers always empty list.
-         * @property type [Type.SimpleType] whose name is "*".
-         */
-        data class StarProjection(
-            override var tag: Any? = null,
-            override val type: Type.SimpleType,
-        ) : TypeArg {
-            override val modifiers = listOf<Modifier>()
-        }
-    }
+    data class TypeArg(
+        override val modifiers: List<Modifier>,
+        val type: Type,
+        override var tag: Any? = null,
+    ) : Node, WithModifiers
 
     /**
      * AST node that represents an actual value argument of a function call. For example, `foo(1, 2)` has two value arguments `1` and `2`. The node corresponds to KtValueArgument.

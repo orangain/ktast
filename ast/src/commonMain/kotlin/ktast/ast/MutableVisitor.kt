@@ -191,11 +191,8 @@ open class MutableVisitor(
                         name = visitChildren(name, newCh),
                         type = visitChildren(type, newCh)
                     )
-                    is Node.TypeArg.TypeProjection -> copy(
+                    is Node.TypeArg -> copy(
                         modifiers = visitChildren(modifiers, newCh),
-                        type = visitChildren(type, newCh),
-                    )
-                    is Node.TypeArg.StarProjection -> copy(
                         type = visitChildren(type, newCh),
                     )
                     is Node.Type.FunctionType -> copy(

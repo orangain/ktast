@@ -229,11 +229,8 @@ open class Writer(
                     children(name)
                     if (type != null) append(":").also { children(type) }
                 }
-                is Node.TypeArg.TypeProjection -> {
+                is Node.TypeArg -> {
                     children(modifiers)
-                    children(type)
-                }
-                is Node.TypeArg.StarProjection -> {
                     children(type)
                 }
                 is Node.Type.FunctionType -> {

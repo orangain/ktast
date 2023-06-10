@@ -420,25 +420,19 @@ open class Converter {
 
     open fun convertTypeArgs(v: KtTypeArgumentList?): List<Node.TypeArg> = v?.arguments.orEmpty().map(::convertTypeArg)
 
-    open fun convertTypeArg(v: KtTypeProjection): Node.TypeArg = when (v.projectionKind) {
-        KtProjectionKind.STAR -> convertStarProjection(v)
-        else -> convertTypeProjection(v)
-    }
-
-    open fun convertStarProjection(v: KtTypeProjection) = Node.TypeArg.StarProjection(
-        type = Node.Type.SimpleType(
-            modifiers = emptyList(),
-            qualifiers = emptyList(),
-            name = convertNameExpression(v.projectionToken ?: error("Missing projection token for $v")),
-            lAngle = null,
-            typeArgs = emptyList(),
-            rAngle = null,
-        )
-    ).map(v)
-
-    open fun convertTypeProjection(v: KtTypeProjection) = Node.TypeArg.TypeProjection(
+    open fun convertTypeArg(v: KtTypeProjection) = Node.TypeArg(
         modifiers = convertModifiers(v.modifierList),
-        type = convertType(v.typeReference ?: error("Missing type ref for $v")),
+        type = when (v.projectionKind) {
+            KtProjectionKind.STAR -> Node.Type.SimpleType(
+                modifiers = listOf(),
+                qualifiers = listOf(),
+                name = convertNameExpression(v.projectionToken ?: error("Missing projection token for $v")),
+                lAngle = null,
+                typeArgs = listOf(),
+                rAngle = null,
+            ).mapNotCorrespondsPsiElement(v)
+            else -> convertType(v.typeReference ?: error("Missing type ref for $v"))
+        },
     ).map(v)
 
     open fun convertValueArgs(v: KtValueArgumentList?): List<Node.ValueArg> =
