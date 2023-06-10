@@ -336,6 +336,74 @@ open class Converter {
         type = v.extendsBound?.let(::convertType)
     ).map(v)
 
+    open fun convertType(v: KtTypeReference): Node.Type {
+        return convertType(v, v.nonExtraChildren())
+    }
+
+    protected fun convertType(v: KtElement, targetChildren: List<PsiElement>): Node.Type {
+        require(v is KtTypeReference || v is KtNullableType) { "Unexpected type: $v" }
+
+        val modifierListElements = targetChildren.takeWhile { it is KtModifierList }
+        check(modifierListElements.size <= 1) { "Multiple modifier lists in type children: $targetChildren" }
+        val modifierList = modifierListElements.firstOrNull() as? KtModifierList
+        val questionMarks = targetChildren.takeLastWhile { it.node.elementType == KtTokens.QUEST }
+        val restChildren =
+            targetChildren.subList(modifierListElements.size, targetChildren.size - questionMarks.size)
+
+        // questionMarks can be ignored here because when v is KtNullableType, it will be handled in caller side.
+        if (restChildren.first().node.elementType == KtTokens.LPAR && restChildren.last().node.elementType == KtTokens.RPAR) {
+            return Node.Type.ParenthesizedType(
+                modifiers = convertModifiers(modifierList),
+                lPar = convertKeyword(restChildren.first()),
+                innerType = convertType(v, restChildren.subList(1, restChildren.size - 1)),
+                rPar = convertKeyword(restChildren.last()),
+            ).mapNotCorrespondsPsiElement(v)
+        }
+
+        return when (val typeEl = restChildren.first()) {
+            is KtFunctionType -> convertFunctionType(modifierList, typeEl)
+            is KtUserType -> convertSimpleType(modifierList, typeEl)
+            is KtNullableType -> convertNullableType(modifierList, typeEl)
+            is KtDynamicType -> convertDynamicType(modifierList, typeEl)
+            else -> error("Unrecognized type of $typeEl")
+        }
+    }
+
+    protected fun convertNullableType(modifierList: KtModifierList?, v: KtNullableType) = Node.Type.NullableType(
+        modifiers = convertModifiers(modifierList),
+        innerType = convertType(v, v.nonExtraChildren()),
+        questionMark = convertKeyword(
+            findChildByType(v, KtTokens.QUEST) ?: error("No question mark for $v")
+        ),
+    ).mapNotCorrespondsPsiElement(v)
+
+    protected fun convertSimpleType(modifierList: KtModifierList?, v: KtUserType) = Node.Type.SimpleType(
+        modifiers = convertModifiers(modifierList),
+        qualifiers = generateSequence(v.qualifier) { it.qualifier }.toList().reversed()
+            .map(::convertTypeSimpleQualifier),
+        name = convertName(v.referenceExpression ?: error("No type name for $v")),
+        lAngle = v.typeArgumentList?.leftAngle?.let(::convertKeyword),
+        typeArgs = convertTypeArgs(v.typeArgumentList),
+        rAngle = v.typeArgumentList?.rightAngle?.let(::convertKeyword),
+    ).mapNotCorrespondsPsiElement(v)
+
+    protected fun convertDynamicType(modifierList: KtModifierList?, v: KtDynamicType) = Node.Type.DynamicType(
+        modifiers = convertModifiers(modifierList),
+        dynamicKeyword = convertKeyword(v.dynamicKeyword),
+    ).mapNotCorrespondsPsiElement(v)
+
+    protected fun convertFunctionType(modifierList: KtModifierList?, v: KtFunctionType) = Node.Type.FunctionType(
+        modifiers = convertModifiers(modifierList),
+        contextReceiver = v.contextReceiverList?.let(::convertContextReceiver),
+        receiverType = v.receiver?.typeReference?.let(::convertType),
+        dotSymbol = findChildByType(v, KtTokens.DOT)?.let(::convertKeyword),
+        lPar = v.parameterList?.leftParenthesis?.let(::convertKeyword),
+        params = convertTypeFunctionParams(v.parameterList),
+        rPar = v.parameterList?.rightParenthesis?.let(::convertKeyword),
+        returnType = convertType(v.returnTypeReference ?: error("No return type for $v")),
+    ).mapNotCorrespondsPsiElement(v)
+
+
     open fun convertTypeArgs(v: KtTypeArgumentList?): List<Node.TypeArg> = v?.arguments.orEmpty().map(::convertTypeArg)
 
     open fun convertTypeArg(v: KtTypeProjection): Node.TypeArg {
@@ -365,65 +433,6 @@ open class Converter {
         name = v.subjectTypeParameterName?.let { convertName(it) } ?: error("No type constraint name for $v"),
         type = convertType(v.boundTypeReference ?: error("No type constraint type for $v"))
     ).map(v)
-
-    open fun convertType(v: KtTypeReference): Node.Type {
-        return convertType(v, v.nonExtraChildren())
-    }
-
-    // Actually, type of v is KtTypeReference or KtNullableType.
-    protected open fun convertType(v: KtElement, targetChildren: List<PsiElement>): Node.Type {
-        val modifierListElements = targetChildren.takeWhile { it is KtModifierList }
-        check(modifierListElements.size <= 1) { "Multiple modifier lists in type children: $targetChildren" }
-        val modifierList = modifierListElements.firstOrNull() as? KtModifierList
-        val questionMarks = targetChildren.takeLastWhile { it.node.elementType == KtTokens.QUEST }
-        val restChildren =
-            targetChildren.subList(modifierListElements.size, targetChildren.size - questionMarks.size)
-
-        // questionMarks can be ignored here because when v is KtNullableType, it will be handled in caller side.
-        if (restChildren.first().node.elementType == KtTokens.LPAR && restChildren.last().node.elementType == KtTokens.RPAR) {
-            return Node.Type.ParenthesizedType(
-                modifiers = convertModifiers(modifierList),
-                lPar = convertKeyword(restChildren.first()),
-                innerType = convertType(v, restChildren.subList(1, restChildren.size - 1)),
-                rPar = convertKeyword(restChildren.last()),
-            ).mapNotCorrespondsPsiElement(v)
-        }
-
-        val modifiers = convertModifiers(modifierList)
-        return when (val typeEl = restChildren.first()) {
-            is KtFunctionType -> Node.Type.FunctionType(
-                modifiers = modifiers,
-                contextReceiver = typeEl.contextReceiverList?.let(::convertContextReceiver),
-                receiverType = typeEl.receiver?.typeReference?.let(::convertType),
-                dotSymbol = findChildByType(typeEl, KtTokens.DOT)?.let(::convertKeyword),
-                lPar = typeEl.parameterList?.leftParenthesis?.let(::convertKeyword),
-                params = convertTypeFunctionParams(typeEl.parameterList),
-                rPar = typeEl.parameterList?.rightParenthesis?.let(::convertKeyword),
-                returnType = convertType(typeEl.returnTypeReference ?: error("No return type for $typeEl")),
-            ).mapNotCorrespondsPsiElement(typeEl)
-            is KtUserType -> Node.Type.SimpleType(
-                modifiers = modifiers,
-                qualifiers = generateSequence(typeEl.qualifier) { it.qualifier }.toList().reversed()
-                    .map(::convertTypeSimpleQualifier),
-                name = convertName(typeEl.referenceExpression ?: error("No type name for $typeEl")),
-                lAngle = typeEl.typeArgumentList?.leftAngle?.let(::convertKeyword),
-                typeArgs = convertTypeArgs(typeEl.typeArgumentList),
-                rAngle = typeEl.typeArgumentList?.rightAngle?.let(::convertKeyword),
-            ).mapNotCorrespondsPsiElement(typeEl)
-            is KtNullableType -> Node.Type.NullableType(
-                modifiers = modifiers,
-                innerType = convertType(typeEl, typeEl.nonExtraChildren()),
-                questionMark = convertKeyword(
-                    findChildByType(typeEl, KtTokens.QUEST) ?: error("No question mark for $typeEl")
-                ),
-            ).mapNotCorrespondsPsiElement(typeEl)
-            is KtDynamicType -> Node.Type.DynamicType(
-                modifiers = modifiers,
-                dynamicKeyword = convertKeyword(typeEl.dynamicKeyword),
-            ).mapNotCorrespondsPsiElement(typeEl)
-            else -> error("Unrecognized type of $typeEl")
-        }
-    }
 
     open fun convertContextReceiver(v: KtContextReceiverList) = Node.ContextReceiver(
         lPar = convertKeyword(v.leftParenthesis),
