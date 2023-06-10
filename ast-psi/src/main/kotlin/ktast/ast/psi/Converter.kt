@@ -64,25 +64,25 @@ open class Converter {
         lPar = convertKeyword(v.leftParenthesis ?: error("No left parenthesis for $v")),
         loopParam = convertLambdaParam(v.loopParameter ?: error("No param on for $v")),
         inKeyword = convertKeyword(v.inKeyword ?: error("No in keyword for $v")),
-        loopRange = convertExpression(v.loopRangeContainer.expression),
+        loopRange = convertExpression(v.loopRange ?: error("No loop range expression for $v")),
         rPar = convertKeyword(v.rightParenthesis ?: error("No right parenthesis for $v")),
-        body = convertExpression(v.bodyContainer.expression ?: error("No body expression for $v")),
+        body = convertExpression(v.body ?: error("No body expression for $v")),
     ).map(v)
 
     open fun convertWhileStatement(v: KtWhileExpression) = Node.Statement.WhileStatement(
         whileKeyword = convertKeyword(v.whileKeyword),
         lPar = convertKeyword(v.leftParenthesis ?: error("No left parenthesis for $v")),
-        condition = convertExpression(v.conditionContainer.expression),
+        condition = convertExpression(v.condition ?: error("No condition expression for $v")),
         rPar = convertKeyword(v.rightParenthesis ?: error("No right parenthesis for $v")),
-        body = convertExpression(v.bodyContainer.expression ?: error("No body expression for $v")),
+        body = convertExpression(v.body ?: error("No body expression for $v")),
     ).map(v)
 
     open fun convertDoWhileStatement(v: KtDoWhileExpression) = Node.Statement.DoWhileStatement(
         doKeyword = convertKeyword(v.doKeyword),
-        body = convertExpression(v.bodyContainer.expression ?: error("No body expression for $v")),
+        body = convertExpression(v.body ?: error("No body expression for $v")),
         whileKeyword = convertKeyword(v.whileKeyword ?: error("No while keyword for $v")),
         lPar = convertKeyword(v.leftParenthesis ?: error("No left parenthesis for $v")),
-        condition = convertExpression(v.conditionContainer.expression),
+        condition = convertExpression(v.condition ?: error("No condition expression for $v")),
         rPar = convertKeyword(v.rightParenthesis ?: error("No right parenthesis for $v")),
     ).map(v)
 
@@ -490,9 +490,9 @@ open class Converter {
         lPar = convertKeyword(v.leftParenthesis ?: error("No left parenthesis on if for $v")),
         condition = convertExpression(v.condition ?: error("No cond on if for $v")),
         rPar = convertKeyword(v.rightParenthesis ?: error("No right parenthesis on if for $v")),
-        body = convertExpression(v.thenContainer.expression ?: error("No then body on if for $v")),
+        body = convertExpression(v.then ?: error("No then body on if for $v")),
         elseKeyword = v.elseKeyword?.let(::convertKeyword),
-        elseBody = v.elseContainer?.expression?.let(this::convertExpression),
+        elseBody = v.`else`?.let(::convertExpression),
     ).map(v)
 
     open fun convertTryExpression(v: KtTryExpression) = Node.Expression.TryExpression(
@@ -974,31 +974,11 @@ open class Converter {
         internal val KtPropertyAccessor.getKeyword: PsiElement
             get() = findChildByType(this, KtTokens.GET_KEYWORD) ?: error("No get keyword for $this")
 
-        internal val KtContainerNode.expression: KtExpression
-            get() = findChildByClass<KtExpression>(this) ?: error("No expression for $this")
-
-        internal val KtIfExpression.thenContainer: KtContainerNode
-            get() = findChildByType(this, KtNodeTypes.THEN) as? KtContainerNode
-                ?: error("No then container for $this")
-        internal val KtIfExpression.elseContainer: KtContainerNode?
-            get() = findChildByType(this, KtNodeTypes.ELSE) as? KtContainerNode
-
         internal val KtCatchClause.catchKeyword: PsiElement
             get() = findChildByType(this, KtTokens.CATCH_KEYWORD) ?: error("No catch keyword for $this")
 
-        internal val KtLoopExpression.bodyContainer: KtContainerNodeForControlStructureBody
-            get() = findChildByType(this, KtNodeTypes.BODY)
-                    as? KtContainerNodeForControlStructureBody ?: error("No body for $this")
-
-        internal val KtForExpression.loopRangeContainer: KtContainerNode
-            get() = findChildByType(this, KtNodeTypes.LOOP_RANGE)
-                    as? KtContainerNode ?: error("No in range for $this")
-
         internal val KtWhileExpressionBase.whileKeyword: PsiElement
             get() = findChildByType(this, KtTokens.WHILE_KEYWORD) ?: error("No while keyword for $this")
-        internal val KtWhileExpressionBase.conditionContainer: KtContainerNode
-            get() = findChildByType(this, KtNodeTypes.CONDITION)
-                    as? KtContainerNode ?: error("No condition for $this")
         internal val KtDoWhileExpression.doKeyword: PsiElement
             get() = findChildByType(this, KtTokens.DO_KEYWORD) ?: error("No do keyword for $this")
 
