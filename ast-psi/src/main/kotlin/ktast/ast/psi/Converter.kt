@@ -517,21 +517,20 @@ open class Converter {
         whenBranches = v.entries.map(::convertWhenBranch),
     ).map(v)
 
-    open fun convertWhenBranch(v: KtWhenEntry): Node.Expression.WhenExpression.WhenBranch {
-        val elseKeyword = v.elseKeyword
-        val body = convertExpression(v.expression ?: error("No when entry body for $v"))
-        return if (elseKeyword == null) {
-            Node.Expression.WhenExpression.ConditionalWhenBranch(
-                whenConditions = v.conditions.map(::convertWhenCondition),
-                body = body,
-            ).map(v)
-        } else {
-            Node.Expression.WhenExpression.ElseWhenBranch(
-                elseKeyword = convertKeyword(elseKeyword),
-                body = body,
-            ).map(v)
-        }
+    open fun convertWhenBranch(v: KtWhenEntry): Node.Expression.WhenExpression.WhenBranch = when (v.elseKeyword) {
+        null -> convertConditionalWhenBranch(v)
+        else -> convertElseWhenBranch(v)
     }
+
+    open fun convertConditionalWhenBranch(v: KtWhenEntry) = Node.Expression.WhenExpression.ConditionalWhenBranch(
+        whenConditions = v.conditions.map(::convertWhenCondition),
+        body = convertExpression(v.expression ?: error("No when entry body for $v")),
+    ).map(v)
+
+    open fun convertElseWhenBranch(v: KtWhenEntry) = Node.Expression.WhenExpression.ElseWhenBranch(
+        elseKeyword = convertKeyword(v.elseKeyword ?: error("No else keyword for $v")),
+        body = convertExpression(v.expression ?: error("No when entry body for $v")),
+    ).map(v)
 
     open fun convertWhenCondition(v: KtWhenCondition): Node.Expression.WhenExpression.WhenCondition = when (v) {
         is KtWhenConditionWithExpression -> convertExpressionWhenCondition(v)
