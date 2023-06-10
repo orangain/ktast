@@ -62,9 +62,9 @@ open class Writer(
         v.apply {
             when (this) {
                 is Node.KotlinFile -> {
-                    children(annotationSets, skipWritingExtrasWithin = true)
+                    children(annotationSets)
                     children(packageDirective)
-                    children(importDirectives, skipWritingExtrasWithin = true)
+                    children(importDirectives)
                     children(declarations)
                 }
                 is Node.PackageDirective -> {
@@ -268,13 +268,13 @@ open class Writer(
                 }
                 is Node.Type.NullableType -> {
                     children(modifiers)
-                    children(type)
+                    children(innerType)
                     children(questionMark)
                 }
                 is Node.Type.ParenthesizedType -> {
                     children(modifiers)
                     children(lPar)
-                    children(type)
+                    children(innerType)
                     children(rPar)
                 }
                 is Node.Type.DynamicType -> {
@@ -494,6 +494,7 @@ open class Writer(
                     error("Unrecognized node type: $this")
             }
         }
+        v.writeExtrasWithin()
         v.writeExtrasAfter()
     }
 
@@ -505,7 +506,7 @@ open class Writer(
     protected fun Node.commaSeparatedChildren(prefix: Node?, elements: List<Node>, suffix: Node?) =
         this@Writer.also {
             visitChildren(prefix)
-            children(elements, ",", skipWritingExtrasWithin = true)
+            children(elements, ",")
             visitChildren(suffix)
         }
 
@@ -514,7 +515,6 @@ open class Writer(
         sep: String = "",
         prefix: String = "",
         suffix: String = "",
-        skipWritingExtrasWithin: Boolean = false,
     ) =
         this@Writer.also {
             append(prefix)
@@ -523,19 +523,16 @@ open class Writer(
                 if (index < v.size - 1) append(sep)
                 writeHeuristicExtraAfterChild(t, v.getOrNull(index + 1), this)
             }
-            if (!skipWritingExtrasWithin) {
-                writeExtrasWithin()
-            }
             append(suffix)
         }
 
     protected open fun Node.writeHeuristicNewline(parent: Node?) {
-        if (parent is Node.StatementsContainer && this is Node.Statement) {
+        if (parent is Node.WithStatements && this is Node.Statement) {
             if (parent.statements.first() !== this && !containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
                 append("\n")
             }
         }
-        if (parent is Node.DeclarationsContainer && this is Node.Declaration) {
+        if (parent is Node.WithDeclarations && this is Node.Declaration) {
             if (parent.declarations.first() !== this && !containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
                 append("\n")
             }
@@ -606,7 +603,7 @@ open class Writer(
     )
 
     protected open fun writeHeuristicExtraAfterChild(v: Node, next: Node?, parent: Node?) {
-        if (v is Node.Expression.NameExpression && modifierKeywords.contains(v.text) && next is Node.Declaration && parent is Node.StatementsContainer) {
+        if (v is Node.Expression.NameExpression && modifierKeywords.contains(v.text) && next is Node.Declaration && parent is Node.WithStatements) {
             // Insert heuristic semicolon after name expression whose name is the same as the modifier keyword and next
             // is declaration to avoid ambiguity with keyword modifier.
             if (!containsSemicolon(extrasSinceLastNonSymbol)) {
@@ -638,19 +635,16 @@ open class Writer(
 
     protected open fun Node.writeExtrasBefore() {
         if (extrasMap == null) return
-        // Write everything before
         writeExtras(extrasMap.extrasBefore(this))
     }
 
     protected open fun Node.writeExtrasWithin() {
         if (extrasMap == null) return
-        // Write everything within
         writeExtras(extrasMap.extrasWithin(this))
     }
 
     protected open fun Node.writeExtrasAfter() {
         if (extrasMap == null) return
-        // Write everything after that doesn't start a line or end a line
         writeExtras(extrasMap.extrasAfter(this))
     }
 

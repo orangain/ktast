@@ -227,13 +227,13 @@ open class Visitor {
             }
             is Node.Type.NullableType -> {
                 visitChildren(modifiers)
-                visitChildren(type)
+                visitChildren(innerType)
                 visitChildren(questionMark)
             }
             is Node.Type.ParenthesizedType -> {
                 visitChildren(modifiers)
                 visitChildren(lPar)
-                visitChildren(type)
+                visitChildren(innerType)
                 visitChildren(rPar)
             }
             is Node.Type.DynamicType -> {
