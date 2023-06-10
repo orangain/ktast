@@ -791,11 +791,11 @@ open class Converter {
 
     open fun convertPropertyExpression(v: KtProperty) = Node.Expression.PropertyExpression(
         property = convertPropertyDeclaration(v)
-    ).map(v)
+    ).mapNotCorrespondsPsiElement(v)
 
     open fun convertPropertyExpression(v: KtDestructuringDeclaration) = Node.Expression.PropertyExpression(
         property = convertPropertyDeclaration(v)
-    ).map(v)
+    ).mapNotCorrespondsPsiElement(v)
 
     open fun convertLambdaParams(v: KtParameterList?): List<Node.LambdaParam> =
         v?.parameters.orEmpty().map(::convertLambdaParam)

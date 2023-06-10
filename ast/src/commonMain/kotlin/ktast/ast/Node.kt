@@ -1582,7 +1582,7 @@ sealed interface Node {
         ) : Expression
 
         /**
-         * AST node corresponds to KtProperty or KtDestructuringDeclaration.
+         * Virtual AST node corresponds to KtProperty or KtDestructuringDeclaration in expression context.
          * This is only present for when expressions and labeled expressions.
          *
          * @property property property declaration.
