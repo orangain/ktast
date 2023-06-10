@@ -9,7 +9,6 @@ import org.jetbrains.kotlin.com.intellij.psi.tree.IElementType
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
-import org.jetbrains.kotlin.psi.psiUtil.siblings
 import kotlin.reflect.full.createInstance
 
 open class Converter {
@@ -1020,15 +1019,6 @@ open class Converter {
 
         private fun findChildByType(v: KtElement, type: IElementType): PsiElement? =
             v.node.findChildByType(type)?.psi
-
-        private inline fun <reified T> findChildByClass(v: PsiElement): T? =
-            v.children.firstOrNull { it is T } as? T
-
-        internal fun findTrailingSeparator(v: KtElement, elementType: IElementType): PsiElement? =
-            // Note that v.children.lastOrNull() is not equal to v.lastChild. children contain only KtElements, but lastChild is a last element of allChildren.
-            v.children.lastOrNull()
-                ?.siblings(forward = true, withItself = false)
-                ?.find { it.node.elementType == elementType }
 
         internal fun PsiElement.nonExtraChildren() =
             allChildren.filterNot { it is PsiComment || it is PsiWhiteSpace }.toList()
