@@ -406,18 +406,19 @@ open class Converter {
 
     open fun convertTypeArgs(v: KtTypeArgumentList?): List<Node.TypeArg> = v?.arguments.orEmpty().map(::convertTypeArg)
 
-    open fun convertTypeArg(v: KtTypeProjection): Node.TypeArg {
-        return if (v.projectionKind == KtProjectionKind.STAR) {
-            Node.TypeArg.StarProjection(
-                asterisk = convertKeyword(v.projectionToken ?: error("Missing projection token for $v")),
-            ).map(v)
-        } else {
-            Node.TypeArg.TypeProjection(
-                modifiers = convertModifiers(v.modifierList),
-                type = convertType(v.typeReference ?: error("Missing type ref for $v")),
-            ).map(v)
-        }
+    open fun convertTypeArg(v: KtTypeProjection): Node.TypeArg = when (v.projectionKind) {
+        KtProjectionKind.STAR -> convertStarProjection(v)
+        else -> convertTypeProjection(v)
     }
+
+    open fun convertStarProjection(v: KtTypeProjection) = Node.TypeArg.StarProjection(
+        asterisk = convertKeyword(v.projectionToken ?: error("Missing projection token for $v")),
+    ).map(v)
+
+    open fun convertTypeProjection(v: KtTypeProjection) = Node.TypeArg.TypeProjection(
+        modifiers = convertModifiers(v.modifierList),
+        type = convertType(v.typeReference ?: error("Missing type ref for $v")),
+    ).map(v)
 
     open fun convertTypeConstraints(v: KtTypeConstraintList): List<Node.PostModifier.TypeConstraintSet.TypeConstraint> =
         v.constraints.map(::convertTypeConstraint)
