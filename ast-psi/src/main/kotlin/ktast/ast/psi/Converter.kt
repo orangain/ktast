@@ -141,7 +141,7 @@ open class Converter {
         Node.Declaration.ClassDeclaration.DelegationClassParent(
             type = v.typeReference?.let(::convertType)
                 ?: error("No type on delegated super type $v"),
-            byKeyword = convertKeyword(v.byKeywordNode.psi),
+            byKeyword = convertKeyword(v.byKeyword),
             expression = convertExpression(v.delegateExpression ?: error("Missing delegateExpression for $v")),
         ).map(v)
 
@@ -373,7 +373,7 @@ open class Converter {
     protected fun convertNullableType(modifierList: KtModifierList?, v: KtNullableType) = Node.Type.NullableType(
         modifiers = convertModifiers(modifierList),
         innerType = convertType(v, v.nonExtraChildren()),
-        questionMark = convertKeyword(v.questionMarkNode.psi),
+        questionMark = convertKeyword(v.questionMark),
     ).mapNotCorrespondsPsiElement(v)
 
     protected fun convertSimpleType(modifierList: KtModifierList?, v: KtUserType) = Node.Type.SimpleType(
@@ -639,7 +639,7 @@ open class Converter {
 
     open fun convertBinaryExpression(v: KtQualifiedExpression) = Node.Expression.BinaryExpression(
         lhs = convertExpression(v.receiverExpression),
-        operator = convertKeyword(v.operationTokenNode.psi),
+        operator = convertKeyword(v.operator),
         rhs = convertExpression(v.selectorExpression ?: error("No qualified rhs for $v"))
     ).map(v)
 
@@ -964,6 +964,8 @@ open class Converter {
         internal val KtTypeAlias.equalsToken: PsiElement
             get() = findChildByType(this, KtTokens.EQ) ?: error("No equals token for $this")
 
+        internal val KtDelegatedSuperTypeEntry.byKeyword: PsiElement
+            get() = byKeywordNode.psi
         internal val KtPropertyDelegate.byKeyword: PsiElement
             get() = byKeywordNode.psi
 
@@ -986,12 +988,17 @@ open class Converter {
             get() = rightCurlyBrace?.psi
                 ?: error("No rBrace for $this") // It seems funny, but leftCurlyBrace is non-null, while rightCurlyBrace is nullable.
 
+        internal val KtQualifiedExpression.operator: PsiElement
+            get() = operationTokenNode.psi
+
         internal val KtDoubleColonExpression.questionMarks
             get() = allChildren
                 .takeWhile { it.node.elementType != KtTokens.COLONCOLON }
                 .filter { it.node.elementType == KtTokens.QUEST }
                 .toList()
 
+        internal val KtNullableType.questionMark: PsiElement
+            get() = questionMarkNode.psi
         internal val KtDynamicType.dynamicKeyword: PsiElement
             get() = findChildByType(this, KtTokens.DYNAMIC_KEYWORD) ?: error("No dynamic keyword for $this")
         internal val KtFunctionType.dotSymbol: PsiElement?
