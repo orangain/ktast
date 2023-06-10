@@ -601,6 +601,28 @@ open class Converter {
         }.firstOrNull()?.let(::convertLambdaArg)
     ).map(v)
 
+    open fun convertLambdaArg(v: KtLambdaArgument): Node.Expression.CallExpression.LambdaArg {
+        var label: Node.Expression.NameExpression? = null
+        var annotationSets: List<Node.Modifier.AnnotationSet> = emptyList()
+        fun KtExpression.extractLambda(): KtLambdaExpression? = when (this) {
+            is KtLambdaExpression -> this
+            is KtLabeledExpression -> baseExpression?.extractLambda().also {
+                label = convertNameExpression(getTargetLabel() ?: error("No label for $this"))
+            }
+            is KtAnnotatedExpression -> baseExpression?.extractLambda().also {
+                annotationSets = convertAnnotationSets(this)
+            }
+            else -> null
+        }
+
+        val expr = v.getArgumentExpression()?.extractLambda() ?: error("No lambda for $v")
+        return Node.Expression.CallExpression.LambdaArg(
+            annotationSets = annotationSets,
+            label = label,
+            expression = convertLambdaExpression(expr)
+        ).map(v)
+    }
+
     open fun convertLambdaExpression(v: KtLambdaExpression) = Node.Expression.LambdaExpression(
         lBrace = convertKeyword(v.lBrace),
         params = convertLambdaParams(v.functionLiteral.valueParameterList),
@@ -706,36 +728,6 @@ open class Converter {
             else -> error("Unrecognized constant type for $v")
         }.map(v)
 
-    open fun convertLambdaParams(v: KtParameterList?): List<Node.LambdaParam> =
-        v?.parameters.orEmpty().map(::convertLambdaParam)
-
-    open fun convertLambdaParam(v: KtParameter): Node.LambdaParam {
-        val destructuringDeclaration = v.destructuringDeclaration
-        return if (destructuringDeclaration != null) {
-            Node.LambdaParam(
-                lPar = destructuringDeclaration.lPar?.let(::convertKeyword),
-                variables = destructuringDeclaration.entries.map(::convertVariable),
-                rPar = destructuringDeclaration.rPar?.let(::convertKeyword),
-                colon = v.colon?.let(::convertKeyword),
-                destructType = v.typeReference?.let(::convertType),
-            ).map(v)
-        } else {
-            Node.LambdaParam(
-                lPar = null,
-                variables = listOf(
-                    Node.Variable(
-                        modifiers = convertModifiers(v.modifierList),
-                        name = v.nameIdentifier?.let(::convertNameExpression) ?: error("No lambda param name on $v"),
-                        type = v.typeReference?.let(::convertType),
-                    ).mapNotCorrespondsPsiElement(v)
-                ),
-                rPar = null,
-                colon = null,
-                destructType = null,
-            ).map(v)
-        }
-    }
-
     open fun convertObjectLiteralExpression(v: KtObjectLiteralExpression) = Node.Expression.ObjectLiteralExpression(
         declaration = convertClassDeclaration(v.objectDeclaration),
     ).map(v)
@@ -788,28 +780,6 @@ open class Converter {
         statement = convertStatement(v.baseExpression ?: error("No annotated expr for $v"))
     ).map(v)
 
-    open fun convertLambdaArg(v: KtLambdaArgument): Node.Expression.CallExpression.LambdaArg {
-        var label: Node.Expression.NameExpression? = null
-        var annotationSets: List<Node.Modifier.AnnotationSet> = emptyList()
-        fun KtExpression.extractLambda(): KtLambdaExpression? = when (this) {
-            is KtLambdaExpression -> this
-            is KtLabeledExpression -> baseExpression?.extractLambda().also {
-                label = convertNameExpression(getTargetLabel() ?: error("No label for $this"))
-            }
-            is KtAnnotatedExpression -> baseExpression?.extractLambda().also {
-                annotationSets = convertAnnotationSets(this)
-            }
-            else -> null
-        }
-
-        val expr = v.getArgumentExpression()?.extractLambda() ?: error("No lambda for $v")
-        return Node.Expression.CallExpression.LambdaArg(
-            annotationSets = annotationSets,
-            label = label,
-            expression = convertLambdaExpression(expr)
-        ).map(v)
-    }
-
     open fun convertIndexedAccessExpression(v: KtArrayAccessExpression) = Node.Expression.IndexedAccessExpression(
         expression = convertExpression(v.arrayExpression ?: error("No array expr for $v")),
         indices = v.indexExpressions.map(this::convertExpression),
@@ -826,6 +796,36 @@ open class Converter {
     open fun convertPropertyExpression(v: KtDestructuringDeclaration) = Node.Expression.PropertyExpression(
         property = convertPropertyDeclaration(v)
     ).map(v)
+
+    open fun convertLambdaParams(v: KtParameterList?): List<Node.LambdaParam> =
+        v?.parameters.orEmpty().map(::convertLambdaParam)
+
+    open fun convertLambdaParam(v: KtParameter): Node.LambdaParam {
+        val destructuringDeclaration = v.destructuringDeclaration
+        return if (destructuringDeclaration != null) {
+            Node.LambdaParam(
+                lPar = destructuringDeclaration.lPar?.let(::convertKeyword),
+                variables = destructuringDeclaration.entries.map(::convertVariable),
+                rPar = destructuringDeclaration.rPar?.let(::convertKeyword),
+                colon = v.colon?.let(::convertKeyword),
+                destructType = v.typeReference?.let(::convertType),
+            ).map(v)
+        } else {
+            Node.LambdaParam(
+                lPar = null,
+                variables = listOf(
+                    Node.Variable(
+                        modifiers = convertModifiers(v.modifierList),
+                        name = v.nameIdentifier?.let(::convertNameExpression) ?: error("No lambda param name on $v"),
+                        type = v.typeReference?.let(::convertType),
+                    ).mapNotCorrespondsPsiElement(v)
+                ),
+                rPar = null,
+                colon = null,
+                destructType = null,
+            ).map(v)
+        }
+    }
 
     open fun convertAnnotationSets(v: KtElement): List<Node.Modifier.AnnotationSet> = v.children.flatMap { elem ->
         // We go over the node children because we want to preserve order
