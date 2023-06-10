@@ -567,19 +567,29 @@ open class Converter {
         raw = v.text.startsWith("\"\"\"")
     ).map(v)
 
-    open fun convertStringTemplateEntry(v: KtStringTemplateEntry) = when (v) {
-        is KtLiteralStringTemplateEntry -> Node.Expression.StringLiteralExpression.LiteralStringEntry(v.text)
-            .map(v)
-        is KtEscapeStringTemplateEntry -> Node.Expression.StringLiteralExpression.EscapeStringEntry(v.text)
-            .map(v)
-        is KtStringTemplateEntryWithExpression ->
-            Node.Expression.StringLiteralExpression.TemplateStringEntry(
-                expression = convertExpression(v.expression ?: error("No expr tmpl")),
-                short = v is KtSimpleNameStringTemplateEntry,
-            ).map(v)
-        else ->
-            error("Unrecognized string template type for $v")
-    }
+    open fun convertStringTemplateEntry(v: KtStringTemplateEntry): Node.Expression.StringLiteralExpression.StringEntry =
+        when (v) {
+            is KtLiteralStringTemplateEntry -> convertLiteralStringEntry(v)
+            is KtEscapeStringTemplateEntry -> convertEscapeStringEntry(v)
+            is KtStringTemplateEntryWithExpression -> convertTemplateStringEntry(v)
+            else -> error("Unrecognized string template type for $v")
+        }
+
+    open fun convertLiteralStringEntry(v: KtLiteralStringTemplateEntry) =
+        Node.Expression.StringLiteralExpression.LiteralStringEntry(
+            text = v.text,
+        ).map(v)
+
+    open fun convertEscapeStringEntry(v: KtEscapeStringTemplateEntry) =
+        Node.Expression.StringLiteralExpression.EscapeStringEntry(
+            text = v.text,
+        ).map(v)
+
+    open fun convertTemplateStringEntry(v: KtStringTemplateEntryWithExpression) =
+        Node.Expression.StringLiteralExpression.TemplateStringEntry(
+            expression = convertExpression(v.expression ?: error("No expr tmpl")),
+            short = v is KtSimpleNameStringTemplateEntry,
+        ).map(v)
 
     open fun convertConst(v: KtConstantExpression): Node.Expression.ConstantLiteralExpression =
         when (v.node.elementType) {
