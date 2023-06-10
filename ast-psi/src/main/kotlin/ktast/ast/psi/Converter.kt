@@ -173,7 +173,7 @@ open class Converter {
             modifiers = convertModifiers(v.modifierList),
             name = v.nameIdentifier?.let(::convertName) ?: error("Unnamed enum"),
             lPar = v.initializerList?.valueArgumentList?.leftParenthesis?.let(::convertKeyword),
-            args = convertValueArgs(v.initializerList),
+            args = convertValueArgs(v.initializerList?.valueArgumentList),
             rPar = v.initializerList?.valueArgumentList?.rightParenthesis?.let(::convertKeyword),
             classBody = v.body?.let(::convertClassBody),
         ).map(v)
@@ -336,11 +336,6 @@ open class Converter {
         type = v.extendsBound?.let(::convertType)
     ).map(v)
 
-    open fun convertType(v: KtContextReceiver): Node.Type {
-        val typeRef = v.typeReference() ?: error("No type ref for $v")
-        return convertType(typeRef, typeRef.nonExtraChildren())
-    }
-
     open fun convertType(v: KtTypeReference): Node.Type {
         return convertType(v, v.nonExtraChildren())
     }
@@ -443,18 +438,11 @@ open class Converter {
     open fun convertValueArgs(v: KtValueArgumentList?): List<Node.ValueArg> =
         v?.arguments.orEmpty().map(::convertValueArg)
 
-    open fun convertValueArgs(v: KtInitializerList?): List<Node.ValueArg> =
-        v?.valueArgumentList?.arguments.orEmpty().map(::convertValueArg)
-
     open fun convertValueArg(v: KtValueArgument) = Node.ValueArg(
         name = v.getArgumentName()?.let(::convertValueArgName),
         asterisk = v.getSpreadElement()?.let(::convertKeyword),
         expression = convertExpression(v.getArgumentExpression() ?: error("No expr for value arg"))
     ).map(v)
-
-    open fun convertExpression(v: KtContractEffect): Node.Expression {
-        return convertExpression(v.getExpression()).map(v) // map will be called twice for this Expression
-    }
 
     open fun convertExpression(v: KtExpression): Node.Expression = when (v) {
         is KtIfExpression -> convertIf(v)
@@ -882,7 +870,7 @@ open class Converter {
 
     open fun convertContextReceiver(v: KtContextReceiverList) = Node.ContextReceiver(
         lPar = convertKeyword(v.leftParenthesis),
-        receiverTypes = v.contextReceivers().map(::convertType),
+        receiverTypes = v.contextReceivers().map { convertType(it.typeReference() ?: error("No type ref for $it")) },
         rPar = convertKeyword(v.rightParenthesis),
     ).mapNotCorrespondsPsiElement(v)
 
@@ -927,7 +915,7 @@ open class Converter {
     ).map(v)
 
     open fun convertContractEffects(v: KtContractEffectList): List<Node.Expression> =
-        v.children.filterIsInstance<KtContractEffect>().map(::convertExpression)
+        v.children.filterIsInstance<KtContractEffect>().map { convertExpression(it.getExpression()) }
 
     protected val mapTextToKeywordKClass =
         Node.Keyword::class.sealedSubclasses.filter { it.isData }.associateBy { it.createInstance().text }
