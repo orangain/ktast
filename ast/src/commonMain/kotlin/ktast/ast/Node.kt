@@ -840,41 +840,34 @@ sealed interface Node {
     /**
      * Common interface for AST node that represents an actual type argument. For example, `Int` in `listOf<Int>()` is a type argument. The node corresponds to KtTypeProjection.
      *
-     * @property type type if exists, otherwise `null`.
-     * @property asterisk `*` if exists, otherwise `null`.
+     * @property type type
      */
     sealed interface TypeArg : Node, WithModifiers {
-        val type: Type?
-        val asterisk: Keyword.Asterisk?
+        val type: Type
 
         /**
          * AST node that represents a type projection.
          *
          * @property modifiers list of modifiers.
          * @property type type
-         * @property asterisk always `null`.
          */
         data class TypeProjection(
             override val modifiers: List<Modifier>,
             override val type: Type,
             override var tag: Any? = null,
-        ) : TypeArg {
-            override val asterisk = null
-        }
+        ) : TypeArg
 
         /**
          * AST node that represents a star projection.
          *
          * @property modifiers always empty list.
-         * @property type always `null`.
-         * @property asterisk asterisk keyword.
+         * @property type [Type.SimpleType] whose name is "*".
          */
         data class StarProjection(
-            override val asterisk: Keyword.Asterisk,
             override var tag: Any? = null,
+            override val type: Type.SimpleType,
         ) : TypeArg {
             override val modifiers = listOf<Modifier>()
-            override val type = null
         }
     }
 

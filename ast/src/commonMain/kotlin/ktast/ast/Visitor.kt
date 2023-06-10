@@ -190,7 +190,7 @@ open class Visitor {
                 visitChildren(type)
             }
             is Node.TypeArg.StarProjection -> {
-                visitChildren(asterisk)
+                visitChildren(type)
             }
             is Node.Type.FunctionType -> {
                 visitChildren(modifiers)

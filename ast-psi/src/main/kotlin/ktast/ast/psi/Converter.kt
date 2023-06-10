@@ -426,7 +426,14 @@ open class Converter {
     }
 
     open fun convertStarProjection(v: KtTypeProjection) = Node.TypeArg.StarProjection(
-        asterisk = convertKeyword(v.projectionToken ?: error("Missing projection token for $v")),
+        type = Node.Type.SimpleType(
+            modifiers = emptyList(),
+            qualifiers = emptyList(),
+            name = convertNameExpression(v.projectionToken ?: error("Missing projection token for $v")),
+            lAngle = null,
+            typeArgs = emptyList(),
+            rAngle = null,
+        )
     ).map(v)
 
     open fun convertTypeProjection(v: KtTypeProjection) = Node.TypeArg.TypeProjection(

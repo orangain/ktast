@@ -234,7 +234,7 @@ open class Writer(
                     children(type)
                 }
                 is Node.TypeArg.StarProjection -> {
-                    children(asterisk)
+                    children(type)
                 }
                 is Node.Type.FunctionType -> {
                     children(modifiers)
