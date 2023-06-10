@@ -119,7 +119,14 @@ open class Converter {
         v?.entries.orEmpty().map(::convertClassParent)
 
     open fun convertClassParent(v: KtSuperTypeListEntry) = when (v) {
-        is KtSuperTypeCallEntry -> Node.Declaration.ClassDeclaration.ConstructorClassParent(
+        is KtSuperTypeCallEntry -> convertConstructorClassParent(v)
+        is KtDelegatedSuperTypeEntry -> convertDelegationClassParent(v)
+        is KtSuperTypeEntry -> convertTypeClassParent(v)
+        else -> error("Unknown super type entry $v")
+    }
+
+    open fun convertConstructorClassParent(v: KtSuperTypeCallEntry) =
+        Node.Declaration.ClassDeclaration.ConstructorClassParent(
             type = v.typeReference?.let(::convertType) as? Node.Type.SimpleType
                 ?: error("Bad type on super call $v"),
             lPar = v.valueArgumentList?.leftParenthesis?.let(::convertKeyword)
@@ -128,18 +135,19 @@ open class Converter {
             rPar = v.valueArgumentList?.rightParenthesis?.let(::convertKeyword)
                 ?: error("No right parenthesis for $v"),
         ).map(v)
-        is KtDelegatedSuperTypeEntry -> Node.Declaration.ClassDeclaration.DelegationClassParent(
+
+    open fun convertDelegationClassParent(v: KtDelegatedSuperTypeEntry) =
+        Node.Declaration.ClassDeclaration.DelegationClassParent(
             type = v.typeReference?.let(::convertType)
                 ?: error("No type on delegated super type $v"),
             byKeyword = convertKeyword(v.byKeywordNode.psi),
             expression = convertExpression(v.delegateExpression ?: error("Missing delegateExpression for $v")),
         ).map(v)
-        is KtSuperTypeEntry -> Node.Declaration.ClassDeclaration.TypeClassParent(
-            type = v.typeReference?.let(::convertType)
-                ?: error("No type on super type $v"),
-        ).map(v)
-        else -> error("Unknown super type entry $v")
-    }
+
+    open fun convertTypeClassParent(v: KtSuperTypeEntry) = Node.Declaration.ClassDeclaration.TypeClassParent(
+        type = v.typeReference?.let(::convertType)
+            ?: error("No type on super type $v"),
+    ).map(v)
 
     open fun convertPrimaryConstructor(v: KtPrimaryConstructor) = Node.Declaration.ClassDeclaration.PrimaryConstructor(
         modifiers = convertModifiers(v.modifierList),
