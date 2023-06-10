@@ -837,6 +837,21 @@ open class Converter {
         }
     }
 
+    open fun convertModifiers(v: KtModifierList?): List<Node.Modifier> {
+        if (v == null) {
+            return listOf()
+        }
+        return v.nonExtraChildren().mapNotNull { psi ->
+            // We go over the node children because we want to preserve order
+            when (psi) {
+                is KtAnnotationEntry -> convertAnnotationSet(psi)
+                is KtAnnotation -> convertAnnotationSet(psi)
+                is PsiWhiteSpace -> null
+                else -> convertKeyword<Node.Modifier.KeywordModifier>(psi)
+            }
+        }.toList()
+    }
+
     open fun convertAnnotationSet(v: KtAnnotation) = Node.Modifier.AnnotationSet(
         atSymbol = v.atSymbol?.let(::convertKeyword),
         target = v.useSiteTarget?.let(::convertKeyword),
@@ -861,7 +876,7 @@ open class Converter {
         rBracket = null,
     ).map(v)
 
-    open fun convertAnnotationWithoutMapping(v: KtAnnotationEntry) = Node.Modifier.AnnotationSet.Annotation(
+    protected fun convertAnnotationWithoutMapping(v: KtAnnotationEntry) = Node.Modifier.AnnotationSet.Annotation(
         type = convertType(
             v.calleeExpression?.typeReference ?: error("No callee expression, type reference or type element for $v")
         ) as? Node.Type.SimpleType ?: error("calleeExpression is not simple type"),
@@ -870,22 +885,6 @@ open class Converter {
         rPar = v.valueArgumentList?.rightParenthesis?.let(::convertKeyword),
     )
 
-    open fun convertModifiers(v: KtModifierList?): List<Node.Modifier> {
-        if (v == null) {
-            return listOf()
-        }
-        val nonExtraChildren = v.allChildren.filterNot { it is PsiComment || it is PsiWhiteSpace }.toList()
-        return nonExtraChildren.mapNotNull { psi ->
-            // We go over the node children because we want to preserve order
-            when (psi) {
-                is KtAnnotationEntry -> convertAnnotationSet(psi)
-                is KtAnnotation -> convertAnnotationSet(psi)
-                is PsiWhiteSpace -> null
-                else -> convertKeyword<Node.Modifier.KeywordModifier>(psi)
-            }
-        }.toList()
-    }
-
     open fun convertContextReceiver(v: KtContextReceiverList) = Node.ContextReceiver(
         lPar = convertKeyword(v.leftParenthesis),
         receiverTypes = v.contextReceivers().map { convertType(it.typeReference() ?: error("No type ref for $it")) },
@@ -893,7 +892,7 @@ open class Converter {
     ).mapNotCorrespondsPsiElement(v)
 
     open fun convertPostModifiers(v: KtElement): List<Node.PostModifier> {
-        val nonExtraChildren = v.allChildren.filterNot { it is PsiComment || it is PsiWhiteSpace }.toList()
+        val nonExtraChildren = v.nonExtraChildren()
 
         if (nonExtraChildren.isEmpty()) {
             return listOf()
