@@ -2163,8 +2163,6 @@ sealed interface Node {
 
     /**
      * Common interface for extra nodes.
-     *
-     * @property text string representation of the node.
      */
     sealed interface Extra : SimpleTextNode {
         /**
