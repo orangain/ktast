@@ -191,12 +191,9 @@ open class MutableVisitor(
                         name = visitChildren(name, newCh),
                         type = visitChildren(type, newCh)
                     )
-                    is Node.TypeArg.TypeProjection -> copy(
+                    is Node.TypeArg -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         type = visitChildren(type, newCh),
-                    )
-                    is Node.TypeArg.StarProjection -> copy(
-                        asterisk = visitChildren(asterisk, newCh),
                     )
                     is Node.Type.FunctionType -> copy(
                         modifiers = visitChildren(modifiers, newCh),
@@ -300,7 +297,7 @@ open class MutableVisitor(
                         questionMarks = visitChildren(questionMarks, newCh),
                     )
                     is Node.Expression.ParenthesizedExpression -> copy(
-                        expression = visitChildren(expression, newCh)
+                        innerExpression = visitChildren(innerExpression, newCh)
                     )
                     is Node.Expression.StringLiteralExpression -> copy(
                         entries = visitChildren(entries, newCh)

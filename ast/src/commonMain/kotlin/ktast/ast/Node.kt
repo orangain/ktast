@@ -838,45 +838,16 @@ sealed interface Node {
     }
 
     /**
-     * Common interface for AST node that represents an actual type argument. For example, `Int` in `listOf<Int>()` is a type argument. The node corresponds to KtTypeProjection.
+     * AST node that represents an actual type argument. For example, `Int` in `listOf<Int>()` is a type argument. The node corresponds to KtTypeProjection.
      *
-     * @property type type if exists, otherwise `null`.
-     * @property asterisk `*` if exists, otherwise `null`.
+     * @property modifiers list of modifiers.
+     * @property type projection type. If the type argument is a star projection, this is [Type.SimpleType] whose name is "*".
      */
-    sealed interface TypeArg : Node, WithModifiers {
-        val type: Type?
-        val asterisk: Keyword.Asterisk?
-
-        /**
-         * AST node that represents a type projection.
-         *
-         * @property modifiers list of modifiers.
-         * @property type type
-         * @property asterisk always `null`.
-         */
-        data class TypeProjection(
-            override val modifiers: List<Modifier>,
-            override val type: Type,
-            override var tag: Any? = null,
-        ) : TypeArg {
-            override val asterisk = null
-        }
-
-        /**
-         * AST node that represents a star projection.
-         *
-         * @property modifiers always empty list.
-         * @property type always `null`.
-         * @property asterisk asterisk keyword.
-         */
-        data class StarProjection(
-            override val asterisk: Keyword.Asterisk,
-            override var tag: Any? = null,
-        ) : TypeArg {
-            override val modifiers = listOf<Modifier>()
-            override val type = null
-        }
-    }
+    data class TypeArg(
+        override val modifiers: List<Modifier>,
+        val type: Type,
+        override var tag: Any? = null,
+    ) : Node, WithModifiers
 
     /**
      * AST node that represents an actual value argument of a function call. For example, `foo(1, 2)` has two value arguments `1` and `2`. The node corresponds to KtValueArgument.
@@ -961,321 +932,6 @@ sealed interface Node {
                 }
             }
         }
-
-        /**
-         * AST node corresponds to KtBinaryExpression or KtQualifiedExpression.
-         *
-         * @property lhs left-hand side expression.
-         * @property operator binary operator.
-         * @property rhs right-hand side expression.
-         */
-        data class BinaryExpression(
-            val lhs: Expression,
-            val operator: BinaryOperator,
-            val rhs: Expression,
-            override var tag: Any? = null,
-        ) : Expression {
-            /**
-             * Common interface for AST nodes that represent binary operators.
-             * Note that [NameExpression] implements [BinaryOperator] because it can be used as a infix operator.
-             */
-            sealed interface BinaryOperator : SimpleTextNode
-        }
-
-        /**
-         * Common interface for [PrefixUnaryExpression] and [PostfixUnaryExpression]. The node corresponds to KtUnaryExpression
-         *
-         * @property expression operand expression.
-         * @property operator unary operator.
-         */
-        sealed interface UnaryExpression : Expression {
-            val expression: Expression
-            val operator: UnaryOperator
-
-            /**
-             * Common interface for AST nodes that represent unary operators.
-             */
-            sealed interface UnaryOperator : Keyword
-        }
-
-        /**
-         * AST node corresponds to KtPrefixExpression.
-         *
-         * @property operator unary operator.
-         * @property expression operand expression.
-         */
-        data class PrefixUnaryExpression(
-            override val operator: UnaryExpression.UnaryOperator,
-            override val expression: Expression,
-            override var tag: Any? = null,
-        ) : UnaryExpression
-
-        /**
-         * AST node corresponds to KtPostfixExpression.
-         *
-         * @property expression operand expression.
-         * @property operator unary operator.
-         */
-        data class PostfixUnaryExpression(
-            override val expression: Expression,
-            override val operator: UnaryExpression.UnaryOperator,
-            override var tag: Any? = null,
-        ) : UnaryExpression
-
-        /**
-         * AST node corresponds to KtBinaryExpressionWithTypeRHS or KtIsExpression.
-         *
-         * @property lhs left-hand side expression.
-         * @property operator binary type operator.
-         * @property rhs right-hand side type.
-         */
-        data class BinaryTypeExpression(
-            val lhs: Expression,
-            val operator: BinaryTypeOperator,
-            val rhs: Type,
-            override var tag: Any? = null,
-        ) : Expression {
-            /**
-             * Common interface for AST nodes that represent binary type operators.
-             */
-            sealed interface BinaryTypeOperator : Keyword
-        }
-
-        /**
-         * AST node corresponds to KtDoubleColonExpression.
-         *
-         * @property lhs left-hand side expression if exists, otherwise `null`.
-         * @property questionMarks list of question marks after [lhs].
-         */
-        sealed interface DoubleColonExpression : Expression {
-            val lhs: Expression?
-            val questionMarks: List<Keyword.Question>
-        }
-
-        /**
-         * AST node corresponds to KtCallableReferenceExpression.
-         *
-         * @property lhs left-hand side expression if exists, otherwise `null`.
-         * @property questionMarks list of question marks after [lhs].
-         * @property rhs right-hand side name expression.
-         *
-         */
-        data class CallableReferenceExpression(
-            override val lhs: Expression?,
-            override val questionMarks: List<Keyword.Question>,
-            val rhs: NameExpression,
-            override var tag: Any? = null,
-        ) : DoubleColonExpression
-
-        /**
-         * AST node corresponds to KtClassLiteralExpression.
-         *
-         * @property lhs left-hand side expression if exists, otherwise `null`. Note that class literal expression without lhs is not supported in Kotlin syntax, but the Kotlin compiler does parse it.
-         * @property questionMarks list of question marks after [lhs].
-         */
-        data class ClassLiteralExpression(
-            override val lhs: Expression?,
-            override val questionMarks: List<Keyword.Question>,
-            override var tag: Any? = null,
-        ) : DoubleColonExpression
-
-        /**
-         * AST node corresponds to KtParenthesizedExpression.
-         *
-         * @property expression expression inside parentheses.
-         */
-        data class ParenthesizedExpression(
-            val expression: Expression,
-            override var tag: Any? = null,
-        ) : Expression
-
-        /**
-         * AST node corresponds to KtStringTemplateExpression.
-         *
-         * @property entries list of string entries.
-         * @property raw `true` if this is raw string surrounded by `"""`, `false` if this is regular string surrounded by `"`.
-         */
-        data class StringLiteralExpression(
-            val entries: List<StringEntry>,
-            val raw: Boolean,
-            override var tag: Any? = null,
-        ) : Expression {
-            /**
-             * AST node corresponds to KtStringTemplateEntry.
-             */
-            sealed interface StringEntry : Node
-
-            /**
-             * AST node corresponds to KtLiteralStringTemplateEntry.
-             *
-             * @property text string of this entry.
-             */
-            data class LiteralStringEntry(
-                override val text: String,
-                override var tag: Any? = null,
-            ) : StringEntry, SimpleTextNode
-
-            /**
-             * AST node corresponds to KtEscapeStringTemplateEntry.
-             *
-             * @property text string of this entry starting with backslash.
-             */
-            data class EscapeStringEntry(
-                override val text: String,
-                override var tag: Any? = null,
-            ) : StringEntry, SimpleTextNode {
-                init {
-                    require(text.startsWith('\\')) {
-                        "Escape string template entry must start with backslash."
-                    }
-                }
-            }
-
-            /**
-             * AST node corresponds to KtStringTemplateEntryWithExpression.
-             *
-             * @property expression template expression of this entry.
-             * @property short `true` if this is short template string entry, e.g. `$x`, `false` if this is long template string entry, e.g. `${x}`. When this is `true`, [expression] must be [NameExpression].
-             */
-            data class TemplateStringEntry(
-                val expression: Expression,
-                val short: Boolean,
-                override var tag: Any? = null,
-            ) : StringEntry {
-                init {
-                    require(!short || expression is NameExpression) {
-                        "Short template string entry must be a name expression."
-                    }
-                }
-            }
-        }
-
-        /**
-         * AST node corresponds to KtConstantExpression.
-         *
-         * @property text string representation of this constant.
-         */
-        sealed interface ConstantLiteralExpression : Expression, SimpleTextNode {
-            override val text: String
-        }
-
-        /**
-         * AST node that represents boolean literal. The node corresponds to KtConstantExpression whose expressionType is KtNodeTypes.BOOLEAN_CONSTANT.
-         *
-         * @property text string representation of this constant, which is either "true" or "false".
-         */
-        data class BooleanLiteralExpression(
-            override val text: String,
-            override var tag: Any? = null,
-        ) : ConstantLiteralExpression {
-            init {
-                require(text == "true" || text == "false") {
-                    """text must be either "true" or "false"."""
-                }
-            }
-        }
-
-        /**
-         * AST node that represents character literal. The node corresponds to KtConstantExpression whose expressionType is KtNodeTypes.CHARACTER_CONSTANT.
-         *
-         * @property text string representation of this constant, which is surrounded by single quotes.
-         */
-        data class CharacterLiteralExpression(
-            override val text: String,
-            override var tag: Any? = null,
-        ) : ConstantLiteralExpression {
-            init {
-                require(text.startsWith('\'') && text.endsWith('\'')) {
-                    "text must be surrounded by single quotes."
-                }
-            }
-        }
-
-        /**
-         * AST node that represents integer literal. The node corresponds to KtConstantExpression whose expressionType is KtNodeTypes.INTEGER_CONSTANT.
-         *
-         * @property text string representation of this constant.
-         */
-        data class IntegerLiteralExpression(
-            override val text: String,
-            override var tag: Any? = null,
-        ) : ConstantLiteralExpression
-
-        /**
-         * AST node that represents real number literal. The node corresponds to KtConstantExpression whose expressionType is KtNodeTypes.FLOAT_CONSTANT.
-         *
-         * @property text string representation of this constant.
-         */
-
-        data class RealLiteralExpression(
-            override val text: String,
-            override var tag: Any? = null,
-        ) : ConstantLiteralExpression
-
-        /**
-         * AST node that represents null literal. The node corresponds to KtConstantExpression whose expressionType is KtNodeTypes.NULL.
-         */
-        data class NullLiteralExpression(
-            override var tag: Any? = null,
-        ) : ConstantLiteralExpression {
-            override val text: String
-                get() = "null"
-        }
-
-        /**
-         * AST node corresponds to KtLambdaExpression.
-         *
-         * @property lBrace left brace of the lambda expression.
-         * @property params list of parameters of the lambda expression.
-         * @property arrow arrow symbol of the lambda expression.
-         * @property lambdaBody body of the lambda expression.
-         * @property rBrace right brace of the lambda expression.
-         */
-        data class LambdaExpression(
-            val lBrace: Keyword.LBrace,
-            val params: List<LambdaParam>,
-            val arrow: Keyword.Arrow?,
-            val lambdaBody: LambdaBody?,
-            val rBrace: Keyword.RBrace,
-            override var tag: Any? = null,
-        ) : Expression {
-
-            /**
-             * AST node corresponds to KtBlockExpression in lambda body.
-             * In lambda expression, left and right braces are not included in [LambdaBody], but are included in [LambdaExpression].
-             * This means:
-             *
-             * [LambdaExpression] = { [LambdaParam], [LambdaParam] -> [LambdaBody] }
-             *
-             * @property statements list of statements in the block.
-             */
-            data class LambdaBody(
-                override val statements: List<Statement>,
-                override var tag: Any? = null,
-            ) : Expression, WithStatements
-        }
-
-        /**
-         * AST node corresponds to KtThisExpression or KtConstructorDelegationReferenceExpression whose text is "this".
-         *
-         * @property label label of this expression if exists, otherwise `null`.
-         */
-        data class ThisExpression(
-            override val label: NameExpression?,
-            override var tag: Any? = null,
-        ) : Expression, WithLabel
-
-        /**
-         * AST node corresponds to KtSuperExpression or KtConstructorDelegationReferenceExpression whose text is "super".
-         *
-         * @property typeArgType type of type argument if exists, otherwise `null`.
-         * @property label label of this expression if exists, otherwise `null`.
-         */
-        data class SuperExpression(
-            val typeArgType: Type?,
-            override val label: NameExpression?,
-            override var tag: Any? = null,
-        ) : Expression, WithLabel
 
         /**
          * AST node corresponds to KtWhenExpression.
@@ -1416,16 +1072,6 @@ sealed interface Node {
         }
 
         /**
-         * AST node corresponds to KtObjectLiteralExpression.
-         *
-         * @property declaration class declaration of this object literal expression.
-         */
-        data class ObjectLiteralExpression(
-            val declaration: Declaration.ClassDeclaration,
-            override var tag: Any? = null,
-        ) : Expression
-
-        /**
          * AST node corresponds to KtThrowExpression.
          *
          * @property expression expression to be thrown.
@@ -1468,48 +1114,18 @@ sealed interface Node {
         ) : Expression, WithLabel
 
         /**
-         * AST node corresponds to KtCollectionLiteralExpression.
+         * AST node corresponds to KtBlockExpression.
          *
-         * @property expressions list of element expressions.
+         * @property lBrace left brace symbol of the block.
+         * @property statements list of statements.
+         * @property rBrace right brace symbol of the block.
          */
-        data class CollectionLiteralExpression(
-            val expressions: List<Expression>,
+        data class BlockExpression(
+            val lBrace: Keyword.LBrace,
+            override val statements: List<Statement>,
+            val rBrace: Keyword.RBrace,
             override var tag: Any? = null,
-        ) : Expression
-
-        /**
-         * AST node corresponds to KtValueArgumentName, KtSimpleNameExpression or PsiElement whose elementType is IDENTIFIER.
-         *
-         * @property text string representation of the name expression.
-         */
-        data class NameExpression(
-            override val text: String,
-            override var tag: Any? = null,
-        ) : Expression, BinaryExpression.BinaryOperator
-
-        /**
-         * AST node corresponds to KtLabeledExpression.
-         *
-         * @property label label before `@` symbol.
-         * @property statement statement labeled by [label].
-         */
-        data class LabeledExpression(
-            val label: NameExpression,
-            val statement: Statement,
-            override var tag: Any? = null,
-        ) : Expression
-
-        /**
-         * AST node corresponds to KtAnnotatedExpression.
-         *
-         * @property annotationSets list of annotation sets.
-         * @property statement statement annotated by [annotationSets].
-         */
-        data class AnnotatedExpression(
-            override val annotationSets: List<Modifier.AnnotationSet>,
-            val statement: Statement,
-            override var tag: Any? = null,
-        ) : Expression, WithAnnotationSets
+        ) : Expression, WithStatements
 
         /**
          * AST node corresponds to KtCallElement.
@@ -1546,6 +1162,375 @@ sealed interface Node {
         }
 
         /**
+         * AST node corresponds to KtLambdaExpression.
+         *
+         * @property lBrace left brace of the lambda expression.
+         * @property params list of parameters of the lambda expression.
+         * @property arrow arrow symbol of the lambda expression.
+         * @property lambdaBody body of the lambda expression.
+         * @property rBrace right brace of the lambda expression.
+         */
+        data class LambdaExpression(
+            val lBrace: Keyword.LBrace,
+            val params: List<LambdaParam>,
+            val arrow: Keyword.Arrow?,
+            val lambdaBody: LambdaBody?,
+            val rBrace: Keyword.RBrace,
+            override var tag: Any? = null,
+        ) : Expression {
+
+            /**
+             * AST node corresponds to KtBlockExpression in lambda body.
+             * In lambda expression, left and right braces are not included in [LambdaBody], but are included in [LambdaExpression].
+             * This means:
+             *
+             * [LambdaExpression] = { [LambdaParam], [LambdaParam] -> [LambdaBody] }
+             *
+             * @property statements list of statements in the block.
+             */
+            data class LambdaBody(
+                override val statements: List<Statement>,
+                override var tag: Any? = null,
+            ) : Expression, WithStatements
+        }
+
+        /**
+         * AST node corresponds to KtBinaryExpression or KtQualifiedExpression.
+         *
+         * @property lhs left-hand side expression.
+         * @property operator binary operator.
+         * @property rhs right-hand side expression.
+         */
+        data class BinaryExpression(
+            val lhs: Expression,
+            val operator: BinaryOperator,
+            val rhs: Expression,
+            override var tag: Any? = null,
+        ) : Expression {
+            /**
+             * Common interface for AST nodes that represent binary operators.
+             * Note that [NameExpression] implements [BinaryOperator] because it can be used as a infix operator.
+             */
+            sealed interface BinaryOperator : SimpleTextNode
+        }
+
+        /**
+         * Common interface for [PrefixUnaryExpression] and [PostfixUnaryExpression]. The node corresponds to KtUnaryExpression
+         *
+         * @property expression operand expression.
+         * @property operator unary operator.
+         */
+        sealed interface UnaryExpression : Expression {
+            val expression: Expression
+            val operator: UnaryOperator
+
+            /**
+             * Common interface for AST nodes that represent unary operators.
+             */
+            sealed interface UnaryOperator : Keyword
+        }
+
+        /**
+         * AST node corresponds to KtPrefixExpression.
+         *
+         * @property operator unary operator.
+         * @property expression operand expression.
+         */
+        data class PrefixUnaryExpression(
+            override val operator: UnaryExpression.UnaryOperator,
+            override val expression: Expression,
+            override var tag: Any? = null,
+        ) : UnaryExpression
+
+        /**
+         * AST node corresponds to KtPostfixExpression.
+         *
+         * @property expression operand expression.
+         * @property operator unary operator.
+         */
+        data class PostfixUnaryExpression(
+            override val expression: Expression,
+            override val operator: UnaryExpression.UnaryOperator,
+            override var tag: Any? = null,
+        ) : UnaryExpression
+
+        /**
+         * AST node corresponds to KtBinaryExpressionWithTypeRHS or KtIsExpression.
+         *
+         * @property lhs left-hand side expression.
+         * @property operator binary type operator.
+         * @property rhs right-hand side type.
+         */
+        data class BinaryTypeExpression(
+            val lhs: Expression,
+            val operator: BinaryTypeOperator,
+            val rhs: Type,
+            override var tag: Any? = null,
+        ) : Expression {
+            /**
+             * Common interface for AST nodes that represent binary type operators.
+             */
+            sealed interface BinaryTypeOperator : Keyword
+        }
+
+        /**
+         * AST node corresponds to KtDoubleColonExpression.
+         *
+         * @property lhs left-hand side expression if exists, otherwise `null`.
+         * @property questionMarks list of question marks after [lhs].
+         */
+        sealed interface DoubleColonExpression : Expression {
+            val lhs: Expression?
+            val questionMarks: List<Keyword.Question>
+        }
+
+        /**
+         * AST node corresponds to KtCallableReferenceExpression.
+         *
+         * @property lhs left-hand side expression if exists, otherwise `null`.
+         * @property questionMarks list of question marks after [lhs].
+         * @property rhs right-hand side name expression.
+         *
+         */
+        data class CallableReferenceExpression(
+            override val lhs: Expression?,
+            override val questionMarks: List<Keyword.Question>,
+            val rhs: NameExpression,
+            override var tag: Any? = null,
+        ) : DoubleColonExpression
+
+        /**
+         * AST node corresponds to KtClassLiteralExpression.
+         *
+         * @property lhs left-hand side expression if exists, otherwise `null`. Note that class literal expression without lhs is not supported in Kotlin syntax, but the Kotlin compiler does parse it.
+         * @property questionMarks list of question marks after [lhs].
+         */
+        data class ClassLiteralExpression(
+            override val lhs: Expression?,
+            override val questionMarks: List<Keyword.Question>,
+            override var tag: Any? = null,
+        ) : DoubleColonExpression
+
+        /**
+         * AST node corresponds to KtParenthesizedExpression.
+         *
+         * @property innerExpression expression inside parentheses.
+         */
+        data class ParenthesizedExpression(
+            val innerExpression: Expression,
+            override var tag: Any? = null,
+        ) : Expression
+
+        /**
+         * AST node corresponds to KtStringTemplateExpression.
+         *
+         * @property entries list of string entries.
+         * @property raw `true` if this is raw string surrounded by `"""`, `false` if this is regular string surrounded by `"`.
+         */
+        data class StringLiteralExpression(
+            val entries: List<StringEntry>,
+            val raw: Boolean,
+            override var tag: Any? = null,
+        ) : Expression {
+            /**
+             * AST node corresponds to KtStringTemplateEntry.
+             */
+            sealed interface StringEntry : Node
+
+            /**
+             * AST node corresponds to KtLiteralStringTemplateEntry.
+             *
+             * @property text string of this entry.
+             */
+            data class LiteralStringEntry(
+                override val text: String,
+                override var tag: Any? = null,
+            ) : StringEntry, SimpleTextNode
+
+            /**
+             * AST node corresponds to KtEscapeStringTemplateEntry.
+             *
+             * @property text string of this entry starting with backslash.
+             */
+            data class EscapeStringEntry(
+                override val text: String,
+                override var tag: Any? = null,
+            ) : StringEntry, SimpleTextNode {
+                init {
+                    require(text.startsWith('\\')) {
+                        "Escape string template entry must start with backslash."
+                    }
+                }
+            }
+
+            /**
+             * AST node corresponds to KtStringTemplateEntryWithExpression.
+             *
+             * @property expression template expression of this entry.
+             * @property short `true` if this is short template string entry, e.g. `$x`, `false` if this is long template string entry, e.g. `${x}`. When this is `true`, [expression] must be [NameExpression].
+             */
+            data class TemplateStringEntry(
+                val expression: Expression,
+                val short: Boolean,
+                override var tag: Any? = null,
+            ) : StringEntry {
+                init {
+                    require(!short || expression is NameExpression) {
+                        "Short template string entry must be a name expression."
+                    }
+                }
+            }
+        }
+
+        /**
+         * AST node corresponds to KtConstantExpression.
+         *
+         * @property text string representation of this constant.
+         */
+        sealed interface ConstantLiteralExpression : Expression, SimpleTextNode {
+            override val text: String
+        }
+
+        /**
+         * AST node that represents boolean literal. The node corresponds to KtConstantExpression whose expressionType is KtNodeTypes.BOOLEAN_CONSTANT.
+         *
+         * @property text string representation of this constant, which is either "true" or "false".
+         */
+        data class BooleanLiteralExpression(
+            override val text: String,
+            override var tag: Any? = null,
+        ) : ConstantLiteralExpression {
+            init {
+                require(text == "true" || text == "false") {
+                    """text must be either "true" or "false"."""
+                }
+            }
+        }
+
+        /**
+         * AST node that represents character literal. The node corresponds to KtConstantExpression whose expressionType is KtNodeTypes.CHARACTER_CONSTANT.
+         *
+         * @property text string representation of this constant, which is surrounded by single quotes.
+         */
+        data class CharacterLiteralExpression(
+            override val text: String,
+            override var tag: Any? = null,
+        ) : ConstantLiteralExpression {
+            init {
+                require(text.startsWith('\'') && text.endsWith('\'')) {
+                    "text must be surrounded by single quotes."
+                }
+            }
+        }
+
+        /**
+         * AST node that represents integer literal. The node corresponds to KtConstantExpression whose expressionType is KtNodeTypes.INTEGER_CONSTANT.
+         *
+         * @property text string representation of this constant.
+         */
+        data class IntegerLiteralExpression(
+            override val text: String,
+            override var tag: Any? = null,
+        ) : ConstantLiteralExpression
+
+        /**
+         * AST node that represents real number literal. The node corresponds to KtConstantExpression whose expressionType is KtNodeTypes.FLOAT_CONSTANT.
+         *
+         * @property text string representation of this constant.
+         */
+
+        data class RealLiteralExpression(
+            override val text: String,
+            override var tag: Any? = null,
+        ) : ConstantLiteralExpression
+
+        /**
+         * AST node that represents null literal. The node corresponds to KtConstantExpression whose expressionType is KtNodeTypes.NULL.
+         */
+        data class NullLiteralExpression(
+            override var tag: Any? = null,
+        ) : ConstantLiteralExpression {
+            override val text: String
+                get() = "null"
+        }
+
+        /**
+         * AST node corresponds to KtObjectLiteralExpression.
+         *
+         * @property declaration class declaration of this object literal expression.
+         */
+        data class ObjectLiteralExpression(
+            val declaration: Declaration.ClassDeclaration,
+            override var tag: Any? = null,
+        ) : Expression
+
+        /**
+         * AST node corresponds to KtCollectionLiteralExpression.
+         *
+         * @property expressions list of element expressions.
+         */
+        data class CollectionLiteralExpression(
+            val expressions: List<Expression>,
+            override var tag: Any? = null,
+        ) : Expression
+
+        /**
+         * AST node corresponds to KtThisExpression or KtConstructorDelegationReferenceExpression whose text is "this".
+         *
+         * @property label label of this expression if exists, otherwise `null`.
+         */
+        data class ThisExpression(
+            override val label: NameExpression?,
+            override var tag: Any? = null,
+        ) : Expression, WithLabel
+
+        /**
+         * AST node corresponds to KtSuperExpression or KtConstructorDelegationReferenceExpression whose text is "super".
+         *
+         * @property typeArgType type of type argument if exists, otherwise `null`.
+         * @property label label of this expression if exists, otherwise `null`.
+         */
+        data class SuperExpression(
+            val typeArgType: Type?,
+            override val label: NameExpression?,
+            override var tag: Any? = null,
+        ) : Expression, WithLabel
+
+        /**
+         * AST node corresponds to KtValueArgumentName, KtSimpleNameExpression or PsiElement whose elementType is IDENTIFIER.
+         *
+         * @property text string representation of the name expression.
+         */
+        data class NameExpression(
+            override val text: String,
+            override var tag: Any? = null,
+        ) : Expression, BinaryExpression.BinaryOperator
+
+        /**
+         * AST node corresponds to KtLabeledExpression.
+         *
+         * @property label label before `@` symbol.
+         * @property statement statement labeled by [label].
+         */
+        data class LabeledExpression(
+            val label: NameExpression,
+            val statement: Statement,
+            override var tag: Any? = null,
+        ) : Expression
+
+        /**
+         * AST node corresponds to KtAnnotatedExpression.
+         *
+         * @property annotationSets list of annotation sets.
+         * @property statement statement annotated by [annotationSets].
+         */
+        data class AnnotatedExpression(
+            override val annotationSets: List<Modifier.AnnotationSet>,
+            val statement: Statement,
+            override var tag: Any? = null,
+        ) : Expression, WithAnnotationSets
+
+        /**
          * AST node corresponds to KtArrayAccessExpression.
          *
          * @property expression collection expression.
@@ -1568,7 +1553,7 @@ sealed interface Node {
         ) : Expression
 
         /**
-         * AST node corresponds to KtProperty or KtDestructuringDeclaration.
+         * Virtual AST node corresponds to KtProperty or KtDestructuringDeclaration in expression context.
          * This is only present for when expressions and labeled expressions.
          *
          * @property property property declaration.
@@ -1577,20 +1562,6 @@ sealed interface Node {
             val property: Declaration.PropertyDeclaration,
             override var tag: Any? = null,
         ) : Expression
-
-        /**
-         * AST node corresponds to KtBlockExpression.
-         *
-         * @property lBrace left brace symbol of the block.
-         * @property statements list of statements.
-         * @property rBrace right brace symbol of the block.
-         */
-        data class BlockExpression(
-            val lBrace: Keyword.LBrace,
-            override val statements: List<Statement>,
-            val rBrace: Keyword.RBrace,
-            override var tag: Any? = null,
-        ) : Expression, WithStatements
     }
 
     /**

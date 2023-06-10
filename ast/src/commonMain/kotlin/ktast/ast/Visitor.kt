@@ -185,12 +185,9 @@ open class Visitor {
                 visitChildren(name)
                 visitChildren(type)
             }
-            is Node.TypeArg.TypeProjection -> {
+            is Node.TypeArg -> {
                 visitChildren(modifiers)
                 visitChildren(type)
-            }
-            is Node.TypeArg.StarProjection -> {
-                visitChildren(asterisk)
             }
             is Node.Type.FunctionType -> {
                 visitChildren(modifiers)
@@ -294,7 +291,7 @@ open class Visitor {
                 visitChildren(questionMarks)
             }
             is Node.Expression.ParenthesizedExpression -> {
-                visitChildren(expression)
+                visitChildren(innerExpression)
             }
             is Node.Expression.StringLiteralExpression -> {
                 visitChildren(entries)

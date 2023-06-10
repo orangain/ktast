@@ -229,12 +229,9 @@ open class Writer(
                     children(name)
                     if (type != null) append(":").also { children(type) }
                 }
-                is Node.TypeArg.TypeProjection -> {
+                is Node.TypeArg -> {
                     children(modifiers)
                     children(type)
-                }
-                is Node.TypeArg.StarProjection -> {
-                    children(asterisk)
                 }
                 is Node.Type.FunctionType -> {
                     children(modifiers)
@@ -322,7 +319,7 @@ open class Writer(
                     append("class")
                 }
                 is Node.Expression.ParenthesizedExpression ->
-                    append('(').also { children(expression) }.append(')')
+                    append('(').also { children(innerExpression) }.append(')')
                 is Node.Expression.StringLiteralExpression -> {
                     if (raw) {
                         append("\"\"\"")
