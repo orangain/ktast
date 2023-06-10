@@ -404,7 +404,7 @@ open class Converter {
         modifiers = convertModifiers(modifierList),
         contextReceiver = v.contextReceiverList?.let(::convertContextReceiver),
         receiverType = v.receiver?.typeReference?.let(::convertType),
-        dotSymbol = findChildByType(v, KtTokens.DOT)?.let(::convertKeyword),
+        dotSymbol = v.dotSymbol?.let(::convertKeyword),
         lPar = v.parameterList?.leftParenthesis?.let(::convertKeyword),
         params = convertTypeFunctionParams(v.parameterList),
         rPar = v.parameterList?.rightParenthesis?.let(::convertKeyword),
@@ -1019,6 +1019,8 @@ open class Converter {
 
         internal val KtDynamicType.dynamicKeyword: PsiElement
             get() = findChildByType(this, KtTokens.DYNAMIC_KEYWORD) ?: error("No dynamic keyword for $this")
+        internal val KtFunctionType.dotSymbol: PsiElement?
+            get() = findChildByType(this, KtTokens.DOT)
 
         internal val KtAnnotation.atSymbol: PsiElement?
             get() = findChildByType(this, KtTokens.AT)
