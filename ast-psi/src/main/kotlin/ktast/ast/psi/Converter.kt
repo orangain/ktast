@@ -511,6 +511,49 @@ open class Converter {
         block = convertBlockExpression(v.catchBody as? KtBlockExpression ?: error("No catch block for $v")),
     ).map(v)
 
+    open fun convertWhenExpression(v: KtWhenExpression) = Node.Expression.WhenExpression(
+        whenKeyword = convertKeyword(v.whenKeyword),
+        lPar = v.leftParenthesis?.let(::convertKeyword),
+        expression = v.subjectExpression?.let(this::convertExpression),
+        rPar = v.rightParenthesis?.let(::convertKeyword),
+        whenBranches = v.entries.map(::convertWhenBranch),
+    ).map(v)
+
+    open fun convertWhenBranch(v: KtWhenEntry): Node.Expression.WhenExpression.WhenBranch {
+        val elseKeyword = v.elseKeyword
+        val body = convertExpression(v.expression ?: error("No when entry body for $v"))
+        return if (elseKeyword == null) {
+            Node.Expression.WhenExpression.ConditionalWhenBranch(
+                whenConditions = v.conditions.map(::convertWhenCondition),
+                body = body,
+            ).map(v)
+        } else {
+            Node.Expression.WhenExpression.ElseWhenBranch(
+                elseKeyword = convertKeyword(elseKeyword),
+                body = body,
+            ).map(v)
+        }
+    }
+
+    open fun convertWhenCondition(v: KtWhenCondition) = when (v) {
+        is KtWhenConditionWithExpression -> Node.Expression.WhenExpression.ExpressionWhenCondition(
+            expression = convertExpression(v.expression ?: error("No when cond expr for $v")),
+        ).map(v)
+        is KtWhenConditionInRange -> Node.Expression.WhenExpression.RangeWhenCondition(
+            operator = convertKeyword(v.operationReference),
+            expression = convertExpression(v.rangeExpression ?: error("No when in expr for $v")),
+        ).map(v)
+        is KtWhenConditionIsPattern -> Node.Expression.WhenExpression.TypeWhenCondition(
+            operator = convertKeyword(
+                findChildByType(v, KtTokens.IS_KEYWORD)
+                    ?: findChildByType(v, KtTokens.NOT_IS)
+                    ?: error("No when is operator for $v")
+            ),
+            type = convertType(v.typeReference ?: error("No when is type for $v")),
+        ).map(v)
+        else -> error("Unrecognized when cond of $v")
+    }
+
     open fun convertBinaryExpression(v: KtBinaryExpression) = Node.Expression.BinaryExpression(
         lhs = convertExpression(v.left ?: error("No binary lhs for $v")),
         operator = if (v.operationReference.isConventionOperator()) {
@@ -654,49 +697,6 @@ open class Converter {
         typeArgType = v.superTypeQualifier?.let(::convertType),
         label = v.getTargetLabel()?.let(::convertNameExpression),
     ).map(v)
-
-    open fun convertWhenExpression(v: KtWhenExpression) = Node.Expression.WhenExpression(
-        whenKeyword = convertKeyword(v.whenKeyword),
-        lPar = v.leftParenthesis?.let(::convertKeyword),
-        expression = v.subjectExpression?.let(this::convertExpression),
-        rPar = v.rightParenthesis?.let(::convertKeyword),
-        whenBranches = v.entries.map(::convertWhenBranch),
-    ).map(v)
-
-    open fun convertWhenBranch(v: KtWhenEntry): Node.Expression.WhenExpression.WhenBranch {
-        val elseKeyword = v.elseKeyword
-        val body = convertExpression(v.expression ?: error("No when entry body for $v"))
-        return if (elseKeyword == null) {
-            Node.Expression.WhenExpression.ConditionalWhenBranch(
-                whenConditions = v.conditions.map(::convertWhenCondition),
-                body = body,
-            ).map(v)
-        } else {
-            Node.Expression.WhenExpression.ElseWhenBranch(
-                elseKeyword = convertKeyword(elseKeyword),
-                body = body,
-            ).map(v)
-        }
-    }
-
-    open fun convertWhenCondition(v: KtWhenCondition) = when (v) {
-        is KtWhenConditionWithExpression -> Node.Expression.WhenExpression.ExpressionWhenCondition(
-            expression = convertExpression(v.expression ?: error("No when cond expr for $v")),
-        ).map(v)
-        is KtWhenConditionInRange -> Node.Expression.WhenExpression.RangeWhenCondition(
-            operator = convertKeyword(v.operationReference),
-            expression = convertExpression(v.rangeExpression ?: error("No when in expr for $v")),
-        ).map(v)
-        is KtWhenConditionIsPattern -> Node.Expression.WhenExpression.TypeWhenCondition(
-            operator = convertKeyword(
-                findChildByType(v, KtTokens.IS_KEYWORD)
-                    ?: findChildByType(v, KtTokens.NOT_IS)
-                    ?: error("No when is operator for $v")
-            ),
-            type = convertType(v.typeReference ?: error("No when is type for $v")),
-        ).map(v)
-        else -> error("Unrecognized when cond of $v")
-    }
 
     open fun convertObjectLiteralExpression(v: KtObjectLiteralExpression) = Node.Expression.ObjectLiteralExpression(
         declaration = convertClassDeclaration(v.objectDeclaration),

@@ -963,6 +963,144 @@ sealed interface Node {
         }
 
         /**
+         * AST node corresponds to KtWhenExpression.
+         *
+         * @property whenKeyword keyword of when expression.
+         * @property lPar left parenthesis of when expression if exists, otherwise `null`.
+         * @property expression subject expression of when expression if exists, otherwise `null`.
+         * @property rPar right parenthesis of when expression if exists, otherwise `null`.
+         * @property whenBranches list of when branches.
+         */
+        data class WhenExpression(
+            val whenKeyword: Keyword.When,
+            val lPar: Keyword.LPar?,
+            val expression: Expression?,
+            val rPar: Keyword.RPar?,
+            val whenBranches: List<WhenBranch>,
+            override var tag: Any? = null,
+        ) : Expression {
+            /**
+             * AST node corresponds to KtWhenEntry.
+             *
+             * @property whenConditions list of conditions.
+             * @property elseKeyword else keyword if exists, otherwise `null`.
+             * @property body body expression of this branch.
+             */
+            sealed interface WhenBranch : Node {
+                val whenConditions: List<WhenCondition>
+                val elseKeyword: Keyword.Else?
+                val body: Expression
+            }
+
+            /**
+             * AST node that represents when branch with conditions.
+             *
+             * @property whenConditions non-empty list of conditions.
+             * @property elseKeyword always `null`.
+             * @property body body expression of this branch.
+             */
+            data class ConditionalWhenBranch(
+                override val whenConditions: List<WhenCondition>,
+                override val body: Expression,
+                override var tag: Any? = null,
+            ) : WhenBranch {
+                override val elseKeyword = null
+
+                init {
+                    require(whenConditions.isNotEmpty()) { "whenConditions must not be empty" }
+                }
+            }
+
+            /**
+             * AST node that represents when branch with else keyword.
+             *
+             * @property whenConditions always empty list.
+             * @property elseKeyword else keyword.
+             * @property body body expression of this branch.
+             */
+            data class ElseWhenBranch(
+                override val elseKeyword: Keyword.Else,
+                override val body: Expression,
+                override var tag: Any? = null,
+            ) : WhenBranch {
+                override val whenConditions = listOf<WhenCondition>()
+            }
+
+            /**
+             * Common interface for when condition operators.
+             */
+            sealed interface WhenConditionOperator : Keyword
+
+            /**
+             * Common interface for when condition type operators.
+             */
+            sealed interface WhenConditionTypeOperator : WhenConditionOperator
+
+            /**
+             * Common interface for when condition range operators.
+             */
+            sealed interface WhenConditionRangeOperator : WhenConditionOperator
+
+            /**
+             * AST node corresponds to KtWhenCondition.
+             *
+             * @property operator operator of this condition if exists, otherwise `null`.
+             * @property expression operand of [operator] or condition expression, otherwise `null`.
+             * @property type operand of [operator], otherwise `null`.
+             */
+            sealed interface WhenCondition : Node {
+                val operator: WhenConditionOperator?
+                val expression: Expression?
+                val type: Type?
+            }
+
+            /**
+             * AST node corresponds to KtWhenConditionWithExpression.
+             *
+             * @property operator always `null`.
+             * @property expression condition expression.
+             * @property type always `null`.
+             */
+            data class ExpressionWhenCondition(
+                override val expression: Expression,
+                override var tag: Any? = null,
+            ) : WhenCondition {
+                override val operator = null
+                override val type = null
+            }
+
+            /**
+             * AST node corresponds to KtWhenConditionInRange.
+             *
+             * @property operator operator of this condition.
+             * @property expression operand of [operator].
+             * @property type always `null`.
+             */
+            data class RangeWhenCondition(
+                override val operator: WhenConditionRangeOperator,
+                override val expression: Expression,
+                override var tag: Any? = null,
+            ) : WhenCondition {
+                override val type = null
+            }
+
+            /**
+             * AST node corresponds to KtWhenConditionIsPattern.
+             *
+             * @property operator operator of this condition.
+             * @property expression always `null`.
+             * @property type operand of [operator].
+             */
+            data class TypeWhenCondition(
+                override val operator: WhenConditionTypeOperator,
+                override val type: Type,
+                override var tag: Any? = null,
+            ) : WhenCondition {
+                override val expression = null
+            }
+        }
+
+        /**
          * AST node corresponds to KtBinaryExpression or KtQualifiedExpression.
          *
          * @property lhs left-hand side expression.
@@ -1276,144 +1414,6 @@ sealed interface Node {
             override val label: NameExpression?,
             override var tag: Any? = null,
         ) : Expression, WithLabel
-
-        /**
-         * AST node corresponds to KtWhenExpression.
-         *
-         * @property whenKeyword keyword of when expression.
-         * @property lPar left parenthesis of when expression if exists, otherwise `null`.
-         * @property expression subject expression of when expression if exists, otherwise `null`.
-         * @property rPar right parenthesis of when expression if exists, otherwise `null`.
-         * @property whenBranches list of when branches.
-         */
-        data class WhenExpression(
-            val whenKeyword: Keyword.When,
-            val lPar: Keyword.LPar?,
-            val expression: Expression?,
-            val rPar: Keyword.RPar?,
-            val whenBranches: List<WhenBranch>,
-            override var tag: Any? = null,
-        ) : Expression {
-            /**
-             * AST node corresponds to KtWhenEntry.
-             *
-             * @property whenConditions list of conditions.
-             * @property elseKeyword else keyword if exists, otherwise `null`.
-             * @property body body expression of this branch.
-             */
-            sealed interface WhenBranch : Node {
-                val whenConditions: List<WhenCondition>
-                val elseKeyword: Keyword.Else?
-                val body: Expression
-            }
-
-            /**
-             * AST node that represents when branch with conditions.
-             *
-             * @property whenConditions non-empty list of conditions.
-             * @property elseKeyword always `null`.
-             * @property body body expression of this branch.
-             */
-            data class ConditionalWhenBranch(
-                override val whenConditions: List<WhenCondition>,
-                override val body: Expression,
-                override var tag: Any? = null,
-            ) : WhenBranch {
-                override val elseKeyword = null
-
-                init {
-                    require(whenConditions.isNotEmpty()) { "whenConditions must not be empty" }
-                }
-            }
-
-            /**
-             * AST node that represents when branch with else keyword.
-             *
-             * @property whenConditions always empty list.
-             * @property elseKeyword else keyword.
-             * @property body body expression of this branch.
-             */
-            data class ElseWhenBranch(
-                override val elseKeyword: Keyword.Else,
-                override val body: Expression,
-                override var tag: Any? = null,
-            ) : WhenBranch {
-                override val whenConditions = listOf<WhenCondition>()
-            }
-
-            /**
-             * Common interface for when condition operators.
-             */
-            sealed interface WhenConditionOperator : Keyword
-
-            /**
-             * Common interface for when condition type operators.
-             */
-            sealed interface WhenConditionTypeOperator : WhenConditionOperator
-
-            /**
-             * Common interface for when condition range operators.
-             */
-            sealed interface WhenConditionRangeOperator : WhenConditionOperator
-
-            /**
-             * AST node corresponds to KtWhenCondition.
-             *
-             * @property operator operator of this condition if exists, otherwise `null`.
-             * @property expression operand of [operator] or condition expression, otherwise `null`.
-             * @property type operand of [operator], otherwise `null`.
-             */
-            sealed interface WhenCondition : Node {
-                val operator: WhenConditionOperator?
-                val expression: Expression?
-                val type: Type?
-            }
-
-            /**
-             * AST node corresponds to KtWhenConditionWithExpression.
-             *
-             * @property operator always `null`.
-             * @property expression condition expression.
-             * @property type always `null`.
-             */
-            data class ExpressionWhenCondition(
-                override val expression: Expression,
-                override var tag: Any? = null,
-            ) : WhenCondition {
-                override val operator = null
-                override val type = null
-            }
-
-            /**
-             * AST node corresponds to KtWhenConditionInRange.
-             *
-             * @property operator operator of this condition.
-             * @property expression operand of [operator].
-             * @property type always `null`.
-             */
-            data class RangeWhenCondition(
-                override val operator: WhenConditionRangeOperator,
-                override val expression: Expression,
-                override var tag: Any? = null,
-            ) : WhenCondition {
-                override val type = null
-            }
-
-            /**
-             * AST node corresponds to KtWhenConditionIsPattern.
-             *
-             * @property operator operator of this condition.
-             * @property expression always `null`.
-             * @property type operand of [operator].
-             */
-            data class TypeWhenCondition(
-                override val operator: WhenConditionTypeOperator,
-                override val type: Type,
-                override var tag: Any? = null,
-            ) : WhenCondition {
-                override val expression = null
-            }
-        }
 
         /**
          * AST node corresponds to KtObjectLiteralExpression.
