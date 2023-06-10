@@ -51,6 +51,19 @@ class ConverterTest {
         )
     }
 
+    @Test
+    fun testCommentOnly() {
+        assertParsedAs(
+            """
+                // file is empty
+            """.trimIndent(),
+            """
+                Node.KotlinFile
+                  WITHIN: Node.Extra.Comment
+            """.trimIndent()
+        )
+    }
+
     private fun assertParsedAs(code: String, expectedDump: String) {
         val converter = ConverterWithExtras()
         val node = Parser(converter).parseFile(code)
