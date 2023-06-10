@@ -553,11 +553,7 @@ open class Converter {
     ).map(v)
 
     open fun convertTypeWhenCondition(v: KtWhenConditionIsPattern) = Node.Expression.WhenExpression.TypeWhenCondition(
-        operator = convertKeyword(
-            findChildByType(v, KtTokens.IS_KEYWORD)
-                ?: findChildByType(v, KtTokens.NOT_IS)
-                ?: error("No when is operator for $v")
-        ),
+        operator = convertKeyword(v.firstChild),
         type = convertType(v.typeReference ?: error("No when is type for $v")),
     ).map(v)
 
@@ -943,7 +939,6 @@ open class Converter {
 
     protected open fun <T : Node> T.map(v: PsiElement) = also { onNode(it, v) }
     protected open fun <T : Node> T.mapNotCorrespondsPsiElement(v: PsiElement) = also { onNode(it, null) }
-    protected open fun <T : Node> T.mapIfPossible(v: PsiElement?) = also { onNode(it, v) }
 
     class Unsupported(message: String) : UnsupportedOperationException(message)
 
