@@ -17,7 +17,7 @@ open class Writer(
         CharCategory.DECIMAL_DIGIT_NUMBER,
     )
 
-    protected fun NodePath.appendLabel(label: Node.Expression.NameExpression?) {
+    protected fun NodePath<*>.appendLabel(label: Node.Expression.NameExpression?) {
         if (label != null) {
             append('@')
             children(label)
@@ -55,7 +55,7 @@ open class Writer(
         visit(v)
     }
 
-    override fun visit(path: NodePath): Unit = path.run {
+    override fun visit(path: NodePath<*>): Unit = path.run {
         writeExtrasBefore()
         writeHeuristicNewline()
         writeHeuristicSpace()
@@ -498,19 +498,19 @@ open class Writer(
         writeExtrasAfter()
     }
 
-    protected fun NodePath.children(vararg v: Node?) = this@Writer.also { v.forEach { visitChildren(it) } }
+    protected fun NodePath<*>.children(vararg v: Node?) = this@Writer.also { v.forEach { visitChildren(it) } }
 
-    protected fun NodePath.commaSeparatedChildren(elements: List<Node>) =
+    protected fun NodePath<*>.commaSeparatedChildren(elements: List<Node>) =
         commaSeparatedChildren(null, elements, null)
 
-    protected fun NodePath.commaSeparatedChildren(prefix: Node?, elements: List<Node>, suffix: Node?) =
+    protected fun NodePath<*>.commaSeparatedChildren(prefix: Node?, elements: List<Node>, suffix: Node?) =
         this@Writer.also {
             visitChildren(prefix)
             children(elements, ",")
             visitChildren(suffix)
         }
 
-    protected fun NodePath.children(
+    protected fun NodePath<*>.children(
         v: List<Node>,
         sep: String = "",
         prefix: String = "",
@@ -527,7 +527,7 @@ open class Writer(
             append(suffix)
         }
 
-    protected open fun NodePath.writeHeuristicNewline() {
+    protected open fun NodePath<*>.writeHeuristicNewline() {
         val parentNode = parent?.node
         if (parentNode is Node.WithStatements && node is Node.Statement) {
             if (parentNode.statements.first() !== node && !containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
@@ -604,7 +604,7 @@ open class Writer(
         "vararg",
     )
 
-    protected open fun NodePath.writeHeuristicExtraAfterChild(next: Node?) {
+    protected open fun NodePath<*>.writeHeuristicExtraAfterChild(next: Node?) {
         if (node is Node.Expression.NameExpression && modifierKeywords.contains(node.text) && next is Node.Declaration && parent?.node is Node.WithStatements) {
             // Insert heuristic semicolon after name expression whose name is the same as the modifier keyword and next
             // is declaration to avoid ambiguity with keyword modifier.
@@ -635,22 +635,22 @@ open class Writer(
         }
     }
 
-    protected open fun NodePath.writeExtrasBefore() {
+    protected open fun NodePath<*>.writeExtrasBefore() {
         if (extrasMap == null) return
         writeExtras(extrasMap.extrasBefore(node))
     }
 
-    protected open fun NodePath.writeExtrasWithin() {
+    protected open fun NodePath<*>.writeExtrasWithin() {
         if (extrasMap == null) return
         writeExtras(extrasMap.extrasWithin(node))
     }
 
-    protected open fun NodePath.writeExtrasAfter() {
+    protected open fun NodePath<*>.writeExtrasAfter() {
         if (extrasMap == null) return
         writeExtras(extrasMap.extrasAfter(node))
     }
 
-    protected open fun NodePath.writeExtras(extras: List<Node.Extra>) {
+    protected open fun NodePath<*>.writeExtras(extras: List<Node.Extra>) {
         extras.forEach {
             append(it.text)
         }

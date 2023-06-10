@@ -18,11 +18,11 @@ class Dumper(
         visit(v)
     }
 
-    private fun levelOf(path: NodePath): Int {
+    private fun levelOf(path: NodePath<*>): Int {
         return path.ancestors().count()
     }
 
-    override fun visit(path: NodePath) {
+    override fun visit(path: NodePath<*>) {
         path.writeExtrasBefore()
         path.writeNode()
         super.visit(path)
@@ -30,19 +30,19 @@ class Dumper(
         path.writeExtrasAfter()
     }
 
-    private fun NodePath.writeExtrasBefore() {
+    private fun NodePath<*>.writeExtrasBefore() {
         if (extrasMap == null || parent == null) return
         val extraPaths = extrasMap.extrasBefore(node).map { parent.childPathOf(it) }
         writeExtras(extraPaths, ExtraType.BEFORE)
     }
 
-    private fun NodePath.writeExtrasWithin() {
+    private fun NodePath<*>.writeExtrasWithin() {
         if (extrasMap == null) return
         val extraPaths = extrasMap.extrasWithin(node).map { childPathOf(it) }
         writeExtras(extraPaths, ExtraType.WITHIN)
     }
 
-    private fun NodePath.writeExtrasAfter() {
+    private fun NodePath<*>.writeExtrasAfter() {
         if (extrasMap == null || parent == null) return
         val extraPaths = extrasMap.extrasAfter(node).map { parent.childPathOf(it) }
         writeExtras(extraPaths, ExtraType.AFTER)
@@ -52,13 +52,13 @@ class Dumper(
         BEFORE, WITHIN, AFTER
     }
 
-    private fun writeExtras(extraPaths: List<NodePath>, extraType: ExtraType) {
+    private fun writeExtras(extraPaths: List<NodePath<*>>, extraType: ExtraType) {
         extraPaths.forEach { path ->
             path.writeNode("$extraType: ")
         }
     }
 
-    private fun NodePath.writeNode(prefix: String = "") {
+    private fun NodePath<*>.writeNode(prefix: String = "") {
         val level = levelOf(this)
         app.append("  ".repeat(level))
         app.append(prefix)

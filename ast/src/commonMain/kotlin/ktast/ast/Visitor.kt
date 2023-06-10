@@ -3,7 +3,7 @@ package ktast.ast
 open class Visitor {
     fun visit(node: Node) = visit(NodePath.rootPathOf(node))
 
-    protected open fun visit(path: NodePath): Unit = path.run {
+    protected open fun visit(path: NodePath<*>): Unit = path.run {
         node.run {
             when (this) {
                 is Node.KotlinFile -> {
@@ -447,19 +447,19 @@ open class Visitor {
         Unit
     }
 
-    protected fun NodePath.visitChildren(child: Node?) {
+    protected fun NodePath<*>.visitChildren(child: Node?) {
         if (child != null) {
             visit(childPathOf(child))
         }
     }
 
-    protected fun NodePath.visitChildren(elements: List<Node>) {
+    protected fun NodePath<*>.visitChildren(elements: List<Node>) {
         elements.forEach { child -> visit(childPathOf(child)) }
     }
 
     companion object {
-        fun visit(v: Node, fn: (path: NodePath) -> Unit) = object : Visitor() {
-            override fun visit(path: NodePath) {
+        fun visit(v: Node, fn: (path: NodePath<*>) -> Unit) = object : Visitor() {
+            override fun visit(path: NodePath<*>) {
                 fn(path)
                 super.visit(path)
             }

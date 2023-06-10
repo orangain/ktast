@@ -12,7 +12,7 @@ class MutableVisitorTest {
                 val x = 1
                 val y = 2
             """.trimIndent(),
-            { v, _ -> v },
+            { path -> path.node },
             """
                 val x = 1
                 val y = 2
@@ -27,15 +27,16 @@ class MutableVisitorTest {
                 val x = 1
                 val y = 2
             """.trimIndent(),
-            { v, _ ->
-                if (v is Node.Expression.NameExpression) {
-                    when (v.text) {
-                        "x" -> v.copy(text = "a")
-                        "y" -> v.copy(text = "b")
-                        else -> v
+            { path ->
+                when (val node = path.node) {
+                    is Node.Expression.NameExpression -> {
+                        when (node.text) {
+                            "x" -> node.copy(text = "a")
+                            "y" -> node.copy(text = "b")
+                            else -> node
+                        }
                     }
-                } else {
-                    v
+                    else -> node
                 }
             },
             """
@@ -49,7 +50,7 @@ class MutableVisitorTest {
 
 private fun assertMutateAndWriteExact(
     origCode: String,
-    fn: (v: Node, parent: Node?) -> Node,
+    fn: (path: NodePath<*>) -> Node,
     expectedCode: String
 ) {
     val origExtrasConv = ConverterWithMutableExtras()

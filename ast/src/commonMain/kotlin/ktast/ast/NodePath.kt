@@ -6,9 +6,9 @@ package ktast.ast
  * @property node the node at this path
  * @property parent the parent path, or null if this is the root path
  */
-data class NodePath(
-    val node: Node,
-    val parent: NodePath?,
+data class NodePath<T : Node>(
+    val node: T,
+    val parent: NodePath<*>?,
 ) {
     companion object {
         /**
@@ -17,7 +17,7 @@ data class NodePath(
          * @param node the node
          * @return the root path
          */
-        fun rootPathOf(node: Node): NodePath = NodePath(node, null)
+        fun <T : Node> rootPathOf(node: T): NodePath<T> = NodePath(node, null)
     }
 
     /**
@@ -31,5 +31,5 @@ data class NodePath(
      * @param child the child node
      * @return the child path
      */
-    fun childPathOf(child: Node): NodePath = NodePath(child, this)
+    fun <C : Node> childPathOf(child: C): NodePath<C> = NodePath(child, this)
 }

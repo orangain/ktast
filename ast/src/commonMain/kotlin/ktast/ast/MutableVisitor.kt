@@ -4,14 +4,15 @@ open class MutableVisitor(
     protected val extrasMap: MutableExtrasMap? = null
 ) {
 
-    open fun <T : Node> preVisit(v: T, parent: Node?): T = v
-    open fun <T : Node> postVisit(v: T, parent: Node?): T = v
+    open fun <T : Node> preVisit(path: NodePath<T>): T = path.node
+    open fun <T : Node> postVisit(path: NodePath<T>): T = path.node
 
-    fun <T : Node> visit(v: T) = visit(v, null)
-    open fun <T : Node> visit(v: T, parent: Node?, ch: ChangedRef = ChangedRef(false)): T = v.run {
-        ch.sub { newCh ->
-            preVisit(this, parent).run {
-                val new: Node = when (this) {
+    fun <T : Node> visit(v: T) = visit(NodePath.rootPathOf(v))
+    open fun <T : Node> visit(path: NodePath<T>, ch: ChangedRef = ChangedRef(false)): T = ch.sub { newCh ->
+        val origNode = path.node
+        path.copy(node = preVisit(path)).run {
+            node.run {
+                @Suppress("UNCHECKED_CAST") val new: T = when (this) {
                     is Node.KotlinFile -> copy(
                         annotationSets = visitChildren(annotationSets, newCh),
                         packageDirective = visitChildren(packageDirective, newCh),
@@ -450,15 +451,17 @@ open class MutableVisitor(
                     // Currently, else branch is required even when sealed classes are exhaustive.
                     // See: https://youtrack.jetbrains.com/issue/KT-21908
                     else -> error("Unrecognized node: $this")
-                }
+                } as T
                 new.origOrChanged(this, newCh)
-            }.let { postVisit(it, parent) as T }.also { newCh.markIf(this, it) }
-        }
+            }
+        }.let {
+            postVisit(path.copy(node = it))
+        }.also { newCh.markIf(origNode, it) }
     }
 
-    protected fun <T : Node?> Node.visitChildren(v: T, ch: ChangedRef): T =
+    protected fun <T : Node?> NodePath<*>.visitChildren(v: T, ch: ChangedRef): T =
         if (v != null) {
-            visit(v, this, ch).also { new ->
+            visit(childPathOf(v), ch).also { new ->
                 if (ch.changed) {
                     extrasMap?.moveExtras(v, new)
                 }
@@ -467,7 +470,7 @@ open class MutableVisitor(
             v
         }
 
-    protected fun <T : Node> Node.visitChildren(v: List<T>, ch: ChangedRef): List<T> = ch.sub { newCh ->
+    protected fun <T : Node> NodePath<*>.visitChildren(v: List<T>, ch: ChangedRef): List<T> = ch.sub { newCh ->
         val newList = v.map { orig -> visitChildren(orig, newCh).also { newCh.markIf(it, orig) } }
         newList.origOrChanged(v, newCh)
     }
@@ -475,7 +478,7 @@ open class MutableVisitor(
     protected fun <T> T.origOrChanged(orig: T, ref: ChangedRef) = if (ref.changed) this else orig
 
     open class ChangedRef(var changed: Boolean) {
-        fun markIf(v1: Any?, v2: Any?) {
+        fun <T : Node?> markIf(v1: T, v2: T) {
             if (v1 !== v2) changed = true
         }
 
@@ -485,14 +488,14 @@ open class MutableVisitor(
     }
 
     companion object {
-        fun <T : Node> preVisit(v: T, extrasMap: MutableExtrasMap? = null, fn: (v: Node, parent: Node?) -> Node?) =
+        fun <T : Node> preVisit(v: T, extrasMap: MutableExtrasMap? = null, fn: (path: NodePath<*>) -> Node?) =
             object : MutableVisitor(extrasMap) {
-                override fun <T : Node> preVisit(v: T, parent: Node?): T = fn(v, parent) as T
+                override fun <T : Node> preVisit(path: NodePath<T>): T = fn(path) as T
             }.visit(v)
 
-        fun <T : Node> postVisit(v: T, extrasMap: MutableExtrasMap? = null, fn: (v: Node, parent: Node?) -> Node?) =
+        fun <T : Node> postVisit(v: T, extrasMap: MutableExtrasMap? = null, fn: (path: NodePath<*>) -> Node?) =
             object : MutableVisitor(extrasMap) {
-                override fun <T : Node> postVisit(v: T, parent: Node?): T = fn(v, parent) as T
+                override fun <T : Node> postVisit(path: NodePath<T>): T = fn(path) as T
             }.visit(v)
     }
 }
