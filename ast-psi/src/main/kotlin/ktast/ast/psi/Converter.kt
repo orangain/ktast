@@ -35,7 +35,7 @@ open class Converter {
         importAlias = v.alias?.let(::convertImportAlias)
     ).map(v)
 
-    open fun convertImportNames(v: KtExpression): List<Node.Expression.NameExpression> = when (v) {
+    protected fun convertImportNames(v: KtExpression): List<Node.Expression.NameExpression> = when (v) {
         // Flatten nest of KtDotQualifiedExpression into list.
         is KtDotQualifiedExpression ->
             convertImportNames(v.receiverExpression) + listOf(
