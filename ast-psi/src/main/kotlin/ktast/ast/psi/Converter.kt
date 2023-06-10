@@ -374,9 +374,7 @@ open class Converter {
     protected fun convertNullableType(modifierList: KtModifierList?, v: KtNullableType) = Node.Type.NullableType(
         modifiers = convertModifiers(modifierList),
         innerType = convertType(v, v.nonExtraChildren()),
-        questionMark = convertKeyword(
-            findChildByType(v, KtTokens.QUEST) ?: error("No question mark for $v")
-        ),
+        questionMark = convertKeyword(v.questionMarkNode.psi),
     ).mapNotCorrespondsPsiElement(v)
 
     protected fun convertSimpleType(modifierList: KtModifierList?, v: KtUserType) = Node.Type.SimpleType(
