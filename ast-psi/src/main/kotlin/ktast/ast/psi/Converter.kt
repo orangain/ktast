@@ -31,8 +31,8 @@ open class Converter {
     ).map(v)
 
     open fun convertPackageDirective(v: KtPackageDirective) = Node.PackageDirective(
-        packageKeyword = convertKeyword(v.packageKeyword ?: error("No package keyword $v")),
         modifiers = convertModifiers(v.modifierList),
+        packageKeyword = convertKeyword(v.packageKeyword ?: error("No package keyword $v")),
         names = v.packageNames.map(::convertNameExpression),
     ).map(v)
 
