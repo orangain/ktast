@@ -337,6 +337,12 @@ open class Converter {
         type = v.typeReference?.let(::convertType)
     ).map(v)
 
+    open fun convertVariable(v: KtProperty) = Node.Variable(
+        modifiers = listOf(),
+        name = v.nameIdentifier?.let(::convertNameExpression) ?: error("No property name on $v"),
+        type = v.typeReference?.let(::convertType)
+    ).mapNotCorrespondsPsiElement(v)
+
     open fun convertTypeParams(v: KtTypeParameterList?): List<Node.TypeParam> =
         v?.parameters.orEmpty().map(::convertTypeParam)
 
@@ -518,11 +524,31 @@ open class Converter {
 
     open fun convertWhenExpression(v: KtWhenExpression) = Node.Expression.WhenExpression(
         whenKeyword = convertKeyword(v.whenKeyword),
-        lPar = v.leftParenthesis?.let(::convertKeyword),
-        expression = v.subjectExpression?.let(this::convertExpression),
-        rPar = v.rightParenthesis?.let(::convertKeyword),
+        subject = if (v.subjectExpression == null) null else convertWhenSubject(v),
+        lBrace = convertKeyword(v.openBrace ?: error("No left brace for $v")),
         whenBranches = v.entries.map(::convertWhenBranch),
+        rBrace = convertKeyword(v.closeBrace ?: error("No right brace for $v")),
     ).map(v)
+
+    open fun convertWhenSubject(v: KtWhenExpression) = Node.Expression.WhenExpression.WhenSubject(
+        lPar = convertKeyword(v.leftParenthesis ?: error("No left parenthesis for $v")),
+        annotationSets = when (val expression = v.subjectExpression) {
+            is KtProperty -> convertAnnotationSets(expression.modifierList)
+            else -> listOf()
+        },
+        valKeyword = v.subjectVariable?.valOrVarKeyword?.let(::convertKeyword),
+        variable = v.subjectVariable?.let(::convertVariable),
+        expression = convertExpression(
+            when (val expression = v.subjectExpression) {
+                is KtProperty -> expression.initializer
+                    ?: throw Unsupported("No initializer for when subject is not supported")
+                is KtDestructuringDeclaration -> throw Unsupported("Destructuring declarations in when subject is not supported")
+                null -> error("Supposed to be unreachable here. convertWhenSubject should be called only when subjectExpression is not null.")
+                else -> expression
+            }
+        ),
+        rPar = convertKeyword(v.rightParenthesis ?: error("No right parenthesis for $v")),
+    ).mapNotCorrespondsPsiElement(v)
 
     open fun convertWhenBranch(v: KtWhenEntry): Node.Expression.WhenExpression.WhenBranch = when (v.elseKeyword) {
         null -> convertConditionalWhenBranch(v)
@@ -835,6 +861,10 @@ open class Converter {
             else ->
                 emptyList()
         }
+    }
+
+    open fun convertAnnotationSets(v: KtModifierList?): List<Node.Modifier.AnnotationSet> {
+        return convertModifiers(v).filterIsInstance<Node.Modifier.AnnotationSet>()
     }
 
     open fun convertModifiers(v: KtModifierList?): List<Node.Modifier> {

@@ -926,19 +926,39 @@ sealed interface Node {
          * AST node corresponds to KtWhenExpression.
          *
          * @property whenKeyword keyword of when expression.
-         * @property lPar left parenthesis of when expression if exists, otherwise `null`.
-         * @property expression subject expression of when expression if exists, otherwise `null`.
-         * @property rPar right parenthesis of when expression if exists, otherwise `null`.
+         * @property subject subject of when expression if exists, otherwise `null`.
+         * @property lBrace left brace of when expression.
          * @property whenBranches list of when branches.
+         * @property rBrace right brace of when expression.
          */
         data class WhenExpression(
             val whenKeyword: Keyword.When,
-            val lPar: Keyword.LPar?,
-            val expression: Expression?,
-            val rPar: Keyword.RPar?,
+            val subject: WhenSubject?,
+            val lBrace: Keyword.LBrace,
             val whenBranches: List<WhenBranch>,
+            val rBrace: Keyword.RBrace,
             override var tag: Any? = null,
         ) : Expression {
+            /**
+             * Virtual AST node that represents the subject of when expression. This node corresponds to a part of KtWhenExpression.
+             *
+             * @property lPar left parenthesis of when subject.
+             * @property annotationSets list of annotation sets.
+             * @property valKeyword `val` keyword if exists, otherwise `null`.
+             * @property variable variable of when subject if exists, otherwise `null`.
+             * @property expression expression of when subject.
+             * @property rPar right parenthesis of when subject.
+             */
+            data class WhenSubject(
+                val lPar: Keyword.LPar,
+                override val annotationSets: List<Modifier.AnnotationSet>,
+                val valKeyword: Keyword.Val?,
+                val variable: Variable?,
+                val expression: Expression,
+                val rPar: Keyword.RPar,
+                override var tag: Any? = null,
+            ) : Node, WithAnnotationSets
+
             /**
              * AST node corresponds to KtWhenEntry.
              *

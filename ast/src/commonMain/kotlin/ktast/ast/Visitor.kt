@@ -353,10 +353,18 @@ open class Visitor {
                 }
                 is Node.Expression.WhenExpression -> {
                     visitChildren(whenKeyword)
+                    visitChildren(subject)
+                    visitChildren(lBrace)
+                    visitChildren(whenBranches)
+                    visitChildren(rBrace)
+                }
+                is Node.Expression.WhenExpression.WhenSubject -> {
                     visitChildren(lPar)
+                    visitChildren(annotationSets)
+                    visitChildren(valKeyword)
+                    visitChildren(variable)
                     visitChildren(expression)
                     visitChildren(rPar)
-                    visitChildren(whenBranches)
                 }
                 is Node.Expression.WhenExpression.ConditionalWhenBranch -> {
                     visitChildren(whenConditions)

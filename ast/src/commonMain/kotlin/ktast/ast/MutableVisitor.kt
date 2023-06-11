@@ -381,10 +381,18 @@ open class MutableVisitor(
                     )
                     is Node.Expression.WhenExpression -> copy(
                         whenKeyword = visitChildren(whenKeyword, newCh),
+                        subject = visitChildren(subject, newCh),
+                        lBrace = visitChildren(lBrace, newCh),
+                        whenBranches = visitChildren(whenBranches, newCh),
+                        rBrace = visitChildren(rBrace, newCh),
+                    )
+                    is Node.Expression.WhenExpression.WhenSubject -> copy(
                         lPar = visitChildren(lPar, newCh),
+                        annotationSets = visitChildren(annotationSets, newCh),
+                        valKeyword = visitChildren(valKeyword, newCh),
+                        variable = visitChildren(variable, newCh),
                         expression = visitChildren(expression, newCh),
                         rPar = visitChildren(rPar, newCh),
-                        whenBranches = visitChildren(whenBranches, newCh),
                     )
                     is Node.Expression.WhenExpression.ConditionalWhenBranch -> copy(
                         whenConditions = visitChildren(whenConditions, newCh),

@@ -410,10 +410,19 @@ open class Writer(
                     appendLabel(label)
                 }
                 is Node.Expression.WhenExpression -> {
-                    children(whenKeyword, lPar, expression, rPar)
-                    append("{")
+                    children(whenKeyword, subject)
+                    children(lBrace)
                     children(whenBranches)
-                    append("}")
+                    children(rBrace)
+                }
+                is Node.Expression.WhenExpression.WhenSubject -> {
+                    children(lPar)
+                    children(annotationSets)
+                    children(valKeyword, variable)
+                    if (variable != null) {
+                        append("=")
+                    }
+                    children(expression, rPar)
                 }
                 is Node.Expression.WhenExpression.ConditionalWhenBranch -> {
                     children(whenConditions, ",")
