@@ -13,7 +13,7 @@ import org.jetbrains.kotlin.idea.KotlinFileType
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.psiUtil.collectDescendantsOfType
 
-open class Parser(val converter: Converter = Converter) {
+open class Parser(val converter: Converter = Converter()) {
     protected val proj by lazy {
         KotlinCoreEnvironment.createForProduction(
             Disposer.newDisposable(),
