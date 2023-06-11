@@ -750,40 +750,29 @@ sealed interface Node {
             override var tag: Any? = null,
         ) : Type
 
-        private interface NameWithTypeArgs : WithTypeArgs {
-            val name: Expression.NameExpression
-        }
-
         /**
          * Virtual AST node that represents a simple type. The node corresponds to KtUserType and modifiers of its parent.
          *
          * @property modifiers list of modifiers.
-         * @property qualifiers list of qualifiers.
-         * @property name name of the type.
-         * @property typeArgs list of type arguments.
+         * @property pieces list of pieces. The piece represents a pair of a name and type arguments.
          */
         data class SimpleType(
             override val modifiers: List<Modifier>,
-            val qualifiers: List<SimpleTypeQualifier>,
-            override val name: Expression.NameExpression,
-            override val lAngle: Keyword.Less?,
-            override val typeArgs: List<TypeArg>,
-            override val rAngle: Keyword.Greater?,
+            val pieces: List<SimpleTypePiece>,
             override var tag: Any? = null,
-        ) : Type, NameWithTypeArgs {
+        ) : Type {
             /**
-             * AST node corresponds to KtUserType used as a qualifier.
+             * AST node corresponds to KtUserType used as a piece.
              *
-             * @property name name of the qualifier.
-             * @property typeArgs list of type arguments.
+             * @property name name of the piece.
              */
-            data class SimpleTypeQualifier(
-                override val name: Expression.NameExpression,
+            data class SimpleTypePiece(
+                val name: Expression.NameExpression,
                 override val lAngle: Keyword.Less?,
                 override val typeArgs: List<TypeArg>,
                 override val rAngle: Keyword.Greater?,
                 override var tag: Any? = null,
-            ) : Node, NameWithTypeArgs
+            ) : Node, WithTypeArgs
         }
 
         /**

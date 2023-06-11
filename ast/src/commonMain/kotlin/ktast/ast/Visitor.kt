@@ -239,13 +239,9 @@ open class Visitor {
                 }
                 is Node.Type.SimpleType -> {
                     visitChildren(modifiers)
-                    visitChildren(qualifiers)
-                    visitChildren(name)
-                    visitChildren(lAngle)
-                    visitChildren(typeArgs)
-                    visitChildren(rAngle)
+                    visitChildren(pieces)
                 }
-                is Node.Type.SimpleType.SimpleTypeQualifier -> {
+                is Node.Type.SimpleType.SimpleTypePiece -> {
                     visitChildren(name)
                     visitChildren(lAngle)
                     visitChildren(typeArgs)

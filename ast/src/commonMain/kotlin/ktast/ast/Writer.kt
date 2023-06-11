@@ -292,14 +292,9 @@ open class Writer(
                 }
                 is Node.Type.SimpleType -> {
                     children(modifiers)
-                    if (qualifiers.isNotEmpty()) {
-                        children(qualifiers, ".")
-                        append(".")
-                    }
-                    children(name)
-                    commaSeparatedChildren(lAngle, typeArgs, rAngle)
+                    children(pieces, ".")
                 }
-                is Node.Type.SimpleType.SimpleTypeQualifier -> {
+                is Node.Type.SimpleType.SimpleTypePiece -> {
                     children(name)
                     commaSeparatedChildren(lAngle, typeArgs, rAngle)
                 }

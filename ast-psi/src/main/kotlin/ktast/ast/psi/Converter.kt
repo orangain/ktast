@@ -387,21 +387,16 @@ open class Converter {
 
     protected fun convertSimpleType(modifierList: KtModifierList?, v: KtUserType) = Node.Type.SimpleType(
         modifiers = convertModifiers(modifierList),
-        qualifiers = generateSequence(v.qualifier) { it.qualifier }.toList().reversed()
-            .map(::convertTypeSimpleQualifier),
-        name = convertNameExpression(v.referenceExpression ?: error("No type name for $v")),
-        lAngle = v.typeArgumentList?.leftAngle?.let(::convertKeyword),
-        typeArgs = convertTypeArgs(v.typeArgumentList),
-        rAngle = v.typeArgumentList?.rightAngle?.let(::convertKeyword),
+        pieces = generateSequence(v) { it.qualifier }.toList().reversed()
+            .map(::convertSimpleTypePiece),
     ).mapNotCorrespondsPsiElement(v)
 
-    open fun convertTypeSimpleQualifier(v: KtUserType) = Node.Type.SimpleType.SimpleTypeQualifier(
+    open fun convertSimpleTypePiece(v: KtUserType) = Node.Type.SimpleType.SimpleTypePiece(
         name = convertNameExpression(v.referenceExpression ?: error("No type name for $v")),
         lAngle = v.typeArgumentList?.leftAngle?.let(::convertKeyword),
         typeArgs = convertTypeArgs(v.typeArgumentList),
         rAngle = v.typeArgumentList?.rightAngle?.let(::convertKeyword),
     ).mapNotCorrespondsPsiElement(v) // Don't map v because v necessarily corresponds to a single name expression.
-
 
     protected fun convertDynamicType(modifierList: KtModifierList?, v: KtDynamicType) = Node.Type.DynamicType(
         modifiers = convertModifiers(modifierList),
@@ -434,11 +429,14 @@ open class Converter {
         type = when (v.projectionKind) {
             KtProjectionKind.STAR -> Node.Type.SimpleType(
                 modifiers = listOf(),
-                qualifiers = listOf(),
-                name = convertNameExpression(v.projectionToken ?: error("Missing projection token for $v")),
-                lAngle = null,
-                typeArgs = listOf(),
-                rAngle = null,
+                pieces = listOf(
+                    Node.Type.SimpleType.SimpleTypePiece(
+                        name = convertNameExpression(v.projectionToken ?: error("Missing projection token for $v")),
+                        lAngle = null,
+                        typeArgs = listOf(),
+                        rAngle = null,
+                    )
+                ),
             ).mapNotCorrespondsPsiElement(v)
             else -> convertType(v.typeReference ?: error("Missing type ref for $v"))
         },
