@@ -332,7 +332,7 @@ open class Converter {
     ).map(v)
 
     open fun convertVariable(v: KtProperty) = Node.Variable(
-        annotationSets = listOf(),
+        annotationSets = listOf(), // Annotations immediately before the name is not allowed.
         name = v.nameIdentifier?.let(::convertNameExpression) ?: error("No property name on $v"),
         type = v.typeReference?.let(::convertType)
     ).mapNotCorrespondsPsiElement(v)
