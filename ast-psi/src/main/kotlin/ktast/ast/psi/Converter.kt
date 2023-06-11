@@ -24,7 +24,7 @@ open class Converter {
     protected open fun onNode(node: Node, element: PsiElement?) {}
 
     open fun convertKotlinFile(v: KtFile) = Node.KotlinFile(
-        annotationSets = convertAnnotationSets(v),
+        annotationSets = convertAnnotationSets(v.fileAnnotationList),
         packageDirective = v.packageDirective?.takeIf { it.packageNames.isNotEmpty() }?.let(::convertPackageDirective),
         importDirectives = v.importList?.imports?.map(::convertImportDirective) ?: listOf(),
         declarations = v.declarations.map(::convertDeclaration)
@@ -833,22 +833,14 @@ open class Converter {
         }
     }
 
-    open fun convertAnnotationSets(v: KtElement): List<Node.Modifier.AnnotationSet> = v.children.flatMap { elem ->
-        // We go over the node children because we want to preserve order
-        when (elem) {
-            is KtAnnotationEntry ->
-                listOf(convertAnnotationSet(elem))
-            is KtAnnotation ->
-                listOf(convertAnnotationSet(elem))
-            is KtAnnotationsContainer ->
-                convertAnnotationSets(elem)
-            else ->
-                emptyList()
+    open fun convertAnnotationSets(v: KtAnnotationsContainer?): List<Node.Modifier.AnnotationSet> {
+        return v?.children.orEmpty().mapNotNull { element ->
+            when (element) {
+                is KtAnnotationEntry -> convertAnnotationSet(element)
+                is KtAnnotation -> convertAnnotationSet(element)
+                else -> null
+            }
         }
-    }
-
-    open fun convertAnnotationSets(v: KtModifierList?): List<Node.Modifier.AnnotationSet> {
-        return convertModifiers(v).filterIsInstance<Node.Modifier.AnnotationSet>()
     }
 
     open fun convertModifiers(v: KtModifierList?): List<Node.Modifier> {
