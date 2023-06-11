@@ -216,7 +216,7 @@ open class Writer(
                     children(expression)
                 }
                 is Node.Variable -> {
-                    children(modifiers)
+                    children(annotationSets)
                     children(name)
                     if (type != null) append(":").also { children(type) }
                 }

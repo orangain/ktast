@@ -690,16 +690,16 @@ sealed interface Node {
     /**
      * AST node corresponds to KtDestructuringDeclarationEntry, virtual AST node corresponds a part of KtProperty, or virtual AST node corresponds to KtParameter whose child is IDENTIFIER.
      *
-     * @property modifiers list of modifiers.
+     * @property annotationSets list of annotation sets.
      * @property name name of the variable.
      * @property type type of the variable if exists, otherwise `null`.
      */
     data class Variable(
-        override val modifiers: List<Modifier>,
+        override val annotationSets: List<Modifier.AnnotationSet>,
         val name: Expression.NameExpression,
         val type: Type?,
         override var tag: Any? = null,
-    ) : Node, WithModifiers
+    ) : Node, WithAnnotationSets
 
     /**
      * AST node that represents a formal type parameter of a function or a class. For example, `T` in `fun <T> f()` is a type parameter. The node corresponds to KtTypeParameter.

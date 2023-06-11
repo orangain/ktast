@@ -194,7 +194,7 @@ open class MutableVisitor(
                         expression = visitChildren(expression, newCh),
                     )
                     is Node.Variable -> copy(
-                        modifiers = visitChildren(modifiers, newCh),
+                        annotationSets = visitChildren(annotationSets, newCh),
                         name = visitChildren(name, newCh),
                         type = visitChildren(type, newCh),
                     )

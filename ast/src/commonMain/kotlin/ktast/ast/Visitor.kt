@@ -165,7 +165,7 @@ open class Visitor {
                     visitChildren(expression)
                 }
                 is Node.Variable -> {
-                    visitChildren(modifiers)
+                    visitChildren(annotationSets)
                     visitChildren(name)
                     visitChildren(type)
                 }

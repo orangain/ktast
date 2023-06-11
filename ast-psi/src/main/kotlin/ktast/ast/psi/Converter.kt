@@ -245,7 +245,7 @@ open class Converter {
         lPar = null,
         variables = listOf(
             Node.Variable(
-                modifiers = listOf(),
+                annotationSets = listOf(),
                 name = v.nameIdentifier?.let(::convertNameExpression) ?: error("No property name on $v"),
                 type = v.typeReference?.let(::convertType)
             ).mapNotCorrespondsPsiElement(v)
@@ -332,13 +332,13 @@ open class Converter {
     ).map(v)
 
     open fun convertVariable(v: KtDestructuringDeclarationEntry) = Node.Variable(
-        modifiers = convertModifiers(v.modifierList),
+        annotationSets = convertAnnotationSets(v.modifierList),
         name = v.nameIdentifier?.let(::convertNameExpression) ?: error("No property name on $v"),
         type = v.typeReference?.let(::convertType)
     ).map(v)
 
     open fun convertVariable(v: KtProperty) = Node.Variable(
-        modifiers = listOf(),
+        annotationSets = listOf(),
         name = v.nameIdentifier?.let(::convertNameExpression) ?: error("No property name on $v"),
         type = v.typeReference?.let(::convertType)
     ).mapNotCorrespondsPsiElement(v)
@@ -827,7 +827,7 @@ open class Converter {
                 lPar = null,
                 variables = listOf(
                     Node.Variable(
-                        modifiers = convertModifiers(v.modifierList),
+                        annotationSets = convertAnnotationSets(v.modifierList),
                         name = v.nameIdentifier?.let(::convertNameExpression) ?: error("No lambda param name on $v"),
                         type = v.typeReference?.let(::convertType),
                     ).mapNotCorrespondsPsiElement(v)
