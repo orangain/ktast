@@ -11,8 +11,17 @@ import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
 import kotlin.reflect.full.createInstance
 
+/**
+ * Converts PSI elements to AST nodes. It's not meant to be used directly, use [Parser] instead.
+ */
 open class Converter {
-    protected open fun onNode(node: Node, elem: PsiElement?) {}
+    /**
+     * Method to be called when a node is created.
+     *
+     * @param node The node that was created
+     * @param element The PSI element that was used to create the node. This is null when the node does not correspond to a PSI element.
+     */
+    protected open fun onNode(node: Node, element: PsiElement?) {}
 
     open fun convertKotlinFile(v: KtFile) = Node.KotlinFile(
         annotationSets = convertAnnotationSets(v),

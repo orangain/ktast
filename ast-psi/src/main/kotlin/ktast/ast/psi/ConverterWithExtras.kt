@@ -12,6 +12,9 @@ import org.jetbrains.kotlin.psi.psiUtil.siblings
 import java.util.*
 import kotlin.collections.ArrayDeque
 
+/**
+ * Converts PSI elements to AST nodes and keeps track of extras.
+ */
 open class ConverterWithExtras : Converter(), ExtrasMap {
     // Sometimes many nodes are created from the same element, but we only want the last node we're given. We
     // remove the previous nodes we've found for the same identity when we see a new one. So we don't have to
@@ -30,18 +33,18 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
     override fun extrasWithin(v: Node) = extrasWithin[v] ?: emptyList()
     override fun extrasAfter(v: Node) = extrasAfter[v] ?: emptyList()
 
-    override fun onNode(node: Node, elem: PsiElement?) {
+    override fun onNode(node: Node, element: PsiElement?) {
         // We ignore whitespace and comments here to prevent recursion
-        if (elem is PsiWhiteSpace || elem is PsiComment || elem == null) return
+        if (element is PsiWhiteSpace || element is PsiComment || element == null) return
         // If we've done this elem before, just set this node as the curr and move on
-        val elemId = System.identityHashCode(elem)
+        val elemId = System.identityHashCode(element)
         if (psiIdentitiesToNodes.contains(elemId)) {
             return
         }
         psiIdentitiesToNodes[elemId] = node
 
         if (node is Node.KotlinEntry) {
-            fillWholeExtras(node, elem)
+            fillWholeExtras(node, element)
         }
     }
 
