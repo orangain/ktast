@@ -52,7 +52,7 @@ open class Writer(
         extrasSinceLastNonSymbol.clear()
         nextHeuristicWhitespace = ""
         lastAppendedToken = ""
-        visit(v)
+        traverse(v)
     }
 
     override fun visit(path: NodePath<*>): Unit = path.run {

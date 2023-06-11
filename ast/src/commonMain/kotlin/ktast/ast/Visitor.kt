@@ -1,31 +1,36 @@
 package ktast.ast
 
 /**
- * Visitor for AST nodes. This traverses the AST depth-first order and calls the given callback function for each node.
+ * Visitor for AST nodes.
  */
 open class Visitor {
     companion object {
         /**
-         * Visits the given AST node.
+         * Traverses the given AST node and its descendants depth-first order and calls the given callback function for each node.
          *
-         * @param rootNode root AST node to visit.
+         * @param rootNode root AST node to traverse.
          * @param callback function to be called for each node.
          */
-        fun visit(rootNode: Node, callback: (path: NodePath<*>) -> Unit) = object : Visitor() {
+        fun traverse(rootNode: Node, callback: (path: NodePath<*>) -> Unit) = object : Visitor() {
             override fun visit(path: NodePath<*>) {
                 callback(path)
                 super.visit(path)
             }
-        }.visit(rootNode)
+        }.traverse(rootNode)
     }
 
     /**
-     * Visits the given AST node.
+     * Traverses the given AST node and its descendants depth-first order and calls the protected [visit] method for each node.
      *
-     * @param rootNode root AST node to visit.
+     * @param rootNode root AST node to traverse.
      */
-    fun visit(rootNode: Node) = visit(NodePath.rootPathOf(rootNode))
+    fun traverse(rootNode: Node) = visit(NodePath.rootPathOf(rootNode))
 
+    /**
+     * Method to be called for each node.
+     *
+     * @param path path of the node.
+     */
     protected open fun visit(path: NodePath<*>): Unit = path.run {
         node.run {
             when (this) {

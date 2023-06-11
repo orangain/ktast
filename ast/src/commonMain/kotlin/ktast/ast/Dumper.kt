@@ -46,7 +46,7 @@ class Dumper(
      * @param node root AST node to dump.
      */
     fun dump(node: Node) {
-        visit(node)
+        traverse(node)
     }
 
     private fun levelOf(path: NodePath<*>): Int {
