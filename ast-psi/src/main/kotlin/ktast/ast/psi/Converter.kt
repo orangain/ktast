@@ -833,22 +833,22 @@ open class Converter {
         }
     }
 
-    open fun convertAnnotationSets(v: KtAnnotationsContainer?): List<Node.Modifier.AnnotationSet> {
-        return v?.children.orEmpty().mapNotNull { element ->
-            when (element) {
-                is KtAnnotationEntry -> convertAnnotationSet(element)
-                is KtAnnotation -> convertAnnotationSet(element)
-                else -> null
-            }
-        }
-    }
-
     open fun convertModifiers(v: KtModifierList?): List<Node.Modifier> {
         return v?.nonExtraChildren().orEmpty().map { element ->
             when (element) {
                 is KtAnnotationEntry -> convertAnnotationSet(element)
                 is KtAnnotation -> convertAnnotationSet(element)
                 else -> convertKeyword<Node.Modifier.KeywordModifier>(element)
+            }
+        }
+    }
+
+    open fun convertAnnotationSets(v: KtAnnotationsContainer?): List<Node.Modifier.AnnotationSet> {
+        return v?.children.orEmpty().mapNotNull { element ->
+            when (element) {
+                is KtAnnotationEntry -> convertAnnotationSet(element)
+                is KtAnnotation -> convertAnnotationSet(element)
+                else -> null
             }
         }
     }
