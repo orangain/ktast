@@ -242,7 +242,7 @@ class WriterTest {
         val newCode = Writer.write(origFile, origExtrasConv)
         assertEquals(origCode.trim(), newCode.trim(), "Parse -> Write for original code, not equal")
 
-        val identityNode = MutableVisitor.preVisit(origFile) { path -> path.node }
+        val identityNode = MutableVisitor.traverse(origFile) { path -> path.node }
         val identityCode = Writer.write(identityNode, origExtrasConv)
 
         assertEquals(
