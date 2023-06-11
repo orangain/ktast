@@ -488,14 +488,14 @@ open class MutableVisitor(
     }
 
     companion object {
-        fun <T : Node> preVisit(v: T, extrasMap: MutableExtrasMap? = null, fn: (path: NodePath<*>) -> Node?) =
+        fun <T : Node> preVisit(v: T, extrasMap: MutableExtrasMap? = null, fn: (path: NodePath<*>) -> Node): T =
             object : MutableVisitor(extrasMap) {
-                override fun <T : Node> preVisit(path: NodePath<T>): T = fn(path) as T
+                override fun <C : Node> preVisit(path: NodePath<C>): C = fn(path) as C
             }.visit(v)
 
-        fun <T : Node> postVisit(v: T, extrasMap: MutableExtrasMap? = null, fn: (path: NodePath<*>) -> Node?) =
+        fun <T : Node> postVisit(v: T, extrasMap: MutableExtrasMap? = null, fn: (path: NodePath<*>) -> Node): T =
             object : MutableVisitor(extrasMap) {
-                override fun <T : Node> postVisit(path: NodePath<T>): T = fn(path) as T
+                override fun <C : Node> postVisit(path: NodePath<C>): C = fn(path) as C
             }.visit(v)
     }
 }
