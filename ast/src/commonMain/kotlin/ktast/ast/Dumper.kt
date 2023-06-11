@@ -18,65 +18,63 @@ class Dumper(
         visit(v)
     }
 
-    private val levelMap = mutableMapOf<Int, Int>()
-
-    private fun levelOf(v: Node?): Int {
-        return if (v == null) -1 else levelMap[System.identityHashCode(v)] ?: error("$v is not found in levelMap")
+    private fun levelOf(path: NodePath<*>): Int {
+        return path.ancestors().count()
     }
 
-    private fun setLevel(v: Node, parent: Node?) {
-        levelMap[System.identityHashCode(v)] = levelOf(parent) + 1
+    override fun visit(path: NodePath<*>) {
+        path.writeExtrasBefore()
+        path.writeNode()
+        super.visit(path)
+        path.writeExtrasWithin()
+        path.writeExtrasAfter()
     }
 
-    override fun visit(v: Node, parent: Node?) {
-        setLevel(v, parent)
-
-        v.writeExtrasBefore()
-        v.printNode()
-        super.visit(v, parent)
-        v.writeExtrasWithin()
-        v.writeExtrasAfter()
+    private fun NodePath<*>.writeExtrasBefore() {
+        if (extrasMap == null || parent == null) return
+        val extraPaths = extrasMap.extrasBefore(node).map { parent.childPathOf(it) }
+        writeExtras(extraPaths, ExtraType.BEFORE)
     }
 
-    private fun Node.writeExtrasBefore() {
+    private fun NodePath<*>.writeExtrasWithin() {
         if (extrasMap == null) return
-        writeExtras(extrasMap.extrasBefore(this), levelOf(this), ExtraType.BEFORE)
+        val extraPaths = extrasMap.extrasWithin(node).map { childPathOf(it) }
+        writeExtras(extraPaths, ExtraType.WITHIN)
     }
 
-    private fun Node.writeExtrasWithin() {
-        if (extrasMap == null) return
-        writeExtras(extrasMap.extrasWithin(this), levelOf(this) + 1, ExtraType.WITHIN)
-    }
-
-    private fun Node.writeExtrasAfter() {
-        if (extrasMap == null) return
-        writeExtras(extrasMap.extrasAfter(this), levelOf(this), ExtraType.AFTER)
+    private fun NodePath<*>.writeExtrasAfter() {
+        if (extrasMap == null || parent == null) return
+        val extraPaths = extrasMap.extrasAfter(node).map { parent.childPathOf(it) }
+        writeExtras(extraPaths, ExtraType.AFTER)
     }
 
     enum class ExtraType {
         BEFORE, WITHIN, AFTER
     }
 
-    private fun writeExtras(extras: List<Node.Extra>, level: Int, extraType: ExtraType) {
-        extras.forEach {
-            it.printNode(level, "$extraType: ")
+    private fun writeExtras(extraPaths: List<NodePath<*>>, extraType: ExtraType) {
+        extraPaths.forEach { path ->
+            path.writeNode("$extraType: ")
         }
     }
 
-    private fun Node.printNode(level: Int = levelOf(this), prefix: String = "") {
+    private fun NodePath<*>.writeNode(prefix: String = "") {
+        val level = levelOf(this)
         app.append("  ".repeat(level))
         app.append(prefix)
-        app.append(this::class.qualifiedName?.substring(10)) // 10 means length of "ktast.ast."
+        app.append(node::class.qualifiedName?.substring(10)) // 10 means length of "ktast.ast."
         if (verbose) {
-            when (this) {
-                is Node.Modifier.AnnotationSet -> mapOf("target" to target)
-                is Node.Expression.StringLiteralExpression -> mapOf("raw" to raw)
-                is Node.Expression.StringLiteralExpression.TemplateStringEntry -> mapOf("short" to short)
-                is Node.SimpleTextNode -> mapOf("text" to text)
-                else -> null
-            }?.let { m ->
-                app.append("{" + m.map { "${it.key}=\"${toEscapedString(it.value.toString())}\"" }
-                    .joinToString(", ") + "}")
+            node.apply {
+                when (this) {
+                    is Node.Modifier.AnnotationSet -> mapOf("target" to target)
+                    is Node.Expression.StringLiteralExpression -> mapOf("raw" to raw)
+                    is Node.Expression.StringLiteralExpression.TemplateStringEntry -> mapOf("short" to short)
+                    is Node.SimpleTextNode -> mapOf("text" to text)
+                    else -> null
+                }?.let { m ->
+                    app.append("{" + m.map { "${it.key}=\"${toEscapedString(it.value.toString())}\"" }
+                        .joinToString(", ") + "}")
+                }
             }
         }
         app.appendLine()
