@@ -29,9 +29,9 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
     // This keeps track of ws nodes we've seen before so we don't duplicate them
     private val seenExtraPsiIdentities = mutableSetOf<Int>()
 
-    override fun extrasBefore(v: Node) = extrasBefore[v] ?: emptyList()
-    override fun extrasWithin(v: Node) = extrasWithin[v] ?: emptyList()
-    override fun extrasAfter(v: Node) = extrasAfter[v] ?: emptyList()
+    override fun extrasBefore(node: Node) = extrasBefore[node] ?: emptyList()
+    override fun extrasWithin(node: Node) = extrasWithin[node] ?: emptyList()
+    override fun extrasAfter(node: Node) = extrasAfter[node] ?: emptyList()
 
     override fun onNode(node: Node, element: PsiElement?) {
         // We ignore whitespace and comments here to prevent recursion
@@ -151,15 +151,15 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
         return nextNonExtraElement == null || suffixTokens.contains(nextNonExtraElement.node.elementType)
     }
 
-    protected open fun convertExtras(elems: List<PsiElement>): List<Node.Extra> = elems.mapNotNull { elem ->
-        // Ignore elems we've done before
+    protected open fun convertExtras(elements: List<PsiElement>): List<Node.Extra> = elements.mapNotNull { elem ->
+        // Ignore elements we've done before
         val elemId = System.identityHashCode(elem)
         if (!seenExtraPsiIdentities.add(elemId)) null else when {
             elem is PsiWhiteSpace -> Node.Extra.Whitespace(elem.text)
             elem is PsiComment -> Node.Extra.Comment(elem.text)
             elem.node.elementType == KtTokens.SEMICOLON -> Node.Extra.Semicolon()
             elem.node.elementType == KtTokens.COMMA -> Node.Extra.TrailingComma()
-            else -> error("elems must contain only PsiWhiteSpace or PsiComment or SEMICOLON elements.")
+            else -> error("elements must contain only PsiWhiteSpace or PsiComment or SEMICOLON elements.")
         }
     }
 }
