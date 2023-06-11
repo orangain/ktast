@@ -31,7 +31,7 @@ class CorpusParseAndWriteWithExtrasTest(private val unit: Corpus.Unit) {
 //            println("----NEW CODE----\n$newCode\n-----------")
             assertEquals(origCode, newCode)
 
-            val identityNode = MutableVisitor.preVisit(origFile) { path -> path.node }
+            val identityNode = MutableVisitor.traverse(origFile) { path -> path.node }
             assertEquals(origFile, identityNode)
         } catch (e: Converter.Unsupported) {
             if (unit.canSkip) {

@@ -5,6 +5,9 @@ import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.kdoc.psi.api.KDocElement
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
 
+/**
+ * A visitor that visits all elements in a PSI tree except for descendants of [KDocElement].
+ */
 internal open class PsiElementVisitor {
     fun visit(element: PsiElement) {
         if (element is LeafPsiElement || element is KDocElement) {

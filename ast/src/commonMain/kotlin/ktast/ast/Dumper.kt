@@ -1,21 +1,52 @@
 package ktast.ast
 
+/**
+ * Utility class for dumping AST.
+ *
+ * Example usage:
+ * ```
+ * Dumper.dump(node)
+ * ```
+ *
+ * Sample output for the code `val x = ""`:
+ * ```
+ * Node.KotlinFile
+ *   Node.Declaration.PropertyDeclaration
+ *     Node.Keyword.Val{text="val"}
+ *     Node.Variable
+ *       Node.Expression.NameExpression{text="x"}
+ *     Node.Keyword.Equal{text="="}
+ *     Node.Expression.StringLiteralExpression{raw="false"}
+ * ```
+ */
 class Dumper(
-    private val app: Appendable = StringBuilder(),
+    private val appendable: Appendable = StringBuilder(),
     private val extrasMap: ExtrasMap? = null,
     private val verbose: Boolean = true,
 ) : Visitor() {
 
     companion object {
-        fun dump(v: Node, extrasMap: ExtrasMap? = null, verbose: Boolean = true): String {
+        /**
+         * Dumps the given AST node.
+         *
+         * @param node root AST node to dump.
+         * @param extrasMap optional extras map, defaults to null.
+         * @param verbose whether to dump extra node attributes, defaults to true.
+         */
+        fun dump(node: Node, extrasMap: ExtrasMap? = null, verbose: Boolean = true): String {
             val builder = StringBuilder()
-            Dumper(builder, extrasMap, verbose).dump(v)
+            Dumper(builder, extrasMap, verbose).dump(node)
             return builder.toString()
         }
     }
 
-    fun dump(v: Node) {
-        visit(v)
+    /**
+     * Dumps the given AST node.
+     *
+     * @param node root AST node to dump.
+     */
+    fun dump(node: Node) {
+        traverse(node)
     }
 
     private fun levelOf(path: NodePath<*>): Int {
@@ -48,7 +79,7 @@ class Dumper(
         writeExtras(extraPaths, ExtraType.AFTER)
     }
 
-    enum class ExtraType {
+    private enum class ExtraType {
         BEFORE, WITHIN, AFTER
     }
 
@@ -60,9 +91,9 @@ class Dumper(
 
     private fun NodePath<*>.writeNode(prefix: String = "") {
         val level = levelOf(this)
-        app.append("  ".repeat(level))
-        app.append(prefix)
-        app.append(node::class.qualifiedName?.substring(10)) // 10 means length of "ktast.ast."
+        appendable.append("  ".repeat(level))
+        appendable.append(prefix)
+        appendable.append(node::class.qualifiedName?.substring(10)) // 10 means length of "ktast.ast."
         if (verbose) {
             node.apply {
                 when (this) {
@@ -72,12 +103,12 @@ class Dumper(
                     is Node.SimpleTextNode -> mapOf("text" to text)
                     else -> null
                 }?.let { m ->
-                    app.append("{" + m.map { "${it.key}=\"${toEscapedString(it.value.toString())}\"" }
+                    appendable.append("{" + m.map { "${it.key}=\"${toEscapedString(it.value.toString())}\"" }
                         .joinToString(", ") + "}")
                 }
             }
         }
-        app.appendLine()
+        appendable.appendLine()
     }
 }
 

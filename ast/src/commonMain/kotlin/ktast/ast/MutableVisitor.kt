@@ -1,14 +1,64 @@
 package ktast.ast
 
+/**
+ * Visitor for AST nodes that can mutate the nodes.
+ *
+ * @param extrasMap optional extras map, defaults to null.
+ */
 open class MutableVisitor(
     protected val extrasMap: MutableExtrasMap? = null
 ) {
+    companion object {
+        /**
+         * Traverse the given AST node and its descendants depth-first order and calls the given callback function for each node. When the callback function returns a different node, the node is replaced with the returned node.
+         *
+         * @param rootNode root AST node to traverse.
+         * @param extrasMap optional extras map, defaults to null.
+         * @param callback callback function to be called for each node.
+         * @return the modified root node.
+         */
+        fun <T : Node> traverse(
+            rootNode: T,
+            extrasMap: MutableExtrasMap? = null,
+            callback: (path: NodePath<*>) -> Node
+        ): T =
+            object : MutableVisitor(extrasMap) {
+                override fun <C : Node> preVisit(path: NodePath<C>): C = callback(path) as C
+            }.traverse(rootNode)
+    }
 
-    open fun <T : Node> preVisit(path: NodePath<T>): T = path.node
-    open fun <T : Node> postVisit(path: NodePath<T>): T = path.node
+    /**
+     * Traverse the given AST node and its descendants depth-first order and calls the protected [preVisit] and [postVisit] methods for each node. When the methods return a different node, the node is replaced with the returned node.
+     *
+     * @param rootNode root AST node to traverse.
+     * @return the modified root node.
+     */
+    fun <T : Node> traverse(rootNode: T) = visit(NodePath.rootPathOf(rootNode))
 
-    fun <T : Node> visit(v: T) = visit(NodePath.rootPathOf(v))
-    open fun <T : Node> visit(path: NodePath<T>, ch: ChangedRef = ChangedRef(false)): T = ch.sub { newCh ->
+    /**
+     * Method to be called before visiting the descendants of the given node.
+     *
+     * @param path path of the node.
+     * @return the modified node.
+     */
+    protected open fun <T : Node> preVisit(path: NodePath<T>): T = path.node
+
+    /**
+     * Method to be called after visiting the descendants of the given node.
+     *
+     * @param path path of the node.
+     * @return the modified node.
+     */
+    protected open fun <T : Node> postVisit(path: NodePath<T>): T = path.node
+
+    /**
+     * Method to be called for each node.
+     *
+     * @param path path of the node.
+     * @param ch changed flag.
+     * @return the modified node.
+     */
+    protected open fun <T : Node> visit(path: NodePath<T>, ch: ChangedRef = ChangedRef(false)): T = ch.sub { newCh ->
         val origNode = path.node
         path.copy(node = preVisit(path)).run {
             node.run {
@@ -477,25 +527,13 @@ open class MutableVisitor(
 
     protected fun <T> T.origOrChanged(orig: T, ref: ChangedRef) = if (ref.changed) this else orig
 
-    open class ChangedRef(var changed: Boolean) {
+    protected class ChangedRef(var changed: Boolean) {
         fun <T : Node?> markIf(v1: T, v2: T) {
             if (v1 !== v2) changed = true
         }
 
-        open fun <T> sub(fn: (ChangedRef) -> T): T = ChangedRef(false).let { newCh ->
+        fun <T> sub(fn: (ChangedRef) -> T): T = ChangedRef(false).let { newCh ->
             fn(newCh).also { if (newCh.changed) changed = true }
         }
-    }
-
-    companion object {
-        fun <T : Node> preVisit(v: T, extrasMap: MutableExtrasMap? = null, fn: (path: NodePath<*>) -> Node): T =
-            object : MutableVisitor(extrasMap) {
-                override fun <C : Node> preVisit(path: NodePath<C>): C = fn(path) as C
-            }.visit(v)
-
-        fun <T : Node> postVisit(v: T, extrasMap: MutableExtrasMap? = null, fn: (path: NodePath<*>) -> Node): T =
-            object : MutableVisitor(extrasMap) {
-                override fun <C : Node> postVisit(path: NodePath<C>): C = fn(path) as C
-            }.visit(v)
     }
 }

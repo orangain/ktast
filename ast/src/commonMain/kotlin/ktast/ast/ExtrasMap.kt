@@ -1,12 +1,21 @@
 package ktast.ast
 
+/**
+ * Interface for mapping extras to nodes.
+ */
 interface ExtrasMap {
-    fun extrasBefore(v: Node): List<Node.Extra>
-    fun extrasWithin(v: Node): List<Node.Extra>
-    fun extrasAfter(v: Node): List<Node.Extra>
+    /**
+     * Returns extras before the given node.
+     */
+    fun extrasBefore(node: Node): List<Node.Extra>
 
-    fun docComment(v: Node): Node.Extra.Comment? {
-        for (extra in extrasBefore(v)) if (extra is Node.Extra.Comment && extra.text.startsWith("/**")) return extra
-        return null
-    }
+    /**
+     * Returns extras within the given node.
+     */
+    fun extrasWithin(node: Node): List<Node.Extra>
+
+    /**
+     * Returns extras after the given node.
+     */
+    fun extrasAfter(node: Node): List<Node.Extra>
 }

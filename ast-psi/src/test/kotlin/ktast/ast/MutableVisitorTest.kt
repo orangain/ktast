@@ -57,7 +57,7 @@ private fun assertMutateAndWriteExact(
     val origFile = Parser(origExtrasConv).parseFile(origCode)
     println("----ORIG AST----\n${Dumper.dump(origFile, origExtrasConv)}\n------------")
 
-    val newFile = MutableVisitor.preVisit(origFile, origExtrasConv, fn)
+    val newFile = MutableVisitor.traverse(origFile, origExtrasConv, fn)
     val newCode = Writer.write(newFile, origExtrasConv)
     kotlin.test.assertEquals(
         expectedCode.trim(),
