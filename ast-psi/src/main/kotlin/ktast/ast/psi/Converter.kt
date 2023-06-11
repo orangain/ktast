@@ -243,13 +243,7 @@ open class Converter {
         rAngle = v.typeParameterList?.rightAngle?.let(::convertKeyword),
         receiverType = v.receiverTypeReference?.let(::convertType),
         lPar = null,
-        variables = listOf(
-            Node.Variable(
-                annotationSets = listOf(),
-                name = v.nameIdentifier?.let(::convertNameExpression) ?: error("No property name on $v"),
-                type = v.typeReference?.let(::convertType)
-            ).mapNotCorrespondsPsiElement(v)
-        ),
+        variables = listOf(convertVariable(v)),
         rPar = null,
         typeConstraintSet = v.typeConstraintList?.let { typeConstraintList ->
             Node.PostModifier.TypeConstraintSet(
@@ -341,6 +335,12 @@ open class Converter {
         annotationSets = listOf(),
         name = v.nameIdentifier?.let(::convertNameExpression) ?: error("No property name on $v"),
         type = v.typeReference?.let(::convertType)
+    ).mapNotCorrespondsPsiElement(v)
+
+    open fun convertVariable(v: KtParameter) = Node.Variable(
+        annotationSets = convertAnnotationSets(v.modifierList),
+        name = v.nameIdentifier?.let(::convertNameExpression) ?: error("No lambda param name on $v"),
+        type = v.typeReference?.let(::convertType),
     ).mapNotCorrespondsPsiElement(v)
 
     open fun convertTypeParams(v: KtTypeParameterList?): List<Node.TypeParam> =
@@ -825,13 +825,7 @@ open class Converter {
         } else {
             Node.LambdaParam(
                 lPar = null,
-                variables = listOf(
-                    Node.Variable(
-                        annotationSets = convertAnnotationSets(v.modifierList),
-                        name = v.nameIdentifier?.let(::convertNameExpression) ?: error("No lambda param name on $v"),
-                        type = v.typeReference?.let(::convertType),
-                    ).mapNotCorrespondsPsiElement(v)
-                ),
+                variables = listOf(convertVariable(v)),
                 rPar = null,
                 colon = null,
                 destructType = null,
