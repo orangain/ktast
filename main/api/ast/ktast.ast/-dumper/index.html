@@ -34,7 +34,7 @@
     <div class="library-name">
 <a href="../../../index.html">
 <span>ktast</span>            </a>    </div>
-    <div>e8c48a8
+    <div>b191f69
     </div>
     <div class="pull-right d-flex">
         <div class="filter-section" id="filter-section">
@@ -53,7 +53,7 @@
   <div class="breadcrumbs"><a href="../../index.html">ast</a><span class="delimiter">/</span><a href="../index.html">ktast.ast</a><span class="delimiter">/</span><span class="current">Dumper</span></div>
   <div class="cover ">
     <h1 class="cover"><span><span>Dumper</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">Dumper</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">app<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.text/-appendable/index.html">Appendable</a><span class="token operator"> = </span>StringBuilder()<span class="token punctuation">, </span></span><span class="parameter ">extrasMap<span class="token operator">: </span><a href="../-extras-map/index.html">ExtrasMap</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">verbose<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span></span></span><span class="token punctuation">)</span> : <a href="../-visitor/index.html">Visitor</a></div></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">Dumper</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">appendable<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.text/-appendable/index.html">Appendable</a><span class="token operator"> = </span>StringBuilder()<span class="token punctuation">, </span></span><span class="parameter ">extrasMap<span class="token operator">: </span><a href="../-extras-map/index.html">ExtrasMap</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">verbose<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span></span></span><span class="token punctuation">)</span> : <a href="../-visitor/index.html">Visitor</a></div><p class="paragraph">Utility class for dumping AST.</p><p class="paragraph">Example usage:</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">Dumper.dump(node)</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">Sample output for the code <code class="lang-kotlin">val x = ""</code>:</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">Node.KotlinFile<br>  Node.Declaration.PropertyDeclaration<br>    Node.Keyword.Val{text="val"}<br>    Node.Variable<br>      Node.Expression.NameExpression{text="x"}<br>    Node.Keyword.Equal{text="="}<br>    Node.Expression.StringLiteralExpression{raw="false"}</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,FUNCTION,PROPERTY">Members</button></div>
@@ -70,7 +70,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">app<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.text/-appendable/index.html">Appendable</a><span class="token operator"> = </span>StringBuilder()<span class="token punctuation">, </span></span><span class="parameter ">extrasMap<span class="token operator">: </span><a href="../-extras-map/index.html">ExtrasMap</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">verbose<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span></span></span><span class="token punctuation">)</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">appendable<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.text/-appendable/index.html">Appendable</a><span class="token operator"> = </span>StringBuilder()<span class="token punctuation">, </span></span><span class="parameter ">extrasMap<span class="token operator">: </span><a href="../-extras-map/index.html">ExtrasMap</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">verbose<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span></span></span><span class="token punctuation">)</span></div></div></div>
                 </div>
               </div>
             </div>
@@ -94,21 +94,6 @@
               </div>
             </div>
           </div>
-<a data-name="-331750030%2FClasslikes%2F-1242834013" anchor-label="ExtraType" id="-331750030%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="-extra-type/index.html"><span>Extra</span><wbr><span><span>Type</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-331750030%2FClasslikes%2F-1242834013"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-extra-type/index.html">ExtraType</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-extra-type/index.html">Dumper.ExtraType</a><span class="token operator">&gt; </span></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
       <div data-togglable="FUNCTION">
@@ -123,22 +108,22 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="dump.html"><span class="token function">dump</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">v<span class="token operator">: </span><a href="../-node/index.html">Node</a></span></span><span class="token punctuation">)</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="dump.html"><span class="token function">dump</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">node<span class="token operator">: </span><a href="../-node/index.html">Node</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Dumps the given AST node.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-930024142%2FFunctions%2F-1242834013" anchor-label="visit" id="-930024142%2FFunctions%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+<a data-name="2141394309%2FFunctions%2F-1242834013" anchor-label="traverse" id="2141394309%2FFunctions%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
           <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="../-visitor/visit.html"><span><span>visit</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-930024142%2FFunctions%2F-1242834013"></span>
+                  <div><a href="../-visitor/traverse.html"><span><span>traverse</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2141394309%2FFunctions%2F-1242834013"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-visitor/visit.html"><span class="token function">visit</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">node<span class="token operator">: </span><a href="../-node/index.html">Node</a></span></span><span class="token punctuation">)</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-visitor/traverse.html"><span class="token function">traverse</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">rootNode<span class="token operator">: </span><a href="../-node/index.html">Node</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Traverses the given AST node and its descendants depth-first order and calls the protected <a href="../../../ast/ktast.ast/-visitor/visit.html">visit</a> method for each node.</p></div></div></div>
                 </div>
               </div>
             </div>
