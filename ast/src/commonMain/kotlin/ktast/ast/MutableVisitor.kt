@@ -116,7 +116,9 @@ open class MutableVisitor(
                         modifiers = visitChildren(modifiers, newCh),
                         classDeclarationKeyword = visitChildren(classDeclarationKeyword, newCh),
                         name = visitChildren(name, newCh),
+                        lAngle = visitChildren(lAngle, newCh),
                         typeParams = visitChildren(typeParams, newCh),
+                        rAngle = visitChildren(rAngle, newCh),
                         primaryConstructor = visitChildren(primaryConstructor, newCh),
                         classParents = visitChildren(classParents, newCh),
                         typeConstraintSet = visitChildren(typeConstraintSet, newCh),
@@ -156,7 +158,9 @@ open class MutableVisitor(
                     is Node.Declaration.FunctionDeclaration -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         funKeyword = visitChildren(funKeyword, newCh),
+                        lAngle = visitChildren(lAngle, newCh),
                         typeParams = visitChildren(typeParams, newCh),
+                        rAngle = visitChildren(rAngle, newCh),
                         receiverType = visitChildren(receiverType, newCh),
                         name = visitChildren(name, newCh),
                         lPar = visitChildren(lPar, newCh),
@@ -178,7 +182,9 @@ open class MutableVisitor(
                     is Node.Declaration.PropertyDeclaration -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         valOrVarKeyword = visitChildren(valOrVarKeyword, newCh),
+                        lAngle = visitChildren(lAngle, newCh),
                         typeParams = visitChildren(typeParams, newCh),
+                        rAngle = visitChildren(rAngle, newCh),
                         receiverType = visitChildren(receiverType, newCh),
                         lPar = visitChildren(lPar, newCh),
                         variables = visitChildren(variables, newCh),
@@ -217,7 +223,9 @@ open class MutableVisitor(
                     is Node.Declaration.TypeAliasDeclaration -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         name = visitChildren(name, newCh),
+                        lAngle = visitChildren(lAngle, newCh),
                         typeParams = visitChildren(typeParams, newCh),
+                        rAngle = visitChildren(rAngle, newCh),
                         equals = visitChildren(equals, newCh),
                         type = visitChildren(type, newCh)
                     )
