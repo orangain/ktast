@@ -1560,17 +1560,6 @@ sealed interface Node {
             val function: Declaration.FunctionDeclaration,
             override var tag: Any? = null,
         ) : Expression
-
-        /**
-         * Virtual AST node corresponds to KtProperty or KtDestructuringDeclaration in expression context.
-         * This is only present for when expressions and labeled expressions.
-         *
-         * @property property property declaration.
-         */
-        data class PropertyExpression(
-            val property: Declaration.PropertyDeclaration,
-            override var tag: Any? = null,
-        ) : Expression
     }
 
     /**

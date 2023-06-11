@@ -492,8 +492,6 @@ open class Writer(
                 }
                 is Node.Expression.AnonymousFunctionExpression ->
                     children(function)
-                is Node.Expression.PropertyExpression ->
-                    children(property)
                 is Node.Expression.BlockExpression -> {
                     children(lBrace)
                     children(statements)

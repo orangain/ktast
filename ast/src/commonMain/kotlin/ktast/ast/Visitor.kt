@@ -435,9 +435,6 @@ open class Visitor {
                 is Node.Expression.AnonymousFunctionExpression -> {
                     visitChildren(function)
                 }
-                is Node.Expression.PropertyExpression -> {
-                    visitChildren(property)
-                }
                 is Node.Expression.BlockExpression -> {
                     visitChildren(lBrace)
                     visitChildren(statements)

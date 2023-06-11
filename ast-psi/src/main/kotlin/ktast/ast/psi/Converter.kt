@@ -491,8 +491,6 @@ open class Converter {
         is KtConstructorCalleeExpression -> error("Supposed to be unreachable here. KtConstructorCalleeExpression is expected to be inside of KtSuperTypeCallEntry or KtAnnotationEntry.")
         is KtArrayAccessExpression -> convertIndexedAccessExpression(v)
         is KtNamedFunction -> convertAnonymousFunctionExpression(v)
-        is KtProperty -> convertPropertyExpression(v)
-        is KtDestructuringDeclaration -> convertPropertyExpression(v)
         // TODO: this is present in a recovery test where an interface decl is on rhs of a gt expr
         is KtClass -> throw Unsupported("Class expressions not supported")
         else -> error("Unrecognized expression type from $v")
@@ -809,14 +807,6 @@ open class Converter {
 
     open fun convertAnonymousFunctionExpression(v: KtNamedFunction) = Node.Expression.AnonymousFunctionExpression(
         function = convertFunctionDeclaration(v),
-    ).mapNotCorrespondsPsiElement(v)
-
-    open fun convertPropertyExpression(v: KtProperty) = Node.Expression.PropertyExpression(
-        property = convertPropertyDeclaration(v)
-    ).mapNotCorrespondsPsiElement(v)
-
-    open fun convertPropertyExpression(v: KtDestructuringDeclaration) = Node.Expression.PropertyExpression(
-        property = convertPropertyDeclaration(v)
     ).mapNotCorrespondsPsiElement(v)
 
     open fun convertLambdaParams(v: KtParameterList?): List<Node.LambdaParam> =

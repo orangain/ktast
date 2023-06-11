@@ -463,9 +463,6 @@ open class MutableVisitor(
                     is Node.Expression.AnonymousFunctionExpression -> copy(
                         function = visitChildren(function, newCh)
                     )
-                    is Node.Expression.PropertyExpression -> copy(
-                        property = visitChildren(property, newCh)
-                    )
                     is Node.Expression.BlockExpression -> copy(
                         lBrace = visitChildren(lBrace, newCh),
                         statements = visitChildren(statements, newCh),
