@@ -1,9 +1,43 @@
 package ktast.ast
 
+/**
+ * Writer that converts AST nodes back to source code. When the [extrasMap] is provided, it will preserve the original whitespaces, comments, semicolons and trailing commas. Even when the [extrasMap] is not provided, it will still insert whitespaces and semicolons automatically to avoid compilation errors or loss of meaning.
+ *
+ * Example usage:
+ * ```
+ * // Without extras map
+ * val source = Writer.write(node)
+ * // With extras map
+ * val sourceWithExtras = Writer.write(node, extrasMap)
+ * ```
+ */
 open class Writer(
-    val app: Appendable = StringBuilder(),
-    val extrasMap: ExtrasMap? = null
+    protected val appendable: Appendable = StringBuilder(),
+    protected val extrasMap: ExtrasMap? = null
 ) : Visitor() {
+    companion object {
+        /**
+         * Converts the given AST node back to source code.
+         *
+         * @param rootNode root AST node to convert.
+         * @param extrasMap optional extras map, defaults to null.
+         * @return source code.
+         */
+        fun write(rootNode: Node, extrasMap: ExtrasMap? = null): String =
+            write(rootNode, StringBuilder(), extrasMap).toString()
+
+        /**
+         * Converts the given AST node back to source code.
+         *
+         * @param rootNode root AST node to convert.
+         * @param appendable appendable to write to.
+         * @param extrasMap optional extras map, defaults to null.
+         * @return appendable.
+         */
+        fun <T : Appendable> write(rootNode: Node, appendable: T, extrasMap: ExtrasMap? = null): T =
+            appendable.also { Writer(it, extrasMap).write(rootNode) }
+    }
+
     protected val extrasSinceLastNonSymbol = mutableListOf<Node.Extra>()
     protected var nextHeuristicWhitespace = ""
     protected var lastAppendedToken = ""
@@ -16,6 +50,18 @@ open class Writer(
         CharCategory.OTHER_LETTER,
         CharCategory.DECIMAL_DIGIT_NUMBER,
     )
+
+    /**
+     * Converts the given AST node back to source code.
+     *
+     * @param rootNode root AST node to convert.
+     */
+    fun write(rootNode: Node) {
+        extrasSinceLastNonSymbol.clear()
+        nextHeuristicWhitespace = ""
+        lastAppendedToken = ""
+        traverse(rootNode)
+    }
 
     protected fun NodePath<*>.appendLabel(label: Node.Expression.NameExpression?) {
         if (label != null) {
@@ -44,15 +90,8 @@ open class Writer(
 
     protected fun doAppend(str: String) {
         if (str == "") return
-        app.append(str)
+        appendable.append(str)
         lastAppendedToken = str
-    }
-
-    fun write(v: Node) {
-        extrasSinceLastNonSymbol.clear()
-        nextHeuristicWhitespace = ""
-        lastAppendedToken = ""
-        traverse(v)
     }
 
     override fun visit(path: NodePath<*>): Unit = path.run {
@@ -655,13 +694,5 @@ open class Writer(
             append(it.text)
         }
         extrasSinceLastNonSymbol.addAll(extras)
-    }
-
-    companion object {
-        fun write(v: Node, extrasMap: ExtrasMap? = null) =
-            write(v, StringBuilder(), extrasMap).toString()
-
-        fun <T : Appendable> write(v: Node, app: T, extrasMap: ExtrasMap? = null) =
-            app.also { Writer(it, extrasMap).write(v) }
     }
 }
