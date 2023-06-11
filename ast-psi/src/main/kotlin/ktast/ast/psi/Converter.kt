@@ -844,18 +844,13 @@ open class Converter {
     }
 
     open fun convertModifiers(v: KtModifierList?): List<Node.Modifier> {
-        if (v == null) {
-            return listOf()
-        }
-        return v.nonExtraChildren().mapNotNull { psi ->
-            // We go over the node children because we want to preserve order
-            when (psi) {
-                is KtAnnotationEntry -> convertAnnotationSet(psi)
-                is KtAnnotation -> convertAnnotationSet(psi)
-                is PsiWhiteSpace -> null
-                else -> convertKeyword<Node.Modifier.KeywordModifier>(psi)
+        return v?.nonExtraChildren().orEmpty().map { element ->
+            when (element) {
+                is KtAnnotationEntry -> convertAnnotationSet(element)
+                is KtAnnotation -> convertAnnotationSet(element)
+                else -> convertKeyword<Node.Modifier.KeywordModifier>(element)
             }
-        }.toList()
+        }
     }
 
     open fun convertAnnotationSet(v: KtAnnotation) = Node.Modifier.AnnotationSet(
