@@ -9,6 +9,7 @@ import org.jetbrains.kotlin.com.intellij.psi.tree.IElementType
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
+import org.jetbrains.kotlin.psi.psiUtil.getPrevSiblingIgnoringWhitespaceAndComments
 import kotlin.reflect.full.createInstance
 
 /**
@@ -117,10 +118,7 @@ open class Converter {
         primaryConstructor = v.primaryConstructor?.let(::convertPrimaryConstructor),
         classParents = convertClassParents(v.getSuperTypeList()),
         typeConstraintSet = v.typeConstraintList?.let { typeConstraintList ->
-            Node.PostModifier.TypeConstraintSet(
-                whereKeyword = convertKeyword(v.whereKeyword),
-                constraints = convertTypeConstraints(typeConstraintList),
-            ).mapNotCorrespondsPsiElement(v)
+            convertTypeConstraintSet(v, typeConstraintList)
         },
         classBody = v.body?.let(::convertClassBody),
     ).map(v)
@@ -248,10 +246,7 @@ open class Converter {
         variables = listOf(convertVariable(v)),
         rPar = null,
         typeConstraintSet = v.typeConstraintList?.let { typeConstraintList ->
-            Node.PostModifier.TypeConstraintSet(
-                whereKeyword = convertKeyword(v.whereKeyword),
-                constraints = convertTypeConstraints(typeConstraintList),
-            ).mapNotCorrespondsPsiElement(v)
+            convertTypeConstraintSet(v, typeConstraintList)
         },
         equals = v.equalsToken?.let(::convertKeyword),
         initializer = v.initializer?.let(this::convertExpression),
@@ -898,10 +893,7 @@ open class Converter {
         var prevPsi = nonExtraChildren[0]
         return nonExtraChildren.drop(1).mapNotNull { psi ->
             when (psi) {
-                is KtTypeConstraintList -> Node.PostModifier.TypeConstraintSet(
-                    whereKeyword = convertKeyword(prevPsi),
-                    constraints = convertTypeConstraints(psi),
-                ).map(v)
+                is KtTypeConstraintList -> convertTypeConstraintSet(v, psi)
                 is KtContractEffectList -> Node.PostModifier.Contract(
                     contractKeyword = convertKeyword(prevPsi),
                     lBracket = convertKeyword(psi.leftBracket),
@@ -912,6 +904,13 @@ open class Converter {
             }.also { prevPsi = psi }
         }
     }
+
+    open fun convertTypeConstraintSet(v: KtElement, listEl: KtTypeConstraintList) = Node.PostModifier.TypeConstraintSet(
+        whereKeyword = convertKeyword(
+            listEl.getPrevSiblingIgnoringWhitespaceAndComments() ?: error("No prev sibling for $listEl")
+        ),
+        constraints = convertTypeConstraints(listEl),
+    ).map(v)
 
     open fun convertTypeConstraints(v: KtTypeConstraintList): List<Node.PostModifier.TypeConstraintSet.TypeConstraint> =
         v.constraints.map(::convertTypeConstraint)
@@ -938,6 +937,13 @@ open class Converter {
         ((mapTextToKeywordKClass[v.text]?.createInstance() as? T) ?: error("Unexpected keyword: ${v.text}"))
             .map(v)
 
+    /**
+     * Map AST node to PSI element.
+     *
+     * You should map single node to only one PSI element.
+     * You can map two or more nodes to one PSI element.
+     * All children of the node must be descendants of the PSI element.
+     */
     protected open fun <T : Node> T.map(v: PsiElement) = also { onNode(it, v) }
     protected open fun <T : Node> T.mapNotCorrespondsPsiElement(v: PsiElement) = also { onNode(it, null) }
 
