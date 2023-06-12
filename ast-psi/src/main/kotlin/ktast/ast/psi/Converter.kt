@@ -30,11 +30,16 @@ open class Converter {
         declarations = v.declarations.map(::convertDeclaration)
     ).map(v)
 
-    open fun convertPackageDirective(v: KtPackageDirective) = Node.PackageDirective(
-        modifiers = convertModifiers(v.modifierList),
-        packageKeyword = convertKeyword(v.packageKeyword ?: error("No package keyword $v")),
-        names = v.packageNames.map(::convertNameExpression),
-    ).map(v)
+    open fun convertPackageDirective(v: KtPackageDirective): Node.PackageDirective {
+        if (v.modifierList != null) {
+            throw Unsupported("Package directive with modifiers is not supported")
+        }
+        return Node.PackageDirective(
+            modifiers = convertModifiers(v.modifierList),
+            packageKeyword = convertKeyword(v.packageKeyword ?: error("No package keyword $v")),
+            names = v.packageNames.map(::convertNameExpression),
+        ).map(v)
+    }
 
     open fun convertImportDirective(v: KtImportDirective) = Node.ImportDirective(
         importKeyword = convertKeyword(v.importKeyword),
