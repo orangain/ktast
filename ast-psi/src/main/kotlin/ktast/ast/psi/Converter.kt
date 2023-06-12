@@ -192,10 +192,15 @@ open class Converter {
             classBody = v.body?.let(::convertClassBody),
         ).map(v)
 
-    open fun convertInitializer(v: KtAnonymousInitializer) = Node.Declaration.ClassDeclaration.ClassBody.Initializer(
-        modifiers = convertModifiers(v.modifierList),
-        block = convertBlockExpression(v.body as? KtBlockExpression ?: error("No init block for $v")),
-    ).map(v)
+    open fun convertInitializer(v: KtAnonymousInitializer): Node.Declaration.ClassDeclaration.ClassBody.Initializer {
+        if (v.modifierList != null) {
+            throw Unsupported("Anonymous initializer with modifiers not supported")
+        }
+        return Node.Declaration.ClassDeclaration.ClassBody.Initializer(
+            modifiers = convertModifiers(v.modifierList),
+            block = convertBlockExpression(v.body as? KtBlockExpression ?: error("No init block for $v")),
+        ).map(v)
+    }
 
     open fun convertSecondaryConstructor(v: KtSecondaryConstructor) =
         Node.Declaration.ClassDeclaration.ClassBody.SecondaryConstructor(
