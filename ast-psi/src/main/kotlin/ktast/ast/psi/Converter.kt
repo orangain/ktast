@@ -482,7 +482,7 @@ open class Converter {
             }
         ),
         rPar = convertKeyword(v.rightParenthesis ?: error("No right parenthesis for $v")),
-    ).mapNotCorrespondsPsiElement(v)
+    ).map(v)
 
     open fun convertWhenBranch(v: KtWhenEntry): Node.Expression.WhenExpression.WhenBranch = when (v.elseKeyword) {
         null -> convertConditionalWhenBranch(v)
@@ -735,7 +735,7 @@ open class Converter {
 
     open fun convertAnonymousFunctionExpression(v: KtNamedFunction) = Node.Expression.AnonymousFunctionExpression(
         function = convertFunctionDeclaration(v),
-    ).mapNotCorrespondsPsiElement(v)
+    ).map(v)
 
     open fun convertTypeParams(v: KtTypeParameterList?): List<Node.TypeParam> =
         v?.parameters.orEmpty().map(::convertTypeParam)
@@ -792,13 +792,13 @@ open class Converter {
         annotationSets = listOf(), // Annotations immediately before the name is not allowed.
         name = v.nameIdentifier?.let(::convertNameExpression) ?: error("No property name on $v"),
         type = v.typeReference?.let(::convertType)
-    ).mapNotCorrespondsPsiElement(v)
+    ).map(v)
 
     open fun convertVariable(v: KtParameter) = Node.Variable(
         annotationSets = convertAnnotationSets(v.modifierList),
         name = v.nameIdentifier?.let(::convertNameExpression) ?: error("No lambda param name on $v"),
         type = v.typeReference?.let(::convertType),
-    ).mapNotCorrespondsPsiElement(v)
+    ).map(v)
 
     open fun convertTypeArgs(v: KtTypeArgumentList?): List<Node.TypeArg> = v?.arguments.orEmpty().map(::convertTypeArg)
 
@@ -833,7 +833,7 @@ open class Converter {
         lPar = convertKeyword(v.leftParenthesis),
         receiverTypes = v.contextReceivers().map { convertType(it.typeReference() ?: error("No type ref for $it")) },
         rPar = convertKeyword(v.rightParenthesis),
-    ).mapNotCorrespondsPsiElement(v)
+    ).map(v)
 
     open fun convertModifiers(v: KtModifierList?): List<Node.Modifier> {
         return v?.nonExtraChildren().orEmpty().map { element ->
@@ -901,13 +901,13 @@ open class Converter {
                 is KtTypeConstraintList -> Node.PostModifier.TypeConstraintSet(
                     whereKeyword = convertKeyword(prevPsi),
                     constraints = convertTypeConstraints(psi),
-                ).mapNotCorrespondsPsiElement(v)
+                ).map(v)
                 is KtContractEffectList -> Node.PostModifier.Contract(
                     contractKeyword = convertKeyword(prevPsi),
                     lBracket = convertKeyword(psi.leftBracket),
                     contractEffects = convertContractEffects(psi),
                     rBracket = convertKeyword(psi.rightBracket),
-                ).mapNotCorrespondsPsiElement(v)
+                ).map(v)
                 else -> null
             }.also { prevPsi = psi }
         }
