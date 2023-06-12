@@ -113,10 +113,8 @@ open class Visitor {
                     visitChildren(rPar)
                 }
                 is Node.Declaration.ClassDeclaration.ClassBody -> {
-                    visitChildren(lBrace)
                     visitChildren(enumEntries)
                     visitChildren(declarations)
-                    visitChildren(rBrace)
                 }
                 is Node.Declaration.ClassDeclaration.ClassBody.Initializer -> {
                     visitChildren(block)
@@ -331,11 +329,9 @@ open class Visitor {
                 }
                 is Node.Expression.ConstantLiteralExpression -> {}
                 is Node.Expression.LambdaExpression -> {
-                    visitChildren(lBrace)
                     visitChildren(params)
                     visitChildren(arrow)
                     visitChildren(lambdaBody)
-                    visitChildren(rBrace)
                 }
                 is Node.LambdaParam -> {
                     visitChildren(lPar)
@@ -357,9 +353,7 @@ open class Visitor {
                 is Node.Expression.WhenExpression -> {
                     visitChildren(whenKeyword)
                     visitChildren(subject)
-                    visitChildren(lBrace)
                     visitChildren(whenBranches)
-                    visitChildren(rBrace)
                 }
                 is Node.Expression.WhenExpression.WhenSubject -> {
                     visitChildren(lPar)
@@ -439,9 +433,7 @@ open class Visitor {
                     visitChildren(function)
                 }
                 is Node.Expression.BlockExpression -> {
-                    visitChildren(lBrace)
                     visitChildren(statements)
-                    visitChildren(rBrace)
                 }
                 is Node.Modifier.AnnotationSet -> {
                     visitChildren(atSymbol)

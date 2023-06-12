@@ -171,10 +171,8 @@ open class Converter {
         val ktEnumEntries = v.declarations.filterIsInstance<KtEnumEntry>()
         val declarationsExcludingKtEnumEntry = v.declarations.filter { it !is KtEnumEntry }
         return Node.Declaration.ClassDeclaration.ClassBody(
-            lBrace = convertKeyword(v.lBrace ?: error("Missing lBrace for $v")),
             enumEntries = ktEnumEntries.map(::convertEnumEntry),
             declarations = declarationsExcludingKtEnumEntry.map(::convertDeclaration),
-            rBrace = convertKeyword(v.rBrace ?: error("Missing rBrace for $v")),
         ).map(v)
     }
 
@@ -527,9 +525,7 @@ open class Converter {
     open fun convertWhenExpression(v: KtWhenExpression) = Node.Expression.WhenExpression(
         whenKeyword = convertKeyword(v.whenKeyword),
         subject = if (v.subjectExpression == null) null else convertWhenSubject(v),
-        lBrace = convertKeyword(v.openBrace ?: error("No left brace for $v")),
         whenBranches = v.entries.map(::convertWhenBranch),
-        rBrace = convertKeyword(v.closeBrace ?: error("No right brace for $v")),
     ).map(v)
 
     open fun convertWhenSubject(v: KtWhenExpression) = Node.Expression.WhenExpression.WhenSubject(
@@ -607,9 +603,7 @@ open class Converter {
     ).map(v)
 
     open fun convertBlockExpression(v: KtBlockExpression) = Node.Expression.BlockExpression(
-        lBrace = convertKeyword(v.lBrace ?: error("No left brace for $v")),
         statements = v.statements.map(::convertStatement),
-        rBrace = convertKeyword(v.rBrace ?: error("No right brace for $v")),
     ).map(v)
 
     open fun convertCallExpression(v: KtCallElement) = Node.Expression.CallExpression(
@@ -652,11 +646,9 @@ open class Converter {
     }
 
     open fun convertLambdaExpression(v: KtLambdaExpression) = Node.Expression.LambdaExpression(
-        lBrace = convertKeyword(v.lBrace),
         params = convertLambdaParams(v.functionLiteral.valueParameterList),
         arrow = v.functionLiteral.arrow?.let(::convertKeyword),
         lambdaBody = v.bodyExpression?.let(::convertLambdaBody),
-        rBrace = convertKeyword(v.rBrace),
     ).map(v)
 
     open fun convertLambdaBody(v: KtBlockExpression) = Node.Expression.LambdaExpression.LambdaBody(

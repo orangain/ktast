@@ -430,10 +430,8 @@ sealed interface Node {
              * @property declarations list of declarations.
              */
             data class ClassBody(
-                val lBrace: Keyword.LBrace,
                 val enumEntries: List<EnumEntry>,
                 override val declarations: List<Declaration>,
-                val rBrace: Keyword.RBrace,
                 override var tag: Any? = null,
             ) : Node, WithDeclarations {
 
@@ -912,16 +910,12 @@ sealed interface Node {
          *
          * @property whenKeyword keyword of when expression.
          * @property subject subject of when expression if exists, otherwise `null`.
-         * @property lBrace left brace of when expression.
          * @property whenBranches list of when branches.
-         * @property rBrace right brace of when expression.
          */
         data class WhenExpression(
             val whenKeyword: Keyword.When,
             val subject: WhenSubject?,
-            val lBrace: Keyword.LBrace,
             val whenBranches: List<WhenBranch>,
-            val rBrace: Keyword.RBrace,
             override var tag: Any? = null,
         ) : Expression {
             /**
@@ -1110,14 +1104,10 @@ sealed interface Node {
         /**
          * AST node corresponds to KtBlockExpression.
          *
-         * @property lBrace left brace symbol of the block.
          * @property statements list of statements.
-         * @property rBrace right brace symbol of the block.
          */
         data class BlockExpression(
-            val lBrace: Keyword.LBrace,
             override val statements: List<Statement>,
-            val rBrace: Keyword.RBrace,
             override var tag: Any? = null,
         ) : Expression, WithStatements
 
@@ -1158,18 +1148,14 @@ sealed interface Node {
         /**
          * AST node corresponds to KtLambdaExpression.
          *
-         * @property lBrace left brace of the lambda expression.
          * @property params list of parameters of the lambda expression.
          * @property arrow arrow symbol of the lambda expression.
          * @property lambdaBody body of the lambda expression.
-         * @property rBrace right brace of the lambda expression.
          */
         data class LambdaExpression(
-            val lBrace: Keyword.LBrace,
             val params: List<LambdaParam>,
             val arrow: Keyword.Arrow?,
             val lambdaBody: LambdaBody?,
-            val rBrace: Keyword.RBrace,
             override var tag: Any? = null,
         ) : Expression {
 
@@ -1824,14 +1810,6 @@ sealed interface Node {
 
         data class RBracket(override var tag: Any? = null) : Keyword {
             override val text = "]"
-        }
-
-        data class LBrace(override var tag: Any? = null) : Keyword {
-            override val text = "{"
-        }
-
-        data class RBrace(override var tag: Any? = null) : Keyword {
-            override val text = "}"
         }
 
         data class At(override var tag: Any? = null) : Keyword {

@@ -106,6 +106,7 @@ open class Writer(
                     children(packageDirective)
                     children(importDirectives)
                     children(declarations)
+                    writeExtrasWithin()
                 }
                 is Node.PackageDirective -> {
                     children(packageKeyword)
@@ -159,16 +160,16 @@ open class Writer(
                     commaSeparatedChildren(lPar, params, rPar)
                 }
                 is Node.Declaration.ClassDeclaration.ClassBody -> {
-                    children(lBrace)
-                    children(enumEntries, ",")
-                    if (enumEntries.isNotEmpty() && declarations.isNotEmpty() && !containsSemicolon(
-                            extrasSinceLastNonSymbol
-                        )
-                    ) {
-                        append(";") // Insert heuristic semicolon after the last enum entry
+                    writeBlock {
+                        children(enumEntries, ",")
+                        if (enumEntries.isNotEmpty() && declarations.isNotEmpty() && !containsSemicolon(
+                                extrasSinceLastNonSymbol
+                            )
+                        ) {
+                            append(";") // Insert heuristic semicolon after the last enum entry
+                        }
+                        children(declarations)
                     }
-                    children(declarations)
-                    children(rBrace)
                 }
                 is Node.Declaration.ClassDeclaration.ClassBody.Initializer -> {
                     append("init")
@@ -381,11 +382,11 @@ open class Writer(
                 is Node.Expression.ConstantLiteralExpression ->
                     append(text)
                 is Node.Expression.LambdaExpression -> {
-                    children(lBrace)
+                    append("{")
                     commaSeparatedChildren(params)
                     children(arrow)
                     children(lambdaBody)
-                    children(rBrace)
+                    append("}")
                 }
                 is Node.LambdaParam -> {
                     children(lPar)
@@ -396,6 +397,7 @@ open class Writer(
                 }
                 is Node.Expression.LambdaExpression.LambdaBody -> {
                     children(statements)
+                    writeExtrasWithin()
                 }
                 is Node.Expression.ThisExpression -> {
                     append("this")
@@ -408,9 +410,9 @@ open class Writer(
                 }
                 is Node.Expression.WhenExpression -> {
                     children(whenKeyword, subject)
-                    children(lBrace)
-                    children(whenBranches)
-                    children(rBrace)
+                    writeBlock {
+                        children(whenBranches)
+                    }
                 }
                 is Node.Expression.WhenExpression.WhenSubject -> {
                     children(lPar)
@@ -490,9 +492,9 @@ open class Writer(
                 is Node.Expression.AnonymousFunctionExpression ->
                     children(function)
                 is Node.Expression.BlockExpression -> {
-                    children(lBrace)
-                    children(statements)
-                    children(rBrace)
+                    writeBlock {
+                        children(statements)
+                    }
                 }
                 is Node.Modifier.AnnotationSet -> {
                     children(atSymbol)
@@ -532,7 +534,6 @@ open class Writer(
             }
             Unit
         }
-        writeExtrasWithin()
         writeExtrasAfter()
     }
 
@@ -564,6 +565,13 @@ open class Writer(
             }
             append(suffix)
         }
+
+    private fun NodePath<*>.writeBlock(block: () -> Writer) {
+        append("{")
+        block()
+        writeExtrasWithin()
+        append("}")
+    }
 
     protected open fun NodePath<*>.writeHeuristicNewline() {
         val parentNode = parent?.node
