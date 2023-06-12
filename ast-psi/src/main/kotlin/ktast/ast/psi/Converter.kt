@@ -24,15 +24,15 @@ open class Converter {
     protected open fun onNode(node: Node, element: PsiElement?) {}
 
     open fun convertKotlinFile(v: KtFile) = Node.KotlinFile(
-        annotationSets = convertAnnotationSets(v),
+        annotationSets = convertAnnotationSets(v.fileAnnotationList),
         packageDirective = v.packageDirective?.takeIf { it.packageNames.isNotEmpty() }?.let(::convertPackageDirective),
         importDirectives = v.importList?.imports?.map(::convertImportDirective) ?: listOf(),
         declarations = v.declarations.map(::convertDeclaration)
     ).map(v)
 
     open fun convertPackageDirective(v: KtPackageDirective) = Node.PackageDirective(
-        packageKeyword = convertKeyword(v.packageKeyword ?: error("No package keyword $v")),
         modifiers = convertModifiers(v.modifierList),
+        packageKeyword = convertKeyword(v.packageKeyword ?: error("No package keyword $v")),
         names = v.packageNames.map(::convertNameExpression),
     ).map(v)
 
@@ -243,13 +243,7 @@ open class Converter {
         rAngle = v.typeParameterList?.rightAngle?.let(::convertKeyword),
         receiverType = v.receiverTypeReference?.let(::convertType),
         lPar = null,
-        variables = listOf(
-            Node.Variable(
-                modifiers = listOf(),
-                name = v.nameIdentifier?.let(::convertNameExpression) ?: error("No property name on $v"),
-                type = v.typeReference?.let(::convertType)
-            ).mapNotCorrespondsPsiElement(v)
-        ),
+        variables = listOf(convertVariable(v)),
         rPar = null,
         typeConstraintSet = v.typeConstraintList?.let { typeConstraintList ->
             Node.PostModifier.TypeConstraintSet(
@@ -332,10 +326,22 @@ open class Converter {
     ).map(v)
 
     open fun convertVariable(v: KtDestructuringDeclarationEntry) = Node.Variable(
-        modifiers = convertModifiers(v.modifierList),
+        annotationSets = convertAnnotationSets(v.modifierList),
         name = v.nameIdentifier?.let(::convertNameExpression) ?: error("No property name on $v"),
         type = v.typeReference?.let(::convertType)
     ).map(v)
+
+    open fun convertVariable(v: KtProperty) = Node.Variable(
+        annotationSets = listOf(), // Annotations immediately before the name is not allowed.
+        name = v.nameIdentifier?.let(::convertNameExpression) ?: error("No property name on $v"),
+        type = v.typeReference?.let(::convertType)
+    ).mapNotCorrespondsPsiElement(v)
+
+    open fun convertVariable(v: KtParameter) = Node.Variable(
+        annotationSets = convertAnnotationSets(v.modifierList),
+        name = v.nameIdentifier?.let(::convertNameExpression) ?: error("No lambda param name on $v"),
+        type = v.typeReference?.let(::convertType),
+    ).mapNotCorrespondsPsiElement(v)
 
     open fun convertTypeParams(v: KtTypeParameterList?): List<Node.TypeParam> =
         v?.parameters.orEmpty().map(::convertTypeParam)
@@ -387,21 +393,16 @@ open class Converter {
 
     protected fun convertSimpleType(modifierList: KtModifierList?, v: KtUserType) = Node.Type.SimpleType(
         modifiers = convertModifiers(modifierList),
-        qualifiers = generateSequence(v.qualifier) { it.qualifier }.toList().reversed()
-            .map(::convertTypeSimpleQualifier),
-        name = convertNameExpression(v.referenceExpression ?: error("No type name for $v")),
-        lAngle = v.typeArgumentList?.leftAngle?.let(::convertKeyword),
-        typeArgs = convertTypeArgs(v.typeArgumentList),
-        rAngle = v.typeArgumentList?.rightAngle?.let(::convertKeyword),
+        pieces = generateSequence(v) { it.qualifier }.toList().reversed()
+            .map(::convertSimpleTypePiece),
     ).mapNotCorrespondsPsiElement(v)
 
-    open fun convertTypeSimpleQualifier(v: KtUserType) = Node.Type.SimpleType.SimpleTypeQualifier(
+    open fun convertSimpleTypePiece(v: KtUserType) = Node.Type.SimpleType.SimpleTypePiece(
         name = convertNameExpression(v.referenceExpression ?: error("No type name for $v")),
         lAngle = v.typeArgumentList?.leftAngle?.let(::convertKeyword),
         typeArgs = convertTypeArgs(v.typeArgumentList),
         rAngle = v.typeArgumentList?.rightAngle?.let(::convertKeyword),
     ).mapNotCorrespondsPsiElement(v) // Don't map v because v necessarily corresponds to a single name expression.
-
 
     protected fun convertDynamicType(modifierList: KtModifierList?, v: KtDynamicType) = Node.Type.DynamicType(
         modifiers = convertModifiers(modifierList),
@@ -434,11 +435,14 @@ open class Converter {
         type = when (v.projectionKind) {
             KtProjectionKind.STAR -> Node.Type.SimpleType(
                 modifiers = listOf(),
-                qualifiers = listOf(),
-                name = convertNameExpression(v.projectionToken ?: error("Missing projection token for $v")),
-                lAngle = null,
-                typeArgs = listOf(),
-                rAngle = null,
+                pieces = listOf(
+                    Node.Type.SimpleType.SimpleTypePiece(
+                        name = convertNameExpression(v.projectionToken ?: error("Missing projection token for $v")),
+                        lAngle = null,
+                        typeArgs = listOf(),
+                        rAngle = null,
+                    )
+                ),
             ).mapNotCorrespondsPsiElement(v)
             else -> convertType(v.typeReference ?: error("Missing type ref for $v"))
         },
@@ -487,8 +491,6 @@ open class Converter {
         is KtConstructorCalleeExpression -> error("Supposed to be unreachable here. KtConstructorCalleeExpression is expected to be inside of KtSuperTypeCallEntry or KtAnnotationEntry.")
         is KtArrayAccessExpression -> convertIndexedAccessExpression(v)
         is KtNamedFunction -> convertAnonymousFunctionExpression(v)
-        is KtProperty -> convertPropertyExpression(v)
-        is KtDestructuringDeclaration -> convertPropertyExpression(v)
         // TODO: this is present in a recovery test where an interface decl is on rhs of a gt expr
         is KtClass -> throw Unsupported("Class expressions not supported")
         else -> error("Unrecognized expression type from $v")
@@ -520,11 +522,31 @@ open class Converter {
 
     open fun convertWhenExpression(v: KtWhenExpression) = Node.Expression.WhenExpression(
         whenKeyword = convertKeyword(v.whenKeyword),
-        lPar = v.leftParenthesis?.let(::convertKeyword),
-        expression = v.subjectExpression?.let(this::convertExpression),
-        rPar = v.rightParenthesis?.let(::convertKeyword),
+        subject = if (v.subjectExpression == null) null else convertWhenSubject(v),
+        lBrace = convertKeyword(v.openBrace ?: error("No left brace for $v")),
         whenBranches = v.entries.map(::convertWhenBranch),
+        rBrace = convertKeyword(v.closeBrace ?: error("No right brace for $v")),
     ).map(v)
+
+    open fun convertWhenSubject(v: KtWhenExpression) = Node.Expression.WhenExpression.WhenSubject(
+        lPar = convertKeyword(v.leftParenthesis ?: error("No left parenthesis for $v")),
+        annotationSets = when (val expression = v.subjectExpression) {
+            is KtProperty -> convertAnnotationSets(expression.modifierList)
+            else -> listOf()
+        },
+        valKeyword = v.subjectVariable?.valOrVarKeyword?.let(::convertKeyword),
+        variable = v.subjectVariable?.let(::convertVariable),
+        expression = convertExpression(
+            when (val expression = v.subjectExpression) {
+                is KtProperty -> expression.initializer
+                    ?: throw Unsupported("No initializer for when subject is not supported")
+                is KtDestructuringDeclaration -> throw Unsupported("Destructuring declarations in when subject is not supported")
+                null -> error("Supposed to be unreachable here. convertWhenSubject should be called only when subjectExpression is not null.")
+                else -> expression
+            }
+        ),
+        rPar = convertKeyword(v.rightParenthesis ?: error("No right parenthesis for $v")),
+    ).mapNotCorrespondsPsiElement(v)
 
     open fun convertWhenBranch(v: KtWhenEntry): Node.Expression.WhenExpression.WhenBranch = when (v.elseKeyword) {
         null -> convertConditionalWhenBranch(v)
@@ -787,14 +809,6 @@ open class Converter {
         function = convertFunctionDeclaration(v),
     ).mapNotCorrespondsPsiElement(v)
 
-    open fun convertPropertyExpression(v: KtProperty) = Node.Expression.PropertyExpression(
-        property = convertPropertyDeclaration(v)
-    ).mapNotCorrespondsPsiElement(v)
-
-    open fun convertPropertyExpression(v: KtDestructuringDeclaration) = Node.Expression.PropertyExpression(
-        property = convertPropertyDeclaration(v)
-    ).mapNotCorrespondsPsiElement(v)
-
     open fun convertLambdaParams(v: KtParameterList?): List<Node.LambdaParam> =
         v?.parameters.orEmpty().map(::convertLambdaParam)
 
@@ -811,13 +825,7 @@ open class Converter {
         } else {
             Node.LambdaParam(
                 lPar = null,
-                variables = listOf(
-                    Node.Variable(
-                        modifiers = convertModifiers(v.modifierList),
-                        name = v.nameIdentifier?.let(::convertNameExpression) ?: error("No lambda param name on $v"),
-                        type = v.typeReference?.let(::convertType),
-                    ).mapNotCorrespondsPsiElement(v)
-                ),
+                variables = listOf(convertVariable(v)),
                 rPar = null,
                 colon = null,
                 destructType = null,
@@ -825,33 +833,24 @@ open class Converter {
         }
     }
 
-    open fun convertAnnotationSets(v: KtElement): List<Node.Modifier.AnnotationSet> = v.children.flatMap { elem ->
-        // We go over the node children because we want to preserve order
-        when (elem) {
-            is KtAnnotationEntry ->
-                listOf(convertAnnotationSet(elem))
-            is KtAnnotation ->
-                listOf(convertAnnotationSet(elem))
-            is KtAnnotationsContainer ->
-                convertAnnotationSets(elem)
-            else ->
-                emptyList()
+    open fun convertModifiers(v: KtModifierList?): List<Node.Modifier> {
+        return v?.nonExtraChildren().orEmpty().map { element ->
+            when (element) {
+                is KtAnnotationEntry -> convertAnnotationSet(element)
+                is KtAnnotation -> convertAnnotationSet(element)
+                else -> convertKeyword<Node.Modifier.KeywordModifier>(element)
+            }
         }
     }
 
-    open fun convertModifiers(v: KtModifierList?): List<Node.Modifier> {
-        if (v == null) {
-            return listOf()
-        }
-        return v.nonExtraChildren().mapNotNull { psi ->
-            // We go over the node children because we want to preserve order
-            when (psi) {
-                is KtAnnotationEntry -> convertAnnotationSet(psi)
-                is KtAnnotation -> convertAnnotationSet(psi)
-                is PsiWhiteSpace -> null
-                else -> convertKeyword<Node.Modifier.KeywordModifier>(psi)
+    open fun convertAnnotationSets(v: KtAnnotationsContainer?): List<Node.Modifier.AnnotationSet> {
+        return v?.children.orEmpty().mapNotNull { element ->
+            when (element) {
+                is KtAnnotationEntry -> convertAnnotationSet(element)
+                is KtAnnotation -> convertAnnotationSet(element)
+                else -> null
             }
-        }.toList()
+        }
     }
 
     open fun convertAnnotationSet(v: KtAnnotation) = Node.Modifier.AnnotationSet(

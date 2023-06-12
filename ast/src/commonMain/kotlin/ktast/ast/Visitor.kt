@@ -165,7 +165,7 @@ open class Visitor {
                     visitChildren(expression)
                 }
                 is Node.Variable -> {
-                    visitChildren(modifiers)
+                    visitChildren(annotationSets)
                     visitChildren(name)
                     visitChildren(type)
                 }
@@ -239,13 +239,9 @@ open class Visitor {
                 }
                 is Node.Type.SimpleType -> {
                     visitChildren(modifiers)
-                    visitChildren(qualifiers)
-                    visitChildren(name)
-                    visitChildren(lAngle)
-                    visitChildren(typeArgs)
-                    visitChildren(rAngle)
+                    visitChildren(pieces)
                 }
-                is Node.Type.SimpleType.SimpleTypeQualifier -> {
+                is Node.Type.SimpleType.SimpleTypePiece -> {
                     visitChildren(name)
                     visitChildren(lAngle)
                     visitChildren(typeArgs)
@@ -357,10 +353,18 @@ open class Visitor {
                 }
                 is Node.Expression.WhenExpression -> {
                     visitChildren(whenKeyword)
+                    visitChildren(subject)
+                    visitChildren(lBrace)
+                    visitChildren(whenBranches)
+                    visitChildren(rBrace)
+                }
+                is Node.Expression.WhenExpression.WhenSubject -> {
                     visitChildren(lPar)
+                    visitChildren(annotationSets)
+                    visitChildren(valKeyword)
+                    visitChildren(variable)
                     visitChildren(expression)
                     visitChildren(rPar)
-                    visitChildren(whenBranches)
                 }
                 is Node.Expression.WhenExpression.ConditionalWhenBranch -> {
                     visitChildren(whenConditions)
@@ -430,9 +434,6 @@ open class Visitor {
                 }
                 is Node.Expression.AnonymousFunctionExpression -> {
                     visitChildren(function)
-                }
-                is Node.Expression.PropertyExpression -> {
-                    visitChildren(property)
                 }
                 is Node.Expression.BlockExpression -> {
                     visitChildren(lBrace)

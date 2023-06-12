@@ -194,7 +194,7 @@ open class MutableVisitor(
                         expression = visitChildren(expression, newCh),
                     )
                     is Node.Variable -> copy(
-                        modifiers = visitChildren(modifiers, newCh),
+                        annotationSets = visitChildren(annotationSets, newCh),
                         name = visitChildren(name, newCh),
                         type = visitChildren(type, newCh),
                     )
@@ -267,13 +267,9 @@ open class MutableVisitor(
                     )
                     is Node.Type.SimpleType -> copy(
                         modifiers = visitChildren(modifiers, newCh),
-                        qualifiers = visitChildren(qualifiers, newCh),
-                        name = visitChildren(name, newCh),
-                        lAngle = visitChildren(lAngle, newCh),
-                        typeArgs = visitChildren(typeArgs, newCh),
-                        rAngle = visitChildren(rAngle, newCh),
+                        pieces = visitChildren(pieces, newCh),
                     )
-                    is Node.Type.SimpleType.SimpleTypeQualifier -> copy(
+                    is Node.Type.SimpleType.SimpleTypePiece -> copy(
                         name = visitChildren(name, newCh),
                         lAngle = visitChildren(lAngle, newCh),
                         typeArgs = visitChildren(typeArgs, newCh),
@@ -385,10 +381,18 @@ open class MutableVisitor(
                     )
                     is Node.Expression.WhenExpression -> copy(
                         whenKeyword = visitChildren(whenKeyword, newCh),
+                        subject = visitChildren(subject, newCh),
+                        lBrace = visitChildren(lBrace, newCh),
+                        whenBranches = visitChildren(whenBranches, newCh),
+                        rBrace = visitChildren(rBrace, newCh),
+                    )
+                    is Node.Expression.WhenExpression.WhenSubject -> copy(
                         lPar = visitChildren(lPar, newCh),
+                        annotationSets = visitChildren(annotationSets, newCh),
+                        valKeyword = visitChildren(valKeyword, newCh),
+                        variable = visitChildren(variable, newCh),
                         expression = visitChildren(expression, newCh),
                         rPar = visitChildren(rPar, newCh),
-                        whenBranches = visitChildren(whenBranches, newCh),
                     )
                     is Node.Expression.WhenExpression.ConditionalWhenBranch -> copy(
                         whenConditions = visitChildren(whenConditions, newCh),
@@ -458,9 +462,6 @@ open class MutableVisitor(
                     )
                     is Node.Expression.AnonymousFunctionExpression -> copy(
                         function = visitChildren(function, newCh)
-                    )
-                    is Node.Expression.PropertyExpression -> copy(
-                        property = visitChildren(property, newCh)
                     )
                     is Node.Expression.BlockExpression -> copy(
                         lBrace = visitChildren(lBrace, newCh),

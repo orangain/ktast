@@ -16,11 +16,11 @@ import kotlin.collections.ArrayDeque
  * Converts PSI elements to AST nodes and keeps track of extras.
  */
 open class ConverterWithExtras : Converter(), ExtrasMap {
-    // Sometimes many nodes are created from the same element, but we only want the last node we're given. We
-    // remove the previous nodes we've found for the same identity when we see a new one. So we don't have to
-    // keep PSI elems around, we hold a map to the element's identity hash code. Then we use that number to tie
+    // Sometimes many nodes are created from the same element, but we only want the last node, i.e. the most ancestor node.
+    // We remove the previous nodes we've found for the same identity when we see a new one. So we don't have to
+    // keep PSI elements around, we hold a map to the element's identity hash code. Then we use that number to tie
     // to the extras to keep duplicates out. Usually using identity hash codes would be problematic due to
-    // potential reuse, we know the PSI objects are all around at the same time so it's good enough.
+    // potential reuse, we know the PSI objects are all around at the same time, so it's good enough.
     protected val psiIdentitiesToNodes = mutableMapOf<Int, Node>()
     protected val extrasBefore = IdentityHashMap<Node, List<Node.Extra>>()
     protected val extrasWithin = IdentityHashMap<Node, List<Node.Extra>>()
@@ -36,11 +36,8 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
     override fun onNode(node: Node, element: PsiElement?) {
         // We ignore whitespace and comments here to prevent recursion
         if (element is PsiWhiteSpace || element is PsiComment || element == null) return
-        // If we've done this elem before, just set this node as the curr and move on
+        // We only want the last node, i.e. the most ancestor node.
         val elemId = System.identityHashCode(element)
-        if (psiIdentitiesToNodes.contains(elemId)) {
-            return
-        }
         psiIdentitiesToNodes[elemId] = node
 
         if (node is Node.KotlinEntry) {

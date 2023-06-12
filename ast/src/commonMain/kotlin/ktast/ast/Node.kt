@@ -690,16 +690,16 @@ sealed interface Node {
     /**
      * AST node corresponds to KtDestructuringDeclarationEntry, virtual AST node corresponds a part of KtProperty, or virtual AST node corresponds to KtParameter whose child is IDENTIFIER.
      *
-     * @property modifiers list of modifiers.
+     * @property annotationSets list of annotation sets.
      * @property name name of the variable.
      * @property type type of the variable if exists, otherwise `null`.
      */
     data class Variable(
-        override val modifiers: List<Modifier>,
+        override val annotationSets: List<Modifier.AnnotationSet>,
         val name: Expression.NameExpression,
         val type: Type?,
         override var tag: Any? = null,
-    ) : Node, WithModifiers
+    ) : Node, WithAnnotationSets
 
     /**
      * AST node that represents a formal type parameter of a function or a class. For example, `T` in `fun <T> f()` is a type parameter. The node corresponds to KtTypeParameter.
@@ -750,40 +750,29 @@ sealed interface Node {
             override var tag: Any? = null,
         ) : Type
 
-        private interface NameWithTypeArgs : WithTypeArgs {
-            val name: Expression.NameExpression
-        }
-
         /**
          * Virtual AST node that represents a simple type. The node corresponds to KtUserType and modifiers of its parent.
          *
          * @property modifiers list of modifiers.
-         * @property qualifiers list of qualifiers.
-         * @property name name of the type.
-         * @property typeArgs list of type arguments.
+         * @property pieces list of pieces. The piece represents a pair of a name and type arguments.
          */
         data class SimpleType(
             override val modifiers: List<Modifier>,
-            val qualifiers: List<SimpleTypeQualifier>,
-            override val name: Expression.NameExpression,
-            override val lAngle: Keyword.Less?,
-            override val typeArgs: List<TypeArg>,
-            override val rAngle: Keyword.Greater?,
+            val pieces: List<SimpleTypePiece>,
             override var tag: Any? = null,
-        ) : Type, NameWithTypeArgs {
+        ) : Type {
             /**
-             * AST node corresponds to KtUserType used as a qualifier.
+             * AST node corresponds to KtUserType used as a piece.
              *
-             * @property name name of the qualifier.
-             * @property typeArgs list of type arguments.
+             * @property name name of the piece.
              */
-            data class SimpleTypeQualifier(
-                override val name: Expression.NameExpression,
+            data class SimpleTypePiece(
+                val name: Expression.NameExpression,
                 override val lAngle: Keyword.Less?,
                 override val typeArgs: List<TypeArg>,
                 override val rAngle: Keyword.Greater?,
                 override var tag: Any? = null,
-            ) : Node, NameWithTypeArgs
+            ) : Node, WithTypeArgs
         }
 
         /**
@@ -937,19 +926,39 @@ sealed interface Node {
          * AST node corresponds to KtWhenExpression.
          *
          * @property whenKeyword keyword of when expression.
-         * @property lPar left parenthesis of when expression if exists, otherwise `null`.
-         * @property expression subject expression of when expression if exists, otherwise `null`.
-         * @property rPar right parenthesis of when expression if exists, otherwise `null`.
+         * @property subject subject of when expression if exists, otherwise `null`.
+         * @property lBrace left brace of when expression.
          * @property whenBranches list of when branches.
+         * @property rBrace right brace of when expression.
          */
         data class WhenExpression(
             val whenKeyword: Keyword.When,
-            val lPar: Keyword.LPar?,
-            val expression: Expression?,
-            val rPar: Keyword.RPar?,
+            val subject: WhenSubject?,
+            val lBrace: Keyword.LBrace,
             val whenBranches: List<WhenBranch>,
+            val rBrace: Keyword.RBrace,
             override var tag: Any? = null,
         ) : Expression {
+            /**
+             * Virtual AST node that represents the subject of when expression. This node corresponds to a part of KtWhenExpression.
+             *
+             * @property lPar left parenthesis of when subject.
+             * @property annotationSets list of annotation sets.
+             * @property valKeyword `val` keyword if exists, otherwise `null`.
+             * @property variable variable of when subject if exists, otherwise `null`.
+             * @property expression expression of when subject.
+             * @property rPar right parenthesis of when subject.
+             */
+            data class WhenSubject(
+                val lPar: Keyword.LPar,
+                override val annotationSets: List<Modifier.AnnotationSet>,
+                val valKeyword: Keyword.Val?,
+                val variable: Variable?,
+                val expression: Expression,
+                val rPar: Keyword.RPar,
+                override var tag: Any? = null,
+            ) : Node, WithAnnotationSets
+
             /**
              * AST node corresponds to KtWhenEntry.
              *
@@ -1549,17 +1558,6 @@ sealed interface Node {
          */
         data class AnonymousFunctionExpression(
             val function: Declaration.FunctionDeclaration,
-            override var tag: Any? = null,
-        ) : Expression
-
-        /**
-         * Virtual AST node corresponds to KtProperty or KtDestructuringDeclaration in expression context.
-         * This is only present for when expressions and labeled expressions.
-         *
-         * @property property property declaration.
-         */
-        data class PropertyExpression(
-            val property: Declaration.PropertyDeclaration,
             override var tag: Any? = null,
         ) : Expression
     }

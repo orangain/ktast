@@ -216,7 +216,7 @@ open class Writer(
                     children(expression)
                 }
                 is Node.Variable -> {
-                    children(modifiers)
+                    children(annotationSets)
                     children(name)
                     if (type != null) append(":").also { children(type) }
                 }
@@ -292,14 +292,9 @@ open class Writer(
                 }
                 is Node.Type.SimpleType -> {
                     children(modifiers)
-                    if (qualifiers.isNotEmpty()) {
-                        children(qualifiers, ".")
-                        append(".")
-                    }
-                    children(name)
-                    commaSeparatedChildren(lAngle, typeArgs, rAngle)
+                    children(pieces, ".")
                 }
-                is Node.Type.SimpleType.SimpleTypeQualifier -> {
+                is Node.Type.SimpleType.SimpleTypePiece -> {
                     children(name)
                     commaSeparatedChildren(lAngle, typeArgs, rAngle)
                 }
@@ -415,10 +410,19 @@ open class Writer(
                     appendLabel(label)
                 }
                 is Node.Expression.WhenExpression -> {
-                    children(whenKeyword, lPar, expression, rPar)
-                    append("{")
+                    children(whenKeyword, subject)
+                    children(lBrace)
                     children(whenBranches)
-                    append("}")
+                    children(rBrace)
+                }
+                is Node.Expression.WhenExpression.WhenSubject -> {
+                    children(lPar)
+                    children(annotationSets)
+                    children(valKeyword, variable)
+                    if (variable != null) {
+                        append("=")
+                    }
+                    children(expression, rPar)
                 }
                 is Node.Expression.WhenExpression.ConditionalWhenBranch -> {
                     children(whenConditions, ",")
@@ -488,8 +492,6 @@ open class Writer(
                 }
                 is Node.Expression.AnonymousFunctionExpression ->
                     children(function)
-                is Node.Expression.PropertyExpression ->
-                    children(property)
                 is Node.Expression.BlockExpression -> {
                     children(lBrace)
                     children(statements)
