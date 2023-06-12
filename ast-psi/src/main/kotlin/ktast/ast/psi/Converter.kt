@@ -44,7 +44,7 @@ open class Converter {
         importKeyword = convertKeyword(v.importKeyword),
         names = convertImportNames(v.importedReference ?: error("No imported reference for $v"))
                 + listOfNotNull(v.asterisk?.let(::convertNameExpression)),
-        importAlias = v.alias?.let(::convertImportAlias)
+        aliasName = v.alias?.nameIdentifier?.let(::convertNameExpression),
     ).map(v)
 
     protected fun convertImportNames(v: KtExpression): List<Node.Expression.NameExpression> = when (v) {
@@ -58,10 +58,6 @@ open class Converter {
         is KtReferenceExpression -> listOf(convertNameExpression(v))
         else -> error("Unexpected type $v")
     }
-
-    open fun convertImportAlias(v: KtImportAlias) = Node.ImportDirective.ImportAlias(
-        name = convertNameExpression(v.nameIdentifier ?: error("No name identifier for $v")),
-    ).map(v)
 
     open fun convertStatement(v: KtExpression): Node.Statement = when (v) {
         is KtForExpression -> convertForStatement(v)

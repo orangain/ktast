@@ -186,25 +186,14 @@ sealed interface Node {
      *
      * @property importKeyword import keyword.
      * @property names list of names separated by dots.
-     * @property importAlias import alias if exists, otherwise `null`.
+     * @property aliasName import alias name if exists, otherwise `null`.
      */
     data class ImportDirective(
         val importKeyword: Keyword.Import,
         val names: List<Expression.NameExpression>,
-        val importAlias: ImportAlias?,
+        val aliasName: Expression.NameExpression?,
         override var tag: Any? = null,
-    ) : Node {
-
-        /**
-         * AST node corresponds to KtImportAlias.
-         *
-         * @property name name of the alias.
-         */
-        data class ImportAlias(
-            val name: Expression.NameExpression,
-            override var tag: Any? = null,
-        ) : Node
-    }
+    ) : Node
 
     /**
      * Common interface for [Declaration], [Expression] and loop statements.

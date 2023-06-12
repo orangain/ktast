@@ -53,10 +53,7 @@ open class Visitor {
                 is Node.ImportDirective -> {
                     visitChildren(importKeyword)
                     visitChildren(names)
-                    visitChildren(importAlias)
-                }
-                is Node.ImportDirective.ImportAlias -> {
-                    visitChildren(name)
+                    visitChildren(aliasName)
                 }
                 is Node.Statement.ForStatement -> {
                     visitChildren(forKeyword)

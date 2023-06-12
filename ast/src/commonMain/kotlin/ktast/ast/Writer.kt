@@ -114,11 +114,10 @@ open class Writer(
                 is Node.ImportDirective -> {
                     children(importKeyword)
                     children(names, ".")
-                    children(importAlias)
-                }
-                is Node.ImportDirective.ImportAlias -> {
-                    append("as")
-                    children(name)
+                    if (aliasName != null) {
+                        append("as")
+                        children(aliasName)
+                    }
                 }
                 is Node.Statement.ForStatement -> {
                     children(forKeyword, lPar, loopParam, inKeyword, loopRange, rPar, body)

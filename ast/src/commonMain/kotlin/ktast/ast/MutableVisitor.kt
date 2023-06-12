@@ -82,10 +82,7 @@ open class MutableVisitor(
                     is Node.ImportDirective -> copy(
                         importKeyword = visitChildren(importKeyword, newCh),
                         names = visitChildren(names, newCh),
-                        importAlias = visitChildren(importAlias, newCh),
-                    )
-                    is Node.ImportDirective.ImportAlias -> copy(
-                        name = visitChildren(name, newCh),
+                        aliasName = visitChildren(aliasName, newCh),
                     )
                     is Node.Statement.ForStatement -> copy(
                         forKeyword = visitChildren(forKeyword, newCh),
