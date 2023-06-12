@@ -172,7 +172,6 @@ open class Writer(
                     children(rBrace)
                 }
                 is Node.Declaration.ClassDeclaration.ClassBody.Initializer -> {
-                    children(modifiers)
                     append("init")
                     children(block)
                 }

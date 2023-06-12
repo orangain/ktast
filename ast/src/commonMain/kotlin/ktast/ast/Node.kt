@@ -469,14 +469,12 @@ sealed interface Node {
                 /**
                  * AST node that represents an init block, a.k.a. initializer. The node corresponds to KtAnonymousInitializer.
                  *
-                 * @property modifiers list of modifiers.
                  * @property block block of the initializer.
                  */
                 data class Initializer(
-                    override val modifiers: List<Modifier>,
                     val block: Expression.BlockExpression,
                     override var tag: Any? = null,
-                ) : Declaration, WithModifiers
+                ) : Declaration
 
                 /**
                  * AST node corresponds to KtSecondaryConstructor.

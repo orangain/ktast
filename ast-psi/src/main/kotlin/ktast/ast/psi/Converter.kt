@@ -197,7 +197,6 @@ open class Converter {
             throw Unsupported("Anonymous initializer with modifiers not supported")
         }
         return Node.Declaration.ClassDeclaration.ClassBody.Initializer(
-            modifiers = convertModifiers(v.modifierList),
             block = convertBlockExpression(v.body as? KtBlockExpression ?: error("No init block for $v")),
         ).map(v)
     }

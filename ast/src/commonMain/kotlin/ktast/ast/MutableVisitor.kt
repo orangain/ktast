@@ -151,7 +151,6 @@ open class MutableVisitor(
                         rBrace = visitChildren(rBrace, newCh),
                     )
                     is Node.Declaration.ClassDeclaration.ClassBody.Initializer -> copy(
-                        modifiers = visitChildren(modifiers, newCh),
                         block = visitChildren(block, newCh),
                     )
                     is Node.Declaration.FunctionDeclaration -> copy(

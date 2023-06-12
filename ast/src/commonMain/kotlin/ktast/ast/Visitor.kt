@@ -122,7 +122,6 @@ open class Visitor {
                     visitChildren(rBrace)
                 }
                 is Node.Declaration.ClassDeclaration.ClassBody.Initializer -> {
-                    visitChildren(modifiers)
                     visitChildren(block)
                 }
                 is Node.Declaration.FunctionDeclaration -> {
