@@ -87,7 +87,9 @@ open class Visitor {
                     visitChildren(modifiers)
                     visitChildren(classDeclarationKeyword)
                     visitChildren(name)
+                    visitChildren(lAngle)
                     visitChildren(typeParams)
+                    visitChildren(rAngle)
                     visitChildren(primaryConstructor)
                     visitChildren(classParents)
                     visitChildren(typeConstraintSet)
@@ -127,7 +129,9 @@ open class Visitor {
                 is Node.Declaration.FunctionDeclaration -> {
                     visitChildren(modifiers)
                     visitChildren(funKeyword)
+                    visitChildren(lAngle)
                     visitChildren(typeParams)
+                    visitChildren(rAngle)
                     visitChildren(receiverType)
                     visitChildren(name)
                     visitChildren(lPar)
@@ -149,7 +153,9 @@ open class Visitor {
                 is Node.Declaration.PropertyDeclaration -> {
                     visitChildren(modifiers)
                     visitChildren(valOrVarKeyword)
+                    visitChildren(lAngle)
                     visitChildren(typeParams)
+                    visitChildren(rAngle)
                     visitChildren(receiverType)
                     visitChildren(lPar)
                     visitChildren(variables)
@@ -188,7 +194,9 @@ open class Visitor {
                 is Node.Declaration.TypeAliasDeclaration -> {
                     visitChildren(modifiers)
                     visitChildren(name)
+                    visitChildren(lAngle)
                     visitChildren(typeParams)
+                    visitChildren(rAngle)
                     visitChildren(equals)
                     visitChildren(type)
                 }
