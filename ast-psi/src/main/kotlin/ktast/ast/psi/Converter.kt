@@ -336,29 +336,31 @@ open class Converter {
                 lPar = convertKeyword(restChildren.first()),
                 innerType = convertType(v, restChildren.subList(1, restChildren.size - 1)),
                 rPar = convertKeyword(restChildren.last()),
-            ).mapNotCorrespondsPsiElement(v)
+            ).map(v)
         }
 
         return when (val typeEl = restChildren.first()) {
-            is KtFunctionType -> convertFunctionType(modifierList, typeEl)
-            is KtUserType -> convertSimpleType(modifierList, typeEl)
-            is KtNullableType -> convertNullableType(modifierList, typeEl)
-            is KtDynamicType -> convertDynamicType(modifierList, typeEl)
+            is KtFunctionType -> convertFunctionType(v, modifierList, typeEl)
+            is KtUserType -> convertSimpleType(v, modifierList, typeEl)
+            is KtNullableType -> convertNullableType(v, modifierList, typeEl)
+            is KtDynamicType -> convertDynamicType(v, modifierList, typeEl)
             else -> error("Unrecognized type of $typeEl")
         }
     }
 
-    protected fun convertNullableType(modifierList: KtModifierList?, v: KtNullableType) = Node.Type.NullableType(
-        modifiers = convertModifiers(modifierList),
-        innerType = convertType(v, v.nonExtraChildren()),
-        questionMark = convertKeyword(v.questionMark),
-    ).mapNotCorrespondsPsiElement(v)
+    protected fun convertNullableType(v: KtElement, modifierList: KtModifierList?, typeEl: KtNullableType) =
+        Node.Type.NullableType(
+            modifiers = convertModifiers(modifierList),
+            innerType = convertType(typeEl, typeEl.nonExtraChildren()),
+            questionMark = convertKeyword(typeEl.questionMark),
+        ).map(v)
 
-    protected fun convertSimpleType(modifierList: KtModifierList?, v: KtUserType) = Node.Type.SimpleType(
-        modifiers = convertModifiers(modifierList),
-        pieces = generateSequence(v) { it.qualifier }.toList().reversed()
-            .map(::convertSimpleTypePiece),
-    ).mapNotCorrespondsPsiElement(v)
+    protected fun convertSimpleType(v: KtElement, modifierList: KtModifierList?, typeEl: KtUserType) =
+        Node.Type.SimpleType(
+            modifiers = convertModifiers(modifierList),
+            pieces = generateSequence(typeEl) { it.qualifier }.toList().reversed()
+                .map(::convertSimpleTypePiece),
+        ).map(v)
 
     open fun convertSimpleTypePiece(v: KtUserType) = Node.Type.SimpleType.SimpleTypePiece(
         name = convertNameExpression(v.referenceExpression ?: error("No type name for $v")),
@@ -367,21 +369,23 @@ open class Converter {
         rAngle = v.typeArgumentList?.rightAngle?.let(::convertKeyword),
     ).mapNotCorrespondsPsiElement(v) // Don't map v because v necessarily corresponds to a single name expression.
 
-    protected fun convertDynamicType(modifierList: KtModifierList?, v: KtDynamicType) = Node.Type.DynamicType(
-        modifiers = convertModifiers(modifierList),
-        dynamicKeyword = convertKeyword(v.dynamicKeyword),
-    ).mapNotCorrespondsPsiElement(v)
+    protected fun convertDynamicType(v: KtElement, modifierList: KtModifierList?, typeEl: KtDynamicType) =
+        Node.Type.DynamicType(
+            modifiers = convertModifiers(modifierList),
+            dynamicKeyword = convertKeyword(typeEl.dynamicKeyword),
+        ).map(v)
 
-    protected fun convertFunctionType(modifierList: KtModifierList?, v: KtFunctionType) = Node.Type.FunctionType(
-        modifiers = convertModifiers(modifierList),
-        contextReceiver = v.contextReceiverList?.let(::convertContextReceiver),
-        receiverType = v.receiver?.typeReference?.let(::convertType),
-        dotSymbol = v.dotSymbol?.let(::convertKeyword),
-        lPar = v.parameterList?.leftParenthesis?.let(::convertKeyword),
-        params = convertTypeFunctionParams(v.parameterList),
-        rPar = v.parameterList?.rightParenthesis?.let(::convertKeyword),
-        returnType = convertType(v.returnTypeReference ?: error("No return type for $v")),
-    ).mapNotCorrespondsPsiElement(v)
+    protected fun convertFunctionType(v: KtElement, modifierList: KtModifierList?, typeEl: KtFunctionType) =
+        Node.Type.FunctionType(
+            modifiers = convertModifiers(modifierList),
+            contextReceiver = typeEl.contextReceiverList?.let(::convertContextReceiver),
+            receiverType = typeEl.receiver?.typeReference?.let(::convertType),
+            dotSymbol = typeEl.dotSymbol?.let(::convertKeyword),
+            lPar = typeEl.parameterList?.leftParenthesis?.let(::convertKeyword),
+            params = convertTypeFunctionParams(typeEl.parameterList),
+            rPar = typeEl.parameterList?.rightParenthesis?.let(::convertKeyword),
+            returnType = convertType(typeEl.returnTypeReference ?: error("No return type for $typeEl")),
+        ).map(v)
 
     open fun convertTypeFunctionParams(v: KtParameterList?): List<Node.Type.FunctionType.FunctionTypeParam> =
         v?.parameters.orEmpty().map(::convertTypeFunctionParam)
