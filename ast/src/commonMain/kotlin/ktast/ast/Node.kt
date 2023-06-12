@@ -813,7 +813,7 @@ sealed interface Node {
      * AST node that represents an actual type argument. For example, `Int` in `listOf<Int>()` is a type argument. The node corresponds to KtTypeProjection.
      *
      * @property modifiers list of modifiers.
-     * @property type projection type. If the type argument is a star projection, this is [Type.SimpleType] whose name is "*".
+     * @property type projection type. When the type argument is a star projection, this is [Type.SimpleType] that has a single [Type.SimpleType.SimpleTypePiece] whose name is "*".
      */
     data class TypeArg(
         override val modifiers: List<Modifier>,
