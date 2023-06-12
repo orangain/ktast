@@ -562,7 +562,7 @@ open class Writer(
             append(suffix)
         }
 
-    private fun NodePath<*>.writeBlock(block: () -> Writer) {
+    private fun NodePath<*>.writeBlock(block: () -> Unit) {
         append("{")
         block()
         writeExtrasWithin()
