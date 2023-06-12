@@ -1148,31 +1148,18 @@ sealed interface Node {
         /**
          * AST node corresponds to KtLambdaExpression.
          *
-         * @property params list of parameters of the lambda expression.
-         * @property arrow arrow symbol of the lambda expression.
-         * @property lambdaBody body of the lambda expression.
+         * [LambdaExpression] = { [LambdaParam], [LambdaParam] -> [Statement] [Statement]... }
+         *
+         * @property params list of parameters in the lambda expression.
+         * @property arrow arrow symbol of the lambda expression if exists, otherwise `null`.
+         * @property statements list of statements in the lambda expression.
          */
         data class LambdaExpression(
             val params: List<LambdaParam>,
             val arrow: Keyword.Arrow?,
-            val lambdaBody: LambdaBody?,
+            override val statements: List<Statement>,
             override var tag: Any? = null,
-        ) : Expression {
-
-            /**
-             * AST node corresponds to KtBlockExpression in lambda body.
-             * In lambda expression, left and right braces are not included in [LambdaBody], but are included in [LambdaExpression].
-             * This means:
-             *
-             * [LambdaExpression] = { [LambdaParam], [LambdaParam] -> [LambdaBody] }
-             *
-             * @property statements list of statements in the block.
-             */
-            data class LambdaBody(
-                override val statements: List<Statement>,
-                override var tag: Any? = null,
-            ) : Expression, WithStatements
-        }
+        ) : Expression, WithStatements
 
         /**
          * AST node corresponds to KtBinaryExpression or KtQualifiedExpression.

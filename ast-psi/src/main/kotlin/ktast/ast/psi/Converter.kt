@@ -648,11 +648,7 @@ open class Converter {
     open fun convertLambdaExpression(v: KtLambdaExpression) = Node.Expression.LambdaExpression(
         params = convertLambdaParams(v.functionLiteral.valueParameterList),
         arrow = v.functionLiteral.arrow?.let(::convertKeyword),
-        lambdaBody = v.bodyExpression?.let(::convertLambdaBody),
-    ).map(v)
-
-    open fun convertLambdaBody(v: KtBlockExpression) = Node.Expression.LambdaExpression.LambdaBody(
-        statements = v.statements.map(::convertStatement),
+        statements = v.bodyExpression?.statements.orEmpty().map(::convertStatement),
     ).map(v)
 
     open fun convertBinaryExpression(v: KtBinaryExpression) = Node.Expression.BinaryExpression(

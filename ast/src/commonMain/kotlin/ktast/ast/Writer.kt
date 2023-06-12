@@ -382,11 +382,11 @@ open class Writer(
                 is Node.Expression.ConstantLiteralExpression ->
                     append(text)
                 is Node.Expression.LambdaExpression -> {
-                    append("{")
-                    commaSeparatedChildren(params)
-                    children(arrow)
-                    children(lambdaBody)
-                    append("}")
+                    writeBlock {
+                        commaSeparatedChildren(params)
+                        children(arrow)
+                        children(statements)
+                    }
                 }
                 is Node.LambdaParam -> {
                     children(lPar)
@@ -394,10 +394,6 @@ open class Writer(
                     children(rPar)
                     children(colon)
                     children(destructType)
-                }
-                is Node.Expression.LambdaExpression.LambdaBody -> {
-                    children(statements)
-                    writeExtrasWithin()
                 }
                 is Node.Expression.ThisExpression -> {
                     append("this")

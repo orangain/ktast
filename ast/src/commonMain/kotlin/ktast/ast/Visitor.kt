@@ -331,7 +331,7 @@ open class Visitor {
                 is Node.Expression.LambdaExpression -> {
                     visitChildren(params)
                     visitChildren(arrow)
-                    visitChildren(lambdaBody)
+                    visitChildren(statements)
                 }
                 is Node.LambdaParam -> {
                     visitChildren(lPar)
@@ -339,9 +339,6 @@ open class Visitor {
                     visitChildren(rPar)
                     visitChildren(colon)
                     visitChildren(destructType)
-                }
-                is Node.Expression.LambdaExpression.LambdaBody -> {
-                    visitChildren(statements)
                 }
                 is Node.Expression.ThisExpression -> {
                     visitChildren(label)
