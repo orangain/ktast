@@ -108,6 +108,13 @@ open class Writer(
                     children(declarations)
                     writeExtrasWithin()
                 }
+                is Node.KotlinScript -> {
+                    children(annotationSets)
+                    children(packageDirective)
+                    children(importDirectives)
+                    children(expressions)
+                    writeExtrasWithin()
+                }
                 is Node.PackageDirective -> {
                     children(packageKeyword)
                     children(names, ".")
@@ -525,8 +532,7 @@ open class Writer(
                 is Node.Keyword -> {
                     append(text)
                 }
-                else ->
-                    error("Unrecognized node type: $this")
+                is Node.Extra -> error("Extra nodes must not be visited. node: $this")
             }
             Unit
         }
