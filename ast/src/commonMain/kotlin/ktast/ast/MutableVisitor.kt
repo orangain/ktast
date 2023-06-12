@@ -76,7 +76,6 @@ open class MutableVisitor(
                         expressions = visitChildren(expressions, newCh)
                     )
                     is Node.PackageDirective -> copy(
-                        modifiers = visitChildren(modifiers, newCh),
                         packageKeyword = visitChildren(packageKeyword, newCh),
                         names = visitChildren(names, newCh),
                     )

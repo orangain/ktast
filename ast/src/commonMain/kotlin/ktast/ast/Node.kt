@@ -172,16 +172,14 @@ sealed interface Node {
     /**
      * AST node corresponds to KtPackageDirective.
      *
-     * @property modifiers list of modifiers.
      * @property packageKeyword package keyword.
      * @property names list of names separated by dots.
      */
     data class PackageDirective(
-        override val modifiers: List<Modifier>,
         val packageKeyword: Keyword.Package,
         val names: List<Expression.NameExpression>,
         override var tag: Any? = null,
-    ) : Node, WithModifiers
+    ) : Node
 
     /**
      * AST node corresponds to KtImportDirective.

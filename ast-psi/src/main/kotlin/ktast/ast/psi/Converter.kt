@@ -35,7 +35,6 @@ open class Converter {
             throw Unsupported("Package directive with modifiers is not supported")
         }
         return Node.PackageDirective(
-            modifiers = convertModifiers(v.modifierList),
             packageKeyword = convertKeyword(v.packageKeyword ?: error("No package keyword $v")),
             names = v.packageNames.map(::convertNameExpression),
         ).map(v)

@@ -108,7 +108,6 @@ open class Writer(
                     children(declarations)
                 }
                 is Node.PackageDirective -> {
-                    children(modifiers)
                     children(packageKeyword)
                     children(names, ".")
                 }

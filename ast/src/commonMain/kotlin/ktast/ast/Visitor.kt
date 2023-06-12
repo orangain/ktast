@@ -47,7 +47,6 @@ open class Visitor {
                     visitChildren(expressions)
                 }
                 is Node.PackageDirective -> {
-                    visitChildren(modifiers)
                     visitChildren(packageKeyword)
                     visitChildren(names)
                 }
