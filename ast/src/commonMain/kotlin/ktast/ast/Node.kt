@@ -172,41 +172,28 @@ sealed interface Node {
     /**
      * AST node corresponds to KtPackageDirective.
      *
-     * @property modifiers list of modifiers.
      * @property packageKeyword package keyword.
      * @property names list of names separated by dots.
      */
     data class PackageDirective(
-        override val modifiers: List<Modifier>,
         val packageKeyword: Keyword.Package,
         val names: List<Expression.NameExpression>,
         override var tag: Any? = null,
-    ) : Node, WithModifiers
+    ) : Node
 
     /**
      * AST node corresponds to KtImportDirective.
      *
      * @property importKeyword import keyword.
      * @property names list of names separated by dots.
-     * @property importAlias import alias if exists, otherwise `null`.
+     * @property aliasName import alias name if exists, otherwise `null`.
      */
     data class ImportDirective(
         val importKeyword: Keyword.Import,
         val names: List<Expression.NameExpression>,
-        val importAlias: ImportAlias?,
+        val aliasName: Expression.NameExpression?,
         override var tag: Any? = null,
-    ) : Node {
-
-        /**
-         * AST node corresponds to KtImportAlias.
-         *
-         * @property name name of the alias.
-         */
-        data class ImportAlias(
-            val name: Expression.NameExpression,
-            override var tag: Any? = null,
-        ) : Node
-    }
+    ) : Node
 
     /**
      * Common interface for [Declaration], [Expression] and loop statements.
@@ -443,10 +430,8 @@ sealed interface Node {
              * @property declarations list of declarations.
              */
             data class ClassBody(
-                val lBrace: Keyword.LBrace,
                 val enumEntries: List<EnumEntry>,
                 override val declarations: List<Declaration>,
-                val rBrace: Keyword.RBrace,
                 override var tag: Any? = null,
             ) : Node, WithDeclarations {
 
@@ -471,14 +456,12 @@ sealed interface Node {
                 /**
                  * AST node that represents an init block, a.k.a. initializer. The node corresponds to KtAnonymousInitializer.
                  *
-                 * @property modifiers list of modifiers.
                  * @property block block of the initializer.
                  */
                 data class Initializer(
-                    override val modifiers: List<Modifier>,
                     val block: Expression.BlockExpression,
                     override var tag: Any? = null,
-                ) : Declaration, WithModifiers
+                ) : Declaration
 
                 /**
                  * AST node corresponds to KtSecondaryConstructor.
@@ -668,54 +651,6 @@ sealed interface Node {
     }
 
     /**
-     * AST node that represents a formal function parameter of a function declaration. For example, `x: Int` in `fun f(x: Int)` is a function parameter. The node corresponds to KtParameter inside KtNamedFunction.
-     *
-     * @property modifiers list of modifiers.
-     * @property valOrVarKeyword `val` or `var` keyword if exists, otherwise `null`.
-     * @property name name of the parameter.
-     * @property type type of the parameter. Can be `null` for anonymous function parameters.
-     * @property equals `=` keyword if exists, otherwise `null`.
-     * @property defaultValue default value of the parameter if exists, otherwise `null`.
-     */
-    data class FunctionParam(
-        override val modifiers: List<Modifier>,
-        val valOrVarKeyword: Keyword.ValOrVarKeyword?,
-        val name: Expression.NameExpression,
-        val type: Type?,
-        val equals: Keyword.Equal?,
-        val defaultValue: Expression?,
-        override var tag: Any? = null,
-    ) : Node, WithModifiers
-
-    /**
-     * AST node corresponds to KtDestructuringDeclarationEntry, virtual AST node corresponds a part of KtProperty, or virtual AST node corresponds to KtParameter whose child is IDENTIFIER.
-     *
-     * @property annotationSets list of annotation sets.
-     * @property name name of the variable.
-     * @property type type of the variable if exists, otherwise `null`.
-     */
-    data class Variable(
-        override val annotationSets: List<Modifier.AnnotationSet>,
-        val name: Expression.NameExpression,
-        val type: Type?,
-        override var tag: Any? = null,
-    ) : Node, WithAnnotationSets
-
-    /**
-     * AST node that represents a formal type parameter of a function or a class. For example, `T` in `fun <T> f()` is a type parameter. The node corresponds to KtTypeParameter.
-     *
-     * @property modifiers list of modifiers.
-     * @property name name of the type parameter.
-     * @property type type of the type parameter if exists, otherwise `null`.
-     */
-    data class TypeParam(
-        override val modifiers: List<Modifier>,
-        val name: Expression.NameExpression,
-        val type: Type?,
-        override var tag: Any? = null,
-    ) : Node, WithModifiers
-
-    /**
      * Common interface for AST nodes that represent types.
      */
     sealed interface Type : Node, WithModifiers {
@@ -827,32 +762,6 @@ sealed interface Node {
     }
 
     /**
-     * AST node that represents an actual type argument. For example, `Int` in `listOf<Int>()` is a type argument. The node corresponds to KtTypeProjection.
-     *
-     * @property modifiers list of modifiers.
-     * @property type projection type. If the type argument is a star projection, this is [Type.SimpleType] whose name is "*".
-     */
-    data class TypeArg(
-        override val modifiers: List<Modifier>,
-        val type: Type,
-        override var tag: Any? = null,
-    ) : Node, WithModifiers
-
-    /**
-     * AST node that represents an actual value argument of a function call. For example, `foo(1, 2)` has two value arguments `1` and `2`. The node corresponds to KtValueArgument.
-     *
-     * @property name name of the argument if exists, otherwise `null`.
-     * @property asterisk spread operator if exists, otherwise `null`.
-     * @property expression expression of the argument.
-     */
-    data class ValueArg(
-        val name: Expression.NameExpression?,
-        val asterisk: Keyword.Asterisk?,
-        val expression: Expression,
-        override var tag: Any? = null,
-    ) : Node
-
-    /**
      * Common interface for AST nodes that represent expressions.
      */
     sealed interface Expression : Statement {
@@ -927,16 +836,12 @@ sealed interface Node {
          *
          * @property whenKeyword keyword of when expression.
          * @property subject subject of when expression if exists, otherwise `null`.
-         * @property lBrace left brace of when expression.
          * @property whenBranches list of when branches.
-         * @property rBrace right brace of when expression.
          */
         data class WhenExpression(
             val whenKeyword: Keyword.When,
             val subject: WhenSubject?,
-            val lBrace: Keyword.LBrace,
             val whenBranches: List<WhenBranch>,
-            val rBrace: Keyword.RBrace,
             override var tag: Any? = null,
         ) : Expression {
             /**
@@ -1125,14 +1030,10 @@ sealed interface Node {
         /**
          * AST node corresponds to KtBlockExpression.
          *
-         * @property lBrace left brace symbol of the block.
          * @property statements list of statements.
-         * @property rBrace right brace symbol of the block.
          */
         data class BlockExpression(
-            val lBrace: Keyword.LBrace,
             override val statements: List<Statement>,
-            val rBrace: Keyword.RBrace,
             override var tag: Any? = null,
         ) : Expression, WithStatements
 
@@ -1173,35 +1074,18 @@ sealed interface Node {
         /**
          * AST node corresponds to KtLambdaExpression.
          *
-         * @property lBrace left brace of the lambda expression.
-         * @property params list of parameters of the lambda expression.
-         * @property arrow arrow symbol of the lambda expression.
-         * @property lambdaBody body of the lambda expression.
-         * @property rBrace right brace of the lambda expression.
+         * [LambdaExpression] = { [LambdaParam], [LambdaParam] -> [Statement] [Statement]... }
+         *
+         * @property params list of parameters in the lambda expression.
+         * @property arrow arrow symbol of the lambda expression if exists, otherwise `null`.
+         * @property statements list of statements in the lambda expression.
          */
         data class LambdaExpression(
-            val lBrace: Keyword.LBrace,
             val params: List<LambdaParam>,
             val arrow: Keyword.Arrow?,
-            val lambdaBody: LambdaBody?,
-            val rBrace: Keyword.RBrace,
+            override val statements: List<Statement>,
             override var tag: Any? = null,
-        ) : Expression {
-
-            /**
-             * AST node corresponds to KtBlockExpression in lambda body.
-             * In lambda expression, left and right braces are not included in [LambdaBody], but are included in [LambdaExpression].
-             * This means:
-             *
-             * [LambdaExpression] = { [LambdaParam], [LambdaParam] -> [LambdaBody] }
-             *
-             * @property statements list of statements in the block.
-             */
-            data class LambdaBody(
-                override val statements: List<Statement>,
-                override var tag: Any? = null,
-            ) : Expression, WithStatements
-        }
+        ) : Expression, WithStatements
 
         /**
          * AST node corresponds to KtBinaryExpression or KtQualifiedExpression.
@@ -1563,6 +1447,40 @@ sealed interface Node {
     }
 
     /**
+     * AST node that represents a formal type parameter of a function or a class. For example, `T` in `fun <T> f()` is a type parameter. The node corresponds to KtTypeParameter.
+     *
+     * @property modifiers list of modifiers.
+     * @property name name of the type parameter.
+     * @property type type of the type parameter if exists, otherwise `null`.
+     */
+    data class TypeParam(
+        override val modifiers: List<Modifier>,
+        val name: Expression.NameExpression,
+        val type: Type?,
+        override var tag: Any? = null,
+    ) : Node, WithModifiers
+
+    /**
+     * AST node that represents a formal function parameter of a function declaration. For example, `x: Int` in `fun f(x: Int)` is a function parameter. The node corresponds to KtParameter inside KtNamedFunction.
+     *
+     * @property modifiers list of modifiers.
+     * @property valOrVarKeyword `val` or `var` keyword if exists, otherwise `null`.
+     * @property name name of the parameter.
+     * @property type type of the parameter. Can be `null` for anonymous function parameters.
+     * @property equals `=` keyword if exists, otherwise `null`.
+     * @property defaultValue default value of the parameter if exists, otherwise `null`.
+     */
+    data class FunctionParam(
+        override val modifiers: List<Modifier>,
+        val valOrVarKeyword: Keyword.ValOrVarKeyword?,
+        val name: Expression.NameExpression,
+        val type: Type?,
+        val equals: Keyword.Equal?,
+        val defaultValue: Expression?,
+        override var tag: Any? = null,
+    ) : Node, WithModifiers
+
+    /**
      * AST node that represents a formal parameter of lambda expression. For example, `x` in `{ x -> ... }` is a lambda parameter. The node corresponds to KtParameter under KtLambdaExpression.
      *
      * @property lPar left parenthesis of this parameter if exists, otherwise `null`.
@@ -1585,6 +1503,60 @@ sealed interface Node {
             }
         }
     }
+
+    /**
+     * AST node corresponds to KtDestructuringDeclarationEntry, virtual AST node corresponds a part of KtProperty, or virtual AST node corresponds to KtParameter whose child is IDENTIFIER.
+     *
+     * @property annotationSets list of annotation sets.
+     * @property name name of the variable.
+     * @property type type of the variable if exists, otherwise `null`.
+     */
+    data class Variable(
+        override val annotationSets: List<Modifier.AnnotationSet>,
+        val name: Expression.NameExpression,
+        val type: Type?,
+        override var tag: Any? = null,
+    ) : Node, WithAnnotationSets
+
+    /**
+     * AST node that represents an actual type argument. For example, `Int` in `listOf<Int>()` is a type argument. The node corresponds to KtTypeProjection.
+     *
+     * @property modifiers list of modifiers.
+     * @property type projection type. When the type argument is a star projection, this is [Type.SimpleType] that has a single [Type.SimpleType.SimpleTypePiece] whose name is "*".
+     */
+    data class TypeArg(
+        override val modifiers: List<Modifier>,
+        val type: Type,
+        override var tag: Any? = null,
+    ) : Node, WithModifiers
+
+    /**
+     * AST node that represents an actual value argument of a function call. For example, `foo(1, 2)` has two value arguments `1` and `2`. The node corresponds to KtValueArgument.
+     *
+     * @property name name of the argument if exists, otherwise `null`.
+     * @property asterisk spread operator if exists, otherwise `null`.
+     * @property expression expression of the argument.
+     */
+    data class ValueArg(
+        val name: Expression.NameExpression?,
+        val asterisk: Keyword.Asterisk?,
+        val expression: Expression,
+        override var tag: Any? = null,
+    ) : Node
+
+    /**
+     * AST node that represents a context receiver. The node corresponds to KtContextReceiverList.
+     *
+     * @property lPar left parenthesis of the receiver types.
+     * @property receiverTypes list of receiver types.
+     * @property rPar right parenthesis of the receiver types.
+     */
+    data class ContextReceiver(
+        val lPar: Keyword.LPar,
+        val receiverTypes: List<Type>,
+        val rPar: Keyword.RPar,
+        override var tag: Any? = null,
+    ) : Node
 
     /**
      * Common interface for modifiers.
@@ -1634,20 +1606,6 @@ sealed interface Node {
          */
         sealed interface KeywordModifier : Modifier, Keyword
     }
-
-    /**
-     * AST node that represents a context receiver. The node corresponds to KtContextReceiverList.
-     *
-     * @property lPar left parenthesis of the receiver types.
-     * @property receiverTypes list of receiver types.
-     * @property rPar right parenthesis of the receiver types.
-     */
-    data class ContextReceiver(
-        val lPar: Keyword.LPar,
-        val receiverTypes: List<Type>,
-        val rPar: Keyword.RPar,
-        override var tag: Any? = null,
-    ) : Node
 
     /**
      * Common interface for post-modifiers.
@@ -1839,14 +1797,6 @@ sealed interface Node {
 
         data class RBracket(override var tag: Any? = null) : Keyword {
             override val text = "]"
-        }
-
-        data class LBrace(override var tag: Any? = null) : Keyword {
-            override val text = "{"
-        }
-
-        data class RBrace(override var tag: Any? = null) : Keyword {
-            override val text = "}"
         }
 
         data class At(override var tag: Any? = null) : Keyword {

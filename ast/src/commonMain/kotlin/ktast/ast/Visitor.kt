@@ -47,17 +47,13 @@ open class Visitor {
                     visitChildren(expressions)
                 }
                 is Node.PackageDirective -> {
-                    visitChildren(modifiers)
                     visitChildren(packageKeyword)
                     visitChildren(names)
                 }
                 is Node.ImportDirective -> {
                     visitChildren(importKeyword)
                     visitChildren(names)
-                    visitChildren(importAlias)
-                }
-                is Node.ImportDirective.ImportAlias -> {
-                    visitChildren(name)
+                    visitChildren(aliasName)
                 }
                 is Node.Statement.ForStatement -> {
                     visitChildren(forKeyword)
@@ -117,13 +113,10 @@ open class Visitor {
                     visitChildren(rPar)
                 }
                 is Node.Declaration.ClassDeclaration.ClassBody -> {
-                    visitChildren(lBrace)
                     visitChildren(enumEntries)
                     visitChildren(declarations)
-                    visitChildren(rBrace)
                 }
                 is Node.Declaration.ClassDeclaration.ClassBody.Initializer -> {
-                    visitChildren(modifiers)
                     visitChildren(block)
                 }
                 is Node.Declaration.FunctionDeclaration -> {
@@ -336,11 +329,9 @@ open class Visitor {
                 }
                 is Node.Expression.ConstantLiteralExpression -> {}
                 is Node.Expression.LambdaExpression -> {
-                    visitChildren(lBrace)
                     visitChildren(params)
                     visitChildren(arrow)
-                    visitChildren(lambdaBody)
-                    visitChildren(rBrace)
+                    visitChildren(statements)
                 }
                 is Node.LambdaParam -> {
                     visitChildren(lPar)
@@ -348,9 +339,6 @@ open class Visitor {
                     visitChildren(rPar)
                     visitChildren(colon)
                     visitChildren(destructType)
-                }
-                is Node.Expression.LambdaExpression.LambdaBody -> {
-                    visitChildren(statements)
                 }
                 is Node.Expression.ThisExpression -> {
                     visitChildren(label)
@@ -362,9 +350,7 @@ open class Visitor {
                 is Node.Expression.WhenExpression -> {
                     visitChildren(whenKeyword)
                     visitChildren(subject)
-                    visitChildren(lBrace)
                     visitChildren(whenBranches)
-                    visitChildren(rBrace)
                 }
                 is Node.Expression.WhenExpression.WhenSubject -> {
                     visitChildren(lPar)
@@ -444,9 +430,7 @@ open class Visitor {
                     visitChildren(function)
                 }
                 is Node.Expression.BlockExpression -> {
-                    visitChildren(lBrace)
                     visitChildren(statements)
-                    visitChildren(rBrace)
                 }
                 is Node.Modifier.AnnotationSet -> {
                     visitChildren(atSymbol)
