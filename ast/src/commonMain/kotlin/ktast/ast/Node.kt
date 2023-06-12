@@ -651,54 +651,6 @@ sealed interface Node {
     }
 
     /**
-     * AST node that represents a formal function parameter of a function declaration. For example, `x: Int` in `fun f(x: Int)` is a function parameter. The node corresponds to KtParameter inside KtNamedFunction.
-     *
-     * @property modifiers list of modifiers.
-     * @property valOrVarKeyword `val` or `var` keyword if exists, otherwise `null`.
-     * @property name name of the parameter.
-     * @property type type of the parameter. Can be `null` for anonymous function parameters.
-     * @property equals `=` keyword if exists, otherwise `null`.
-     * @property defaultValue default value of the parameter if exists, otherwise `null`.
-     */
-    data class FunctionParam(
-        override val modifiers: List<Modifier>,
-        val valOrVarKeyword: Keyword.ValOrVarKeyword?,
-        val name: Expression.NameExpression,
-        val type: Type?,
-        val equals: Keyword.Equal?,
-        val defaultValue: Expression?,
-        override var tag: Any? = null,
-    ) : Node, WithModifiers
-
-    /**
-     * AST node corresponds to KtDestructuringDeclarationEntry, virtual AST node corresponds a part of KtProperty, or virtual AST node corresponds to KtParameter whose child is IDENTIFIER.
-     *
-     * @property annotationSets list of annotation sets.
-     * @property name name of the variable.
-     * @property type type of the variable if exists, otherwise `null`.
-     */
-    data class Variable(
-        override val annotationSets: List<Modifier.AnnotationSet>,
-        val name: Expression.NameExpression,
-        val type: Type?,
-        override var tag: Any? = null,
-    ) : Node, WithAnnotationSets
-
-    /**
-     * AST node that represents a formal type parameter of a function or a class. For example, `T` in `fun <T> f()` is a type parameter. The node corresponds to KtTypeParameter.
-     *
-     * @property modifiers list of modifiers.
-     * @property name name of the type parameter.
-     * @property type type of the type parameter if exists, otherwise `null`.
-     */
-    data class TypeParam(
-        override val modifiers: List<Modifier>,
-        val name: Expression.NameExpression,
-        val type: Type?,
-        override var tag: Any? = null,
-    ) : Node, WithModifiers
-
-    /**
      * Common interface for AST nodes that represent types.
      */
     sealed interface Type : Node, WithModifiers {
@@ -808,32 +760,6 @@ sealed interface Node {
             ) : Node
         }
     }
-
-    /**
-     * AST node that represents an actual type argument. For example, `Int` in `listOf<Int>()` is a type argument. The node corresponds to KtTypeProjection.
-     *
-     * @property modifiers list of modifiers.
-     * @property type projection type. When the type argument is a star projection, this is [Type.SimpleType] that has a single [Type.SimpleType.SimpleTypePiece] whose name is "*".
-     */
-    data class TypeArg(
-        override val modifiers: List<Modifier>,
-        val type: Type,
-        override var tag: Any? = null,
-    ) : Node, WithModifiers
-
-    /**
-     * AST node that represents an actual value argument of a function call. For example, `foo(1, 2)` has two value arguments `1` and `2`. The node corresponds to KtValueArgument.
-     *
-     * @property name name of the argument if exists, otherwise `null`.
-     * @property asterisk spread operator if exists, otherwise `null`.
-     * @property expression expression of the argument.
-     */
-    data class ValueArg(
-        val name: Expression.NameExpression?,
-        val asterisk: Keyword.Asterisk?,
-        val expression: Expression,
-        override var tag: Any? = null,
-    ) : Node
 
     /**
      * Common interface for AST nodes that represent expressions.
@@ -1521,6 +1447,40 @@ sealed interface Node {
     }
 
     /**
+     * AST node that represents a formal type parameter of a function or a class. For example, `T` in `fun <T> f()` is a type parameter. The node corresponds to KtTypeParameter.
+     *
+     * @property modifiers list of modifiers.
+     * @property name name of the type parameter.
+     * @property type type of the type parameter if exists, otherwise `null`.
+     */
+    data class TypeParam(
+        override val modifiers: List<Modifier>,
+        val name: Expression.NameExpression,
+        val type: Type?,
+        override var tag: Any? = null,
+    ) : Node, WithModifiers
+
+    /**
+     * AST node that represents a formal function parameter of a function declaration. For example, `x: Int` in `fun f(x: Int)` is a function parameter. The node corresponds to KtParameter inside KtNamedFunction.
+     *
+     * @property modifiers list of modifiers.
+     * @property valOrVarKeyword `val` or `var` keyword if exists, otherwise `null`.
+     * @property name name of the parameter.
+     * @property type type of the parameter. Can be `null` for anonymous function parameters.
+     * @property equals `=` keyword if exists, otherwise `null`.
+     * @property defaultValue default value of the parameter if exists, otherwise `null`.
+     */
+    data class FunctionParam(
+        override val modifiers: List<Modifier>,
+        val valOrVarKeyword: Keyword.ValOrVarKeyword?,
+        val name: Expression.NameExpression,
+        val type: Type?,
+        val equals: Keyword.Equal?,
+        val defaultValue: Expression?,
+        override var tag: Any? = null,
+    ) : Node, WithModifiers
+
+    /**
      * AST node that represents a formal parameter of lambda expression. For example, `x` in `{ x -> ... }` is a lambda parameter. The node corresponds to KtParameter under KtLambdaExpression.
      *
      * @property lPar left parenthesis of this parameter if exists, otherwise `null`.
@@ -1543,6 +1503,60 @@ sealed interface Node {
             }
         }
     }
+
+    /**
+     * AST node corresponds to KtDestructuringDeclarationEntry, virtual AST node corresponds a part of KtProperty, or virtual AST node corresponds to KtParameter whose child is IDENTIFIER.
+     *
+     * @property annotationSets list of annotation sets.
+     * @property name name of the variable.
+     * @property type type of the variable if exists, otherwise `null`.
+     */
+    data class Variable(
+        override val annotationSets: List<Modifier.AnnotationSet>,
+        val name: Expression.NameExpression,
+        val type: Type?,
+        override var tag: Any? = null,
+    ) : Node, WithAnnotationSets
+
+    /**
+     * AST node that represents an actual type argument. For example, `Int` in `listOf<Int>()` is a type argument. The node corresponds to KtTypeProjection.
+     *
+     * @property modifiers list of modifiers.
+     * @property type projection type. When the type argument is a star projection, this is [Type.SimpleType] that has a single [Type.SimpleType.SimpleTypePiece] whose name is "*".
+     */
+    data class TypeArg(
+        override val modifiers: List<Modifier>,
+        val type: Type,
+        override var tag: Any? = null,
+    ) : Node, WithModifiers
+
+    /**
+     * AST node that represents an actual value argument of a function call. For example, `foo(1, 2)` has two value arguments `1` and `2`. The node corresponds to KtValueArgument.
+     *
+     * @property name name of the argument if exists, otherwise `null`.
+     * @property asterisk spread operator if exists, otherwise `null`.
+     * @property expression expression of the argument.
+     */
+    data class ValueArg(
+        val name: Expression.NameExpression?,
+        val asterisk: Keyword.Asterisk?,
+        val expression: Expression,
+        override var tag: Any? = null,
+    ) : Node
+
+    /**
+     * AST node that represents a context receiver. The node corresponds to KtContextReceiverList.
+     *
+     * @property lPar left parenthesis of the receiver types.
+     * @property receiverTypes list of receiver types.
+     * @property rPar right parenthesis of the receiver types.
+     */
+    data class ContextReceiver(
+        val lPar: Keyword.LPar,
+        val receiverTypes: List<Type>,
+        val rPar: Keyword.RPar,
+        override var tag: Any? = null,
+    ) : Node
 
     /**
      * Common interface for modifiers.
@@ -1592,20 +1606,6 @@ sealed interface Node {
          */
         sealed interface KeywordModifier : Modifier, Keyword
     }
-
-    /**
-     * AST node that represents a context receiver. The node corresponds to KtContextReceiverList.
-     *
-     * @property lPar left parenthesis of the receiver types.
-     * @property receiverTypes list of receiver types.
-     * @property rPar right parenthesis of the receiver types.
-     */
-    data class ContextReceiver(
-        val lPar: Keyword.LPar,
-        val receiverTypes: List<Type>,
-        val rPar: Keyword.RPar,
-        override var tag: Any? = null,
-    ) : Node
 
     /**
      * Common interface for post-modifiers.
