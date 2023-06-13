@@ -855,10 +855,7 @@ open class Converter {
         target = v.useSiteTarget?.let(::convertKeyword),
         colon = v.colon?.let(::convertKeyword),
         lBracket = v.lBracket?.let(::convertKeyword),
-        annotations = v.entries.map {
-            convertAnnotationWithoutMapping(it)
-                .map(it)
-        },
+        annotations = v.entries.map(::convertAnnotation),
         rBracket = v.rBracket?.let(::convertKeyword),
     ).map(v)
 
@@ -867,21 +864,18 @@ open class Converter {
         target = v.useSiteTarget?.let(::convertKeyword),
         colon = v.colon?.let(::convertKeyword),
         lBracket = null,
-        annotations = listOf(
-            convertAnnotationWithoutMapping(v)
-                .mapNotCorrespondsPsiElement(v),
-        ),
+        annotations = listOf(convertAnnotation(v)),
         rBracket = null,
     ).map(v)
 
-    protected fun convertAnnotationWithoutMapping(v: KtAnnotationEntry) = Node.Modifier.AnnotationSet.Annotation(
+    open fun convertAnnotation(v: KtAnnotationEntry) = Node.Modifier.AnnotationSet.Annotation(
         type = convertType(
             v.calleeExpression?.typeReference ?: error("No callee expression, type reference or type element for $v")
         ) as? Node.Type.SimpleType ?: error("calleeExpression is not simple type"),
         lPar = v.valueArgumentList?.leftParenthesis?.let(::convertKeyword),
         args = convertValueArgs(v.valueArgumentList),
         rPar = v.valueArgumentList?.rightParenthesis?.let(::convertKeyword),
-    )
+    ).map(v)
 
     open fun convertPostModifiers(v: KtElement): List<Node.PostModifier> {
         val nonExtraChildren = v.nonExtraChildren()
