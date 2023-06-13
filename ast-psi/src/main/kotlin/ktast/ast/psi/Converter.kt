@@ -364,6 +364,13 @@ open class Converter {
         rAngle = v.typeArgumentList?.rightAngle?.let(::convertKeyword),
     ).mapNotCorrespondsPsiElement(v) // Don't map v because v necessarily corresponds to a single name expression.
 
+    open fun convertSimpleTypePiece(v: PsiElement) = Node.Type.SimpleType.SimpleTypePiece(
+        name = convertNameExpression(v),
+        lAngle = null,
+        typeArgs = listOf(),
+        rAngle = null,
+    ).map(v)
+
     protected fun convertDynamicType(v: KtElement, modifierList: KtModifierList?, typeEl: KtDynamicType) =
         Node.Type.DynamicType(
             modifiers = convertModifiers(modifierList),
@@ -800,19 +807,14 @@ open class Converter {
     open fun convertTypeArg(v: KtTypeProjection) = Node.TypeArg(
         modifiers = convertModifiers(v.modifierList),
         type = when (v.projectionKind) {
-            KtProjectionKind.STAR -> Node.Type.SimpleType(
-                modifiers = listOf(),
-                pieces = listOf(
-                    Node.Type.SimpleType.SimpleTypePiece(
-                        name = convertNameExpression(v.projectionToken ?: error("Missing projection token for $v")),
-                        lAngle = null,
-                        typeArgs = listOf(),
-                        rAngle = null,
-                    )
-                ),
-            ).mapNotCorrespondsPsiElement(v)
+            KtProjectionKind.STAR -> convertSimpleType(v)
             else -> convertType(v.typeReference ?: error("Missing type ref for $v"))
         },
+    ).map(v)
+
+    open fun convertSimpleType(v: KtTypeProjection) = Node.Type.SimpleType(
+        modifiers = listOf(),
+        pieces = listOf(convertSimpleTypePiece(v.projectionToken ?: error("Missing projection token for $v"))),
     ).map(v)
 
     open fun convertValueArgs(v: KtValueArgumentList?): List<Node.ValueArg> =
