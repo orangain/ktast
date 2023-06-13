@@ -938,7 +938,6 @@ open class Converter {
      * All children of the node must be descendants of the PSI element.
      */
     protected open fun <T : Node> T.map(v: PsiElement) = also { onNode(it, v) }
-    protected open fun <T : Node> T.mapNotCorrespondsPsiElement(v: PsiElement) = also { onNode(it, null) }
 
     protected fun PsiElement.nonExtraChildren() =
         allChildren.filterNot { it is PsiComment || it is PsiWhiteSpace }.toList()
