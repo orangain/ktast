@@ -354,15 +354,15 @@ open class Converter {
         Node.Type.SimpleType(
             modifiers = convertModifiers(modifierList),
             pieces = generateSequence(typeEl) { it.qualifier }.toList().reversed()
-                .map(::convertSimpleTypePiece),
+                .map { convertSimpleTypePiece(v, it) },
         ).map(v)
 
-    open fun convertSimpleTypePiece(v: KtUserType) = Node.Type.SimpleType.SimpleTypePiece(
-        name = convertNameExpression(v.referenceExpression ?: error("No type name for $v")),
-        lAngle = v.typeArgumentList?.leftAngle?.let(::convertKeyword),
-        typeArgs = convertTypeArgs(v.typeArgumentList),
-        rAngle = v.typeArgumentList?.rightAngle?.let(::convertKeyword),
-    ).mapNotCorrespondsPsiElement(v) // Don't map v because v necessarily corresponds to a single name expression.
+    open fun convertSimpleTypePiece(v: KtElement, typeEl: KtUserType) = Node.Type.SimpleType.SimpleTypePiece(
+        name = convertNameExpression(typeEl.referenceExpression ?: error("No type name for $typeEl")),
+        lAngle = typeEl.typeArgumentList?.leftAngle?.let(::convertKeyword),
+        typeArgs = convertTypeArgs(typeEl.typeArgumentList),
+        rAngle = typeEl.typeArgumentList?.rightAngle?.let(::convertKeyword),
+    ).map(v)
 
     open fun convertSimpleTypePiece(v: PsiElement) = Node.Type.SimpleType.SimpleTypePiece(
         name = convertNameExpression(v),
