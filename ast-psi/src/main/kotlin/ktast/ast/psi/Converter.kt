@@ -878,24 +878,12 @@ open class Converter {
     ).map(v)
 
     open fun convertPostModifiers(v: KtElement): List<Node.PostModifier> {
-        val nonExtraChildren = v.nonExtraChildren()
-
-        if (nonExtraChildren.isEmpty()) {
-            return listOf()
-        }
-
-        var prevPsi = nonExtraChildren[0]
-        return nonExtraChildren.drop(1).mapNotNull { psi ->
+        return v.nonExtraChildren().drop(1).mapNotNull { psi ->
             when (psi) {
                 is KtTypeConstraintList -> convertTypeConstraintSet(v, psi)
-                is KtContractEffectList -> Node.PostModifier.Contract(
-                    contractKeyword = convertKeyword(prevPsi),
-                    lBracket = convertKeyword(psi.leftBracket),
-                    contractEffects = convertContractEffects(psi),
-                    rBracket = convertKeyword(psi.rightBracket),
-                ).map(v)
+                is KtContractEffectList -> convertContract(v, psi)
                 else -> null
-            }.also { prevPsi = psi }
+            }
         }
     }
 
@@ -919,6 +907,15 @@ open class Converter {
         },
         name = v.subjectTypeParameterName?.let { convertNameExpression(it) } ?: error("No type constraint name for $v"),
         type = convertType(v.boundTypeReference ?: error("No type constraint type for $v"))
+    ).map(v)
+
+    open fun convertContract(v: KtElement, listEl: KtContractEffectList) = Node.PostModifier.Contract(
+        contractKeyword = convertKeyword(
+            listEl.getPrevSiblingIgnoringWhitespaceAndComments() ?: error("No prev sibling for $listEl")
+        ),
+        lBracket = convertKeyword(listEl.leftBracket),
+        contractEffects = convertContractEffects(listEl),
+        rBracket = convertKeyword(listEl.rightBracket),
     ).map(v)
 
     open fun convertContractEffects(v: KtContractEffectList): List<Node.Expression> =
