@@ -18,6 +18,13 @@ import org.jetbrains.kotlin.psi.psiUtil.collectDescendantsOfType
  * Parses Kotlin source codes into PSI and converts it to AST.
  */
 open class Parser(protected val converter: Converter = Converter()) {
+    companion object : Parser() {
+        init {
+            // To hide annoying warning on Windows
+            System.setProperty("idea.use.native.fs.for.win", "false")
+        }
+    }
+
     protected val proj by lazy {
         KotlinCoreEnvironment.createForProduction(
             Disposer.newDisposable(),
@@ -49,11 +56,4 @@ open class Parser(protected val converter: Converter = Converter()) {
         val file: KtFile,
         val errors: List<PsiErrorElement>
     ) : IllegalArgumentException("Failed with ${errors.size} errors, first: ${errors.first().errorDescription}")
-
-    companion object : Parser() {
-        init {
-            // To hide annoying warning on Windows
-            System.setProperty("idea.use.native.fs.for.win", "false")
-        }
-    }
 }
