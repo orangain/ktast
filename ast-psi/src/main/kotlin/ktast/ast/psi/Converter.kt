@@ -17,9 +17,9 @@ open class Converter {
      * Method to be called when a node is created.
      *
      * @param node The node that was created
-     * @param element The PSI element that was used to create the node. This is null when the node does not correspond to a PSI element.
+     * @param element The PSI element that was used to create the node.
      */
-    protected open fun onNode(node: Node, element: PsiElement?) {}
+    protected open fun onNode(node: Node, element: PsiElement) {}
 
     open fun convert(v: KtFile): Node.KotlinFile = convertKotlinFile(v)
 

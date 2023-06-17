@@ -34,9 +34,9 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
     override fun extrasWithin(node: Node) = extrasWithin[node] ?: emptyList()
     override fun extrasAfter(node: Node) = extrasAfter[node] ?: emptyList()
 
-    override fun onNode(node: Node, element: PsiElement?) {
+    override fun onNode(node: Node, element: PsiElement) {
         // We ignore whitespace and comments here to prevent recursion
-        if (element is PsiWhiteSpace || element is PsiComment || element == null) return
+        if (element is PsiWhiteSpace || element is PsiComment) return
         // We only want the last node, i.e. the most ancestor node.
         val elemId = System.identityHashCode(element)
         psiIdentitiesToNodes[elemId] = node
