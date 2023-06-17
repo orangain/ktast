@@ -163,6 +163,8 @@ open class Visitor {
                 is Node.Declaration.PropertyDeclaration.Getter -> {
                     visitChildren(modifiers)
                     visitChildren(getKeyword)
+                    visitChildren(lPar)
+                    visitChildren(rPar)
                     visitChildren(type)
                     visitChildren(postModifiers)
                     visitChildren(equals)
@@ -171,7 +173,9 @@ open class Visitor {
                 is Node.Declaration.PropertyDeclaration.Setter -> {
                     visitChildren(modifiers)
                     visitChildren(setKeyword)
+                    visitChildren(lPar)
                     visitChildren(params)
+                    visitChildren(rPar)
                     visitChildren(postModifiers)
                     visitChildren(equals)
                     visitChildren(body)

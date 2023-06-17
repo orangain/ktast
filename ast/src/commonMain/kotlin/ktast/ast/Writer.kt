@@ -234,7 +234,7 @@ open class Writer(
                     children(modifiers)
                     children(getKeyword)
                     if (body != null) {
-                        append("()")
+                        children(lPar, rPar)
                         if (type != null) append(":").also { children(type) }
                         children(postModifiers)
                         children(equals)
@@ -245,9 +245,7 @@ open class Writer(
                     children(modifiers)
                     children(setKeyword)
                     if (body != null) {
-                        append("(")
-                        commaSeparatedChildren(params)
-                        append(")")
+                        commaSeparatedChildren(lPar, params, rPar)
                         children(postModifiers)
                         children(equals)
                         children(body)

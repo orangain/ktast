@@ -555,8 +555,14 @@ sealed interface Node {
 
             /**
              * AST node corresponds to KtPropertyAccessor.
+             *
+             * @property lPar left parenthesis if exists, otherwise `null`.
+             * @property rPar right parenthesis if exists, otherwise `null`.
              */
-            sealed interface Accessor : Node, WithModifiers, WithPostModifiers, WithFunctionBody
+            sealed interface Accessor : Node, WithModifiers, WithPostModifiers, WithFunctionBody {
+                val lPar: Keyword.LPar?
+                val rPar: Keyword.RPar?
+            }
 
             /**
              * AST node that represents a property getter.
@@ -571,6 +577,8 @@ sealed interface Node {
             data class Getter(
                 override val modifiers: List<Modifier>,
                 val getKeyword: Keyword.Get,
+                override val lPar: Keyword.LPar?,
+                override val rPar: Keyword.RPar?,
                 val type: Type?,
                 override val postModifiers: List<PostModifier>,
                 override val equals: Keyword.Equal?,
@@ -591,7 +599,9 @@ sealed interface Node {
             data class Setter(
                 override val modifiers: List<Modifier>,
                 val setKeyword: Keyword.Set,
+                override val lPar: Keyword.LPar?,
                 val params: List<LambdaParam>,
+                override val rPar: Keyword.RPar?,
                 override val postModifiers: List<PostModifier>,
                 override val equals: Keyword.Equal?,
                 override val body: Expression?,
