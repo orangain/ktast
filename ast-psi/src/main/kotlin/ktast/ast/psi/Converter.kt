@@ -21,7 +21,9 @@ open class Converter {
      */
     protected open fun onNode(node: Node, element: PsiElement?) {}
 
-    open fun convertKotlinFile(v: KtFile) = Node.KotlinFile(
+    open fun convert(v: KtFile): Node.KotlinFile = convertKotlinFile(v)
+
+    protected fun convertKotlinFile(v: KtFile) = Node.KotlinFile(
         annotationSets = convertAnnotationSets(v.fileAnnotationList),
         packageDirective = v.packageDirective?.takeIf { it.packageNames.isNotEmpty() }?.let(::convertPackageDirective),
         importDirectives = v.importList?.imports?.map(::convertImportDirective) ?: listOf(),

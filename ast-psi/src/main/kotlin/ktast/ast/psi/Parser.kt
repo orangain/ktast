@@ -43,7 +43,7 @@ open class Parser(protected val converter: Converter = Converter()) {
      * @return AST node that represents the Kotlin file
      */
     fun parseFile(code: String, throwOnError: Boolean = true): Node.KotlinFile =
-        converter.convertKotlinFile(parsePsiFile(code).also { file ->
+        converter.convert(parsePsiFile(code).also { file ->
             if (throwOnError) file.collectDescendantsOfType<PsiErrorElement>().let {
                 if (it.isNotEmpty()) throw ParseError(file, it)
             }

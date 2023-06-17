@@ -8,6 +8,7 @@ import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.KtClassBody
 import org.jetbrains.kotlin.psi.KtEnumEntry
+import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.psiUtil.siblings
 import java.util.*
 import kotlin.collections.ArrayDeque
@@ -39,9 +40,11 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
         // We only want the last node, i.e. the most ancestor node.
         val elemId = System.identityHashCode(element)
         psiIdentitiesToNodes[elemId] = node
+    }
 
-        if (node is Node.KotlinEntry) {
-            fillWholeExtras(node, element)
+    override fun convert(v: KtFile): Node.KotlinFile {
+        return super.convert(v).also {
+            fillWholeExtras(it, v)
         }
     }
 
