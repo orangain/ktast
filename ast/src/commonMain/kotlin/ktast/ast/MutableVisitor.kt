@@ -465,7 +465,6 @@ open class MutableVisitor(
                         rPar = visitChildren(rPar, newCh),
                     )
                     is Node.PostModifier.TypeConstraintSet -> copy(
-                        whereKeyword = visitChildren(whereKeyword, newCh),
                         constraints = visitChildren(constraints, newCh),
                     )
                     is Node.PostModifier.TypeConstraintSet.TypeConstraint -> copy(
@@ -474,7 +473,6 @@ open class MutableVisitor(
                         type = visitChildren(type, newCh)
                     )
                     is Node.PostModifier.Contract -> copy(
-                        contractKeyword = visitChildren(contractKeyword, newCh),
                         lBracket = visitChildren(lBracket, newCh),
                         contractEffects = visitChildren(contractEffects, newCh),
                         rBracket = visitChildren(rBracket, newCh),

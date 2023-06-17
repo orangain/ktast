@@ -1582,11 +1582,9 @@ sealed interface Node {
         /**
          * AST node that represents a type constraint set. The node corresponds to a pair of "where" keyword and KtTypeConstraintList.
          *
-         * @property whereKeyword "where" keyword.
          * @property constraints type constraints.
          */
         data class TypeConstraintSet(
-            val whereKeyword: Keyword.Where,
             val constraints: List<TypeConstraint>,
             override var tag: Any? = null,
         ) : PostModifier {
@@ -1609,13 +1607,11 @@ sealed interface Node {
         /**
          * AST node that represents a contract. The node corresponds to a pair of "contract" keyword and KtContractEffectList.
          *
-         * @property contractKeyword "contract" keyword.
          * @property lBracket left bracket symbol of the contract effects.
          * @property contractEffects contract effect expressions.
          * @property rBracket right bracket symbol of the contract effects.
          */
         data class Contract(
-            val contractKeyword: Keyword.Contract,
             val lBracket: Keyword.LBracket,
             val contractEffects: List<Expression>,
             val rBracket: Keyword.RBracket,
@@ -1665,14 +1661,6 @@ sealed interface Node {
 
         data class When(override var tag: Any? = null) : Keyword {
             override val text = "when"
-        }
-
-        data class Contract(override var tag: Any? = null) : Keyword {
-            override val text = "contract"
-        }
-
-        data class Where(override var tag: Any? = null) : Keyword {
-            override val text = "where"
         }
 
         data class Field(override var tag: Any? = null) : Keyword, Modifier.AnnotationSet.AnnotationTarget {

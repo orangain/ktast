@@ -6,7 +6,6 @@ import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
-import org.jetbrains.kotlin.psi.psiUtil.getPrevSiblingIgnoringWhitespaceAndComments
 import kotlin.reflect.full.createInstance
 
 /**
@@ -888,9 +887,6 @@ open class Converter {
 
     protected fun convertTypeConstraintSet(v: KtElement, listEl: KtTypeConstraintList) =
         Node.PostModifier.TypeConstraintSet(
-            whereKeyword = convertKeyword(
-                listEl.getPrevSiblingIgnoringWhitespaceAndComments() ?: error("No prev sibling for $listEl")
-            ),
             constraints = convertTypeConstraints(listEl),
         ).map(v)
 
@@ -910,9 +906,6 @@ open class Converter {
     ).map(v)
 
     protected fun convertContract(v: KtElement, listEl: KtContractEffectList) = Node.PostModifier.Contract(
-        contractKeyword = convertKeyword(
-            listEl.getPrevSiblingIgnoringWhitespaceAndComments() ?: error("No prev sibling for $listEl")
-        ),
         lBracket = convertKeyword(listEl.leftBracket),
         contractEffects = convertContractEffects(listEl),
         rBracket = convertKeyword(listEl.rightBracket),

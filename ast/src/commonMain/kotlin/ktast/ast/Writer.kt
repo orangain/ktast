@@ -526,7 +526,7 @@ open class Writer(
                     }
                 }
                 is Node.PostModifier.TypeConstraintSet -> {
-                    children(whereKeyword)
+                    append("where")
                     commaSeparatedChildren(constraints)
                 }
                 is Node.PostModifier.TypeConstraintSet.TypeConstraint -> {
@@ -536,7 +536,7 @@ open class Writer(
                     children(type)
                 }
                 is Node.PostModifier.Contract -> {
-                    children(contractKeyword)
+                    append("contract")
                     commaSeparatedChildren(lBracket, contractEffects, rBracket)
                 }
                 is Node.Keyword -> {

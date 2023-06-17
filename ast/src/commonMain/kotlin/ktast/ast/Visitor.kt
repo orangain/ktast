@@ -437,7 +437,6 @@ open class Visitor {
                     visitChildren(rPar)
                 }
                 is Node.PostModifier.TypeConstraintSet -> {
-                    visitChildren(whereKeyword)
                     visitChildren(constraints)
                 }
                 is Node.PostModifier.TypeConstraintSet.TypeConstraint -> {
@@ -446,7 +445,6 @@ open class Visitor {
                     visitChildren(type)
                 }
                 is Node.PostModifier.Contract -> {
-                    visitChildren(contractKeyword)
                     visitChildren(lBracket)
                     visitChildren(contractEffects)
                     visitChildren(rBracket)
