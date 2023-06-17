@@ -283,7 +283,6 @@ open class MutableVisitor(
                     )
                     is Node.Type.DynamicType -> copy(
                         modifiers = visitChildren(modifiers, newCh),
-                        dynamicKeyword = visitChildren(dynamicKeyword, newCh),
                     )
                     is Node.ValueArg -> copy(
                         name = visitChildren(name, newCh),

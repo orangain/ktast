@@ -368,7 +368,6 @@ open class Converter {
     protected fun convertDynamicType(v: KtElement, modifierList: KtModifierList?, typeEl: KtDynamicType) =
         Node.Type.DynamicType(
             modifiers = convertModifiers(modifierList),
-            dynamicKeyword = convertKeyword(typeEl.dynamicKeyword),
         ).map(v)
 
     protected fun convertFunctionType(v: KtElement, modifierList: KtModifierList?, typeEl: KtFunctionType) =

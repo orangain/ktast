@@ -697,11 +697,9 @@ sealed interface Node {
          * AST node that represents a dynamic type. The node corresponds to KtDynamicType and modifiers of its parent.
          *
          * @property modifiers list of modifiers.
-         * @property dynamicKeyword `dynamic` keyword.
          */
         data class DynamicType(
             override val modifiers: List<Modifier>,
-            val dynamicKeyword: Keyword.Dynamic,
             override var tag: Any? = null,
         ) : Type
 
@@ -1659,10 +1657,6 @@ sealed interface Node {
 
         data class Var(override var tag: Any? = null) : Keyword, ValOrVarKeyword {
             override val text = "var"
-        }
-
-        data class Dynamic(override var tag: Any? = null) : Keyword {
-            override val text = "dynamic"
         }
 
         data class When(override var tag: Any? = null) : Keyword {
