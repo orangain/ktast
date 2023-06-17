@@ -376,7 +376,7 @@ sealed interface Node {
             }
 
             /**
-             * AST node corresponds to KtPrimaryConstructor.
+             * AST node that represents a primary constructor. The node corresponds to KtPrimaryConstructor.
              *
              * @property modifiers list of modifiers.
              * @property constructorKeyword `constructor` keyword if exists, otherwise `null`.
@@ -392,7 +392,7 @@ sealed interface Node {
             ) : Node, WithModifiers, WithFunctionParams
 
             /**
-             * AST node corresponds to KtClassBody.
+             * AST node that represents a class body. The node corresponds to KtClassBody.
              *
              * @property enumEntries list of enum entries.
              * @property declarations list of declarations.
@@ -404,7 +404,7 @@ sealed interface Node {
             ) : Node, WithDeclarations {
 
                 /**
-                 * AST node corresponds to KtEnumEntry.
+                 * AST node that represents an enum entry. The node corresponds to KtEnumEntry.
                  *
                  * @property modifiers list of modifiers.
                  * @property name name of the enum entry.
@@ -432,7 +432,7 @@ sealed interface Node {
                 ) : Declaration
 
                 /**
-                 * AST node corresponds to KtSecondaryConstructor.
+                 * AST node that represents a secondary constructor. The node corresponds to KtSecondaryConstructor.
                  *
                  * @property modifiers list of modifiers.
                  * @property constructorKeyword `constructor` keyword.
@@ -522,7 +522,7 @@ sealed interface Node {
             }
 
             /**
-             * AST node corresponds to KtPropertyAccessor.
+             * Common interface for property accessors. The node corresponds to KtPropertyAccessor.
              *
              * @property lPar left parenthesis if exists, otherwise `null`.
              * @property rPar right parenthesis if exists, otherwise `null`.
@@ -636,7 +636,7 @@ sealed interface Node {
          * AST node that represents a simple named type. The node corresponds to KtUserType and modifiers of its parent.
          *
          * @property modifiers list of modifiers.
-         * @property pieces list of pieces. The piece represents a pair of a name and type arguments.
+         * @property pieces list of pieces separated by dots. The piece represents a pair of a name and type arguments.
          */
         data class SimpleType(
             override val modifiers: List<Modifier>,
@@ -644,7 +644,7 @@ sealed interface Node {
             override var tag: Any? = null,
         ) : Type {
             /**
-             * AST node corresponds to KtUserType used as a piece.
+             * AST node that represents a piece of simple named type. corresponds to KtUserType used as a piece.
              *
              * @property name name of the piece.
              */
@@ -1210,7 +1210,7 @@ sealed interface Node {
         }
 
         /**
-         * Common interface for constant literal expression. The AST node corresponds to KtConstantExpression.
+         * Common interface for constant literal expression. The node corresponds to KtConstantExpression.
          *
          * @property text string representation of this constant.
          */
@@ -1513,7 +1513,7 @@ sealed interface Node {
             sealed interface AnnotationTarget : Keyword
 
             /**
-             * AST node that represents an annotation. The node corresponds to KtAnnotationEntry under KtAnnotation or virtual AST node corresponds to KtAnnotationEntry not under KtAnnotation.
+             * AST node that represents an annotation. The node corresponds to KtAnnotationEntry under KtAnnotation or a part of KtAnnotationEntry not under KtAnnotation.
              *
              * @property type type of this annotation.
              * @property args list of value arguments.
