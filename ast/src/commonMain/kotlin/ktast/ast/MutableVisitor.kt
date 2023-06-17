@@ -191,7 +191,6 @@ open class MutableVisitor(
                     )
                     is Node.Declaration.PropertyDeclaration.Getter -> copy(
                         modifiers = visitChildren(modifiers, newCh),
-                        getKeyword = visitChildren(getKeyword, newCh),
                         lPar = visitChildren(lPar, newCh),
                         rPar = visitChildren(rPar, newCh),
                         type = visitChildren(type, newCh),
@@ -201,7 +200,6 @@ open class MutableVisitor(
                     )
                     is Node.Declaration.PropertyDeclaration.Setter -> copy(
                         modifiers = visitChildren(modifiers, newCh),
-                        setKeyword = visitChildren(setKeyword, newCh),
                         lPar = visitChildren(lPar, newCh),
                         params = visitChildren(params, newCh),
                         rPar = visitChildren(rPar, newCh),

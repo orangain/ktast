@@ -232,7 +232,7 @@ open class Writer(
                 }
                 is Node.Declaration.PropertyDeclaration.Getter -> {
                     children(modifiers)
-                    children(getKeyword)
+                    append("get")
                     children(lPar, rPar)
                     if (type != null) append(":").also { children(type) }
                     children(postModifiers)
@@ -241,7 +241,7 @@ open class Writer(
                 }
                 is Node.Declaration.PropertyDeclaration.Setter -> {
                     children(modifiers)
-                    children(setKeyword)
+                    append("set")
                     commaSeparatedChildren(lPar, params, rPar)
                     children(postModifiers)
                     children(equals)

@@ -568,7 +568,6 @@ sealed interface Node {
              * AST node that represents a property getter.
              *
              * @property modifiers list of modifiers.
-             * @property getKeyword `get` keyword.
              * @property type return type of the getter if exists, otherwise `null`.
              * @property postModifiers post-modifiers of the getter.
              * @property equals `=` keyword if exists, otherwise `null`.
@@ -576,7 +575,6 @@ sealed interface Node {
              */
             data class Getter(
                 override val modifiers: List<Modifier>,
-                val getKeyword: Keyword.Get,
                 override val lPar: Keyword.LPar?,
                 override val rPar: Keyword.RPar?,
                 val type: Type?,
@@ -590,7 +588,6 @@ sealed interface Node {
              * AST node that represents a property setter.
              *
              * @property modifiers list of modifiers.
-             * @property setKeyword `set` keyword.
              * @property params list of parameters of the setter.
              * @property postModifiers post-modifiers of the setter.
              * @property equals `=` keyword if exists, otherwise `null`.
@@ -598,7 +595,6 @@ sealed interface Node {
              */
             data class Setter(
                 override val modifiers: List<Modifier>,
-                val setKeyword: Keyword.Set,
                 override val lPar: Keyword.LPar?,
                 val params: List<LambdaParam>,
                 override val rPar: Keyword.RPar?,

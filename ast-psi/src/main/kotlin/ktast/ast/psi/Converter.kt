@@ -276,7 +276,6 @@ open class Converter {
 
     protected fun convertGetter(v: KtPropertyAccessor) = Node.Declaration.PropertyDeclaration.Getter(
         modifiers = convertModifiers(v.modifierList),
-        getKeyword = convertKeyword(v.getKeyword),
         lPar = v.leftParenthesis?.let(::convertKeyword),
         rPar = v.rightParenthesis?.let(::convertKeyword),
         type = v.returnTypeReference?.let(::convertType),
@@ -287,7 +286,6 @@ open class Converter {
 
     protected fun convertSetter(v: KtPropertyAccessor) = Node.Declaration.PropertyDeclaration.Setter(
         modifiers = convertModifiers(v.modifierList),
-        setKeyword = convertKeyword(v.setKeyword),
         lPar = v.leftParenthesis?.let(::convertKeyword),
         params = convertLambdaParams(v.parameterList),
         rPar = v.rightParenthesis?.let(::convertKeyword),
