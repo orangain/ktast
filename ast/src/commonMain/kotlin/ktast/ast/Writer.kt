@@ -233,23 +233,19 @@ open class Writer(
                 is Node.Declaration.PropertyDeclaration.Getter -> {
                     children(modifiers)
                     children(getKeyword)
-                    if (body != null) {
-                        children(lPar, rPar)
-                        if (type != null) append(":").also { children(type) }
-                        children(postModifiers)
-                        children(equals)
-                        children(body)
-                    }
+                    children(lPar, rPar)
+                    if (type != null) append(":").also { children(type) }
+                    children(postModifiers)
+                    children(equals)
+                    children(body)
                 }
                 is Node.Declaration.PropertyDeclaration.Setter -> {
                     children(modifiers)
                     children(setKeyword)
-                    if (body != null) {
-                        commaSeparatedChildren(lPar, params, rPar)
-                        children(postModifiers)
-                        children(equals)
-                        children(body)
-                    }
+                    commaSeparatedChildren(lPar, params, rPar)
+                    children(postModifiers)
+                    children(equals)
+                    children(body)
                 }
                 is Node.Declaration.TypeAliasDeclaration -> {
                     children(modifiers)
