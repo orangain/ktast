@@ -120,7 +120,7 @@ open class Writer(
                     children(names, ".")
                 }
                 is Node.ImportDirective -> {
-                    children(importKeyword)
+                    append("import")
                     children(names, ".")
                     if (aliasName != null) {
                         append("as")
@@ -128,13 +128,18 @@ open class Writer(
                     }
                 }
                 is Node.Statement.ForStatement -> {
-                    children(forKeyword, lPar, loopParam, inKeyword, loopRange, rPar, body)
+                    append("for")
+                    children(lPar, loopParam, inKeyword, loopRange, rPar, body)
                 }
                 is Node.Statement.WhileStatement -> {
-                    children(whileKeyword, lPar, condition, rPar, body)
+                    append("while")
+                    children(lPar, condition, rPar, body)
                 }
                 is Node.Statement.DoWhileStatement -> {
-                    children(doKeyword, body, whileKeyword, lPar, condition, rPar)
+                    append("do")
+                    children(body)
+                    append("while")
+                    children(lPar, condition, rPar)
                 }
                 is Node.Declaration.ClassDeclaration -> {
                     children(modifiers)

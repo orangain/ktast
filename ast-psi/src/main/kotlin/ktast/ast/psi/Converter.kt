@@ -40,7 +40,6 @@ open class Converter {
     }
 
     protected fun convertImportDirective(v: KtImportDirective) = Node.ImportDirective(
-        importKeyword = convertKeyword(v.importKeyword),
         names = convertImportNames(v.importedReference ?: error("No imported reference for $v"))
                 + listOfNotNull(v.asterisk?.let(::convertNameExpression)),
         aliasName = v.alias?.nameIdentifier?.let(::convertNameExpression),
@@ -67,7 +66,6 @@ open class Converter {
     }
 
     protected fun convertForStatement(v: KtForExpression) = Node.Statement.ForStatement(
-        forKeyword = convertKeyword(v.forKeyword),
         lPar = convertKeyword(v.leftParenthesis ?: error("No left parenthesis for $v")),
         loopParam = convertLambdaParam(v.loopParameter ?: error("No param on for $v")),
         inKeyword = convertKeyword(v.inKeyword ?: error("No in keyword for $v")),
@@ -77,7 +75,6 @@ open class Converter {
     ).map(v)
 
     protected fun convertWhileStatement(v: KtWhileExpression) = Node.Statement.WhileStatement(
-        whileKeyword = convertKeyword(v.whileKeyword),
         lPar = convertKeyword(v.leftParenthesis ?: error("No left parenthesis for $v")),
         condition = convertExpression(v.condition ?: error("No condition expression for $v")),
         rPar = convertKeyword(v.rightParenthesis ?: error("No right parenthesis for $v")),
@@ -85,9 +82,7 @@ open class Converter {
     ).map(v)
 
     protected fun convertDoWhileStatement(v: KtDoWhileExpression) = Node.Statement.DoWhileStatement(
-        doKeyword = convertKeyword(v.doKeyword),
         body = convertExpression(v.body ?: error("No body expression for $v")),
-        whileKeyword = convertKeyword(v.whileKeyword ?: error("No while keyword for $v")),
         lPar = convertKeyword(v.leftParenthesis ?: error("No left parenthesis for $v")),
         condition = convertExpression(v.condition ?: error("No condition expression for $v")),
         rPar = convertKeyword(v.rightParenthesis ?: error("No right parenthesis for $v")),

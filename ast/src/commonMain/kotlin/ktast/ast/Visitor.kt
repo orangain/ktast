@@ -50,12 +50,10 @@ open class Visitor {
                     visitChildren(names)
                 }
                 is Node.ImportDirective -> {
-                    visitChildren(importKeyword)
                     visitChildren(names)
                     visitChildren(aliasName)
                 }
                 is Node.Statement.ForStatement -> {
-                    visitChildren(forKeyword)
                     visitChildren(lPar)
                     visitChildren(loopParam)
                     visitChildren(inKeyword)
@@ -64,16 +62,13 @@ open class Visitor {
                     visitChildren(body)
                 }
                 is Node.Statement.WhileStatement -> {
-                    visitChildren(whileKeyword)
                     visitChildren(lPar)
                     visitChildren(condition)
                     visitChildren(rPar)
                     visitChildren(body)
                 }
                 is Node.Statement.DoWhileStatement -> {
-                    visitChildren(doKeyword)
                     visitChildren(body)
-                    visitChildren(whileKeyword)
                     visitChildren(lPar)
                     visitChildren(condition)
                     visitChildren(rPar)

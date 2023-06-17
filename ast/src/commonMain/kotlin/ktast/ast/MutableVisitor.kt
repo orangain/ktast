@@ -79,12 +79,10 @@ open class MutableVisitor(
                         names = visitChildren(names, newCh),
                     )
                     is Node.ImportDirective -> copy(
-                        importKeyword = visitChildren(importKeyword, newCh),
                         names = visitChildren(names, newCh),
                         aliasName = visitChildren(aliasName, newCh),
                     )
                     is Node.Statement.ForStatement -> copy(
-                        forKeyword = visitChildren(forKeyword, newCh),
                         lPar = visitChildren(lPar, newCh),
                         loopParam = visitChildren(loopParam, newCh),
                         inKeyword = visitChildren(inKeyword, newCh),
@@ -93,16 +91,13 @@ open class MutableVisitor(
                         body = visitChildren(body, newCh)
                     )
                     is Node.Statement.WhileStatement -> copy(
-                        whileKeyword = visitChildren(whileKeyword, newCh),
                         lPar = visitChildren(lPar, newCh),
                         condition = visitChildren(condition, newCh),
                         rPar = visitChildren(rPar, newCh),
                         body = visitChildren(body, newCh),
                     )
                     is Node.Statement.DoWhileStatement -> copy(
-                        doKeyword = visitChildren(doKeyword, newCh),
                         body = visitChildren(body, newCh),
-                        whileKeyword = visitChildren(whileKeyword, newCh),
                         lPar = visitChildren(lPar, newCh),
                         condition = visitChildren(condition, newCh),
                         rPar = visitChildren(rPar, newCh),

@@ -182,12 +182,10 @@ sealed interface Node {
     /**
      * AST node that represents an import directive. The node corresponds to KtImportDirective.
      *
-     * @property importKeyword import keyword.
      * @property names list of names separated by dots.
      * @property aliasName import alias name if exists, otherwise `null`.
      */
     data class ImportDirective(
-        val importKeyword: Keyword.Import,
         val names: List<Expression.NameExpression>,
         val aliasName: Expression.NameExpression?,
         override var tag: Any? = null,
@@ -205,7 +203,6 @@ sealed interface Node {
          * for ([loopParam] in [loopRange]) [body]
          * ```
          *
-         * @property forKeyword `for` keyword.
          * @property lPar left parenthesis of the loop condition.
          * @property loopParam loop parameter before `in` keyword.
          * @property inKeyword `in` keyword.
@@ -214,7 +211,6 @@ sealed interface Node {
          * @property body body expression.
          */
         data class ForStatement(
-            val forKeyword: Keyword.For,
             val lPar: Keyword.LPar,
             val loopParam: LambdaParam,
             val inKeyword: Keyword.In,
@@ -227,14 +223,12 @@ sealed interface Node {
         /**
          * Common interface for [WhileStatement] and [DoWhileStatement].
          *
-         * @property whileKeyword `while` keyword.
          * @property lPar left parenthesis of the condition.
          * @property condition condition expression.
          * @property rPar right parenthesis of the condition.
          * @property body body expression.
          */
         sealed interface WhileStatementBase : Statement {
-            val whileKeyword: Keyword.While
             val lPar: Keyword.LPar
             val condition: Expression
             val rPar: Keyword.RPar
@@ -245,7 +239,6 @@ sealed interface Node {
          * AST node that represents a while statement. The node corresponds to KtWhileExpression.
          */
         data class WhileStatement(
-            override val whileKeyword: Keyword.While,
             override val lPar: Keyword.LPar,
             override val condition: Expression,
             override val rPar: Keyword.RPar,
@@ -255,13 +248,9 @@ sealed interface Node {
 
         /**
          * AST node that represents a do-while statement. The node corresponds to KtDoWhileExpression.
-         *
-         * @property doKeyword `do` keyword.
          */
         data class DoWhileStatement(
-            val doKeyword: Keyword.Do,
             override val body: Expression,
-            override val whileKeyword: Keyword.While,
             override val lPar: Keyword.LPar,
             override val condition: Expression,
             override val rPar: Keyword.RPar,
@@ -1662,10 +1651,6 @@ sealed interface Node {
          */
         sealed interface ValOrVarKeyword : Keyword
 
-        data class Import(override var tag: Any? = null) : Keyword {
-            override val text = "import"
-        }
-
         data class Class(override var tag: Any? = null) : Keyword,
             Declaration.ClassDeclaration.ClassDeclarationKeyword {
             override val text = "class"
@@ -1695,18 +1680,6 @@ sealed interface Node {
 
         data class Dynamic(override var tag: Any? = null) : Keyword {
             override val text = "dynamic"
-        }
-
-        data class For(override var tag: Any? = null) : Keyword {
-            override val text = "for"
-        }
-
-        data class While(override var tag: Any? = null) : Keyword {
-            override val text = "while"
-        }
-
-        data class Do(override var tag: Any? = null) : Keyword {
-            override val text = "do"
         }
 
         data class If(override var tag: Any? = null) : Keyword {
