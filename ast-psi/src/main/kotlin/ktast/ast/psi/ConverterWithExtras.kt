@@ -9,6 +9,7 @@ import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.KtClassBody
 import org.jetbrains.kotlin.psi.KtEnumEntry
 import org.jetbrains.kotlin.psi.KtFile
+import org.jetbrains.kotlin.psi.psiUtil.allChildren
 import org.jetbrains.kotlin.psi.psiUtil.siblings
 import java.util.*
 import kotlin.collections.ArrayDeque
@@ -96,6 +97,8 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
                         fillExtrasAfter(lastNode!!)
                     }
                 } else {
+                    // Add first extra children of this element as extrasBefore.
+                    extraElementsSinceLastNode.addAll(element.allChildren.takeWhile(::isExtra))
                     fillExtrasBefore(node)
                 }
                 lastNode = node

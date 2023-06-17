@@ -143,7 +143,6 @@ open class MutableVisitor(
                     )
                     is Node.Declaration.FunctionDeclaration -> copy(
                         modifiers = visitChildren(modifiers, newCh),
-                        funKeyword = visitChildren(funKeyword, newCh),
                         lAngle = visitChildren(lAngle, newCh),
                         typeParams = visitChildren(typeParams, newCh),
                         rAngle = visitChildren(rAngle, newCh),
@@ -154,7 +153,6 @@ open class MutableVisitor(
                         rPar = visitChildren(rPar, newCh),
                         returnType = visitChildren(returnType, newCh),
                         postModifiers = visitChildren(postModifiers, newCh),
-                        equals = visitChildren(equals, newCh),
                         body = visitChildren(body, newCh),
                     )
                     is Node.FunctionParam -> copy(
@@ -162,7 +160,6 @@ open class MutableVisitor(
                         valOrVarKeyword = visitChildren(valOrVarKeyword, newCh),
                         name = visitChildren(name, newCh),
                         type = visitChildren(type, newCh),
-                        equals = visitChildren(equals, newCh),
                         defaultValue = visitChildren(defaultValue, newCh),
                     )
                     is Node.Declaration.PropertyDeclaration -> copy(
@@ -176,13 +173,9 @@ open class MutableVisitor(
                         variables = visitChildren(variables, newCh),
                         rPar = visitChildren(rPar, newCh),
                         typeConstraintSet = visitChildren(typeConstraintSet, newCh),
-                        equals = visitChildren(equals, newCh),
-                        initializer = visitChildren(initializer, newCh),
-                        propertyDelegate = visitChildren(propertyDelegate, newCh),
+                        initializerExpression = visitChildren(initializerExpression, newCh),
+                        delegateExpression = visitChildren(delegateExpression, newCh),
                         accessors = visitChildren(accessors, newCh)
-                    )
-                    is Node.Declaration.PropertyDeclaration.PropertyDelegate -> copy(
-                        expression = visitChildren(expression, newCh),
                     )
                     is Node.Variable -> copy(
                         annotationSets = visitChildren(annotationSets, newCh),
@@ -191,22 +184,18 @@ open class MutableVisitor(
                     )
                     is Node.Declaration.PropertyDeclaration.Getter -> copy(
                         modifiers = visitChildren(modifiers, newCh),
-                        getKeyword = visitChildren(getKeyword, newCh),
                         lPar = visitChildren(lPar, newCh),
                         rPar = visitChildren(rPar, newCh),
                         type = visitChildren(type, newCh),
                         postModifiers = visitChildren(postModifiers, newCh),
-                        equals = visitChildren(equals, newCh),
                         body = visitChildren(body, newCh),
                     )
                     is Node.Declaration.PropertyDeclaration.Setter -> copy(
                         modifiers = visitChildren(modifiers, newCh),
-                        setKeyword = visitChildren(setKeyword, newCh),
                         lPar = visitChildren(lPar, newCh),
                         params = visitChildren(params, newCh),
                         rPar = visitChildren(rPar, newCh),
                         postModifiers = visitChildren(postModifiers, newCh),
-                        equals = visitChildren(equals, newCh),
                         body = visitChildren(body, newCh),
                     )
                     is Node.Declaration.TypeAliasDeclaration -> copy(
@@ -215,7 +204,6 @@ open class MutableVisitor(
                         lAngle = visitChildren(lAngle, newCh),
                         typeParams = visitChildren(typeParams, newCh),
                         rAngle = visitChildren(rAngle, newCh),
-                        equals = visitChildren(equals, newCh),
                         type = visitChildren(type, newCh)
                     )
                     is Node.Declaration.ClassDeclaration.ClassBody.SecondaryConstructor -> copy(
@@ -247,7 +235,6 @@ open class MutableVisitor(
                         modifiers = visitChildren(modifiers, newCh),
                         contextReceiver = visitChildren(contextReceiver, newCh),
                         receiverType = visitChildren(receiverType, newCh),
-                        dotSymbol = visitChildren(dotSymbol, newCh),
                         lPar = visitChildren(lPar, newCh),
                         params = visitChildren(params, newCh),
                         rPar = visitChildren(rPar, newCh),
@@ -285,11 +272,10 @@ open class MutableVisitor(
                     )
                     is Node.Type.DynamicType -> copy(
                         modifiers = visitChildren(modifiers, newCh),
-                        dynamicKeyword = visitChildren(dynamicKeyword, newCh),
                     )
                     is Node.ValueArg -> copy(
                         name = visitChildren(name, newCh),
-                        asterisk = visitChildren(asterisk, newCh),
+                        spreadOperator = visitChildren(spreadOperator, newCh),
                         expression = visitChildren(expression, newCh)
                     )
                     is Node.Expression.IfExpression -> copy(
@@ -358,7 +344,6 @@ open class MutableVisitor(
                         lPar = visitChildren(lPar, newCh),
                         variables = visitChildren(variables, newCh),
                         rPar = visitChildren(rPar, newCh),
-                        colon = visitChildren(colon, newCh),
                         destructType = visitChildren(destructType, newCh),
                     )
                     is Node.Expression.ThisExpression -> copy(
@@ -455,9 +440,7 @@ open class MutableVisitor(
                         statements = visitChildren(statements, newCh),
                     )
                     is Node.Modifier.AnnotationSet -> copy(
-                        atSymbol = visitChildren(atSymbol, newCh),
                         target = visitChildren(target, newCh),
-                        colon = visitChildren(colon, newCh),
                         lBracket = visitChildren(lBracket, newCh),
                         annotations = visitChildren(annotations, newCh),
                         rBracket = visitChildren(rBracket, newCh),

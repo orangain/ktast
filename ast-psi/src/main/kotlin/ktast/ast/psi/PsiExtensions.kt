@@ -24,18 +24,9 @@ internal val KtTypeArgumentList.leftAngle: PsiElement?
 internal val KtTypeArgumentList.rightAngle: PsiElement?
     get() = findChildByType(this, KtTokens.GT)
 
-internal val KtDeclarationWithInitializer.equalsToken: PsiElement
-    get() = findChildByType(this, KtTokens.EQ) ?: error("No equals token for $this")
 internal val KtInitializerList.valueArgumentList: KtValueArgumentList
     get() = (initializers.firstOrNull() as? KtSuperTypeCallEntry)?.valueArgumentList
         ?: error("No value arguments for $this")
-internal val KtTypeAlias.equalsToken: PsiElement
-    get() = findChildByType(this, KtTokens.EQ) ?: error("No equals token for $this")
-
-internal val KtPropertyAccessor.setKeyword: PsiElement
-    get() = findChildByType(this, KtTokens.SET_KEYWORD) ?: error("No set keyword for $this")
-internal val KtPropertyAccessor.getKeyword: PsiElement
-    get() = findChildByType(this, KtTokens.GET_KEYWORD) ?: error("No get keyword for $this")
 
 internal val KtQualifiedExpression.operator: PsiElement
     get() = operationTokenNode.psi
@@ -48,21 +39,11 @@ internal val KtDoubleColonExpression.questionMarks
 
 internal val KtNullableType.questionMark: PsiElement
     get() = questionMarkNode.psi
-internal val KtDynamicType.dynamicKeyword: PsiElement
-    get() = findChildByType(this, KtTokens.DYNAMIC_KEYWORD) ?: error("No dynamic keyword for $this")
-internal val KtFunctionType.dotSymbol: PsiElement?
-    get() = findChildByType(this, KtTokens.DOT)
 
-internal val KtAnnotation.atSymbol: PsiElement?
-    get() = findChildByType(this, KtTokens.AT)
-internal val KtAnnotation.colon: PsiElement?
-    get() = findChildByType(this, KtTokens.COLON)
 internal val KtAnnotation.lBracket: PsiElement?
     get() = findChildByType(this, KtTokens.LBRACKET)
 internal val KtAnnotation.rBracket: PsiElement?
     get() = findChildByType(this, KtTokens.RBRACKET)
-internal val KtAnnotationEntry.colon: PsiElement?
-    get() = findChildByType(this, KtTokens.COLON)
 
 internal val KtContextReceiverList.leftParenthesis: PsiElement
     get() = findChildByType(this, KtTokens.LPAR) ?: error("No left parenthesis for $this")

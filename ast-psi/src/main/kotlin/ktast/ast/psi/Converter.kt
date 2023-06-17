@@ -211,7 +211,6 @@ open class Converter {
 
         return Node.Declaration.FunctionDeclaration(
             modifiers = convertModifiers(v.modifierList),
-            funKeyword = v.funKeyword?.let { convertKeyword(it) } ?: error("No fun keyword for $v"),
             lAngle = v.typeParameterList?.leftAngle?.let(::convertKeyword),
             typeParams = convertTypeParams(v.typeParameterList),
             rAngle = v.typeParameterList?.rightAngle?.let(::convertKeyword),
@@ -222,8 +221,7 @@ open class Converter {
             rPar = v.valueParameterList?.rightParenthesis?.let(::convertKeyword),
             returnType = v.typeReference?.let(::convertType),
             postModifiers = convertPostModifiers(v),
-            equals = v.equalsToken?.let(::convertKeyword),
-            body = v.bodyExpression?.let { convertExpression(it) },
+            body = v.bodyExpression?.let(::convertExpression),
         ).map(v)
     }
 
@@ -240,9 +238,8 @@ open class Converter {
         typeConstraintSet = v.typeConstraintList?.let { typeConstraintList ->
             convertTypeConstraintSet(v, typeConstraintList)
         },
-        equals = v.equalsToken?.let(::convertKeyword),
-        initializer = v.initializer?.let(::convertExpression),
-        propertyDelegate = v.delegate?.let(::convertPropertyDelegate),
+        initializerExpression = v.initializer?.let(::convertExpression),
+        delegateExpression = v.delegate?.expression?.let(::convertExpression),
         accessors = v.accessors.map(::convertPropertyAccessor),
     ).map(v)
 
@@ -257,16 +254,10 @@ open class Converter {
         variables = v.entries.map(::convertVariable),
         rPar = v.rPar?.let(::convertKeyword),
         typeConstraintSet = null,
-        equals = convertKeyword(v.equalsToken),
-        initializer = v.initializer?.let(::convertExpression),
-        propertyDelegate = null,
+        initializerExpression = v.initializer?.let(::convertExpression),
+        delegateExpression = null,
         accessors = listOf(),
     ).map(v)
-
-    protected fun convertPropertyDelegate(v: KtPropertyDelegate) =
-        Node.Declaration.PropertyDeclaration.PropertyDelegate(
-            expression = convertExpression(v.expression ?: error("Missing expression for $v")),
-        ).map(v)
 
     protected fun convertPropertyAccessor(v: KtPropertyAccessor): Node.Declaration.PropertyDeclaration.Accessor =
         when (v.isGetter) {
@@ -276,23 +267,19 @@ open class Converter {
 
     protected fun convertGetter(v: KtPropertyAccessor) = Node.Declaration.PropertyDeclaration.Getter(
         modifiers = convertModifiers(v.modifierList),
-        getKeyword = convertKeyword(v.getKeyword),
         lPar = v.leftParenthesis?.let(::convertKeyword),
         rPar = v.rightParenthesis?.let(::convertKeyword),
         type = v.returnTypeReference?.let(::convertType),
         postModifiers = convertPostModifiers(v),
-        equals = v.equalsToken?.let(::convertKeyword),
         body = v.bodyExpression?.let(::convertExpression),
     ).map(v)
 
     protected fun convertSetter(v: KtPropertyAccessor) = Node.Declaration.PropertyDeclaration.Setter(
         modifiers = convertModifiers(v.modifierList),
-        setKeyword = convertKeyword(v.setKeyword),
         lPar = v.leftParenthesis?.let(::convertKeyword),
         params = convertLambdaParams(v.parameterList),
         rPar = v.rightParenthesis?.let(::convertKeyword),
         postModifiers = convertPostModifiers(v),
-        equals = v.equalsToken?.let(::convertKeyword),
         body = v.bodyExpression?.let(::convertExpression),
     ).map(v)
 
@@ -302,7 +289,6 @@ open class Converter {
         lAngle = v.typeParameterList?.leftAngle?.let(::convertKeyword),
         typeParams = convertTypeParams(v.typeParameterList),
         rAngle = v.typeParameterList?.rightAngle?.let(::convertKeyword),
-        equals = convertKeyword(v.equalsToken),
         type = convertType(v.getTypeReference() ?: error("No type alias ref for $v"))
     ).map(v)
 
@@ -370,7 +356,6 @@ open class Converter {
     protected fun convertDynamicType(v: KtElement, modifierList: KtModifierList?, typeEl: KtDynamicType) =
         Node.Type.DynamicType(
             modifiers = convertModifiers(modifierList),
-            dynamicKeyword = convertKeyword(typeEl.dynamicKeyword),
         ).map(v)
 
     protected fun convertFunctionType(v: KtElement, modifierList: KtModifierList?, typeEl: KtFunctionType) =
@@ -378,7 +363,6 @@ open class Converter {
             modifiers = convertModifiers(modifierList),
             contextReceiver = typeEl.contextReceiverList?.let(::convertContextReceiver),
             receiverType = typeEl.receiver?.typeReference?.let(::convertType),
-            dotSymbol = typeEl.dotSymbol?.let(::convertKeyword),
             lPar = typeEl.parameterList?.leftParenthesis?.let(::convertKeyword),
             params = convertTypeFunctionParams(typeEl.parameterList),
             rPar = typeEl.parameterList?.rightParenthesis?.let(::convertKeyword),
@@ -755,7 +739,6 @@ open class Converter {
         valOrVarKeyword = v.valOrVarKeyword?.let(::convertKeyword),
         name = v.nameIdentifier?.let(::convertNameExpression) ?: error("No param name"),
         type = v.typeReference?.let(::convertType),
-        equals = v.equalsToken?.let(::convertKeyword),
         defaultValue = v.defaultValue?.let(::convertExpression),
     ).map(v)
 
@@ -769,7 +752,6 @@ open class Converter {
                 lPar = destructuringDeclaration.lPar?.let(::convertKeyword),
                 variables = destructuringDeclaration.entries.map(::convertVariable),
                 rPar = destructuringDeclaration.rPar?.let(::convertKeyword),
-                colon = v.colon?.let(::convertKeyword),
                 destructType = v.typeReference?.let(::convertType),
             ).map(v)
         } else {
@@ -777,7 +759,6 @@ open class Converter {
                 lPar = null,
                 variables = listOf(convertVariable(v)),
                 rPar = null,
-                colon = null,
                 destructType = null,
             ).map(v)
         }
@@ -822,7 +803,7 @@ open class Converter {
 
     protected fun convertValueArg(v: KtValueArgument) = Node.ValueArg(
         name = v.getArgumentName()?.referenceExpression?.let(::convertNameExpression),
-        asterisk = v.getSpreadElement()?.let(::convertKeyword),
+        spreadOperator = v.getSpreadElement()?.let(::convertKeyword),
         expression = convertExpression(v.getArgumentExpression() ?: error("No expr for value arg"))
     ).map(v)
 
@@ -853,18 +834,14 @@ open class Converter {
     }
 
     protected fun convertAnnotationSet(v: KtAnnotation) = Node.Modifier.AnnotationSet(
-        atSymbol = v.atSymbol?.let(::convertKeyword),
         target = v.useSiteTarget?.let(::convertKeyword),
-        colon = v.colon?.let(::convertKeyword),
         lBracket = v.lBracket?.let(::convertKeyword),
         annotations = v.entries.map(::convertAnnotation),
         rBracket = v.rBracket?.let(::convertKeyword),
     ).map(v)
 
     protected fun convertAnnotationSet(v: KtAnnotationEntry) = Node.Modifier.AnnotationSet(
-        atSymbol = v.atSymbol?.let(::convertKeyword),
         target = v.useSiteTarget?.let(::convertKeyword),
-        colon = v.colon?.let(::convertKeyword),
         lBracket = null,
         annotations = listOf(convertAnnotation(v)),
         rBracket = null,

@@ -15,7 +15,6 @@ package ktast.ast
  *     Node.Keyword.Val{text="val"}
  *     Node.Variable
  *       Node.Expression.NameExpression{text="x"}
- *     Node.Keyword.Equal{text="="}
  *     Node.Expression.StringLiteralExpression{raw="false"}
  * ```
  */

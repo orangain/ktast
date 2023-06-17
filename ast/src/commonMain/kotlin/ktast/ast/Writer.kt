@@ -189,23 +189,21 @@ open class Writer(
                 }
                 is Node.Declaration.FunctionDeclaration -> {
                     children(modifiers)
-                    children(funKeyword)
+                    append("fun")
                     commaSeparatedChildren(lAngle, typeParams, rAngle)
                     if (receiverType != null) children(receiverType).append(".")
                     name?.also { children(it) }
                     commaSeparatedChildren(lPar, params, rPar)
                     if (returnType != null) append(":").also { children(returnType) }
                     children(postModifiers)
-                    children(equals)
-                    children(body)
+                    writeFunctionBody(body)
                 }
                 is Node.FunctionParam -> {
                     children(modifiers)
                     children(valOrVarKeyword)
                     children(name)
                     if (type != null) append(":").also { children(type) }
-                    children(equals)
-                    children(defaultValue)
+                    writeFunctionBody(defaultValue)
                 }
                 is Node.Declaration.PropertyDeclaration -> {
                     children(modifiers)
@@ -216,14 +214,12 @@ open class Writer(
                     children(variables, ",")
                     children(rPar)
                     children(typeConstraintSet)
-                    children(equals)
-                    children(initializer)
-                    children(propertyDelegate)
+                    writeFunctionBody(initializerExpression)
+                    if (delegateExpression != null) {
+                        append("by")
+                        children(delegateExpression)
+                    }
                     children(accessors)
-                }
-                is Node.Declaration.PropertyDeclaration.PropertyDelegate -> {
-                    append("by")
-                    children(expression)
                 }
                 is Node.Variable -> {
                     children(annotationSets)
@@ -232,27 +228,25 @@ open class Writer(
                 }
                 is Node.Declaration.PropertyDeclaration.Getter -> {
                     children(modifiers)
-                    children(getKeyword)
+                    append("get")
                     children(lPar, rPar)
                     if (type != null) append(":").also { children(type) }
                     children(postModifiers)
-                    children(equals)
-                    children(body)
+                    writeFunctionBody(body)
                 }
                 is Node.Declaration.PropertyDeclaration.Setter -> {
                     children(modifiers)
-                    children(setKeyword)
+                    append("set")
                     commaSeparatedChildren(lPar, params, rPar)
                     children(postModifiers)
-                    children(equals)
-                    children(body)
+                    writeFunctionBody(body)
                 }
                 is Node.Declaration.TypeAliasDeclaration -> {
                     children(modifiers)
                     append("typealias")
                     children(name)
                     commaSeparatedChildren(lAngle, typeParams, rAngle)
-                    children(equals)
+                    append("=")
                     children(type)
                 }
                 is Node.Declaration.ClassDeclaration.ClassBody.SecondaryConstructor -> {
@@ -281,7 +275,7 @@ open class Writer(
                     children(modifiers)
                     children(contextReceiver)
                     children(receiverType)
-                    children(dotSymbol)
+                    if (receiverType != null) append(".")
                     commaSeparatedChildren(lPar, params, rPar)
                     append("->")
                     children(returnType)
@@ -315,11 +309,11 @@ open class Writer(
                 }
                 is Node.Type.DynamicType -> {
                     children(modifiers)
-                    children(dynamicKeyword)
+                    append("dynamic")
                 }
                 is Node.ValueArg -> {
                     if (name != null) children(name).append("=")
-                    children(asterisk)
+                    children(spreadOperator)
                     children(expression)
                 }
                 is Node.Expression.IfExpression -> {
@@ -403,8 +397,10 @@ open class Writer(
                     children(lPar)
                     children(variables, ",")
                     children(rPar)
-                    children(colon)
-                    children(destructType)
+                    if (destructType != null) {
+                        append(":")
+                        children(destructType)
+                    }
                 }
                 is Node.Expression.ThisExpression -> {
                     append("this")
@@ -504,9 +500,11 @@ open class Writer(
                     }
                 }
                 is Node.Modifier.AnnotationSet -> {
-                    children(atSymbol)
-                    children(target)
-                    children(colon)
+                    append("@")
+                    if (target != null) {
+                        children(target)
+                        append(":")
+                    }
                     children(lBracket)
                     children(annotations)
                     children(rBracket)
@@ -579,6 +577,13 @@ open class Writer(
         append("}")
     }
 
+    private fun NodePath<*>.writeFunctionBody(body: Node.Expression?) {
+        if (body != null && body !is Node.Expression.BlockExpression) {
+            append("=")
+        }
+        children(body)
+    }
+
     protected open fun NodePath<*>.writeHeuristicNewline() {
         val parentNode = parent?.node
         if (parentNode is Node.WithStatements && node is Node.Statement) {
@@ -593,8 +598,8 @@ open class Writer(
         }
         if (parentNode is Node.Declaration.PropertyDeclaration && node is Node.Declaration.PropertyDeclaration.Accessor) {
             // Property accessors require newline when the previous element is expression
-            if ((parentNode.accessors.first() === node && (parentNode.propertyDelegate != null || parentNode.initializer != null)) ||
-                (parentNode.accessors.size == 2 && parentNode.accessors.last() === node && parentNode.accessors[0].equals != null)
+            if ((parentNode.accessors.first() === node && (parentNode.delegateExpression != null || parentNode.initializerExpression != null)) ||
+                (parentNode.accessors.size == 2 && parentNode.accessors.last() === node && parentNode.accessors[0].body != null && parentNode.accessors[0].body !is Node.Expression.BlockExpression)
             ) {
                 if (!containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
                     append("\n")
