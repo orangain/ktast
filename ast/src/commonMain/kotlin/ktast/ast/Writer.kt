@@ -160,7 +160,7 @@ open class Writer(
                 }
                 is Node.Declaration.ClassDeclaration.DelegationClassParent -> {
                     children(type)
-                    children(byKeyword)
+                    append("by")
                     children(expression)
                 }
                 is Node.Declaration.ClassDeclaration.TypeClassParent -> {
@@ -222,7 +222,7 @@ open class Writer(
                     children(accessors)
                 }
                 is Node.Declaration.PropertyDeclaration.PropertyDelegate -> {
-                    children(byKeyword)
+                    append("by")
                     children(expression)
                 }
                 is Node.Variable -> {

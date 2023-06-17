@@ -122,7 +122,6 @@ open class MutableVisitor(
                     )
                     is Node.Declaration.ClassDeclaration.DelegationClassParent -> copy(
                         type = visitChildren(type, newCh),
-                        byKeyword = visitChildren(byKeyword, newCh),
                         expression = visitChildren(expression, newCh),
                     )
                     is Node.Declaration.ClassDeclaration.TypeClassParent -> copy(
@@ -183,7 +182,6 @@ open class MutableVisitor(
                         accessors = visitChildren(accessors, newCh)
                     )
                     is Node.Declaration.PropertyDeclaration.PropertyDelegate -> copy(
-                        byKeyword = visitChildren(byKeyword, newCh),
                         expression = visitChildren(expression, newCh),
                     )
                     is Node.Variable -> copy(

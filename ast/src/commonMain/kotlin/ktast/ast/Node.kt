@@ -326,12 +326,10 @@ sealed interface Node {
              * @property lPar left parenthesis of the value arguments.
              * @property args list of value arguments of the parent call.
              * @property rPar right parenthesis of the value arguments.
-             * @property byKeyword `by` keyword if exists, otherwise `null`.
              * @property expression expression of the delegation if exists, otherwise `null`.
              */
             sealed interface ClassParent : Node, WithValueArgs {
                 val type: Type
-                val byKeyword: Keyword.By?
                 val expression: Expression?
             }
 
@@ -340,7 +338,6 @@ sealed interface Node {
              *
              * @property type type of the parent.
              * @property args list of value arguments of the parent call.
-             * @property byKeyword always `null`.
              * @property expression always `null`.
              */
             data class ConstructorClassParent(
@@ -350,7 +347,6 @@ sealed interface Node {
                 override val rPar: Keyword.RPar,
                 override var tag: Any? = null,
             ) : ClassParent {
-                override val byKeyword: Keyword.By? = null
                 override val expression: Expression? = null
             }
 
@@ -359,12 +355,10 @@ sealed interface Node {
              *
              * @property type type of the interface delegated to.
              * @property args always empty list.
-             * @property byKeyword `by` keyword.
              * @property expression expression of the delegation.
              */
             data class DelegationClassParent(
                 override val type: Type,
-                override val byKeyword: Keyword.By,
                 override val expression: Expression,
                 override var tag: Any? = null,
             ) : ClassParent {
@@ -380,7 +374,6 @@ sealed interface Node {
              * @property lPar always `null`.
              * @property args always empty list.
              * @property rPar always `null`.
-             * @property byKeyword always `null`.
              * @property expression always `null`.
              */
             data class TypeClassParent(
@@ -390,7 +383,6 @@ sealed interface Node {
                 override val lPar: Keyword.LPar? = null
                 override val args: List<ValueArg> = listOf()
                 override val rPar: Keyword.RPar? = null
-                override val byKeyword: Keyword.By? = null
                 override val expression: Expression? = null
             }
 
@@ -554,11 +546,9 @@ sealed interface Node {
             /**
              * AST node corresponds to KtPropertyDelegate.
              *
-             * @property byKeyword `by` keyword.
              * @property expression expression of the delegate.
              */
             data class PropertyDelegate(
-                val byKeyword: Keyword.By,
                 val expression: Expression,
                 override var tag: Any? = null,
             ) : Node
@@ -1675,10 +1665,6 @@ sealed interface Node {
 
         data class When(override var tag: Any? = null) : Keyword {
             override val text = "when"
-        }
-
-        data class By(override var tag: Any? = null) : Keyword {
-            override val text = "by"
         }
 
         data class Contract(override var tag: Any? = null) : Keyword {

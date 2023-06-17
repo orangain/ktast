@@ -93,7 +93,6 @@ open class Visitor {
                 }
                 is Node.Declaration.ClassDeclaration.DelegationClassParent -> {
                     visitChildren(type)
-                    visitChildren(byKeyword)
                     visitChildren(expression)
                 }
                 is Node.Declaration.ClassDeclaration.TypeClassParent -> {
@@ -154,7 +153,6 @@ open class Visitor {
                     visitChildren(accessors)
                 }
                 is Node.Declaration.PropertyDeclaration.PropertyDelegate -> {
-                    visitChildren(byKeyword)
                     visitChildren(expression)
                 }
                 is Node.Variable -> {

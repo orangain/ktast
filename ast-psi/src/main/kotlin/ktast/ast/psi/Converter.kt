@@ -141,7 +141,6 @@ open class Converter {
         Node.Declaration.ClassDeclaration.DelegationClassParent(
             type = v.typeReference?.let(::convertType)
                 ?: error("No type on delegated super type $v"),
-            byKeyword = convertKeyword(v.byKeyword),
             expression = convertExpression(v.delegateExpression ?: error("Missing delegateExpression for $v")),
         ).map(v)
 
@@ -267,7 +266,6 @@ open class Converter {
 
     protected fun convertPropertyDelegate(v: KtPropertyDelegate) =
         Node.Declaration.PropertyDeclaration.PropertyDelegate(
-            byKeyword = convertKeyword(v.byKeyword),
             expression = convertExpression(v.expression ?: error("Missing expression for $v")),
         ).map(v)
 
