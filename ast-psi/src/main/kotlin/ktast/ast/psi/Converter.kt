@@ -2,10 +2,7 @@ package ktast.ast.psi
 
 import ktast.ast.Node
 import org.jetbrains.kotlin.KtNodeTypes
-import org.jetbrains.kotlin.com.intellij.psi.PsiComment
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
-import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
-import org.jetbrains.kotlin.com.intellij.psi.tree.IElementType
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
@@ -948,96 +945,5 @@ open class Converter {
      */
     protected open fun <T : Node> T.map(v: PsiElement) = also { onNode(it, v) }
 
-    protected fun PsiElement.nonExtraChildren() =
-        allChildren.filterNot { it is PsiComment || it is PsiWhiteSpace }.toList()
-
     class Unsupported(message: String) : UnsupportedOperationException(message)
-
-    protected val KtImportDirective.importKeyword: PsiElement
-        get() = findChildByType(this, KtTokens.IMPORT_KEYWORD) ?: error("Missing import keyword for $this")
-    protected val KtImportDirective.asterisk: PsiElement?
-        get() = findChildByType(this, KtTokens.MUL)
-
-    protected val KtTypeParameterList.leftAngle: PsiElement?
-        get() = findChildByType(this, KtTokens.LT)
-    protected val KtTypeParameterList.rightAngle: PsiElement?
-        get() = findChildByType(this, KtTokens.GT)
-    protected val KtTypeParameterListOwner.whereKeyword: PsiElement
-        get() = findChildByType(this, KtTokens.WHERE_KEYWORD) ?: error("No where keyword for $this")
-
-    protected val KtTypeArgumentList.leftAngle: PsiElement?
-        get() = findChildByType(this, KtTokens.LT)
-    protected val KtTypeArgumentList.rightAngle: PsiElement?
-        get() = findChildByType(this, KtTokens.GT)
-
-    protected val KtDeclarationWithInitializer.equalsToken: PsiElement
-        get() = findChildByType(this, KtTokens.EQ) ?: error("No equals token for $this")
-    protected val KtInitializerList.valueArgumentList: KtValueArgumentList
-        get() = (initializers.firstOrNull() as? KtSuperTypeCallEntry)?.valueArgumentList
-            ?: error("No value arguments for $this")
-    protected val KtTypeAlias.equalsToken: PsiElement
-        get() = findChildByType(this, KtTokens.EQ) ?: error("No equals token for $this")
-
-    protected val KtDelegatedSuperTypeEntry.byKeyword: PsiElement
-        get() = byKeywordNode.psi
-    protected val KtPropertyDelegate.byKeyword: PsiElement
-        get() = byKeywordNode.psi
-
-    protected val KtPropertyAccessor.setKeyword: PsiElement
-        get() = findChildByType(this, KtTokens.SET_KEYWORD) ?: error("No set keyword for $this")
-    protected val KtPropertyAccessor.getKeyword: PsiElement
-        get() = findChildByType(this, KtTokens.GET_KEYWORD) ?: error("No get keyword for $this")
-
-    protected val KtCatchClause.catchKeyword: PsiElement
-        get() = findChildByType(this, KtTokens.CATCH_KEYWORD) ?: error("No catch keyword for $this")
-
-    protected val KtWhileExpressionBase.whileKeyword: PsiElement
-        get() = findChildByType(this, KtTokens.WHILE_KEYWORD) ?: error("No while keyword for $this")
-    protected val KtDoWhileExpression.doKeyword: PsiElement
-        get() = findChildByType(this, KtTokens.DO_KEYWORD) ?: error("No do keyword for $this")
-
-    protected val KtLambdaExpression.lBrace: PsiElement
-        get() = leftCurlyBrace.psi
-    protected val KtLambdaExpression.rBrace: PsiElement
-        get() = rightCurlyBrace?.psi
-            ?: error("No rBrace for $this") // It seems funny, but leftCurlyBrace is non-null, while rightCurlyBrace is nullable.
-
-    protected val KtQualifiedExpression.operator: PsiElement
-        get() = operationTokenNode.psi
-
-    protected val KtDoubleColonExpression.questionMarks
-        get() = allChildren
-            .takeWhile { it.node.elementType != KtTokens.COLONCOLON }
-            .filter { it.node.elementType == KtTokens.QUEST }
-            .toList()
-
-    protected val KtNullableType.questionMark: PsiElement
-        get() = questionMarkNode.psi
-    protected val KtDynamicType.dynamicKeyword: PsiElement
-        get() = findChildByType(this, KtTokens.DYNAMIC_KEYWORD) ?: error("No dynamic keyword for $this")
-    protected val KtFunctionType.dotSymbol: PsiElement?
-        get() = findChildByType(this, KtTokens.DOT)
-
-    protected val KtAnnotation.atSymbol: PsiElement?
-        get() = findChildByType(this, KtTokens.AT)
-    protected val KtAnnotation.colon: PsiElement?
-        get() = findChildByType(this, KtTokens.COLON)
-    protected val KtAnnotation.lBracket: PsiElement?
-        get() = findChildByType(this, KtTokens.LBRACKET)
-    protected val KtAnnotation.rBracket: PsiElement?
-        get() = findChildByType(this, KtTokens.RBRACKET)
-    protected val KtAnnotationEntry.colon: PsiElement?
-        get() = findChildByType(this, KtTokens.COLON)
-
-    protected val KtContextReceiverList.leftParenthesis: PsiElement
-        get() = findChildByType(this, KtTokens.LPAR) ?: error("No left parenthesis for $this")
-    protected val KtContextReceiverList.rightParenthesis: PsiElement
-        get() = findChildByType(this, KtTokens.RPAR) ?: error("No right parenthesis for $this")
-    protected val KtContractEffectList.leftBracket: PsiElement
-        get() = findChildByType(this, KtTokens.LBRACKET) ?: error("No left bracket for $this")
-    protected val KtContractEffectList.rightBracket: PsiElement
-        get() = findChildByType(this, KtTokens.RBRACKET) ?: error("No right bracket for $this")
-
-    private fun findChildByType(v: KtElement, type: IElementType): PsiElement? =
-        v.node.findChildByType(type)?.psi
 }
