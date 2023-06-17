@@ -374,7 +374,6 @@ open class Converter {
             modifiers = convertModifiers(modifierList),
             contextReceiver = typeEl.contextReceiverList?.let(::convertContextReceiver),
             receiverType = typeEl.receiver?.typeReference?.let(::convertType),
-            dotSymbol = typeEl.dotSymbol?.let(::convertKeyword),
             lPar = typeEl.parameterList?.leftParenthesis?.let(::convertKeyword),
             params = convertTypeFunctionParams(typeEl.parameterList),
             rPar = typeEl.parameterList?.rightParenthesis?.let(::convertKeyword),

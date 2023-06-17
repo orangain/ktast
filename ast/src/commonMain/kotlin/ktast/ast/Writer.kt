@@ -281,7 +281,7 @@ open class Writer(
                     children(modifiers)
                     children(contextReceiver)
                     children(receiverType)
-                    children(dotSymbol)
+                    if (receiverType != null) append(".")
                     commaSeparatedChildren(lPar, params, rPar)
                     append("->")
                     children(returnType)

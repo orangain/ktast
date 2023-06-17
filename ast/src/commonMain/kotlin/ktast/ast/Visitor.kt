@@ -216,7 +216,6 @@ open class Visitor {
                     visitChildren(modifiers)
                     visitChildren(contextReceiver)
                     visitChildren(receiverType)
-                    visitChildren(dotSymbol)
                     visitChildren(lPar)
                     visitChildren(params)
                     visitChildren(rPar)

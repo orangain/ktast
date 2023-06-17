@@ -707,7 +707,6 @@ sealed interface Node {
          * @property modifiers list of modifiers.
          * @property contextReceiver context receivers if exists, otherwise `null`.
          * @property receiverType receiver type if exists, otherwise `null`.
-         * @property dotSymbol `.` if exists, otherwise `null`.
          * @property lPar left parenthesis if exists, otherwise `null`.
          * @property params list of parameters of the function type.
          * @property rPar right parenthesis if exists, otherwise `null`.
@@ -717,7 +716,6 @@ sealed interface Node {
             override val modifiers: List<Modifier>,
             val contextReceiver: ContextReceiver?,
             val receiverType: Type?,
-            val dotSymbol: Keyword.Dot?,
             val lPar: Keyword.LPar?,
             val params: List<FunctionTypeParam>,
             val rPar: Keyword.RPar?,
