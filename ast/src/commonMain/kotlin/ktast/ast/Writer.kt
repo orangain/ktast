@@ -116,11 +116,11 @@ open class Writer(
                     writeExtrasWithin()
                 }
                 is Node.PackageDirective -> {
-                    children(packageKeyword)
+                    append("package")
                     children(names, ".")
                 }
                 is Node.ImportDirective -> {
-                    children(importKeyword)
+                    append("import")
                     children(names, ".")
                     if (aliasName != null) {
                         append("as")
@@ -128,13 +128,18 @@ open class Writer(
                     }
                 }
                 is Node.Statement.ForStatement -> {
-                    children(forKeyword, lPar, loopParam, inKeyword, loopRange, rPar, body)
+                    append("for")
+                    children(lPar, loopParam, inKeyword, loopRange, rPar, body)
                 }
                 is Node.Statement.WhileStatement -> {
-                    children(whileKeyword, lPar, condition, rPar, body)
+                    append("while")
+                    children(lPar, condition, rPar, body)
                 }
                 is Node.Statement.DoWhileStatement -> {
-                    children(doKeyword, body, whileKeyword, lPar, condition, rPar)
+                    append("do")
+                    children(body)
+                    append("while")
+                    children(lPar, condition, rPar)
                 }
                 is Node.Declaration.ClassDeclaration -> {
                     children(modifiers)
@@ -155,7 +160,7 @@ open class Writer(
                 }
                 is Node.Declaration.ClassDeclaration.DelegationClassParent -> {
                     children(type)
-                    children(byKeyword)
+                    append("by")
                     children(expression)
                 }
                 is Node.Declaration.ClassDeclaration.TypeClassParent -> {
@@ -217,7 +222,7 @@ open class Writer(
                     children(accessors)
                 }
                 is Node.Declaration.PropertyDeclaration.PropertyDelegate -> {
-                    children(byKeyword)
+                    append("by")
                     children(expression)
                 }
                 is Node.Variable -> {
@@ -228,25 +233,19 @@ open class Writer(
                 is Node.Declaration.PropertyDeclaration.Getter -> {
                     children(modifiers)
                     children(getKeyword)
-                    if (body != null) {
-                        append("()")
-                        if (type != null) append(":").also { children(type) }
-                        children(postModifiers)
-                        children(equals)
-                        children(body)
-                    }
+                    children(lPar, rPar)
+                    if (type != null) append(":").also { children(type) }
+                    children(postModifiers)
+                    children(equals)
+                    children(body)
                 }
                 is Node.Declaration.PropertyDeclaration.Setter -> {
                     children(modifiers)
                     children(setKeyword)
-                    if (body != null) {
-                        append("(")
-                        commaSeparatedChildren(params)
-                        append(")")
-                        children(postModifiers)
-                        children(equals)
-                        children(body)
-                    }
+                    commaSeparatedChildren(lPar, params, rPar)
+                    children(postModifiers)
+                    children(equals)
+                    children(body)
                 }
                 is Node.Declaration.TypeAliasDeclaration -> {
                     children(modifiers)
@@ -324,7 +323,12 @@ open class Writer(
                     children(expression)
                 }
                 is Node.Expression.IfExpression -> {
-                    children(ifKeyword, lPar, condition, rPar, body, elseKeyword, elseBody)
+                    append("if")
+                    children(lPar, condition, rPar, body)
+                    if (elseBody != null) {
+                        append("else")
+                        children(elseBody)
+                    }
                 }
                 is Node.Expression.TryExpression -> {
                     append("try")
@@ -333,7 +337,7 @@ open class Writer(
                     if (finallyBlock != null) append("finally").also { children(finallyBlock) }
                 }
                 is Node.Expression.TryExpression.CatchClause -> {
-                    children(catchKeyword)
+                    append("catch")
                     commaSeparatedChildren(lPar, params, rPar)
                     children(block)
                 }
@@ -428,11 +432,11 @@ open class Writer(
                 }
                 is Node.Expression.WhenExpression.ConditionalWhenBranch -> {
                     children(whenConditions, ",")
-                    append("->").also { children(body) }
+                    children(arrow, body)
                 }
                 is Node.Expression.WhenExpression.ElseWhenBranch -> {
-                    children(elseKeyword)
-                    append("->").also { children(body) }
+                    append("else")
+                    children(arrow, body)
                 }
                 is Node.Expression.WhenExpression.ExpressionWhenCondition -> {
                     children(expression)
@@ -516,7 +520,7 @@ open class Writer(
                     }
                 }
                 is Node.PostModifier.TypeConstraintSet -> {
-                    children(whereKeyword)
+                    append("where")
                     commaSeparatedChildren(constraints)
                 }
                 is Node.PostModifier.TypeConstraintSet.TypeConstraint -> {
@@ -526,7 +530,7 @@ open class Writer(
                     children(type)
                 }
                 is Node.PostModifier.Contract -> {
-                    children(contractKeyword)
+                    append("contract")
                     commaSeparatedChildren(lBracket, contractEffects, rBracket)
                 }
                 is Node.Keyword -> {

@@ -47,16 +47,13 @@ open class Visitor {
                     visitChildren(expressions)
                 }
                 is Node.PackageDirective -> {
-                    visitChildren(packageKeyword)
                     visitChildren(names)
                 }
                 is Node.ImportDirective -> {
-                    visitChildren(importKeyword)
                     visitChildren(names)
                     visitChildren(aliasName)
                 }
                 is Node.Statement.ForStatement -> {
-                    visitChildren(forKeyword)
                     visitChildren(lPar)
                     visitChildren(loopParam)
                     visitChildren(inKeyword)
@@ -65,16 +62,13 @@ open class Visitor {
                     visitChildren(body)
                 }
                 is Node.Statement.WhileStatement -> {
-                    visitChildren(whileKeyword)
                     visitChildren(lPar)
                     visitChildren(condition)
                     visitChildren(rPar)
                     visitChildren(body)
                 }
                 is Node.Statement.DoWhileStatement -> {
-                    visitChildren(doKeyword)
                     visitChildren(body)
-                    visitChildren(whileKeyword)
                     visitChildren(lPar)
                     visitChildren(condition)
                     visitChildren(rPar)
@@ -99,7 +93,6 @@ open class Visitor {
                 }
                 is Node.Declaration.ClassDeclaration.DelegationClassParent -> {
                     visitChildren(type)
-                    visitChildren(byKeyword)
                     visitChildren(expression)
                 }
                 is Node.Declaration.ClassDeclaration.TypeClassParent -> {
@@ -160,7 +153,6 @@ open class Visitor {
                     visitChildren(accessors)
                 }
                 is Node.Declaration.PropertyDeclaration.PropertyDelegate -> {
-                    visitChildren(byKeyword)
                     visitChildren(expression)
                 }
                 is Node.Variable -> {
@@ -171,6 +163,8 @@ open class Visitor {
                 is Node.Declaration.PropertyDeclaration.Getter -> {
                     visitChildren(modifiers)
                     visitChildren(getKeyword)
+                    visitChildren(lPar)
+                    visitChildren(rPar)
                     visitChildren(type)
                     visitChildren(postModifiers)
                     visitChildren(equals)
@@ -179,7 +173,9 @@ open class Visitor {
                 is Node.Declaration.PropertyDeclaration.Setter -> {
                     visitChildren(modifiers)
                     visitChildren(setKeyword)
+                    visitChildren(lPar)
                     visitChildren(params)
+                    visitChildren(rPar)
                     visitChildren(postModifiers)
                     visitChildren(equals)
                     visitChildren(body)
@@ -269,12 +265,10 @@ open class Visitor {
                     visitChildren(expression)
                 }
                 is Node.Expression.IfExpression -> {
-                    visitChildren(ifKeyword)
                     visitChildren(lPar)
                     visitChildren(condition)
                     visitChildren(rPar)
                     visitChildren(body)
-                    visitChildren(elseKeyword)
                     visitChildren(elseBody)
                 }
                 is Node.Expression.TryExpression -> {
@@ -283,7 +277,6 @@ open class Visitor {
                     visitChildren(finallyBlock)
                 }
                 is Node.Expression.TryExpression.CatchClause -> {
-                    visitChildren(catchKeyword)
                     visitChildren(lPar)
                     visitChildren(params)
                     visitChildren(rPar)
@@ -362,10 +355,11 @@ open class Visitor {
                 }
                 is Node.Expression.WhenExpression.ConditionalWhenBranch -> {
                     visitChildren(whenConditions)
+                    visitChildren(arrow)
                     visitChildren(body)
                 }
                 is Node.Expression.WhenExpression.ElseWhenBranch -> {
-                    visitChildren(elseKeyword)
+                    visitChildren(arrow)
                     visitChildren(body)
                 }
                 is Node.Expression.WhenExpression.ExpressionWhenCondition -> {
@@ -447,7 +441,6 @@ open class Visitor {
                     visitChildren(rPar)
                 }
                 is Node.PostModifier.TypeConstraintSet -> {
-                    visitChildren(whereKeyword)
                     visitChildren(constraints)
                 }
                 is Node.PostModifier.TypeConstraintSet.TypeConstraint -> {
@@ -456,7 +449,6 @@ open class Visitor {
                     visitChildren(type)
                 }
                 is Node.PostModifier.Contract -> {
-                    visitChildren(contractKeyword)
                     visitChildren(lBracket)
                     visitChildren(contractEffects)
                     visitChildren(rBracket)

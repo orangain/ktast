@@ -76,16 +76,13 @@ open class MutableVisitor(
                         expressions = visitChildren(expressions, newCh)
                     )
                     is Node.PackageDirective -> copy(
-                        packageKeyword = visitChildren(packageKeyword, newCh),
                         names = visitChildren(names, newCh),
                     )
                     is Node.ImportDirective -> copy(
-                        importKeyword = visitChildren(importKeyword, newCh),
                         names = visitChildren(names, newCh),
                         aliasName = visitChildren(aliasName, newCh),
                     )
                     is Node.Statement.ForStatement -> copy(
-                        forKeyword = visitChildren(forKeyword, newCh),
                         lPar = visitChildren(lPar, newCh),
                         loopParam = visitChildren(loopParam, newCh),
                         inKeyword = visitChildren(inKeyword, newCh),
@@ -94,16 +91,13 @@ open class MutableVisitor(
                         body = visitChildren(body, newCh)
                     )
                     is Node.Statement.WhileStatement -> copy(
-                        whileKeyword = visitChildren(whileKeyword, newCh),
                         lPar = visitChildren(lPar, newCh),
                         condition = visitChildren(condition, newCh),
                         rPar = visitChildren(rPar, newCh),
                         body = visitChildren(body, newCh),
                     )
                     is Node.Statement.DoWhileStatement -> copy(
-                        doKeyword = visitChildren(doKeyword, newCh),
                         body = visitChildren(body, newCh),
-                        whileKeyword = visitChildren(whileKeyword, newCh),
                         lPar = visitChildren(lPar, newCh),
                         condition = visitChildren(condition, newCh),
                         rPar = visitChildren(rPar, newCh),
@@ -128,7 +122,6 @@ open class MutableVisitor(
                     )
                     is Node.Declaration.ClassDeclaration.DelegationClassParent -> copy(
                         type = visitChildren(type, newCh),
-                        byKeyword = visitChildren(byKeyword, newCh),
                         expression = visitChildren(expression, newCh),
                     )
                     is Node.Declaration.ClassDeclaration.TypeClassParent -> copy(
@@ -189,7 +182,6 @@ open class MutableVisitor(
                         accessors = visitChildren(accessors, newCh)
                     )
                     is Node.Declaration.PropertyDeclaration.PropertyDelegate -> copy(
-                        byKeyword = visitChildren(byKeyword, newCh),
                         expression = visitChildren(expression, newCh),
                     )
                     is Node.Variable -> copy(
@@ -200,6 +192,8 @@ open class MutableVisitor(
                     is Node.Declaration.PropertyDeclaration.Getter -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         getKeyword = visitChildren(getKeyword, newCh),
+                        lPar = visitChildren(lPar, newCh),
+                        rPar = visitChildren(rPar, newCh),
                         type = visitChildren(type, newCh),
                         postModifiers = visitChildren(postModifiers, newCh),
                         equals = visitChildren(equals, newCh),
@@ -208,7 +202,9 @@ open class MutableVisitor(
                     is Node.Declaration.PropertyDeclaration.Setter -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         setKeyword = visitChildren(setKeyword, newCh),
+                        lPar = visitChildren(lPar, newCh),
                         params = visitChildren(params, newCh),
+                        rPar = visitChildren(rPar, newCh),
                         postModifiers = visitChildren(postModifiers, newCh),
                         equals = visitChildren(equals, newCh),
                         body = visitChildren(body, newCh),
@@ -297,12 +293,10 @@ open class MutableVisitor(
                         expression = visitChildren(expression, newCh)
                     )
                     is Node.Expression.IfExpression -> copy(
-                        ifKeyword = visitChildren(ifKeyword, newCh),
                         lPar = visitChildren(lPar, newCh),
                         condition = visitChildren(condition, newCh),
                         rPar = visitChildren(rPar, newCh),
                         body = visitChildren(body, newCh),
-                        elseKeyword = visitChildren(elseKeyword, newCh),
                         elseBody = visitChildren(elseBody, newCh)
                     )
                     is Node.Expression.TryExpression -> copy(
@@ -311,7 +305,6 @@ open class MutableVisitor(
                         finallyBlock = visitChildren(finallyBlock, newCh)
                     )
                     is Node.Expression.TryExpression.CatchClause -> copy(
-                        catchKeyword = visitChildren(catchKeyword, newCh),
                         lPar = visitChildren(lPar, newCh),
                         params = visitChildren(params, newCh),
                         rPar = visitChildren(rPar, newCh),
@@ -390,10 +383,11 @@ open class MutableVisitor(
                     )
                     is Node.Expression.WhenExpression.ConditionalWhenBranch -> copy(
                         whenConditions = visitChildren(whenConditions, newCh),
+                        arrow = visitChildren(arrow, newCh),
                         body = visitChildren(body, newCh),
                     )
                     is Node.Expression.WhenExpression.ElseWhenBranch -> copy(
-                        elseKeyword = visitChildren(elseKeyword, newCh),
+                        arrow = visitChildren(arrow, newCh),
                         body = visitChildren(body, newCh),
                     )
                     is Node.Expression.WhenExpression.ExpressionWhenCondition -> copy(
@@ -475,7 +469,6 @@ open class MutableVisitor(
                         rPar = visitChildren(rPar, newCh),
                     )
                     is Node.PostModifier.TypeConstraintSet -> copy(
-                        whereKeyword = visitChildren(whereKeyword, newCh),
                         constraints = visitChildren(constraints, newCh),
                     )
                     is Node.PostModifier.TypeConstraintSet.TypeConstraint -> copy(
@@ -484,7 +477,6 @@ open class MutableVisitor(
                         type = visitChildren(type, newCh)
                     )
                     is Node.PostModifier.Contract -> copy(
-                        contractKeyword = visitChildren(contractKeyword, newCh),
                         lBracket = visitChildren(lBracket, newCh),
                         contractEffects = visitChildren(contractEffects, newCh),
                         rBracket = visitChildren(rBracket, newCh),

@@ -172,11 +172,9 @@ sealed interface Node {
     /**
      * AST node that represents a package directive. The node corresponds to KtPackageDirective.
      *
-     * @property packageKeyword package keyword.
      * @property names list of names separated by dots.
      */
     data class PackageDirective(
-        val packageKeyword: Keyword.Package,
         val names: List<Expression.NameExpression>,
         override var tag: Any? = null,
     ) : Node
@@ -184,12 +182,10 @@ sealed interface Node {
     /**
      * AST node that represents an import directive. The node corresponds to KtImportDirective.
      *
-     * @property importKeyword import keyword.
      * @property names list of names separated by dots.
      * @property aliasName import alias name if exists, otherwise `null`.
      */
     data class ImportDirective(
-        val importKeyword: Keyword.Import,
         val names: List<Expression.NameExpression>,
         val aliasName: Expression.NameExpression?,
         override var tag: Any? = null,
@@ -207,7 +203,6 @@ sealed interface Node {
          * for ([loopParam] in [loopRange]) [body]
          * ```
          *
-         * @property forKeyword `for` keyword.
          * @property lPar left parenthesis of the loop condition.
          * @property loopParam loop parameter before `in` keyword.
          * @property inKeyword `in` keyword.
@@ -216,7 +211,6 @@ sealed interface Node {
          * @property body body expression.
          */
         data class ForStatement(
-            val forKeyword: Keyword.For,
             val lPar: Keyword.LPar,
             val loopParam: LambdaParam,
             val inKeyword: Keyword.In,
@@ -229,14 +223,12 @@ sealed interface Node {
         /**
          * Common interface for [WhileStatement] and [DoWhileStatement].
          *
-         * @property whileKeyword `while` keyword.
          * @property lPar left parenthesis of the condition.
          * @property condition condition expression.
          * @property rPar right parenthesis of the condition.
          * @property body body expression.
          */
         sealed interface WhileStatementBase : Statement {
-            val whileKeyword: Keyword.While
             val lPar: Keyword.LPar
             val condition: Expression
             val rPar: Keyword.RPar
@@ -247,7 +239,6 @@ sealed interface Node {
          * AST node that represents a while statement. The node corresponds to KtWhileExpression.
          */
         data class WhileStatement(
-            override val whileKeyword: Keyword.While,
             override val lPar: Keyword.LPar,
             override val condition: Expression,
             override val rPar: Keyword.RPar,
@@ -257,13 +248,9 @@ sealed interface Node {
 
         /**
          * AST node that represents a do-while statement. The node corresponds to KtDoWhileExpression.
-         *
-         * @property doKeyword `do` keyword.
          */
         data class DoWhileStatement(
-            val doKeyword: Keyword.Do,
             override val body: Expression,
-            override val whileKeyword: Keyword.While,
             override val lPar: Keyword.LPar,
             override val condition: Expression,
             override val rPar: Keyword.RPar,
@@ -339,12 +326,10 @@ sealed interface Node {
              * @property lPar left parenthesis of the value arguments.
              * @property args list of value arguments of the parent call.
              * @property rPar right parenthesis of the value arguments.
-             * @property byKeyword `by` keyword if exists, otherwise `null`.
              * @property expression expression of the delegation if exists, otherwise `null`.
              */
             sealed interface ClassParent : Node, WithValueArgs {
                 val type: Type
-                val byKeyword: Keyword.By?
                 val expression: Expression?
             }
 
@@ -353,7 +338,6 @@ sealed interface Node {
              *
              * @property type type of the parent.
              * @property args list of value arguments of the parent call.
-             * @property byKeyword always `null`.
              * @property expression always `null`.
              */
             data class ConstructorClassParent(
@@ -363,7 +347,6 @@ sealed interface Node {
                 override val rPar: Keyword.RPar,
                 override var tag: Any? = null,
             ) : ClassParent {
-                override val byKeyword: Keyword.By? = null
                 override val expression: Expression? = null
             }
 
@@ -372,12 +355,10 @@ sealed interface Node {
              *
              * @property type type of the interface delegated to.
              * @property args always empty list.
-             * @property byKeyword `by` keyword.
              * @property expression expression of the delegation.
              */
             data class DelegationClassParent(
                 override val type: Type,
-                override val byKeyword: Keyword.By,
                 override val expression: Expression,
                 override var tag: Any? = null,
             ) : ClassParent {
@@ -393,7 +374,6 @@ sealed interface Node {
              * @property lPar always `null`.
              * @property args always empty list.
              * @property rPar always `null`.
-             * @property byKeyword always `null`.
              * @property expression always `null`.
              */
             data class TypeClassParent(
@@ -403,7 +383,6 @@ sealed interface Node {
                 override val lPar: Keyword.LPar? = null
                 override val args: List<ValueArg> = listOf()
                 override val rPar: Keyword.RPar? = null
-                override val byKeyword: Keyword.By? = null
                 override val expression: Expression? = null
             }
 
@@ -567,19 +546,23 @@ sealed interface Node {
             /**
              * AST node corresponds to KtPropertyDelegate.
              *
-             * @property byKeyword `by` keyword.
              * @property expression expression of the delegate.
              */
             data class PropertyDelegate(
-                val byKeyword: Keyword.By,
                 val expression: Expression,
                 override var tag: Any? = null,
             ) : Node
 
             /**
              * AST node corresponds to KtPropertyAccessor.
+             *
+             * @property lPar left parenthesis if exists, otherwise `null`.
+             * @property rPar right parenthesis if exists, otherwise `null`.
              */
-            sealed interface Accessor : Node, WithModifiers, WithPostModifiers, WithFunctionBody
+            sealed interface Accessor : Node, WithModifiers, WithPostModifiers, WithFunctionBody {
+                val lPar: Keyword.LPar?
+                val rPar: Keyword.RPar?
+            }
 
             /**
              * AST node that represents a property getter.
@@ -594,6 +577,8 @@ sealed interface Node {
             data class Getter(
                 override val modifiers: List<Modifier>,
                 val getKeyword: Keyword.Get,
+                override val lPar: Keyword.LPar?,
+                override val rPar: Keyword.RPar?,
                 val type: Type?,
                 override val postModifiers: List<PostModifier>,
                 override val equals: Keyword.Equal?,
@@ -614,7 +599,9 @@ sealed interface Node {
             data class Setter(
                 override val modifiers: List<Modifier>,
                 val setKeyword: Keyword.Set,
+                override val lPar: Keyword.LPar?,
                 val params: List<LambdaParam>,
+                override val rPar: Keyword.RPar?,
                 override val postModifiers: List<PostModifier>,
                 override val equals: Keyword.Equal?,
                 override val body: Expression?,
@@ -778,21 +765,17 @@ sealed interface Node {
         /**
          * AST node that represents an if expression. The node corresponds to KtIfExpression.
          *
-         * @property ifKeyword `if` keyword.
          * @property lPar left parenthesis of the condition.
          * @property condition condition expression.
          * @property rPar right parenthesis of the condition.
          * @property body body expression.
-         * @property elseKeyword `else` keyword if exists, otherwise `null`.
          * @property elseBody else body expression if exists, otherwise `null`.
          */
         data class IfExpression(
-            val ifKeyword: Keyword.If,
             val lPar: Keyword.LPar,
             val condition: Expression,
             val rPar: Keyword.RPar,
             val body: Expression,
-            val elseKeyword: Keyword.Else?,
             val elseBody: Expression?,
             override var tag: Any? = null,
         ) : Expression
@@ -813,12 +796,10 @@ sealed interface Node {
             /**
              * AST node that represents a catch clause. The node corresponds to KtCatchClause.
              *
-             * @property catchKeyword `catch` keyword.
              * @property params list of parameters of the catch clause.
              * @property block block expression.
              */
             data class CatchClause(
-                val catchKeyword: Keyword.Catch,
                 override val lPar: Keyword.LPar,
                 override val params: List<FunctionParam>,
                 override val rPar: Keyword.RPar,
@@ -868,12 +849,12 @@ sealed interface Node {
              * Common interface for when branches. The node corresponds to KtWhenEntry.
              *
              * @property whenConditions list of conditions.
-             * @property elseKeyword else keyword if exists, otherwise `null`.
+             * @property arrow arrow symbol.
              * @property body body expression of this branch.
              */
             sealed interface WhenBranch : Node {
                 val whenConditions: List<WhenCondition>
-                val elseKeyword: Keyword.Else?
+                val arrow: Keyword.Arrow
                 val body: Expression
             }
 
@@ -881,16 +862,14 @@ sealed interface Node {
              * AST node that represents a when branch with conditions.
              *
              * @property whenConditions non-empty list of conditions.
-             * @property elseKeyword always `null`.
              * @property body body expression of this branch.
              */
             data class ConditionalWhenBranch(
                 override val whenConditions: List<WhenCondition>,
+                override val arrow: Keyword.Arrow,
                 override val body: Expression,
                 override var tag: Any? = null,
             ) : WhenBranch {
-                override val elseKeyword = null
-
                 init {
                     require(whenConditions.isNotEmpty()) { "whenConditions must not be empty" }
                 }
@@ -900,11 +879,10 @@ sealed interface Node {
              * AST node that represents a when branch with else keyword.
              *
              * @property whenConditions always empty list.
-             * @property elseKeyword else keyword.
              * @property body body expression of this branch.
              */
             data class ElseWhenBranch(
-                override val elseKeyword: Keyword.Else,
+                override val arrow: Keyword.Arrow,
                 override val body: Expression,
                 override var tag: Any? = null,
             ) : WhenBranch {
@@ -1614,11 +1592,9 @@ sealed interface Node {
         /**
          * AST node that represents a type constraint set. The node corresponds to a pair of "where" keyword and KtTypeConstraintList.
          *
-         * @property whereKeyword "where" keyword.
          * @property constraints type constraints.
          */
         data class TypeConstraintSet(
-            val whereKeyword: Keyword.Where,
             val constraints: List<TypeConstraint>,
             override var tag: Any? = null,
         ) : PostModifier {
@@ -1641,13 +1617,11 @@ sealed interface Node {
         /**
          * AST node that represents a contract. The node corresponds to a pair of "contract" keyword and KtContractEffectList.
          *
-         * @property contractKeyword "contract" keyword.
          * @property lBracket left bracket symbol of the contract effects.
          * @property contractEffects contract effect expressions.
          * @property rBracket right bracket symbol of the contract effects.
          */
         data class Contract(
-            val contractKeyword: Keyword.Contract,
             val lBracket: Keyword.LBracket,
             val contractEffects: List<Expression>,
             val rBracket: Keyword.RBracket,
@@ -1663,14 +1637,6 @@ sealed interface Node {
          * Common interface for val or var keywords.
          */
         sealed interface ValOrVarKeyword : Keyword
-
-        data class Package(override var tag: Any? = null) : Keyword {
-            override val text = "package"
-        }
-
-        data class Import(override var tag: Any? = null) : Keyword {
-            override val text = "import"
-        }
 
         data class Class(override var tag: Any? = null) : Keyword,
             Declaration.ClassDeclaration.ClassDeclarationKeyword {
@@ -1703,44 +1669,8 @@ sealed interface Node {
             override val text = "dynamic"
         }
 
-        data class For(override var tag: Any? = null) : Keyword {
-            override val text = "for"
-        }
-
-        data class While(override var tag: Any? = null) : Keyword {
-            override val text = "while"
-        }
-
-        data class Do(override var tag: Any? = null) : Keyword {
-            override val text = "do"
-        }
-
-        data class If(override var tag: Any? = null) : Keyword {
-            override val text = "if"
-        }
-
-        data class Else(override var tag: Any? = null) : Keyword {
-            override val text = "else"
-        }
-
-        data class Catch(override var tag: Any? = null) : Keyword {
-            override val text = "catch"
-        }
-
         data class When(override var tag: Any? = null) : Keyword {
             override val text = "when"
-        }
-
-        data class By(override var tag: Any? = null) : Keyword {
-            override val text = "by"
-        }
-
-        data class Contract(override var tag: Any? = null) : Keyword {
-            override val text = "contract"
-        }
-
-        data class Where(override var tag: Any? = null) : Keyword {
-            override val text = "where"
         }
 
         data class Field(override var tag: Any? = null) : Keyword, Modifier.AnnotationSet.AnnotationTarget {

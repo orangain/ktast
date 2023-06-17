@@ -6,7 +6,6 @@ import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
-import org.jetbrains.kotlin.psi.psiUtil.getPrevSiblingIgnoringWhitespaceAndComments
 import kotlin.reflect.full.createInstance
 
 /**
@@ -35,13 +34,11 @@ open class Converter {
             throw Unsupported("Package directive with modifiers is not supported")
         }
         return Node.PackageDirective(
-            packageKeyword = convertKeyword(v.packageKeyword ?: error("No package keyword $v")),
             names = v.packageNames.map(::convertNameExpression),
         ).map(v)
     }
 
     protected fun convertImportDirective(v: KtImportDirective) = Node.ImportDirective(
-        importKeyword = convertKeyword(v.importKeyword),
         names = convertImportNames(v.importedReference ?: error("No imported reference for $v"))
                 + listOfNotNull(v.asterisk?.let(::convertNameExpression)),
         aliasName = v.alias?.nameIdentifier?.let(::convertNameExpression),
@@ -68,7 +65,6 @@ open class Converter {
     }
 
     protected fun convertForStatement(v: KtForExpression) = Node.Statement.ForStatement(
-        forKeyword = convertKeyword(v.forKeyword),
         lPar = convertKeyword(v.leftParenthesis ?: error("No left parenthesis for $v")),
         loopParam = convertLambdaParam(v.loopParameter ?: error("No param on for $v")),
         inKeyword = convertKeyword(v.inKeyword ?: error("No in keyword for $v")),
@@ -78,7 +74,6 @@ open class Converter {
     ).map(v)
 
     protected fun convertWhileStatement(v: KtWhileExpression) = Node.Statement.WhileStatement(
-        whileKeyword = convertKeyword(v.whileKeyword),
         lPar = convertKeyword(v.leftParenthesis ?: error("No left parenthesis for $v")),
         condition = convertExpression(v.condition ?: error("No condition expression for $v")),
         rPar = convertKeyword(v.rightParenthesis ?: error("No right parenthesis for $v")),
@@ -86,9 +81,7 @@ open class Converter {
     ).map(v)
 
     protected fun convertDoWhileStatement(v: KtDoWhileExpression) = Node.Statement.DoWhileStatement(
-        doKeyword = convertKeyword(v.doKeyword),
         body = convertExpression(v.body ?: error("No body expression for $v")),
-        whileKeyword = convertKeyword(v.whileKeyword ?: error("No while keyword for $v")),
         lPar = convertKeyword(v.leftParenthesis ?: error("No left parenthesis for $v")),
         condition = convertExpression(v.condition ?: error("No condition expression for $v")),
         rPar = convertKeyword(v.rightParenthesis ?: error("No right parenthesis for $v")),
@@ -147,7 +140,6 @@ open class Converter {
         Node.Declaration.ClassDeclaration.DelegationClassParent(
             type = v.typeReference?.let(::convertType)
                 ?: error("No type on delegated super type $v"),
-            byKeyword = convertKeyword(v.byKeyword),
             expression = convertExpression(v.delegateExpression ?: error("Missing delegateExpression for $v")),
         ).map(v)
 
@@ -273,7 +265,6 @@ open class Converter {
 
     protected fun convertPropertyDelegate(v: KtPropertyDelegate) =
         Node.Declaration.PropertyDeclaration.PropertyDelegate(
-            byKeyword = convertKeyword(v.byKeyword),
             expression = convertExpression(v.expression ?: error("Missing expression for $v")),
         ).map(v)
 
@@ -286,6 +277,8 @@ open class Converter {
     protected fun convertGetter(v: KtPropertyAccessor) = Node.Declaration.PropertyDeclaration.Getter(
         modifiers = convertModifiers(v.modifierList),
         getKeyword = convertKeyword(v.getKeyword),
+        lPar = v.leftParenthesis?.let(::convertKeyword),
+        rPar = v.rightParenthesis?.let(::convertKeyword),
         type = v.returnTypeReference?.let(::convertType),
         postModifiers = convertPostModifiers(v),
         equals = v.equalsToken?.let(::convertKeyword),
@@ -295,7 +288,9 @@ open class Converter {
     protected fun convertSetter(v: KtPropertyAccessor) = Node.Declaration.PropertyDeclaration.Setter(
         modifiers = convertModifiers(v.modifierList),
         setKeyword = convertKeyword(v.setKeyword),
+        lPar = v.leftParenthesis?.let(::convertKeyword),
         params = convertLambdaParams(v.parameterList),
+        rPar = v.rightParenthesis?.let(::convertKeyword),
         postModifiers = convertPostModifiers(v),
         equals = v.equalsToken?.let(::convertKeyword),
         body = v.bodyExpression?.let(::convertExpression),
@@ -438,12 +433,10 @@ open class Converter {
     }
 
     protected fun convertIfExpression(v: KtIfExpression) = Node.Expression.IfExpression(
-        ifKeyword = convertKeyword(v.ifKeyword),
         lPar = convertKeyword(v.leftParenthesis ?: error("No left parenthesis on if for $v")),
         condition = convertExpression(v.condition ?: error("No cond on if for $v")),
         rPar = convertKeyword(v.rightParenthesis ?: error("No right parenthesis on if for $v")),
         body = convertExpression(v.then ?: error("No then body on if for $v")),
-        elseKeyword = v.elseKeyword?.let(::convertKeyword),
         elseBody = v.`else`?.let(::convertExpression),
     ).map(v)
 
@@ -454,7 +447,6 @@ open class Converter {
     ).map(v)
 
     protected fun convertCatchClause(v: KtCatchClause) = Node.Expression.TryExpression.CatchClause(
-        catchKeyword = convertKeyword(v.catchKeyword),
         lPar = convertKeyword(v.parameterList?.leftParenthesis ?: error("No catch lpar for $v")),
         params = convertFuncParams(v.parameterList ?: error("No catch params for $v")),
         rPar = convertKeyword(v.parameterList?.rightParenthesis ?: error("No catch rpar for $v")),
@@ -494,11 +486,12 @@ open class Converter {
 
     protected fun convertConditionalWhenBranch(v: KtWhenEntry) = Node.Expression.WhenExpression.ConditionalWhenBranch(
         whenConditions = v.conditions.map(::convertWhenCondition),
+        arrow = convertKeyword(v.arrow ?: error("No arrow symbol for $v")),
         body = convertExpression(v.expression ?: error("No when entry body for $v")),
     ).map(v)
 
     protected fun convertElseWhenBranch(v: KtWhenEntry) = Node.Expression.WhenExpression.ElseWhenBranch(
-        elseKeyword = convertKeyword(v.elseKeyword ?: error("No else keyword for $v")),
+        arrow = convertKeyword(v.arrow ?: error("No arrow symbol for $v")),
         body = convertExpression(v.expression ?: error("No when entry body for $v")),
     ).map(v)
 
@@ -898,9 +891,6 @@ open class Converter {
 
     protected fun convertTypeConstraintSet(v: KtElement, listEl: KtTypeConstraintList) =
         Node.PostModifier.TypeConstraintSet(
-            whereKeyword = convertKeyword(
-                listEl.getPrevSiblingIgnoringWhitespaceAndComments() ?: error("No prev sibling for $listEl")
-            ),
             constraints = convertTypeConstraints(listEl),
         ).map(v)
 
@@ -920,9 +910,6 @@ open class Converter {
     ).map(v)
 
     protected fun convertContract(v: KtElement, listEl: KtContractEffectList) = Node.PostModifier.Contract(
-        contractKeyword = convertKeyword(
-            listEl.getPrevSiblingIgnoringWhitespaceAndComments() ?: error("No prev sibling for $listEl")
-        ),
         lBracket = convertKeyword(listEl.leftBracket),
         contractEffects = convertContractEffects(listEl),
         rBracket = convertKeyword(listEl.rightBracket),
