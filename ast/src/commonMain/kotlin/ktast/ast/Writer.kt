@@ -351,7 +351,7 @@ open class Writer(
                     children(rhs)
                 }
                 is Node.Expression.ClassLiteralExpression -> {
-                    if (lhs != null) children(lhs)
+                    children(lhs)
                     children(questionMarks)
                     append("::")
                     append("class")
