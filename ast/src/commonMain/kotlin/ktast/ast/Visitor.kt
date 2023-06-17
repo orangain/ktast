@@ -263,12 +263,10 @@ open class Visitor {
                     visitChildren(expression)
                 }
                 is Node.Expression.IfExpression -> {
-                    visitChildren(ifKeyword)
                     visitChildren(lPar)
                     visitChildren(condition)
                     visitChildren(rPar)
                     visitChildren(body)
-                    visitChildren(elseKeyword)
                     visitChildren(elseBody)
                 }
                 is Node.Expression.TryExpression -> {
@@ -277,7 +275,6 @@ open class Visitor {
                     visitChildren(finallyBlock)
                 }
                 is Node.Expression.TryExpression.CatchClause -> {
-                    visitChildren(catchKeyword)
                     visitChildren(lPar)
                     visitChildren(params)
                     visitChildren(rPar)

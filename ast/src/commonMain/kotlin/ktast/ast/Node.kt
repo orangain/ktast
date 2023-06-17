@@ -765,21 +765,17 @@ sealed interface Node {
         /**
          * AST node that represents an if expression. The node corresponds to KtIfExpression.
          *
-         * @property ifKeyword `if` keyword.
          * @property lPar left parenthesis of the condition.
          * @property condition condition expression.
          * @property rPar right parenthesis of the condition.
          * @property body body expression.
-         * @property elseKeyword `else` keyword if exists, otherwise `null`.
          * @property elseBody else body expression if exists, otherwise `null`.
          */
         data class IfExpression(
-            val ifKeyword: Keyword.If,
             val lPar: Keyword.LPar,
             val condition: Expression,
             val rPar: Keyword.RPar,
             val body: Expression,
-            val elseKeyword: Keyword.Else?,
             val elseBody: Expression?,
             override var tag: Any? = null,
         ) : Expression
@@ -800,12 +796,10 @@ sealed interface Node {
             /**
              * AST node that represents a catch clause. The node corresponds to KtCatchClause.
              *
-             * @property catchKeyword `catch` keyword.
              * @property params list of parameters of the catch clause.
              * @property block block expression.
              */
             data class CatchClause(
-                val catchKeyword: Keyword.Catch,
                 override val lPar: Keyword.LPar,
                 override val params: List<FunctionParam>,
                 override val rPar: Keyword.RPar,
@@ -1682,16 +1676,8 @@ sealed interface Node {
             override val text = "dynamic"
         }
 
-        data class If(override var tag: Any? = null) : Keyword {
-            override val text = "if"
-        }
-
         data class Else(override var tag: Any? = null) : Keyword {
             override val text = "else"
-        }
-
-        data class Catch(override var tag: Any? = null) : Keyword {
-            override val text = "catch"
         }
 
         data class When(override var tag: Any? = null) : Keyword {

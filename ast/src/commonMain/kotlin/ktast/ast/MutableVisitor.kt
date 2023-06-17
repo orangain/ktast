@@ -291,12 +291,10 @@ open class MutableVisitor(
                         expression = visitChildren(expression, newCh)
                     )
                     is Node.Expression.IfExpression -> copy(
-                        ifKeyword = visitChildren(ifKeyword, newCh),
                         lPar = visitChildren(lPar, newCh),
                         condition = visitChildren(condition, newCh),
                         rPar = visitChildren(rPar, newCh),
                         body = visitChildren(body, newCh),
-                        elseKeyword = visitChildren(elseKeyword, newCh),
                         elseBody = visitChildren(elseBody, newCh)
                     )
                     is Node.Expression.TryExpression -> copy(
@@ -305,7 +303,6 @@ open class MutableVisitor(
                         finallyBlock = visitChildren(finallyBlock, newCh)
                     )
                     is Node.Expression.TryExpression.CatchClause -> copy(
-                        catchKeyword = visitChildren(catchKeyword, newCh),
                         lPar = visitChildren(lPar, newCh),
                         params = visitChildren(params, newCh),
                         rPar = visitChildren(rPar, newCh),

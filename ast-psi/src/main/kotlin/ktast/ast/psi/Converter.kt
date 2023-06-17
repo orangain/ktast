@@ -432,12 +432,10 @@ open class Converter {
     }
 
     protected fun convertIfExpression(v: KtIfExpression) = Node.Expression.IfExpression(
-        ifKeyword = convertKeyword(v.ifKeyword),
         lPar = convertKeyword(v.leftParenthesis ?: error("No left parenthesis on if for $v")),
         condition = convertExpression(v.condition ?: error("No cond on if for $v")),
         rPar = convertKeyword(v.rightParenthesis ?: error("No right parenthesis on if for $v")),
         body = convertExpression(v.then ?: error("No then body on if for $v")),
-        elseKeyword = v.elseKeyword?.let(::convertKeyword),
         elseBody = v.`else`?.let(::convertExpression),
     ).map(v)
 
@@ -448,7 +446,6 @@ open class Converter {
     ).map(v)
 
     protected fun convertCatchClause(v: KtCatchClause) = Node.Expression.TryExpression.CatchClause(
-        catchKeyword = convertKeyword(v.catchKeyword),
         lPar = convertKeyword(v.parameterList?.leftParenthesis ?: error("No catch lpar for $v")),
         params = convertFuncParams(v.parameterList ?: error("No catch params for $v")),
         rPar = convertKeyword(v.parameterList?.rightParenthesis ?: error("No catch rpar for $v")),

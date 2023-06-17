@@ -329,7 +329,12 @@ open class Writer(
                     children(expression)
                 }
                 is Node.Expression.IfExpression -> {
-                    children(ifKeyword, lPar, condition, rPar, body, elseKeyword, elseBody)
+                    append("if")
+                    children(lPar, condition, rPar, body)
+                    if (elseBody != null) {
+                        append("else")
+                        children(elseBody)
+                    }
                 }
                 is Node.Expression.TryExpression -> {
                     append("try")
@@ -338,7 +343,7 @@ open class Writer(
                     if (finallyBlock != null) append("finally").also { children(finallyBlock) }
                 }
                 is Node.Expression.TryExpression.CatchClause -> {
-                    children(catchKeyword)
+                    append("catch")
                     commaSeparatedChildren(lPar, params, rPar)
                     children(block)
                 }
