@@ -249,7 +249,7 @@ open class Converter {
             convertTypeConstraintSet(v, typeConstraintList)
         },
         equals = v.equalsToken?.let(::convertKeyword),
-        initializer = v.initializer?.let(this::convertExpression),
+        initializer = v.initializer?.let(::convertExpression),
         propertyDelegate = v.delegate?.let(::convertPropertyDelegate),
         accessors = v.accessors.map(::convertPropertyAccessor),
     ).map(v)
@@ -266,7 +266,7 @@ open class Converter {
         rPar = v.rPar?.let(::convertKeyword),
         typeConstraintSet = null,
         equals = convertKeyword(v.equalsToken),
-        initializer = v.initializer?.let(this::convertExpression),
+        initializer = v.initializer?.let(::convertExpression),
         propertyDelegate = null,
         accessors = listOf(),
     ).map(v)
@@ -532,7 +532,7 @@ open class Converter {
 
     protected fun convertReturnExpression(v: KtReturnExpression) = Node.Expression.ReturnExpression(
         label = v.getTargetLabel()?.let(::convertNameExpression),
-        expression = v.returnedExpression?.let(this::convertExpression)
+        expression = v.returnedExpression?.let(::convertExpression)
     ).map(v)
 
     protected fun convertContinueExpression(v: KtContinueExpression) = Node.Expression.ContinueExpression(
@@ -632,13 +632,13 @@ open class Converter {
 
     protected fun convertCallableReferenceExpression(v: KtCallableReferenceExpression) =
         Node.Expression.CallableReferenceExpression(
-            lhs = v.receiverExpression?.let(this::convertExpression),
+            lhs = v.receiverExpression?.let(::convertExpression),
             questionMarks = v.questionMarks.map(::convertKeyword),
             rhs = convertNameExpression(v.callableReference)
         ).map(v)
 
     protected fun convertClassLiteralExpression(v: KtClassLiteralExpression) = Node.Expression.ClassLiteralExpression(
-        lhs = v.receiverExpression?.let(this::convertExpression),
+        lhs = v.receiverExpression?.let(::convertExpression),
         questionMarks = v.questionMarks.map(::convertKeyword),
     ).map(v)
 
@@ -694,7 +694,7 @@ open class Converter {
 
     protected fun convertCollectionLiteralExpression(v: KtCollectionLiteralExpression) =
         Node.Expression.CollectionLiteralExpression(
-            expressions = v.getInnerExpressions().map(this::convertExpression),
+            expressions = v.getInnerExpressions().map(::convertExpression),
         ).map(v)
 
     protected fun convertThisExpression(v: KtThisExpression) = Node.Expression.ThisExpression(
@@ -738,7 +738,7 @@ open class Converter {
 
     protected fun convertIndexedAccessExpression(v: KtArrayAccessExpression) = Node.Expression.IndexedAccessExpression(
         expression = convertExpression(v.arrayExpression ?: error("No array expr for $v")),
-        indices = v.indexExpressions.map(this::convertExpression),
+        indices = v.indexExpressions.map(::convertExpression),
     ).map(v)
 
     protected fun convertAnonymousFunctionExpression(v: KtNamedFunction) = Node.Expression.AnonymousFunctionExpression(
@@ -763,7 +763,7 @@ open class Converter {
         name = v.nameIdentifier?.let(::convertNameExpression) ?: error("No param name"),
         type = v.typeReference?.let(::convertType),
         equals = v.equalsToken?.let(::convertKeyword),
-        defaultValue = v.defaultValue?.let(this::convertExpression),
+        defaultValue = v.defaultValue?.let(::convertExpression),
     ).map(v)
 
     protected fun convertLambdaParams(v: KtParameterList?): List<Node.LambdaParam> =
