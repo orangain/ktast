@@ -172,11 +172,9 @@ sealed interface Node {
     /**
      * AST node that represents a package directive. The node corresponds to KtPackageDirective.
      *
-     * @property packageKeyword package keyword.
      * @property names list of names separated by dots.
      */
     data class PackageDirective(
-        val packageKeyword: Keyword.Package,
         val names: List<Expression.NameExpression>,
         override var tag: Any? = null,
     ) : Node
@@ -1663,10 +1661,6 @@ sealed interface Node {
          * Common interface for val or var keywords.
          */
         sealed interface ValOrVarKeyword : Keyword
-
-        data class Package(override var tag: Any? = null) : Keyword {
-            override val text = "package"
-        }
 
         data class Import(override var tag: Any? = null) : Keyword {
             override val text = "import"

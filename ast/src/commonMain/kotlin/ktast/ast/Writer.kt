@@ -116,7 +116,7 @@ open class Writer(
                     writeExtrasWithin()
                 }
                 is Node.PackageDirective -> {
-                    children(packageKeyword)
+                    append("package")
                     children(names, ".")
                 }
                 is Node.ImportDirective -> {
