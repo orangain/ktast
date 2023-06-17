@@ -214,7 +214,7 @@ open class Writer(
                     children(variables, ",")
                     children(rPar)
                     children(typeConstraintSet)
-                    writeFunctionBody(initializer)
+                    writeFunctionBody(initializerExpression)
                     children(propertyDelegate)
                     children(accessors)
                 }
@@ -599,7 +599,7 @@ open class Writer(
         }
         if (parentNode is Node.Declaration.PropertyDeclaration && node is Node.Declaration.PropertyDeclaration.Accessor) {
             // Property accessors require newline when the previous element is expression
-            if ((parentNode.accessors.first() === node && (parentNode.propertyDelegate != null || parentNode.initializer != null)) ||
+            if ((parentNode.accessors.first() === node && (parentNode.propertyDelegate != null || parentNode.initializerExpression != null)) ||
                 (parentNode.accessors.size == 2 && parentNode.accessors.last() === node && parentNode.accessors[0].body != null && parentNode.accessors[0].body !is Node.Expression.BlockExpression)
             ) {
                 if (!containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {

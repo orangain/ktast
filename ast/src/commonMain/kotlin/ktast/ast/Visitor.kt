@@ -144,7 +144,7 @@ open class Visitor {
                     visitChildren(variables)
                     visitChildren(rPar)
                     visitChildren(typeConstraintSet)
-                    visitChildren(initializer)
+                    visitChildren(initializerExpression)
                     visitChildren(propertyDelegate)
                     visitChildren(accessors)
                 }

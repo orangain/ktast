@@ -492,7 +492,7 @@ sealed interface Node {
          * @property variables variables of the property. Always at least one, more than one means destructuring.
          * @property rPar `)` keyword if exists, otherwise `null`. When there are two or more variables, the keyword must exist.
          * @property typeConstraintSet type constraint set of the property if exists, otherwise `null`.
-         * @property initializer initializer expression of the property if exists, otherwise `null`. When the property has a delegate, the initializer must be `null`.
+         * @property initializerExpression initializer expression of the property if exists, otherwise `null`. When the property has a delegate, the initializer must be `null`.
          * @property propertyDelegate property delegate of the property if exists, otherwise `null`. When the property has an initializer, the delegate must be `null`.
          * @property accessors accessors of the property.
          */
@@ -507,15 +507,15 @@ sealed interface Node {
             val variables: List<Variable>,
             val rPar: Keyword.RPar?,
             val typeConstraintSet: PostModifier.TypeConstraintSet?,
-            val initializer: Expression?,
+            val initializerExpression: Expression?,
             val propertyDelegate: PropertyDelegate?,
             val accessors: List<Accessor>,
             override var tag: Any? = null,
         ) : Declaration, WithModifiers, WithTypeParams {
             init {
                 if (propertyDelegate != null) {
-                    require(initializer == null) {
-                        "initializer must be null when delegate is not null"
+                    require(initializerExpression == null) {
+                        "initializerExpression must be null when delegate is not null"
                     }
                 }
                 if (variables.size >= 2) {

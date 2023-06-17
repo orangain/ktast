@@ -173,7 +173,7 @@ open class MutableVisitor(
                         variables = visitChildren(variables, newCh),
                         rPar = visitChildren(rPar, newCh),
                         typeConstraintSet = visitChildren(typeConstraintSet, newCh),
-                        initializer = visitChildren(initializer, newCh),
+                        initializerExpression = visitChildren(initializerExpression, newCh),
                         propertyDelegate = visitChildren(propertyDelegate, newCh),
                         accessors = visitChildren(accessors, newCh)
                     )

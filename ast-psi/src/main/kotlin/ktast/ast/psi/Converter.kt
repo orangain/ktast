@@ -238,7 +238,7 @@ open class Converter {
         typeConstraintSet = v.typeConstraintList?.let { typeConstraintList ->
             convertTypeConstraintSet(v, typeConstraintList)
         },
-        initializer = v.initializer?.let(::convertExpression),
+        initializerExpression = v.initializer?.let(::convertExpression),
         propertyDelegate = v.delegate?.let(::convertPropertyDelegate),
         accessors = v.accessors.map(::convertPropertyAccessor),
     ).map(v)
@@ -254,7 +254,7 @@ open class Converter {
         variables = v.entries.map(::convertVariable),
         rPar = v.rPar?.let(::convertKeyword),
         typeConstraintSet = null,
-        initializer = v.initializer?.let(::convertExpression),
+        initializerExpression = v.initializer?.let(::convertExpression),
         propertyDelegate = null,
         accessors = listOf(),
     ).map(v)
