@@ -381,10 +381,11 @@ open class MutableVisitor(
                     )
                     is Node.Expression.WhenExpression.ConditionalWhenBranch -> copy(
                         whenConditions = visitChildren(whenConditions, newCh),
+                        arrow = visitChildren(arrow, newCh),
                         body = visitChildren(body, newCh),
                     )
                     is Node.Expression.WhenExpression.ElseWhenBranch -> copy(
-                        elseKeyword = visitChildren(elseKeyword, newCh),
+                        arrow = visitChildren(arrow, newCh),
                         body = visitChildren(body, newCh),
                     )
                     is Node.Expression.WhenExpression.ExpressionWhenCondition -> copy(

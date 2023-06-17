@@ -438,11 +438,11 @@ open class Writer(
                 }
                 is Node.Expression.WhenExpression.ConditionalWhenBranch -> {
                     children(whenConditions, ",")
-                    append("->").also { children(body) }
+                    children(arrow, body)
                 }
                 is Node.Expression.WhenExpression.ElseWhenBranch -> {
-                    children(elseKeyword)
-                    append("->").also { children(body) }
+                    append("else")
+                    children(arrow, body)
                 }
                 is Node.Expression.WhenExpression.ExpressionWhenCondition -> {
                     children(expression)

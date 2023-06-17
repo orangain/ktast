@@ -849,12 +849,12 @@ sealed interface Node {
              * Common interface for when branches. The node corresponds to KtWhenEntry.
              *
              * @property whenConditions list of conditions.
-             * @property elseKeyword else keyword if exists, otherwise `null`.
+             * @property arrow arrow symbol.
              * @property body body expression of this branch.
              */
             sealed interface WhenBranch : Node {
                 val whenConditions: List<WhenCondition>
-                val elseKeyword: Keyword.Else?
+                val arrow: Keyword.Arrow
                 val body: Expression
             }
 
@@ -862,16 +862,14 @@ sealed interface Node {
              * AST node that represents a when branch with conditions.
              *
              * @property whenConditions non-empty list of conditions.
-             * @property elseKeyword always `null`.
              * @property body body expression of this branch.
              */
             data class ConditionalWhenBranch(
                 override val whenConditions: List<WhenCondition>,
+                override val arrow: Keyword.Arrow,
                 override val body: Expression,
                 override var tag: Any? = null,
             ) : WhenBranch {
-                override val elseKeyword = null
-
                 init {
                     require(whenConditions.isNotEmpty()) { "whenConditions must not be empty" }
                 }
@@ -881,11 +879,10 @@ sealed interface Node {
              * AST node that represents a when branch with else keyword.
              *
              * @property whenConditions always empty list.
-             * @property elseKeyword else keyword.
              * @property body body expression of this branch.
              */
             data class ElseWhenBranch(
-                override val elseKeyword: Keyword.Else,
+                override val arrow: Keyword.Arrow,
                 override val body: Expression,
                 override var tag: Any? = null,
             ) : WhenBranch {
@@ -1674,10 +1671,6 @@ sealed interface Node {
 
         data class Dynamic(override var tag: Any? = null) : Keyword {
             override val text = "dynamic"
-        }
-
-        data class Else(override var tag: Any? = null) : Keyword {
-            override val text = "else"
         }
 
         data class When(override var tag: Any? = null) : Keyword {
