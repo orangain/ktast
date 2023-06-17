@@ -513,12 +513,14 @@ sealed interface Node {
             override var tag: Any? = null,
         ) : Declaration, WithModifiers, WithTypeParams {
             init {
-                require(initializerExpression == null || delegateExpression == null) {
-                    "Either initializerExpression or delegateExpression must be null"
-                }
+                require(variables.isNotEmpty()) { "variables must not be empty" }
                 if (variables.size >= 2) {
                     require(lPar != null && rPar != null) { "lPar and rPar are required when there are multiple variables" }
                 }
+                require(initializerExpression == null || delegateExpression == null) {
+                    "Either initializerExpression or delegateExpression must be null"
+                }
+                require(accessors.size <= 2) { "accessors must not be more than 2" }
             }
 
             /**
