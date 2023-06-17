@@ -1851,7 +1851,7 @@ sealed interface Node {
             override val text = "as?"
         }
 
-        data class Colon(override var tag: Any? = null) : Keyword, Expression.BinaryTypeExpression.BinaryTypeOperator {
+        data class Colon(override var tag: Any? = null) : Keyword {
             override val text = ":"
         }
 
