@@ -211,7 +211,6 @@ open class Converter {
 
         return Node.Declaration.FunctionDeclaration(
             modifiers = convertModifiers(v.modifierList),
-            funKeyword = v.funKeyword?.let { convertKeyword(it) } ?: error("No fun keyword for $v"),
             lAngle = v.typeParameterList?.leftAngle?.let(::convertKeyword),
             typeParams = convertTypeParams(v.typeParameterList),
             rAngle = v.typeParameterList?.rightAngle?.let(::convertKeyword),

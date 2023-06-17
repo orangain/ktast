@@ -143,7 +143,6 @@ open class MutableVisitor(
                     )
                     is Node.Declaration.FunctionDeclaration -> copy(
                         modifiers = visitChildren(modifiers, newCh),
-                        funKeyword = visitChildren(funKeyword, newCh),
                         lAngle = visitChildren(lAngle, newCh),
                         typeParams = visitChildren(typeParams, newCh),
                         rAngle = visitChildren(rAngle, newCh),

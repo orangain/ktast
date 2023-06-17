@@ -189,7 +189,7 @@ open class Writer(
                 }
                 is Node.Declaration.FunctionDeclaration -> {
                     children(modifiers)
-                    children(funKeyword)
+                    append("fun")
                     commaSeparatedChildren(lAngle, typeParams, rAngle)
                     if (receiverType != null) children(receiverType).append(".")
                     name?.also { children(it) }

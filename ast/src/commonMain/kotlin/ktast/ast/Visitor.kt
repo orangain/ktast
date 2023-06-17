@@ -114,7 +114,6 @@ open class Visitor {
                 }
                 is Node.Declaration.FunctionDeclaration -> {
                     visitChildren(modifiers)
-                    visitChildren(funKeyword)
                     visitChildren(lAngle)
                     visitChildren(typeParams)
                     visitChildren(rAngle)

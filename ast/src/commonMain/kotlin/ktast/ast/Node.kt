@@ -468,7 +468,6 @@ sealed interface Node {
          * AST node that represents a function declaration. The node corresponds to KtNamedFunction.
          *
          * @property modifiers list of modifiers.
-         * @property funKeyword `fun` keyword.
          * @property typeParams list of type parameters of the function.
          * @property receiverType receiver type of the function if exists, otherwise `null`.
          * @property name name of the function. If the function is anonymous, the name is `null`.
@@ -480,7 +479,6 @@ sealed interface Node {
          */
         data class FunctionDeclaration(
             override val modifiers: List<Modifier>,
-            val funKeyword: Keyword.Fun,
             override val lAngle: Keyword.Less?,
             override val typeParams: List<TypeParam>,
             override val rAngle: Keyword.Greater?,
