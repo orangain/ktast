@@ -129,7 +129,7 @@ sealed interface Node {
     }
 
     /**
-     * AST node that represents whole Kotlin file. Tha node corresponds to KtFile.
+     * AST node that represents whole Kotlin file. The node corresponds to KtFile.
      *
      * @property annotationSets list of annotation sets.
      * @property packageDirective package directive if exists, otherwise `null`.
