@@ -48,15 +48,6 @@ sealed interface Node {
     }
 
     /**
-     * Common interface for AST nodes that have a function body.
-     *
-     * @property body function body if exists, otherwise `null`.
-     */
-    interface WithFunctionBody {
-        val body: Expression?
-    }
-
-    /**
      * Common interface for AST nodes that have type parameters.
      *
      * @property lAngle left angle bracket of the type parameters if exists, otherwise `null`.
@@ -486,9 +477,9 @@ sealed interface Node {
             override val rPar: Keyword.RPar?,
             val returnType: Type?,
             override val postModifiers: List<PostModifier>,
-            override val body: Expression?,
+            val body: Expression?,
             override var tag: Any? = null,
-        ) : Declaration, WithModifiers, WithTypeParams, WithFunctionParams, WithPostModifiers, WithFunctionBody
+        ) : Declaration, WithModifiers, WithTypeParams, WithFunctionParams, WithPostModifiers
 
         /**
          * AST node that represents a property declaration. The node corresponds to KtProperty or KtDestructuringDeclaration.
@@ -548,9 +539,10 @@ sealed interface Node {
              * @property lPar left parenthesis if exists, otherwise `null`.
              * @property rPar right parenthesis if exists, otherwise `null`.
              */
-            sealed interface Accessor : Node, WithModifiers, WithPostModifiers, WithFunctionBody {
+            sealed interface Accessor : Node, WithModifiers, WithPostModifiers {
                 val lPar: Keyword.LPar?
                 val rPar: Keyword.RPar?
+                val body: Expression?
             }
 
             /**
