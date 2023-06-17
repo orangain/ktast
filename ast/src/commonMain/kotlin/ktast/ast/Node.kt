@@ -1418,7 +1418,6 @@ sealed interface Node {
      * @property lPar left parenthesis of this parameter if exists, otherwise `null`.
      * @property variables list of variables.
      * @property rPar right parenthesis of this parameter if exists, otherwise `null`.
-     * @property colon colon symbol if exists, otherwise `null`.
      * @property destructType type of destructuring if exists, otherwise `null`.
      */
     data class LambdaParam(
@@ -1497,7 +1496,6 @@ sealed interface Node {
          * AST node that represents an annotation sets. The node corresponds to KtAnnotation or KtAnnotationEntry not under KtAnnotation.
          *
          * @property target target keyword if exists, otherwise `null`.
-         * @property colon colon symbol if exists, otherwise `null`.
          * @property lBracket left bracket symbol if exists, otherwise `null`.
          * @property annotations list of annotations.
          * @property rBracket right bracket symbol if exists, otherwise `null`.
