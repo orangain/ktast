@@ -15,7 +15,7 @@ package ktast.ast
  *     Node.Keyword.Val{text="val"}
  *     Node.Variable
  *       Node.Expression.NameExpression{text="x"}
- *     Node.Expression.StringLiteralExpression{raw="false"}
+ *     Node.Expression.StringLiteralExpression{raw=false}
  * ```
  */
 class Dumper(
@@ -96,18 +96,24 @@ class Dumper(
         if (verbose) {
             node.apply {
                 when (this) {
-                    is Node.Modifier.AnnotationSet -> mapOf("target" to target)
                     is Node.Expression.StringLiteralExpression -> mapOf("raw" to raw)
                     is Node.Expression.StringLiteralExpression.TemplateStringEntry -> mapOf("short" to short)
                     is Node.SimpleTextNode -> mapOf("text" to text)
                     else -> null
                 }?.let { m ->
-                    appendable.append("{" + m.map { "${it.key}=\"${toEscapedString(it.value.toString())}\"" }
+                    appendable.append("{" + m.map { "${it.key}=${valueOf(it.value)}" }
                         .joinToString(", ") + "}")
                 }
             }
         }
         appendable.appendLine()
+    }
+}
+
+private fun valueOf(v: Any): String {
+    return when (v) {
+        is String -> "\"${toEscapedString(v)}\""
+        else -> v.toString()
     }
 }
 
