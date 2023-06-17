@@ -284,7 +284,7 @@ open class MutableVisitor(
                     )
                     is Node.ValueArg -> copy(
                         name = visitChildren(name, newCh),
-                        asterisk = visitChildren(asterisk, newCh),
+                        spreadOperator = visitChildren(spreadOperator, newCh),
                         expression = visitChildren(expression, newCh)
                     )
                     is Node.Expression.IfExpression -> copy(

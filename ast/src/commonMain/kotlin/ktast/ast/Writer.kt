@@ -319,7 +319,7 @@ open class Writer(
                 }
                 is Node.ValueArg -> {
                     if (name != null) children(name).append("=")
-                    children(asterisk)
+                    children(spreadOperator)
                     children(expression)
                 }
                 is Node.Expression.IfExpression -> {

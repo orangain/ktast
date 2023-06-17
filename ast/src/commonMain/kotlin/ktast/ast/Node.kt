@@ -1501,12 +1501,12 @@ sealed interface Node {
      * AST node that represents an actual value argument of a function call. For example, `foo(1, 2)` has two value arguments `1` and `2`. The node corresponds to KtValueArgument.
      *
      * @property name name of the argument if exists, otherwise `null`.
-     * @property asterisk spread operator if exists, otherwise `null`.
+     * @property spreadOperator spread operator if exists, otherwise `null`.
      * @property expression expression of the argument.
      */
     data class ValueArg(
         val name: Expression.NameExpression?,
-        val asterisk: Keyword.Asterisk?,
+        val spreadOperator: Keyword.Asterisk?,
         val expression: Expression,
         override var tag: Any? = null,
     ) : Node

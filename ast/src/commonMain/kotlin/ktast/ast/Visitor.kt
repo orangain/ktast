@@ -256,7 +256,7 @@ open class Visitor {
                 }
                 is Node.ValueArg -> {
                     visitChildren(name)
-                    visitChildren(asterisk)
+                    visitChildren(spreadOperator)
                     visitChildren(expression)
                 }
                 is Node.Expression.IfExpression -> {
