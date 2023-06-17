@@ -239,7 +239,7 @@ open class Converter {
             convertTypeConstraintSet(v, typeConstraintList)
         },
         initializerExpression = v.initializer?.let(::convertExpression),
-        propertyDelegate = v.delegate?.let(::convertPropertyDelegate),
+        delegateExpression = v.delegate?.expression?.let(::convertExpression),
         accessors = v.accessors.map(::convertPropertyAccessor),
     ).map(v)
 
@@ -255,14 +255,9 @@ open class Converter {
         rPar = v.rPar?.let(::convertKeyword),
         typeConstraintSet = null,
         initializerExpression = v.initializer?.let(::convertExpression),
-        propertyDelegate = null,
+        delegateExpression = null,
         accessors = listOf(),
     ).map(v)
-
-    protected fun convertPropertyDelegate(v: KtPropertyDelegate) =
-        Node.Declaration.PropertyDeclaration.PropertyDelegate(
-            expression = convertExpression(v.expression ?: error("Missing expression for $v")),
-        ).map(v)
 
     protected fun convertPropertyAccessor(v: KtPropertyAccessor): Node.Declaration.PropertyDeclaration.Accessor =
         when (v.isGetter) {

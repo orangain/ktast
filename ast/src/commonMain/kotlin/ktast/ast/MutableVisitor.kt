@@ -174,11 +174,8 @@ open class MutableVisitor(
                         rPar = visitChildren(rPar, newCh),
                         typeConstraintSet = visitChildren(typeConstraintSet, newCh),
                         initializerExpression = visitChildren(initializerExpression, newCh),
-                        propertyDelegate = visitChildren(propertyDelegate, newCh),
+                        delegateExpression = visitChildren(delegateExpression, newCh),
                         accessors = visitChildren(accessors, newCh)
-                    )
-                    is Node.Declaration.PropertyDeclaration.PropertyDelegate -> copy(
-                        expression = visitChildren(expression, newCh),
                     )
                     is Node.Variable -> copy(
                         annotationSets = visitChildren(annotationSets, newCh),

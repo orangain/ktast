@@ -145,11 +145,8 @@ open class Visitor {
                     visitChildren(rPar)
                     visitChildren(typeConstraintSet)
                     visitChildren(initializerExpression)
-                    visitChildren(propertyDelegate)
+                    visitChildren(delegateExpression)
                     visitChildren(accessors)
-                }
-                is Node.Declaration.PropertyDeclaration.PropertyDelegate -> {
-                    visitChildren(expression)
                 }
                 is Node.Variable -> {
                     visitChildren(annotationSets)

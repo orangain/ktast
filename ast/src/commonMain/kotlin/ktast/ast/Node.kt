@@ -493,7 +493,7 @@ sealed interface Node {
          * @property rPar `)` keyword if exists, otherwise `null`. When there are two or more variables, the keyword must exist.
          * @property typeConstraintSet type constraint set of the property if exists, otherwise `null`.
          * @property initializerExpression initializer expression of the property if exists, otherwise `null`. When the property has a delegate, the initializer must be `null`.
-         * @property propertyDelegate property delegate of the property if exists, otherwise `null`. When the property has an initializer, the delegate must be `null`.
+         * @property delegateExpression property delegate of the property if exists, otherwise `null`. When the property has an initializer, the delegate must be `null`.
          * @property accessors accessors of the property.
          */
         data class PropertyDeclaration(
@@ -508,30 +508,20 @@ sealed interface Node {
             val rPar: Keyword.RPar?,
             val typeConstraintSet: PostModifier.TypeConstraintSet?,
             val initializerExpression: Expression?,
-            val propertyDelegate: PropertyDelegate?,
+            val delegateExpression: Expression?,
             val accessors: List<Accessor>,
             override var tag: Any? = null,
         ) : Declaration, WithModifiers, WithTypeParams {
             init {
-                if (propertyDelegate != null) {
+                if (delegateExpression != null) {
                     require(initializerExpression == null) {
-                        "initializerExpression must be null when delegate is not null"
+                        "initializerExpression must be null when delegateExpression is not null"
                     }
                 }
                 if (variables.size >= 2) {
                     require(lPar != null && rPar != null) { "lPar and rPar are required when there are multiple variables" }
                 }
             }
-
-            /**
-             * AST node corresponds to KtPropertyDelegate.
-             *
-             * @property expression expression of the delegate.
-             */
-            data class PropertyDelegate(
-                val expression: Expression,
-                override var tag: Any? = null,
-            ) : Node
 
             /**
              * AST node corresponds to KtPropertyAccessor.

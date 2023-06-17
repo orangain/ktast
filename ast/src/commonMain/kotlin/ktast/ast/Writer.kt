@@ -215,12 +215,11 @@ open class Writer(
                     children(rPar)
                     children(typeConstraintSet)
                     writeFunctionBody(initializerExpression)
-                    children(propertyDelegate)
+                    if (delegateExpression != null) {
+                        append("by")
+                        children(delegateExpression)
+                    }
                     children(accessors)
-                }
-                is Node.Declaration.PropertyDeclaration.PropertyDelegate -> {
-                    append("by")
-                    children(expression)
                 }
                 is Node.Variable -> {
                     children(annotationSets)
@@ -599,7 +598,7 @@ open class Writer(
         }
         if (parentNode is Node.Declaration.PropertyDeclaration && node is Node.Declaration.PropertyDeclaration.Accessor) {
             // Property accessors require newline when the previous element is expression
-            if ((parentNode.accessors.first() === node && (parentNode.propertyDelegate != null || parentNode.initializerExpression != null)) ||
+            if ((parentNode.accessors.first() === node && (parentNode.delegateExpression != null || parentNode.initializerExpression != null)) ||
                 (parentNode.accessors.size == 2 && parentNode.accessors.last() === node && parentNode.accessors[0].body != null && parentNode.accessors[0].body !is Node.Expression.BlockExpression)
             ) {
                 if (!containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
