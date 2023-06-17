@@ -196,16 +196,14 @@ open class Writer(
                     commaSeparatedChildren(lPar, params, rPar)
                     if (returnType != null) append(":").also { children(returnType) }
                     children(postModifiers)
-                    children(equals)
-                    children(body)
+                    writeFunctionBody(body)
                 }
                 is Node.FunctionParam -> {
                     children(modifiers)
                     children(valOrVarKeyword)
                     children(name)
                     if (type != null) append(":").also { children(type) }
-                    children(equals)
-                    children(defaultValue)
+                    writeFunctionBody(defaultValue)
                 }
                 is Node.Declaration.PropertyDeclaration -> {
                     children(modifiers)
@@ -216,8 +214,7 @@ open class Writer(
                     children(variables, ",")
                     children(rPar)
                     children(typeConstraintSet)
-                    children(equals)
-                    children(initializer)
+                    writeFunctionBody(initializer)
                     children(propertyDelegate)
                     children(accessors)
                 }
@@ -236,23 +233,21 @@ open class Writer(
                     children(lPar, rPar)
                     if (type != null) append(":").also { children(type) }
                     children(postModifiers)
-                    children(equals)
-                    children(body)
+                    writeFunctionBody(body)
                 }
                 is Node.Declaration.PropertyDeclaration.Setter -> {
                     children(modifiers)
                     append("set")
                     commaSeparatedChildren(lPar, params, rPar)
                     children(postModifiers)
-                    children(equals)
-                    children(body)
+                    writeFunctionBody(body)
                 }
                 is Node.Declaration.TypeAliasDeclaration -> {
                     children(modifiers)
                     append("typealias")
                     children(name)
                     commaSeparatedChildren(lAngle, typeParams, rAngle)
-                    children(equals)
+                    append("=")
                     children(type)
                 }
                 is Node.Declaration.ClassDeclaration.ClassBody.SecondaryConstructor -> {
@@ -583,6 +578,13 @@ open class Writer(
         append("}")
     }
 
+    private fun NodePath<*>.writeFunctionBody(body: Node.Expression?) {
+        if (body != null && body !is Node.Expression.BlockExpression) {
+            append("=")
+        }
+        children(body)
+    }
+
     protected open fun NodePath<*>.writeHeuristicNewline() {
         val parentNode = parent?.node
         if (parentNode is Node.WithStatements && node is Node.Statement) {
@@ -598,7 +600,7 @@ open class Writer(
         if (parentNode is Node.Declaration.PropertyDeclaration && node is Node.Declaration.PropertyDeclaration.Accessor) {
             // Property accessors require newline when the previous element is expression
             if ((parentNode.accessors.first() === node && (parentNode.propertyDelegate != null || parentNode.initializer != null)) ||
-                (parentNode.accessors.size == 2 && parentNode.accessors.last() === node && parentNode.accessors[0].equals != null)
+                (parentNode.accessors.size == 2 && parentNode.accessors.last() === node && parentNode.accessors[0].body != null && parentNode.accessors[0].body !is Node.Expression.BlockExpression)
             ) {
                 if (!containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
                     append("\n")

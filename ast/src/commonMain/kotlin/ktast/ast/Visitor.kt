@@ -124,7 +124,6 @@ open class Visitor {
                     visitChildren(rPar)
                     visitChildren(returnType)
                     visitChildren(postModifiers)
-                    visitChildren(equals)
                     visitChildren(body)
                 }
                 is Node.FunctionParam -> {
@@ -132,7 +131,6 @@ open class Visitor {
                     visitChildren(valOrVarKeyword)
                     visitChildren(name)
                     visitChildren(type)
-                    visitChildren(equals)
                     visitChildren(defaultValue)
                 }
                 is Node.Declaration.PropertyDeclaration -> {
@@ -146,7 +144,6 @@ open class Visitor {
                     visitChildren(variables)
                     visitChildren(rPar)
                     visitChildren(typeConstraintSet)
-                    visitChildren(equals)
                     visitChildren(initializer)
                     visitChildren(propertyDelegate)
                     visitChildren(accessors)
@@ -165,7 +162,6 @@ open class Visitor {
                     visitChildren(rPar)
                     visitChildren(type)
                     visitChildren(postModifiers)
-                    visitChildren(equals)
                     visitChildren(body)
                 }
                 is Node.Declaration.PropertyDeclaration.Setter -> {
@@ -174,7 +170,6 @@ open class Visitor {
                     visitChildren(params)
                     visitChildren(rPar)
                     visitChildren(postModifiers)
-                    visitChildren(equals)
                     visitChildren(body)
                 }
                 is Node.Declaration.TypeAliasDeclaration -> {
@@ -183,7 +178,6 @@ open class Visitor {
                     visitChildren(lAngle)
                     visitChildren(typeParams)
                     visitChildren(rAngle)
-                    visitChildren(equals)
                     visitChildren(type)
                 }
                 is Node.Declaration.ClassDeclaration.ClassBody.SecondaryConstructor -> {

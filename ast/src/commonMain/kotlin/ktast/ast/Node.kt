@@ -50,11 +50,9 @@ sealed interface Node {
     /**
      * Common interface for AST nodes that have a function body.
      *
-     * @property equals equal sign if exists, otherwise `null`.
      * @property body function body if exists, otherwise `null`.
      */
     interface WithFunctionBody {
-        val equals: Keyword.Equal?
         val body: Expression?
     }
 
@@ -474,7 +472,6 @@ sealed interface Node {
          * @property params list of parameters of the function.
          * @property returnType return type of the function if exists, otherwise `null`.
          * @property postModifiers post-modifiers of the function.
-         * @property equals `=` keyword if exists, otherwise `null`.
          * @property body body of the function if exists, otherwise `null`.
          */
         data class FunctionDeclaration(
@@ -489,7 +486,6 @@ sealed interface Node {
             override val rPar: Keyword.RPar?,
             val returnType: Type?,
             override val postModifiers: List<PostModifier>,
-            override val equals: Keyword.Equal?,
             override val body: Expression?,
             override var tag: Any? = null,
         ) : Declaration, WithModifiers, WithTypeParams, WithFunctionParams, WithPostModifiers, WithFunctionBody
@@ -505,7 +501,6 @@ sealed interface Node {
          * @property variables variables of the property. Always at least one, more than one means destructuring.
          * @property rPar `)` keyword if exists, otherwise `null`. When there are two or more variables, the keyword must exist.
          * @property typeConstraintSet type constraint set of the property if exists, otherwise `null`.
-         * @property equals `=` keyword if exists, otherwise `null`. When the property has an initializer, the keyword must exist.
          * @property initializer initializer expression of the property if exists, otherwise `null`. When the property has a delegate, the initializer must be `null`.
          * @property propertyDelegate property delegate of the property if exists, otherwise `null`. When the property has an initializer, the delegate must be `null`.
          * @property accessors accessors of the property.
@@ -521,7 +516,6 @@ sealed interface Node {
             val variables: List<Variable>,
             val rPar: Keyword.RPar?,
             val typeConstraintSet: PostModifier.TypeConstraintSet?,
-            val equals: Keyword.Equal?,
             val initializer: Expression?,
             val propertyDelegate: PropertyDelegate?,
             val accessors: List<Accessor>,
@@ -529,12 +523,9 @@ sealed interface Node {
         ) : Declaration, WithModifiers, WithTypeParams {
             init {
                 if (propertyDelegate != null) {
-                    require(equals == null && initializer == null) {
-                        "equals and initializer must be null when delegate is not null"
+                    require(initializer == null) {
+                        "initializer must be null when delegate is not null"
                     }
-                }
-                require((equals == null && initializer == null) || (equals != null && initializer != null)) {
-                    "equals and initializer must be both null or both non-null"
                 }
                 if (variables.size >= 2) {
                     require(lPar != null && rPar != null) { "lPar and rPar are required when there are multiple variables" }
@@ -568,7 +559,6 @@ sealed interface Node {
              * @property modifiers list of modifiers.
              * @property type return type of the getter if exists, otherwise `null`.
              * @property postModifiers post-modifiers of the getter.
-             * @property equals `=` keyword if exists, otherwise `null`.
              * @property body body of the getter if exists, otherwise `null`.
              */
             data class Getter(
@@ -577,7 +567,6 @@ sealed interface Node {
                 override val rPar: Keyword.RPar?,
                 val type: Type?,
                 override val postModifiers: List<PostModifier>,
-                override val equals: Keyword.Equal?,
                 override val body: Expression?,
                 override var tag: Any? = null,
             ) : Accessor
@@ -588,7 +577,6 @@ sealed interface Node {
              * @property modifiers list of modifiers.
              * @property params list of parameters of the setter.
              * @property postModifiers post-modifiers of the setter.
-             * @property equals `=` keyword if exists, otherwise `null`.
              * @property body body of the setter if exists, otherwise `null`.
              */
             data class Setter(
@@ -597,13 +585,12 @@ sealed interface Node {
                 val params: List<LambdaParam>,
                 override val rPar: Keyword.RPar?,
                 override val postModifiers: List<PostModifier>,
-                override val equals: Keyword.Equal?,
                 override val body: Expression?,
                 override var tag: Any? = null,
             ) : Accessor {
                 init {
                     if (params.isEmpty()) {
-                        require(equals == null && body == null) { "equals and body must be null when params is empty" }
+                        require(body == null) { "body must be null when params is empty" }
                     } else {
                         require(body != null) { "body must be non-null when params is non-empty" }
                     }
@@ -625,7 +612,6 @@ sealed interface Node {
             override val lAngle: Keyword.Less?,
             override val typeParams: List<TypeParam>,
             override val rAngle: Keyword.Greater?,
-            val equals: Keyword.Equal,
             val type: Type,
             override var tag: Any? = null,
         ) : Declaration, WithModifiers, WithTypeParams
@@ -1435,7 +1421,6 @@ sealed interface Node {
      * @property valOrVarKeyword `val` or `var` keyword if exists, otherwise `null`.
      * @property name name of the parameter.
      * @property type type of the parameter. Can be `null` for anonymous function parameters.
-     * @property equals `=` keyword if exists, otherwise `null`.
      * @property defaultValue default value of the parameter if exists, otherwise `null`.
      */
     data class FunctionParam(
@@ -1443,7 +1428,6 @@ sealed interface Node {
         val valOrVarKeyword: Keyword.ValOrVarKeyword?,
         val name: Expression.NameExpression,
         val type: Type?,
-        val equals: Keyword.Equal?,
         val defaultValue: Expression?,
         override var tag: Any? = null,
     ) : Node, WithModifiers
@@ -1689,10 +1673,6 @@ sealed interface Node {
 
         data class Delegate(override var tag: Any? = null) : Keyword, Modifier.AnnotationSet.AnnotationTarget {
             override val text = "delegate"
-        }
-
-        data class Equal(override var tag: Any? = null) : Keyword {
-            override val text = "="
         }
 
         data class LPar(override var tag: Any? = null) : Keyword {

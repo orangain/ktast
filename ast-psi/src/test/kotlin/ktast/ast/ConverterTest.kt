@@ -20,8 +20,7 @@ class ConverterTest {
                     Node.Variable
                       BEFORE: Node.Extra.Whitespace
                       Node.Expression.NameExpression
-                    BEFORE: Node.Extra.Whitespace
-                    Node.Keyword.Equal
+                      AFTER: Node.Extra.Whitespace
                     BEFORE: Node.Extra.Whitespace
                     Node.Expression.StringLiteralExpression
             """.trimIndent()
@@ -41,8 +40,7 @@ class ConverterTest {
                     Node.Variable
                       BEFORE: Node.Extra.Whitespace
                       Node.Expression.NameExpression
-                    BEFORE: Node.Extra.Whitespace
-                    Node.Keyword.Equal
+                      AFTER: Node.Extra.Whitespace
                     BEFORE: Node.Extra.Whitespace
                     Node.Expression.StringLiteralExpression
                     AFTER: Node.Extra.Whitespace

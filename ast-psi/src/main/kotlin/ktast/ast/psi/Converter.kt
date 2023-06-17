@@ -221,8 +221,7 @@ open class Converter {
             rPar = v.valueParameterList?.rightParenthesis?.let(::convertKeyword),
             returnType = v.typeReference?.let(::convertType),
             postModifiers = convertPostModifiers(v),
-            equals = v.equalsToken?.let(::convertKeyword),
-            body = v.bodyExpression?.let { convertExpression(it) },
+            body = v.bodyExpression?.let(::convertExpression),
         ).map(v)
     }
 
@@ -239,7 +238,6 @@ open class Converter {
         typeConstraintSet = v.typeConstraintList?.let { typeConstraintList ->
             convertTypeConstraintSet(v, typeConstraintList)
         },
-        equals = v.equalsToken?.let(::convertKeyword),
         initializer = v.initializer?.let(::convertExpression),
         propertyDelegate = v.delegate?.let(::convertPropertyDelegate),
         accessors = v.accessors.map(::convertPropertyAccessor),
@@ -256,7 +254,6 @@ open class Converter {
         variables = v.entries.map(::convertVariable),
         rPar = v.rPar?.let(::convertKeyword),
         typeConstraintSet = null,
-        equals = convertKeyword(v.equalsToken),
         initializer = v.initializer?.let(::convertExpression),
         propertyDelegate = null,
         accessors = listOf(),
@@ -279,7 +276,6 @@ open class Converter {
         rPar = v.rightParenthesis?.let(::convertKeyword),
         type = v.returnTypeReference?.let(::convertType),
         postModifiers = convertPostModifiers(v),
-        equals = v.equalsToken?.let(::convertKeyword),
         body = v.bodyExpression?.let(::convertExpression),
     ).map(v)
 
@@ -289,7 +285,6 @@ open class Converter {
         params = convertLambdaParams(v.parameterList),
         rPar = v.rightParenthesis?.let(::convertKeyword),
         postModifiers = convertPostModifiers(v),
-        equals = v.equalsToken?.let(::convertKeyword),
         body = v.bodyExpression?.let(::convertExpression),
     ).map(v)
 
@@ -299,7 +294,6 @@ open class Converter {
         lAngle = v.typeParameterList?.leftAngle?.let(::convertKeyword),
         typeParams = convertTypeParams(v.typeParameterList),
         rAngle = v.typeParameterList?.rightAngle?.let(::convertKeyword),
-        equals = convertKeyword(v.equalsToken),
         type = convertType(v.getTypeReference() ?: error("No type alias ref for $v"))
     ).map(v)
 
@@ -750,7 +744,6 @@ open class Converter {
         valOrVarKeyword = v.valOrVarKeyword?.let(::convertKeyword),
         name = v.nameIdentifier?.let(::convertNameExpression) ?: error("No param name"),
         type = v.typeReference?.let(::convertType),
-        equals = v.equalsToken?.let(::convertKeyword),
         defaultValue = v.defaultValue?.let(::convertExpression),
     ).map(v)
 
