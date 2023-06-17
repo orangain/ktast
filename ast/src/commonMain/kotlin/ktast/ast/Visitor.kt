@@ -325,7 +325,6 @@ open class Visitor {
                     visitChildren(lPar)
                     visitChildren(variables)
                     visitChildren(rPar)
-                    visitChildren(colon)
                     visitChildren(destructType)
                 }
                 is Node.Expression.ThisExpression -> {
@@ -423,7 +422,6 @@ open class Visitor {
                 }
                 is Node.Modifier.AnnotationSet -> {
                     visitChildren(target)
-                    visitChildren(colon)
                     visitChildren(lBracket)
                     visitChildren(annotations)
                     visitChildren(rBracket)

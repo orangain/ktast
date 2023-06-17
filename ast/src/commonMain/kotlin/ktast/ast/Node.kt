@@ -1461,7 +1461,6 @@ sealed interface Node {
         val lPar: Keyword.LPar?,
         val variables: List<Variable>,
         val rPar: Keyword.RPar?,
-        val colon: Keyword.Colon?,
         val destructType: Type?,
         override var tag: Any? = null,
     ) : Node {
@@ -1541,7 +1540,6 @@ sealed interface Node {
          */
         data class AnnotationSet(
             val target: AnnotationTarget?,
-            val colon: Keyword.Colon?,
             val lBracket: Keyword.LBracket?,
             val annotations: List<Annotation>,
             val rBracket: Keyword.RBracket?,
@@ -1849,10 +1847,6 @@ sealed interface Node {
         data class AsQuestion(override var tag: Any? = null) : Keyword,
             Expression.BinaryTypeExpression.BinaryTypeOperator {
             override val text = "as?"
-        }
-
-        data class Colon(override var tag: Any? = null) : Keyword {
-            override val text = ":"
         }
 
         data class Is(override var tag: Any? = null) : Keyword, Expression.BinaryTypeExpression.BinaryTypeOperator,

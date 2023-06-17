@@ -353,7 +353,6 @@ open class MutableVisitor(
                         lPar = visitChildren(lPar, newCh),
                         variables = visitChildren(variables, newCh),
                         rPar = visitChildren(rPar, newCh),
-                        colon = visitChildren(colon, newCh),
                         destructType = visitChildren(destructType, newCh),
                     )
                     is Node.Expression.ThisExpression -> copy(
@@ -451,7 +450,6 @@ open class MutableVisitor(
                     )
                     is Node.Modifier.AnnotationSet -> copy(
                         target = visitChildren(target, newCh),
-                        colon = visitChildren(colon, newCh),
                         lBracket = visitChildren(lBracket, newCh),
                         annotations = visitChildren(annotations, newCh),
                         rBracket = visitChildren(rBracket, newCh),

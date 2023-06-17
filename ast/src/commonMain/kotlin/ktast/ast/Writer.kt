@@ -403,8 +403,10 @@ open class Writer(
                     children(lPar)
                     children(variables, ",")
                     children(rPar)
-                    children(colon)
-                    children(destructType)
+                    if (destructType != null) {
+                        append(":")
+                        children(destructType)
+                    }
                 }
                 is Node.Expression.ThisExpression -> {
                     append("this")
@@ -505,8 +507,10 @@ open class Writer(
                 }
                 is Node.Modifier.AnnotationSet -> {
                     append("@")
-                    children(target)
-                    children(colon)
+                    if (target != null) {
+                        children(target)
+                        append(":")
+                    }
                     children(lBracket)
                     children(annotations)
                     children(rBracket)

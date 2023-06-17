@@ -764,7 +764,6 @@ open class Converter {
                 lPar = destructuringDeclaration.lPar?.let(::convertKeyword),
                 variables = destructuringDeclaration.entries.map(::convertVariable),
                 rPar = destructuringDeclaration.rPar?.let(::convertKeyword),
-                colon = v.colon?.let(::convertKeyword),
                 destructType = v.typeReference?.let(::convertType),
             ).map(v)
         } else {
@@ -772,7 +771,6 @@ open class Converter {
                 lPar = null,
                 variables = listOf(convertVariable(v)),
                 rPar = null,
-                colon = null,
                 destructType = null,
             ).map(v)
         }
@@ -849,7 +847,6 @@ open class Converter {
 
     protected fun convertAnnotationSet(v: KtAnnotation) = Node.Modifier.AnnotationSet(
         target = v.useSiteTarget?.let(::convertKeyword),
-        colon = v.colon?.let(::convertKeyword),
         lBracket = v.lBracket?.let(::convertKeyword),
         annotations = v.entries.map(::convertAnnotation),
         rBracket = v.rBracket?.let(::convertKeyword),
@@ -857,7 +854,6 @@ open class Converter {
 
     protected fun convertAnnotationSet(v: KtAnnotationEntry) = Node.Modifier.AnnotationSet(
         target = v.useSiteTarget?.let(::convertKeyword),
-        colon = v.colon?.let(::convertKeyword),
         lBracket = null,
         annotations = listOf(convertAnnotation(v)),
         rBracket = null,
