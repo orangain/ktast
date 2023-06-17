@@ -140,7 +140,7 @@ sealed interface Node {
     }
 
     /**
-     * AST node corresponds to KtFile.
+     * AST node that represents whole Kotlin file. Tha node corresponds to KtFile.
      *
      * @property annotationSets list of annotation sets.
      * @property packageDirective package directive if exists, otherwise `null`.
@@ -170,7 +170,7 @@ sealed interface Node {
     ) : Node, KotlinEntry
 
     /**
-     * AST node corresponds to KtPackageDirective.
+     * AST node that represents a package directive. The node corresponds to KtPackageDirective.
      *
      * @property packageKeyword package keyword.
      * @property names list of names separated by dots.
@@ -182,7 +182,7 @@ sealed interface Node {
     ) : Node
 
     /**
-     * AST node corresponds to KtImportDirective.
+     * AST node that represents an import directive. The node corresponds to KtImportDirective.
      *
      * @property importKeyword import keyword.
      * @property names list of names separated by dots.
@@ -201,7 +201,7 @@ sealed interface Node {
     sealed interface Statement : Node {
 
         /**
-         * AST node corresponds to KtForExpression.
+         * AST node that represents a for statement. The node corresponds to KtForExpression.
          *
          * ```
          * for ([loopParam] in [loopRange]) [body]
@@ -244,7 +244,7 @@ sealed interface Node {
         }
 
         /**
-         * AST node corresponds to KtWhileExpression.
+         * AST node that represents a while statement. The node corresponds to KtWhileExpression.
          */
         data class WhileStatement(
             override val whileKeyword: Keyword.While,
@@ -256,7 +256,7 @@ sealed interface Node {
         ) : WhileStatementBase
 
         /**
-         * AST node corresponds to KtDoWhileExpression.
+         * AST node that represents a do-while statement. The node corresponds to KtDoWhileExpression.
          *
          * @property doKeyword `do` keyword.
          */
@@ -276,7 +276,7 @@ sealed interface Node {
      */
     sealed interface Declaration : Statement {
         /**
-         * AST node that represents a class, object or interface. The node corresponds to KtClassOrObject.
+         * AST node that represents a class, object or interface declaration. The node corresponds to KtClassOrObject.
          *
          * @property modifiers list of modifiers.
          * @property classDeclarationKeyword class declaration keyword.
@@ -486,7 +486,7 @@ sealed interface Node {
         }
 
         /**
-         * AST node that represents function declaration. The node corresponds to KtNamedFunction.
+         * AST node that represents a function declaration. The node corresponds to KtNamedFunction.
          *
          * @property modifiers list of modifiers.
          * @property funKeyword `fun` keyword.
@@ -518,7 +518,7 @@ sealed interface Node {
         ) : Declaration, WithModifiers, WithTypeParams, WithFunctionParams, WithPostModifiers, WithFunctionBody
 
         /**
-         * AST node corresponds to KtProperty or KtDestructuringDeclaration.
+         * AST node that represents a property declaration. The node corresponds to KtProperty or KtDestructuringDeclaration.
          *
          * @property modifiers list of modifiers.
          * @property valOrVarKeyword `val` or `var` keyword.
@@ -631,7 +631,7 @@ sealed interface Node {
         }
 
         /**
-         * AST node corresponds to KtTypeAlias.
+         * AST node that represents a type alias declaration. The node corresponds to KtTypeAlias.
          *
          * @property modifiers list of modifiers.
          * @property name name of the type alias.
@@ -656,7 +656,7 @@ sealed interface Node {
     sealed interface Type : Node, WithModifiers {
 
         /**
-         * Virtual AST node corresponds to KtTypeReference or KtNullableType having `(` and `)` as children.
+         * AST node that represents a type surrounded by parentheses. The node corresponds to KtTypeReference or KtNullableType having `(` and `)` as children.
          *
          * @property modifiers list of modifiers.
          * @property lPar `(` symbol.
@@ -672,7 +672,7 @@ sealed interface Node {
         ) : Type
 
         /**
-         * Virtual AST node that represents nullable type. The node corresponds to KtNullableType and modifiers of its parent.
+         * AST node that represents a nullable type. The node corresponds to KtNullableType and modifiers of its parent.
          *
          * @property modifiers list of modifiers.
          * @property innerType inner type.
@@ -686,7 +686,7 @@ sealed interface Node {
         ) : Type
 
         /**
-         * Virtual AST node that represents a simple type. The node corresponds to KtUserType and modifiers of its parent.
+         * AST node that represents a simple named type. The node corresponds to KtUserType and modifiers of its parent.
          *
          * @property modifiers list of modifiers.
          * @property pieces list of pieces. The piece represents a pair of a name and type arguments.
@@ -711,7 +711,7 @@ sealed interface Node {
         }
 
         /**
-         * Virtual AST node that represents a dynamic type. The node corresponds to KtDynamicType and modifiers of its parent.
+         * AST node that represents a dynamic type. The node corresponds to KtDynamicType and modifiers of its parent.
          *
          * @property modifiers list of modifiers.
          * @property dynamicKeyword `dynamic` keyword.
@@ -723,7 +723,7 @@ sealed interface Node {
         ) : Type
 
         /**
-         * Virtual AST node that represents a function type. The node corresponds to KtFunctionType and modifiers of its parent.
+         * AST node that represents a function type. The node corresponds to KtFunctionType and modifiers of its parent.
          *
          * @property modifiers list of modifiers.
          * @property contextReceiver context receivers if exists, otherwise `null`.
@@ -776,7 +776,7 @@ sealed interface Node {
         }
 
         /**
-         * AST node corresponds to KtIfExpression.
+         * AST node that represents an if expression. The node corresponds to KtIfExpression.
          *
          * @property ifKeyword `if` keyword.
          * @property lPar left parenthesis of the condition.
@@ -798,7 +798,7 @@ sealed interface Node {
         ) : Expression
 
         /**
-         * AST node corresponds to KtTryExpression.
+         * AST node that represents a try expression. The node corresponds to KtTryExpression.
          *
          * @property block block expression.
          * @property catchClauses list of catch clauses.
@@ -811,7 +811,7 @@ sealed interface Node {
             override var tag: Any? = null,
         ) : Expression {
             /**
-             * AST node corresponds to KtCatchClause.
+             * AST node that represents a catch clause. The node corresponds to KtCatchClause.
              *
              * @property catchKeyword `catch` keyword.
              * @property params list of parameters of the catch clause.
@@ -832,7 +832,7 @@ sealed interface Node {
         }
 
         /**
-         * AST node corresponds to KtWhenExpression.
+         * AST node that represents a when expression. The node corresponds to KtWhenExpression.
          *
          * @property whenKeyword keyword of when expression.
          * @property subject subject of when expression if exists, otherwise `null`.
@@ -845,7 +845,7 @@ sealed interface Node {
             override var tag: Any? = null,
         ) : Expression {
             /**
-             * Virtual AST node that represents the subject of when expression. This node corresponds to a part of KtWhenExpression.
+             * AST node that represents a subject of when expression. The node corresponds to a part of KtWhenExpression.
              *
              * @property lPar left parenthesis of when subject.
              * @property annotationSets list of annotation sets.
@@ -865,7 +865,7 @@ sealed interface Node {
             ) : Node, WithAnnotationSets
 
             /**
-             * AST node corresponds to KtWhenEntry.
+             * Common interface for when branches. The node corresponds to KtWhenEntry.
              *
              * @property whenConditions list of conditions.
              * @property elseKeyword else keyword if exists, otherwise `null`.
@@ -878,7 +878,7 @@ sealed interface Node {
             }
 
             /**
-             * AST node that represents when branch with conditions.
+             * AST node that represents a when branch with conditions.
              *
              * @property whenConditions non-empty list of conditions.
              * @property elseKeyword always `null`.
@@ -897,7 +897,7 @@ sealed interface Node {
             }
 
             /**
-             * AST node that represents when branch with else keyword.
+             * AST node that represents a when branch with else keyword.
              *
              * @property whenConditions always empty list.
              * @property elseKeyword else keyword.
@@ -927,7 +927,7 @@ sealed interface Node {
             sealed interface WhenConditionRangeOperator : WhenConditionOperator
 
             /**
-             * AST node corresponds to KtWhenCondition.
+             * Common interface for when conditions. The node corresponds to KtWhenCondition.
              *
              * @property operator operator of this condition if exists, otherwise `null`.
              * @property expression operand of [operator] or condition expression, otherwise `null`.
@@ -940,7 +940,7 @@ sealed interface Node {
             }
 
             /**
-             * AST node corresponds to KtWhenConditionWithExpression.
+             * AST node that represents a when condition using expression. The node corresponds to KtWhenConditionWithExpression.
              *
              * @property operator always `null`.
              * @property expression condition expression.
@@ -955,7 +955,7 @@ sealed interface Node {
             }
 
             /**
-             * AST node corresponds to KtWhenConditionInRange.
+             * AST node that represents a when condition using range. The node corresponds to KtWhenConditionInRange.
              *
              * @property operator operator of this condition.
              * @property expression operand of [operator].
@@ -970,7 +970,7 @@ sealed interface Node {
             }
 
             /**
-             * AST node corresponds to KtWhenConditionIsPattern.
+             * AST node that represents a when condition using type. The node corresponds to KtWhenConditionIsPattern.
              *
              * @property operator operator of this condition.
              * @property expression always `null`.
@@ -986,7 +986,7 @@ sealed interface Node {
         }
 
         /**
-         * AST node corresponds to KtThrowExpression.
+         * AST node that represents a throw expression. The node corresponds to KtThrowExpression.
          *
          * @property expression expression to be thrown.
          */
@@ -996,7 +996,7 @@ sealed interface Node {
         ) : Expression
 
         /**
-         * AST node corresponds to KtReturnExpression.
+         * AST node that represents a return expression. The node corresponds to KtReturnExpression.
          *
          * @property label label of this return expression if exists, otherwise `null`.
          * @property expression expression to be returned if exists, otherwise `null`.
@@ -1008,7 +1008,7 @@ sealed interface Node {
         ) : Expression, WithLabel
 
         /**
-         * AST node corresponds to KtContinueExpression.
+         * AST node that represents a continue expression. The node corresponds to KtContinueExpression.
          *
          * @property label label of this continue expression if exists, otherwise `null`.
          */
@@ -1018,7 +1018,7 @@ sealed interface Node {
         ) : Expression, WithLabel
 
         /**
-         * AST node corresponds to KtBreakExpression.
+         * AST node that represents a break expression. The node corresponds to KtBreakExpression.
          *
          * @property label label of this break expression if exists, otherwise `null`.
          */
@@ -1028,7 +1028,7 @@ sealed interface Node {
         ) : Expression, WithLabel
 
         /**
-         * AST node corresponds to KtBlockExpression.
+         * AST node that represents a block expression. The node corresponds to KtBlockExpression.
          *
          * @property statements list of statements.
          */
@@ -1038,7 +1038,7 @@ sealed interface Node {
         ) : Expression, WithStatements
 
         /**
-         * AST node corresponds to KtCallElement.
+         * AST node that represents a call expression. The node corresponds to KtCallElement.
          *
          * @property calleeExpression callee expression.
          * @property typeArgs list of type arguments.
@@ -1057,7 +1057,7 @@ sealed interface Node {
             override var tag: Any? = null,
         ) : Expression, WithTypeArgs, WithValueArgs {
             /**
-             * AST node corresponds to KtLambdaArgument.
+             * AST node that represents a lambda argument. The node corresponds to KtLambdaArgument.
              *
              * @property annotationSets list of annotation sets.
              * @property label label of this lambda argument if exists, otherwise `null`.
@@ -1072,7 +1072,7 @@ sealed interface Node {
         }
 
         /**
-         * AST node corresponds to KtLambdaExpression.
+         * AST node that represents a lambda expression. The node corresponds to KtLambdaExpression.
          *
          * [LambdaExpression] = { [LambdaParam], [LambdaParam] -> [Statement] [Statement]... }
          *
@@ -1088,7 +1088,7 @@ sealed interface Node {
         ) : Expression, WithStatements
 
         /**
-         * AST node corresponds to KtBinaryExpression or KtQualifiedExpression.
+         * AST node that represents a binary expression. The node corresponds to KtBinaryExpression or KtQualifiedExpression.
          *
          * @property lhs left-hand side expression.
          * @property operator binary operator.
@@ -1124,7 +1124,7 @@ sealed interface Node {
         }
 
         /**
-         * AST node corresponds to KtPrefixExpression.
+         * AST node that represents a prefix unary expression. The node corresponds to KtPrefixExpression.
          *
          * @property operator unary operator.
          * @property expression operand expression.
@@ -1136,7 +1136,7 @@ sealed interface Node {
         ) : UnaryExpression
 
         /**
-         * AST node corresponds to KtPostfixExpression.
+         * AST node that represents a postfix unary expression. The node corresponds to KtPostfixExpression.
          *
          * @property expression operand expression.
          * @property operator unary operator.
@@ -1148,7 +1148,7 @@ sealed interface Node {
         ) : UnaryExpression
 
         /**
-         * AST node corresponds to KtBinaryExpressionWithTypeRHS or KtIsExpression.
+         * AST node that represents a binary type expression. The node corresponds to KtBinaryExpressionWithTypeRHS or KtIsExpression.
          *
          * @property lhs left-hand side expression.
          * @property operator binary type operator.
@@ -1167,7 +1167,7 @@ sealed interface Node {
         }
 
         /**
-         * AST node corresponds to KtDoubleColonExpression.
+         * Common interface for [CallableReferenceExpression] and [ClassLiteralExpression]. The node corresponds to KtDoubleColonExpression.
          *
          * @property lhs left-hand side expression if exists, otherwise `null`.
          * @property questionMarks list of question marks after [lhs].
@@ -1178,7 +1178,7 @@ sealed interface Node {
         }
 
         /**
-         * AST node corresponds to KtCallableReferenceExpression.
+         * AST node that represents a callable reference expression. The node corresponds to KtCallableReferenceExpression.
          *
          * @property lhs left-hand side expression if exists, otherwise `null`.
          * @property questionMarks list of question marks after [lhs].
@@ -1193,7 +1193,7 @@ sealed interface Node {
         ) : DoubleColonExpression
 
         /**
-         * AST node corresponds to KtClassLiteralExpression.
+         * AST node that represents a class literal expression. The node corresponds to KtClassLiteralExpression.
          *
          * @property lhs left-hand side expression if exists, otherwise `null`. Note that class literal expression without lhs is not supported in Kotlin syntax, but the Kotlin compiler does parse it.
          * @property questionMarks list of question marks after [lhs].
@@ -1205,7 +1205,7 @@ sealed interface Node {
         ) : DoubleColonExpression
 
         /**
-         * AST node corresponds to KtParenthesizedExpression.
+         * AST node that represents an expression surrounded by parentheses. The node corresponds to KtParenthesizedExpression.
          *
          * @property innerExpression expression inside parentheses.
          */
@@ -1215,7 +1215,7 @@ sealed interface Node {
         ) : Expression
 
         /**
-         * AST node corresponds to KtStringTemplateExpression.
+         * AST node that represents a string literal expression. The node corresponds to KtStringTemplateExpression.
          *
          * @property entries list of string entries.
          * @property raw `true` if this is raw string surrounded by `"""`, `false` if this is regular string surrounded by `"`.
@@ -1226,12 +1226,12 @@ sealed interface Node {
             override var tag: Any? = null,
         ) : Expression {
             /**
-             * AST node corresponds to KtStringTemplateEntry.
+             * Common interface for string entries. The node corresponds to KtStringTemplateEntry.
              */
             sealed interface StringEntry : Node
 
             /**
-             * AST node corresponds to KtLiteralStringTemplateEntry.
+             * AST node that represents a literal string entry, i.e. a normal string entry. The node corresponds to KtLiteralStringTemplateEntry.
              *
              * @property text string of this entry.
              */
@@ -1241,7 +1241,7 @@ sealed interface Node {
             ) : StringEntry, SimpleTextNode
 
             /**
-             * AST node corresponds to KtEscapeStringTemplateEntry.
+             * AST node that represents an escape string entry that starts with backslash. The node corresponds to KtEscapeStringTemplateEntry.
              *
              * @property text string of this entry starting with backslash.
              */
@@ -1257,7 +1257,7 @@ sealed interface Node {
             }
 
             /**
-             * AST node corresponds to KtStringTemplateEntryWithExpression.
+             * AST node that represents a template string entry with expression. The node corresponds to KtStringTemplateEntryWithExpression.
              *
              * @property expression template expression of this entry.
              * @property short `true` if this is short template string entry, e.g. `$x`, `false` if this is long template string entry, e.g. `${x}`. When this is `true`, [expression] must be [NameExpression].
@@ -1276,7 +1276,7 @@ sealed interface Node {
         }
 
         /**
-         * AST node corresponds to KtConstantExpression.
+         * Common interface for constant literal expression. The AST node corresponds to KtConstantExpression.
          *
          * @property text string representation of this constant.
          */
@@ -1285,7 +1285,7 @@ sealed interface Node {
         }
 
         /**
-         * AST node that represents boolean literal. The node corresponds to KtConstantExpression whose expressionType is KtNodeTypes.BOOLEAN_CONSTANT.
+         * AST node that represents a boolean literal expression. The node corresponds to KtConstantExpression whose expressionType is KtNodeTypes.BOOLEAN_CONSTANT.
          *
          * @property text string representation of this constant, which is either "true" or "false".
          */
@@ -1301,7 +1301,7 @@ sealed interface Node {
         }
 
         /**
-         * AST node that represents character literal. The node corresponds to KtConstantExpression whose expressionType is KtNodeTypes.CHARACTER_CONSTANT.
+         * AST node that represents a character literal expression. The node corresponds to KtConstantExpression whose expressionType is KtNodeTypes.CHARACTER_CONSTANT.
          *
          * @property text string representation of this constant, which is surrounded by single quotes.
          */
@@ -1317,7 +1317,7 @@ sealed interface Node {
         }
 
         /**
-         * AST node that represents integer literal. The node corresponds to KtConstantExpression whose expressionType is KtNodeTypes.INTEGER_CONSTANT.
+         * AST node that represents an integer literal expression. The node corresponds to KtConstantExpression whose expressionType is KtNodeTypes.INTEGER_CONSTANT.
          *
          * @property text string representation of this constant.
          */
@@ -1327,7 +1327,7 @@ sealed interface Node {
         ) : ConstantLiteralExpression
 
         /**
-         * AST node that represents real number literal. The node corresponds to KtConstantExpression whose expressionType is KtNodeTypes.FLOAT_CONSTANT.
+         * AST node that represents a real number literal expression. The node corresponds to KtConstantExpression whose expressionType is KtNodeTypes.FLOAT_CONSTANT.
          *
          * @property text string representation of this constant.
          */
@@ -1338,7 +1338,7 @@ sealed interface Node {
         ) : ConstantLiteralExpression
 
         /**
-         * AST node that represents null literal. The node corresponds to KtConstantExpression whose expressionType is KtNodeTypes.NULL.
+         * AST node that represents a null literal expression. The node corresponds to KtConstantExpression whose expressionType is KtNodeTypes.NULL.
          */
         data class NullLiteralExpression(
             override var tag: Any? = null,
@@ -1348,7 +1348,7 @@ sealed interface Node {
         }
 
         /**
-         * AST node corresponds to KtObjectLiteralExpression.
+         * AST node that represents an object literal expression. The node corresponds to KtObjectLiteralExpression.
          *
          * @property declaration class declaration of this object literal expression.
          */
@@ -1358,7 +1358,7 @@ sealed interface Node {
         ) : Expression
 
         /**
-         * AST node corresponds to KtCollectionLiteralExpression.
+         * AST node that represents a collection literal expression. The node corresponds to KtCollectionLiteralExpression.
          *
          * @property expressions list of element expressions.
          */
@@ -1368,7 +1368,7 @@ sealed interface Node {
         ) : Expression
 
         /**
-         * AST node corresponds to KtThisExpression or KtConstructorDelegationReferenceExpression whose text is "this".
+         * AST node that represents a "this" expression. The node corresponds to KtThisExpression or KtConstructorDelegationReferenceExpression whose text is "this".
          *
          * @property label label of this expression if exists, otherwise `null`.
          */
@@ -1378,7 +1378,7 @@ sealed interface Node {
         ) : Expression, WithLabel
 
         /**
-         * AST node corresponds to KtSuperExpression or KtConstructorDelegationReferenceExpression whose text is "super".
+         * AST node that represents a super expression. The node corresponds to KtSuperExpression or KtConstructorDelegationReferenceExpression whose text is "super".
          *
          * @property typeArgType type of type argument if exists, otherwise `null`.
          * @property label label of this expression if exists, otherwise `null`.
@@ -1390,7 +1390,7 @@ sealed interface Node {
         ) : Expression, WithLabel
 
         /**
-         * AST node corresponds to KtValueArgumentName, KtSimpleNameExpression or PsiElement whose elementType is IDENTIFIER.
+         * AST node that represents a name expression, i.e. an identifier. The node corresponds to KtValueArgumentName, KtSimpleNameExpression or PsiElement whose elementType is IDENTIFIER.
          *
          * @property text string representation of the name expression.
          */
@@ -1400,7 +1400,7 @@ sealed interface Node {
         ) : Expression, BinaryExpression.BinaryOperator
 
         /**
-         * AST node corresponds to KtLabeledExpression.
+         * AST node that represents an expression prefixed by a label. The node corresponds to KtLabeledExpression.
          *
          * @property label label before `@` symbol.
          * @property statement statement labeled by [label].
@@ -1412,7 +1412,7 @@ sealed interface Node {
         ) : Expression
 
         /**
-         * AST node corresponds to KtAnnotatedExpression.
+         * AST node that represents an expression prefixed by annotation sets. The node corresponds to KtAnnotatedExpression.
          *
          * @property annotationSets list of annotation sets.
          * @property statement statement annotated by [annotationSets].
@@ -1424,7 +1424,7 @@ sealed interface Node {
         ) : Expression, WithAnnotationSets
 
         /**
-         * AST node corresponds to KtArrayAccessExpression.
+         * AST node that represents an expression followed by index access. The node corresponds to KtArrayAccessExpression.
          *
          * @property expression collection expression.
          * @property indices list of index expressions.
@@ -1436,7 +1436,7 @@ sealed interface Node {
         ) : Expression
 
         /**
-         * Virtual AST node corresponds to KtNamedFunction in expression context.
+         * AST node that represents an anonymous function expression. The node corresponds to KtNamedFunction in expression context.
          *
          * @property function function declaration.
          */
@@ -1505,7 +1505,7 @@ sealed interface Node {
     }
 
     /**
-     * AST node corresponds to KtDestructuringDeclarationEntry, virtual AST node corresponds a part of KtProperty, or virtual AST node corresponds to KtParameter whose child is IDENTIFIER.
+     * AST node that represents a variable. The node corresponds to KtDestructuringDeclarationEntry, a part of KtProperty, or KtParameter whose child is IDENTIFIER.
      *
      * @property annotationSets list of annotation sets.
      * @property name name of the variable.
@@ -1563,7 +1563,7 @@ sealed interface Node {
      */
     sealed interface Modifier : Node {
         /**
-         * AST node corresponds to KtAnnotation or KtAnnotationEntry not under KtAnnotation.
+         * AST node that represents an annotation sets. The node corresponds to KtAnnotation or KtAnnotationEntry not under KtAnnotation.
          *
          * @property atSymbol `@` symbol if exists, otherwise `null`.
          * @property target target keyword if exists, otherwise `null`.
@@ -1587,7 +1587,7 @@ sealed interface Node {
             sealed interface AnnotationTarget : Keyword
 
             /**
-             * AST node corresponds to KtAnnotationEntry under KtAnnotation or virtual AST node corresponds to KtAnnotationEntry not under KtAnnotation.
+             * AST node that represents an annotation. The node corresponds to KtAnnotationEntry under KtAnnotation or virtual AST node corresponds to KtAnnotationEntry not under KtAnnotation.
              *
              * @property type type of this annotation.
              * @property args list of value arguments.
@@ -1612,7 +1612,7 @@ sealed interface Node {
      */
     sealed interface PostModifier : Node {
         /**
-         * Virtual AST node corresponds to a pair of "where" keyword and KtTypeConstraintList.
+         * AST node that represents a type constraint set. The node corresponds to a pair of "where" keyword and KtTypeConstraintList.
          *
          * @property whereKeyword "where" keyword.
          * @property constraints type constraints.
@@ -1624,7 +1624,7 @@ sealed interface Node {
         ) : PostModifier {
 
             /**
-             * AST node corresponds to KtTypeConstraint.
+             * AST node that represents a type constraint. The node corresponds to KtTypeConstraint.
              *
              * @property annotationSets list of annotation sets.
              * @property name name of this type constraint.
@@ -1639,11 +1639,11 @@ sealed interface Node {
         }
 
         /**
-         * Virtual AST node corresponds to a pair of "contract" keyword and KtContractEffectList.
+         * AST node that represents a contract. The node corresponds to a pair of "contract" keyword and KtContractEffectList.
          *
          * @property contractKeyword "contract" keyword.
          * @property lBracket left bracket symbol of the contract effects.
-         * @property contractEffects contract effects.
+         * @property contractEffects contract effect expressions.
          * @property rBracket right bracket symbol of the contract effects.
          */
         data class Contract(
@@ -2085,7 +2085,7 @@ sealed interface Node {
      */
     sealed interface Extra : SimpleTextNode {
         /**
-         * AST node corresponds to PsiWhiteSpace.
+         * AST node that represents a whitespace. The node corresponds to PsiWhiteSpace.
          *
          * @property text string representation of the node.
          */
@@ -2095,7 +2095,7 @@ sealed interface Node {
         ) : Extra
 
         /**
-         * AST node corresponds to PsiComment.
+         * AST node that represents a comment. The node corresponds to PsiComment.
          *
          * @property text string representation of the node. It contains comment markers, e.g. "//".
          */
@@ -2105,7 +2105,7 @@ sealed interface Node {
         ) : Extra
 
         /**
-         * AST node corresponds to PsiElement whose elementType is SEMICOLON.
+         * AST node that represents a semicolon. The node corresponds to PsiElement whose elementType is SEMICOLON.
          *
          * @property text always be ";".
          */
