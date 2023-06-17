@@ -848,7 +848,6 @@ open class Converter {
     }
 
     protected fun convertAnnotationSet(v: KtAnnotation) = Node.Modifier.AnnotationSet(
-        atSymbol = v.atSymbol?.let(::convertKeyword),
         target = v.useSiteTarget?.let(::convertKeyword),
         colon = v.colon?.let(::convertKeyword),
         lBracket = v.lBracket?.let(::convertKeyword),
@@ -857,7 +856,6 @@ open class Converter {
     ).map(v)
 
     protected fun convertAnnotationSet(v: KtAnnotationEntry) = Node.Modifier.AnnotationSet(
-        atSymbol = v.atSymbol?.let(::convertKeyword),
         target = v.useSiteTarget?.let(::convertKeyword),
         colon = v.colon?.let(::convertKeyword),
         lBracket = null,

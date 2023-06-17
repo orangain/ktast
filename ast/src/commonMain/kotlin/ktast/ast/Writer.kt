@@ -504,7 +504,7 @@ open class Writer(
                     }
                 }
                 is Node.Modifier.AnnotationSet -> {
-                    children(atSymbol)
+                    append("@")
                     children(target)
                     children(colon)
                     children(lBracket)

@@ -1533,7 +1533,6 @@ sealed interface Node {
         /**
          * AST node that represents an annotation sets. The node corresponds to KtAnnotation or KtAnnotationEntry not under KtAnnotation.
          *
-         * @property atSymbol `@` symbol if exists, otherwise `null`.
          * @property target target keyword if exists, otherwise `null`.
          * @property colon colon symbol if exists, otherwise `null`.
          * @property lBracket left bracket symbol if exists, otherwise `null`.
@@ -1541,7 +1540,6 @@ sealed interface Node {
          * @property rBracket right bracket symbol if exists, otherwise `null`.
          */
         data class AnnotationSet(
-            val atSymbol: Keyword.At?,
             val target: AnnotationTarget?,
             val colon: Keyword.Colon?,
             val lBracket: Keyword.LBracket?,
@@ -1713,10 +1711,6 @@ sealed interface Node {
 
         data class RBracket(override var tag: Any? = null) : Keyword {
             override val text = "]"
-        }
-
-        data class At(override var tag: Any? = null) : Keyword {
-            override val text = "@"
         }
 
         data class Arrow(override var tag: Any? = null) : Keyword {
