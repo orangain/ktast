@@ -248,9 +248,25 @@ sealed interface Node {
     }
 
     /**
+     * Common interface for class-like nodes.
+     *
+     * @property classDeclarationKeyword keyword that is used to declare a class.
+     * @property name name of the node if exists, otherwise `null`.
+     * @property classParents list of class parents.
+     * @property classBody body of the class if exists, otherwise `null`.
+     */
+    sealed interface ClassBase {
+        val classDeclarationKeyword: Declaration.ClassDeclaration.ClassDeclarationKeyword
+        val name: Expression.NameExpression?
+        val classParents: List<Declaration.ClassDeclaration.ClassParent>
+        val classBody: Declaration.ClassDeclaration.ClassBody?
+    }
+
+    /**
      * Common interface for AST nodes that are main contents of a Kotlin file or a class body.
      */
     sealed interface Declaration : Statement {
+
         /**
          * AST node that represents a class, object or interface declaration. The node corresponds to KtClassOrObject.
          *
