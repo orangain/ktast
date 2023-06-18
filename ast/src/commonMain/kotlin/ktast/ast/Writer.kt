@@ -141,29 +141,6 @@ open class Writer(
                     append("while")
                     children(lPar, condition, rPar)
                 }
-                is Node.Declaration.ClassDeclaration -> {
-                    children(modifiers)
-                    children(classDeclarationKeyword)
-                    children(name)
-                    commaSeparatedChildren(lAngle, typeParams, rAngle)
-                    children(primaryConstructor)
-                    if (classParents.isNotEmpty()) {
-                        append(":")
-                    }
-                    commaSeparatedChildren(classParents)
-                    children(typeConstraintSet)
-                    children(classBody)
-                }
-                is Node.Declaration.ObjectDeclaration -> {
-                    children(modifiers)
-                    children(classDeclarationKeyword)
-                    children(name)
-                    if (classParents.isNotEmpty()) {
-                        append(":")
-                    }
-                    commaSeparatedChildren(classParents)
-                    children(classBody)
-                }
                 is Node.Declaration.ClassOrObject.ConstructorClassParent -> {
                     children(type)
                     commaSeparatedChildren(lPar, args, rPar)
@@ -175,11 +152,6 @@ open class Writer(
                 }
                 is Node.Declaration.ClassOrObject.TypeClassParent -> {
                     children(type)
-                }
-                is Node.Declaration.ClassDeclaration.PrimaryConstructor -> {
-                    children(modifiers)
-                    children(constructorKeyword)
-                    commaSeparatedChildren(lPar, params, rPar)
                 }
                 is Node.Declaration.ClassOrObject.ClassBody -> {
                     writeBlock {
@@ -193,9 +165,50 @@ open class Writer(
                         children(declarations)
                     }
                 }
+                is Node.Declaration.ClassOrObject.ClassBody.EnumEntry -> {
+                    children(modifiers)
+                    children(name)
+                    commaSeparatedChildren(lPar, args, rPar)
+                    children(classBody)
+                }
                 is Node.Declaration.ClassOrObject.ClassBody.Initializer -> {
                     append("init")
                     children(block)
+                }
+                is Node.Declaration.ClassOrObject.ClassBody.SecondaryConstructor -> {
+                    children(modifiers)
+                    children(constructorKeyword)
+                    commaSeparatedChildren(lPar, params, rPar)
+                    if (delegationCall != null) append(":").also { children(delegationCall) }
+                    children(block)
+                }
+                is Node.Declaration.ClassDeclaration -> {
+                    children(modifiers)
+                    children(classDeclarationKeyword)
+                    children(name)
+                    commaSeparatedChildren(lAngle, typeParams, rAngle)
+                    children(primaryConstructor)
+                    if (classParents.isNotEmpty()) {
+                        append(":")
+                    }
+                    commaSeparatedChildren(classParents)
+                    children(typeConstraintSet)
+                    children(classBody)
+                }
+                is Node.Declaration.ClassDeclaration.PrimaryConstructor -> {
+                    children(modifiers)
+                    children(constructorKeyword)
+                    commaSeparatedChildren(lPar, params, rPar)
+                }
+                is Node.Declaration.ObjectDeclaration -> {
+                    children(modifiers)
+                    children(classDeclarationKeyword)
+                    children(name)
+                    if (classParents.isNotEmpty()) {
+                        append(":")
+                    }
+                    commaSeparatedChildren(classParents)
+                    children(classBody)
                 }
                 is Node.Declaration.FunctionDeclaration -> {
                     children(modifiers)
@@ -207,13 +220,6 @@ open class Writer(
                     if (returnType != null) append(":").also { children(returnType) }
                     children(postModifiers)
                     writeFunctionBody(body)
-                }
-                is Node.FunctionParam -> {
-                    children(modifiers)
-                    children(valOrVarKeyword)
-                    children(name)
-                    if (type != null) append(":").also { children(type) }
-                    writeFunctionBody(defaultValue)
                 }
                 is Node.Declaration.PropertyDeclaration -> {
                     children(modifiers)
@@ -230,11 +236,6 @@ open class Writer(
                         children(delegateExpression)
                     }
                     children(accessors)
-                }
-                is Node.Variable -> {
-                    children(annotationSets)
-                    children(name)
-                    if (type != null) append(":").also { children(type) }
                 }
                 is Node.Declaration.PropertyDeclaration.Getter -> {
                     children(modifiers)
@@ -259,44 +260,16 @@ open class Writer(
                     append("=")
                     children(type)
                 }
-                is Node.Declaration.ClassOrObject.ClassBody.SecondaryConstructor -> {
+                is Node.Type.ParenthesizedType -> {
                     children(modifiers)
-                    children(constructorKeyword)
-                    commaSeparatedChildren(lPar, params, rPar)
-                    if (delegationCall != null) append(":").also { children(delegationCall) }
-                    children(block)
+                    children(lPar)
+                    children(innerType)
+                    children(rPar)
                 }
-                is Node.Declaration.ClassOrObject.ClassBody.EnumEntry -> {
+                is Node.Type.NullableType -> {
                     children(modifiers)
-                    children(name)
-                    commaSeparatedChildren(lPar, args, rPar)
-                    children(classBody)
-                }
-                is Node.TypeParam -> {
-                    children(modifiers)
-                    children(name)
-                    if (type != null) append(":").also { children(type) }
-                }
-                is Node.TypeArg -> {
-                    children(modifiers)
-                    children(type)
-                }
-                is Node.Type.FunctionType -> {
-                    children(modifiers)
-                    children(contextReceiver)
-                    children(receiverType)
-                    if (receiverType != null) append(".")
-                    commaSeparatedChildren(lPar, params, rPar)
-                    append("->")
-                    children(returnType)
-                }
-                is Node.ContextReceiver -> {
-                    append("context")
-                    commaSeparatedChildren(lPar, receiverTypes, rPar)
-                }
-                is Node.Type.FunctionType.FunctionTypeParam -> {
-                    if (name != null) children(name).append(":")
-                    children(type)
+                    children(innerType)
+                    children(questionMark)
                 }
                 is Node.Type.SimpleType -> {
                     children(modifiers)
@@ -311,25 +284,22 @@ open class Writer(
                     children(name)
                     commaSeparatedChildren(lAngle, typeArgs, rAngle)
                 }
-                is Node.Type.NullableType -> {
-                    children(modifiers)
-                    children(innerType)
-                    children(questionMark)
-                }
-                is Node.Type.ParenthesizedType -> {
-                    children(modifiers)
-                    children(lPar)
-                    children(innerType)
-                    children(rPar)
-                }
                 is Node.Type.DynamicType -> {
                     children(modifiers)
                     append("dynamic")
                 }
-                is Node.ValueArg -> {
-                    if (name != null) children(name).append("=")
-                    children(spreadOperator)
-                    children(expression)
+                is Node.Type.FunctionType -> {
+                    children(modifiers)
+                    children(contextReceiver)
+                    children(receiverType)
+                    if (receiverType != null) append(".")
+                    commaSeparatedChildren(lPar, params, rPar)
+                    append("->")
+                    children(returnType)
+                }
+                is Node.Type.FunctionType.FunctionTypeParam -> {
+                    if (name != null) children(name).append(":")
+                    children(type)
                 }
                 is Node.Expression.IfExpression -> {
                     append("if")
@@ -349,6 +319,81 @@ open class Writer(
                     append("catch")
                     commaSeparatedChildren(lPar, params, rPar)
                     children(block)
+                }
+                is Node.Expression.WhenExpression -> {
+                    children(whenKeyword, subject)
+                    writeBlock {
+                        children(whenBranches)
+                    }
+                }
+                is Node.Expression.WhenExpression.WhenSubject -> {
+                    children(lPar)
+                    children(annotationSets)
+                    children(valKeyword, variable)
+                    if (variable != null) {
+                        append("=")
+                    }
+                    children(expression, rPar)
+                }
+                is Node.Expression.WhenExpression.ConditionalWhenBranch -> {
+                    children(whenConditions, ",")
+                    children(arrow, body)
+                }
+                is Node.Expression.WhenExpression.ElseWhenBranch -> {
+                    append("else")
+                    children(arrow, body)
+                }
+                is Node.Expression.WhenExpression.ExpressionWhenCondition -> {
+                    children(expression)
+                }
+                is Node.Expression.WhenExpression.RangeWhenCondition -> {
+                    children(operator)
+                    children(expression)
+                }
+                is Node.Expression.WhenExpression.TypeWhenCondition -> {
+                    children(operator)
+                    children(type)
+                }
+                is Node.Expression.ThrowExpression ->
+                    append("throw").also { children(expression) }
+                is Node.Expression.ReturnExpression -> {
+                    append("return")
+                    appendLabel(label)
+                    children(expression)
+                }
+                is Node.Expression.ContinueExpression -> {
+                    append("continue")
+                    appendLabel(label)
+                }
+                is Node.Expression.BreakExpression -> {
+                    append("break")
+                    appendLabel(label)
+                }
+                is Node.Expression.BlockExpression -> {
+                    writeBlock {
+                        children(statements)
+                    }
+                }
+                is Node.Expression.CallExpression -> {
+                    children(calleeExpression)
+                    commaSeparatedChildren(lAngle, typeArgs, rAngle)
+                    commaSeparatedChildren(lPar, args, rPar)
+                    children(lambdaArg)
+                }
+                is Node.Expression.CallExpression.LambdaArg -> {
+                    children(annotationSets)
+                    if (label != null) {
+                        children(label)
+                        append("@")
+                    }
+                    children(expression)
+                }
+                is Node.Expression.LambdaExpression -> {
+                    writeBlock {
+                        commaSeparatedChildren(params)
+                        children(arrow)
+                        children(statements)
+                    }
                 }
                 is Node.Expression.BinaryExpression -> {
                     children(lhs, operator, rhs)
@@ -401,12 +446,46 @@ open class Writer(
                 }
                 is Node.Expression.ConstantLiteralExpression ->
                     append(text)
-                is Node.Expression.LambdaExpression -> {
-                    writeBlock {
-                        commaSeparatedChildren(params)
-                        children(arrow)
-                        children(statements)
-                    }
+                is Node.Expression.ObjectLiteralExpression -> {
+                    children(declaration)
+                }
+                is Node.Expression.CollectionLiteralExpression ->
+                    children(expressions, ",", "[", "]")
+                is Node.Expression.ThisExpression -> {
+                    append("this")
+                    appendLabel(label)
+                }
+                is Node.Expression.SuperExpression -> {
+                    append("super")
+                    if (typeArgType != null) append('<').also { children(typeArgType) }.append('>')
+                    appendLabel(label)
+                }
+                is Node.Expression.NameExpression ->
+                    append(text)
+                is Node.Expression.LabeledExpression -> {
+                    children(label)
+                    append("@")
+                    children(statement)
+                }
+                is Node.Expression.AnnotatedExpression ->
+                    children(annotationSets).also { children(statement) }
+                is Node.Expression.IndexedAccessExpression -> {
+                    children(expression)
+                    children(indices, ",", "[", "]")
+                }
+                is Node.Expression.AnonymousFunctionExpression ->
+                    children(function)
+                is Node.TypeParam -> {
+                    children(modifiers)
+                    children(name)
+                    if (type != null) append(":").also { children(type) }
+                }
+                is Node.FunctionParam -> {
+                    children(modifiers)
+                    children(valOrVarKeyword)
+                    children(name)
+                    if (type != null) append(":").also { children(type) }
+                    writeFunctionBody(defaultValue)
                 }
                 is Node.LambdaParam -> {
                     children(lPar)
@@ -417,102 +496,23 @@ open class Writer(
                         children(destructType)
                     }
                 }
-                is Node.Expression.ThisExpression -> {
-                    append("this")
-                    appendLabel(label)
-                }
-                is Node.Expression.SuperExpression -> {
-                    append("super")
-                    if (typeArgType != null) append('<').also { children(typeArgType) }.append('>')
-                    appendLabel(label)
-                }
-                is Node.Expression.WhenExpression -> {
-                    children(whenKeyword, subject)
-                    writeBlock {
-                        children(whenBranches)
-                    }
-                }
-                is Node.Expression.WhenExpression.WhenSubject -> {
-                    children(lPar)
+                is Node.Variable -> {
                     children(annotationSets)
-                    children(valKeyword, variable)
-                    if (variable != null) {
-                        append("=")
-                    }
-                    children(expression, rPar)
+                    children(name)
+                    if (type != null) append(":").also { children(type) }
                 }
-                is Node.Expression.WhenExpression.ConditionalWhenBranch -> {
-                    children(whenConditions, ",")
-                    children(arrow, body)
-                }
-                is Node.Expression.WhenExpression.ElseWhenBranch -> {
-                    append("else")
-                    children(arrow, body)
-                }
-                is Node.Expression.WhenExpression.ExpressionWhenCondition -> {
-                    children(expression)
-                }
-                is Node.Expression.WhenExpression.RangeWhenCondition -> {
-                    children(operator)
-                    children(expression)
-                }
-                is Node.Expression.WhenExpression.TypeWhenCondition -> {
-                    children(operator)
+                is Node.TypeArg -> {
+                    children(modifiers)
                     children(type)
                 }
-                is Node.Expression.ObjectLiteralExpression -> {
-                    children(declaration)
-                }
-                is Node.Expression.ThrowExpression ->
-                    append("throw").also { children(expression) }
-                is Node.Expression.ReturnExpression -> {
-                    append("return")
-                    appendLabel(label)
+                is Node.ValueArg -> {
+                    if (name != null) children(name).append("=")
+                    children(spreadOperator)
                     children(expression)
                 }
-                is Node.Expression.ContinueExpression -> {
-                    append("continue")
-                    appendLabel(label)
-                }
-                is Node.Expression.BreakExpression -> {
-                    append("break")
-                    appendLabel(label)
-                }
-                is Node.Expression.CollectionLiteralExpression ->
-                    children(expressions, ",", "[", "]")
-                is Node.Expression.NameExpression ->
-                    append(text)
-                is Node.Expression.LabeledExpression -> {
-                    children(label)
-                    append("@")
-                    children(statement)
-                }
-                is Node.Expression.AnnotatedExpression ->
-                    children(annotationSets).also { children(statement) }
-                is Node.Expression.CallExpression -> {
-                    children(calleeExpression)
-                    commaSeparatedChildren(lAngle, typeArgs, rAngle)
-                    commaSeparatedChildren(lPar, args, rPar)
-                    children(lambdaArg)
-                }
-                is Node.Expression.CallExpression.LambdaArg -> {
-                    children(annotationSets)
-                    if (label != null) {
-                        children(label)
-                        append("@")
-                    }
-                    children(expression)
-                }
-                is Node.Expression.IndexedAccessExpression -> {
-                    children(expression)
-                    children(indices, ",", "[", "]")
-                }
-                is Node.Expression.AnonymousFunctionExpression ->
-                    children(function)
-                is Node.Expression.BlockExpression -> {
-                    writeBlock {
-                        children(statements)
-                    }
+                is Node.ContextReceiver -> {
+                    append("context")
+                    commaSeparatedChildren(lPar, receiverTypes, rPar)
                 }
                 is Node.Modifier.AnnotationSet -> {
                     append("@")
