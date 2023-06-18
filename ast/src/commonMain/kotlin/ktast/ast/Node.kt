@@ -256,13 +256,13 @@ sealed interface Node {
          *
          * @property declarationKeyword keyword that is used to declare a class.
          * @property name name of the node if exists, otherwise `null`.
-         * @property classParents list of class parents.
+         * @property parents list of class parents.
          * @property classBody body of the class if exists, otherwise `null`.
          */
         sealed interface ClassOrObject : Declaration, WithModifiers {
             val declarationKeyword: ClassDeclarationKeyword
             val name: Expression.NameExpression?
-            val classParents: List<ClassParent>
+            val parents: List<ClassParent>
             val classBody: ClassBody?
 
             /**
@@ -439,7 +439,7 @@ sealed interface Node {
          * @property typeParams list of type parameters.
          * @property rAngle right angle bracket of the type parameters.
          * @property primaryConstructor primary constructor if exists, otherwise `null`.
-         * @property classParents list of class parents.
+         * @property parents list of class parents.
          * @property typeConstraintSet type constraint set if exists, otherwise `null`.
          * @property classBody class body if exists, otherwise `null`.
          */
@@ -451,7 +451,7 @@ sealed interface Node {
             override val typeParams: List<TypeParam>,
             override val rAngle: Keyword.Greater?,
             val primaryConstructor: PrimaryConstructor?,
-            override val classParents: List<ClassOrObject.ClassParent>,
+            override val parents: List<ClassOrObject.ClassParent>,
             val typeConstraintSet: PostModifier.TypeConstraintSet?,
             override val classBody: ClassOrObject.ClassBody?,
             override var tag: Any? = null,
@@ -486,7 +486,7 @@ sealed interface Node {
             override val modifiers: List<Modifier>,
             override val declarationKeyword: Keyword.Object,
             override val name: Expression.NameExpression?,
-            override val classParents: List<ClassOrObject.ClassParent>,
+            override val parents: List<ClassOrObject.ClassParent>,
             override val classBody: ClassOrObject.ClassBody?,
             override var tag: Any? = null,
         ) : ClassOrObject

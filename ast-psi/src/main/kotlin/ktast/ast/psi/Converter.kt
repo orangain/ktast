@@ -109,7 +109,7 @@ open class Converter {
         typeParams = convertTypeParams(v.typeParameterList),
         rAngle = v.typeParameterList?.rightAngle?.let(::convertKeyword),
         primaryConstructor = v.primaryConstructor?.let(::convertPrimaryConstructor),
-        classParents = convertClassParents(v.getSuperTypeList()),
+        parents = convertClassParents(v.getSuperTypeList()),
         typeConstraintSet = v.typeConstraintList?.let { typeConstraintList ->
             convertTypeConstraintSet(v, typeConstraintList)
         },
@@ -128,7 +128,7 @@ open class Converter {
             declarationKeyword = v.getDeclarationKeyword()?.let(::convertKeyword)
                 ?: error("declarationKeyword not found"),
             name = v.nameIdentifier?.let(::convertNameExpression),
-            classParents = convertClassParents(v.getSuperTypeList()),
+            parents = convertClassParents(v.getSuperTypeList()),
             classBody = v.body?.let(::convertClassBody),
         ).map(v)
     }

@@ -146,7 +146,7 @@ open class MutableVisitor(
                         typeParams = visitChildren(typeParams, newCh),
                         rAngle = visitChildren(rAngle, newCh),
                         primaryConstructor = visitChildren(primaryConstructor, newCh),
-                        classParents = visitChildren(classParents, newCh),
+                        parents = visitChildren(parents, newCh),
                         typeConstraintSet = visitChildren(typeConstraintSet, newCh),
                         classBody = visitChildren(classBody, newCh)
                     )
@@ -161,7 +161,7 @@ open class MutableVisitor(
                         modifiers = visitChildren(modifiers, newCh),
                         declarationKeyword = visitChildren(declarationKeyword, newCh),
                         name = visitChildren(name, newCh),
-                        classParents = visitChildren(classParents, newCh),
+                        parents = visitChildren(parents, newCh),
                         classBody = visitChildren(classBody, newCh)
                     )
                     is Node.Declaration.FunctionDeclaration -> copy(

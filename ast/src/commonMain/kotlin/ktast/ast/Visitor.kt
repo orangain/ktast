@@ -118,7 +118,7 @@ open class Visitor {
                     visitChildren(typeParams)
                     visitChildren(rAngle)
                     visitChildren(primaryConstructor)
-                    visitChildren(classParents)
+                    visitChildren(parents)
                     visitChildren(typeConstraintSet)
                     visitChildren(classBody)
                 }
@@ -133,7 +133,7 @@ open class Visitor {
                     visitChildren(modifiers)
                     visitChildren(declarationKeyword)
                     visitChildren(name)
-                    visitChildren(classParents)
+                    visitChildren(parents)
                     visitChildren(classBody)
                 }
                 is Node.Declaration.FunctionDeclaration -> {

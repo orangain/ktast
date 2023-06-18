@@ -188,10 +188,10 @@ open class Writer(
                     children(name)
                     commaSeparatedChildren(lAngle, typeParams, rAngle)
                     children(primaryConstructor)
-                    if (classParents.isNotEmpty()) {
+                    if (parents.isNotEmpty()) {
                         append(":")
                     }
-                    commaSeparatedChildren(classParents)
+                    commaSeparatedChildren(parents)
                     children(typeConstraintSet)
                     children(classBody)
                 }
@@ -204,10 +204,10 @@ open class Writer(
                     children(modifiers)
                     children(declarationKeyword)
                     children(name)
-                    if (classParents.isNotEmpty()) {
+                    if (parents.isNotEmpty()) {
                         append(":")
                     }
-                    commaSeparatedChildren(classParents)
+                    commaSeparatedChildren(parents)
                     children(classBody)
                 }
                 is Node.Declaration.FunctionDeclaration -> {
