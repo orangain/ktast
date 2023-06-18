@@ -1050,6 +1050,11 @@ sealed interface Node {
                 val expression: LambdaExpression,
                 override var tag: Any? = null,
             ) : Node, WithAnnotationSets, WithLabel
+
+            /**
+             * Returns the lambda expression of the lambda argument if exists, otherwise `null`.
+             */
+            fun lambdaExpression(): LambdaExpression? = lambdaArg?.let(::getLambdaExpression)
         }
 
         /**

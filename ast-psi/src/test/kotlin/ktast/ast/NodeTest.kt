@@ -75,3 +75,32 @@ class DoubleColonExpressionExpressionTest(private val code: String) {
         )
     }
 }
+
+@RunWith(Parameterized::class)
+class LambdaArgLambdaExpressionTest(private val code: String) {
+    @Test
+    fun testLambdaExpression() {
+        val node = Parser.parseFile(code)
+        val functionDeclaration = node.declarations.filterIsInstance<Node.Declaration.FunctionDeclaration>().first()
+        val callExpressions =
+            (functionDeclaration.body as Node.Expression.BlockExpression).statements.filterIsInstance<Node.Expression.CallExpression>()
+        assertEquals(1, callExpressions.size)
+        callExpressions.forEach { callExpression ->
+            assertEquals("x", callExpression.lambdaExpression()!!.params[0].variables[0].name.text)
+        }
+    }
+
+    companion object {
+        @JvmStatic
+        @Parameterized.Parameters(name = "{0}")
+        fun data() = listOf(
+            "fun a() { b { x -> 1 } }",
+            "fun a() { b { x, y -> 1 } }",
+            "fun a() { b(1) { x -> 1 } }",
+            "fun a() { b(1, 2) { x -> 1 } }",
+            "fun a() { b @Foo { x -> 1 } }",
+            "fun a() { b label@ { x -> 1 } }",
+            "fun a() { b @Foo label@ { x -> 1 } }",
+        )
+    }
+}
