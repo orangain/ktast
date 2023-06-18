@@ -259,11 +259,41 @@ sealed interface Node {
          * @property classParents list of class parents.
          * @property classBody body of the class if exists, otherwise `null`.
          */
-        sealed interface ClassDeclarationBase : Declaration {
+        sealed interface ClassDeclarationBase : Declaration, WithModifiers {
             val classDeclarationKeyword: ClassDeclarationKeyword
             val name: Expression.NameExpression?
             val classParents: List<ClassParent>
             val classBody: ClassBody?
+
+            /**
+             * Returns `true` if the node is a class, `false` otherwise.
+             */
+            val isClass: Boolean
+                get() = classDeclarationKeyword is Keyword.Class
+
+            /**
+             * Returns `true` if the node is an object, `false` otherwise.
+             */
+            val isObject: Boolean
+                get() = classDeclarationKeyword is Keyword.Object
+
+            /**
+             * Returns `true` if the node is an interface, `false` otherwise.
+             */
+            val isInterface: Boolean
+                get() = classDeclarationKeyword is Keyword.Interface
+
+            /**
+             * Returns `true` if the node has a companion modifier, `false` otherwise.
+             */
+            val isCompanion: Boolean
+                get() = modifiers.any { it is Keyword.Companion }
+
+            /**
+             * Returns `true` if the node has an enum modifier, `false` otherwise.
+             */
+            val isEnum: Boolean
+                get() = modifiers.any { it is Keyword.Enum }
 
             /**
              * Common interface for keyword nodes that are used to declare a class.
@@ -425,31 +455,7 @@ sealed interface Node {
             val typeConstraintSet: PostModifier.TypeConstraintSet?,
             override val classBody: ClassDeclarationBase.ClassBody?,
             override var tag: Any? = null,
-        ) : ClassDeclarationBase, WithModifiers, WithTypeParams {
-            /**
-             * Returns `true` if the node is a class, `false` otherwise.
-             */
-            val isClass = classDeclarationKeyword is Keyword.Class
-
-            /**
-             * Returns `true` if the node is an object, `false` otherwise.
-             */
-            val isObject = classDeclarationKeyword is Keyword.Object
-
-            /**
-             * Returns `true` if the node is an interface, `false` otherwise.
-             */
-            val isInterface = classDeclarationKeyword is Keyword.Interface
-
-            /**
-             * Returns `true` if the node has a companion modifier, `false` otherwise.
-             */
-            val isCompanion = modifiers.any { it is Keyword.Companion }
-
-            /**
-             * Returns `true` if the node has an enum modifier, `false` otherwise.
-             */
-            val isEnum = modifiers.any { it is Keyword.Enum }
+        ) : ClassDeclarationBase, WithTypeParams {
 
             /**
              * AST node that represents a primary constructor. The node corresponds to KtPrimaryConstructor.
@@ -478,12 +484,7 @@ sealed interface Node {
             override val classParents: List<ClassDeclarationBase.ClassParent>,
             override val classBody: ClassDeclarationBase.ClassBody?,
             override var tag: Any? = null,
-        ) : ClassDeclarationBase, WithModifiers {
-            /**
-             * Returns `true` if the node is a companion object, `false` otherwise.
-             */
-            val isCompanion = modifiers.any { it is Keyword.Companion }
-        }
+        ) : ClassDeclarationBase
 
         /**
          * AST node that represents a function declaration. The node corresponds to KtNamedFunction.
