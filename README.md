@@ -4,9 +4,9 @@ ktast is a simple library that represents Kotlin source code as an Abstract Synt
 manipulation. It can parse Kotlin source code into an AST, make modifications, and write it back to the source code. The
 features of the ktast are as follows:
 
-* It supports the grammar of the latest version of Kotlin
+* It supports the latest version of Kotlin syntax
 * AST nodes are represented as immutable data classes, and the copy method can be utilized
-* It can handle whitespaces and comments while maintaining them
+* It can handle whitespaces, comments, semicolons and trailing commas while manipulating AST nodes
 
 It includes the following components:
 
