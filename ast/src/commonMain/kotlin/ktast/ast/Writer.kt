@@ -381,14 +381,6 @@ open class Writer(
                     commaSeparatedChildren(lPar, args, rPar)
                     children(lambdaArg)
                 }
-                is Node.Expression.CallExpression.LambdaArg -> {
-                    children(annotationSets)
-                    if (label != null) {
-                        children(label)
-                        append("@")
-                    }
-                    children(expression)
-                }
                 is Node.Expression.LambdaExpression -> {
                     writeBlock {
                         commaSeparatedChildren(params)

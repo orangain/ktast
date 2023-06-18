@@ -560,28 +560,6 @@ open class Converter {
         }.firstOrNull()?.getArgumentExpression()?.let(::convertExpression)
     ).map(v)
 
-    protected fun convertLambdaArg(v: KtLambdaArgument): Node.Expression.CallExpression.LambdaArg {
-        var label: Node.Expression.NameExpression? = null
-        var annotationSets: List<Node.Modifier.AnnotationSet> = emptyList()
-        fun KtExpression.extractLambda(): KtLambdaExpression? = when (this) {
-            is KtLambdaExpression -> this
-            is KtLabeledExpression -> baseExpression?.extractLambda().also {
-                label = convertNameExpression(getTargetLabel() ?: error("No label for $this"))
-            }
-            is KtAnnotatedExpression -> baseExpression?.extractLambda().also {
-                annotationSets = convertAnnotationSets(this)
-            }
-            else -> null
-        }
-
-        val expr = v.getArgumentExpression()?.extractLambda() ?: error("No lambda for $v")
-        return Node.Expression.CallExpression.LambdaArg(
-            annotationSets = annotationSets,
-            label = label,
-            expression = convertLambdaExpression(expr)
-        ).map(v)
-    }
-
     protected fun convertLambdaExpression(v: KtLambdaExpression) = Node.Expression.LambdaExpression(
         params = convertLambdaParams(v.functionLiteral.valueParameterList),
         arrow = v.functionLiteral.arrow?.let(::convertKeyword),

@@ -1038,20 +1038,6 @@ sealed interface Node {
             override var tag: Any? = null,
         ) : Expression, WithTypeArgs, WithValueArgs {
             /**
-             * AST node that represents a lambda argument. The node corresponds to KtLambdaArgument.
-             *
-             * @property annotationSets list of annotation sets.
-             * @property label label of this lambda argument if exists, otherwise `null`.
-             * @property expression lambda expression.
-             */
-            data class LambdaArg(
-                override val annotationSets: List<Modifier.AnnotationSet>,
-                override val label: NameExpression?,
-                val expression: LambdaExpression,
-                override var tag: Any? = null,
-            ) : Node, WithAnnotationSets, WithLabel
-
-            /**
              * Returns the lambda expression of the lambda argument if exists, otherwise `null`.
              */
             fun lambdaExpression(): LambdaExpression? = lambdaArg?.let(::getLambdaExpression)
