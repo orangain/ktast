@@ -428,7 +428,7 @@ open class MutableVisitor(
                         lPar = visitChildren(lPar, newCh),
                         variables = visitChildren(variables, newCh),
                         rPar = visitChildren(rPar, newCh),
-                        destructType = visitChildren(destructType, newCh),
+                        destructuringType = visitChildren(destructuringType, newCh),
                     )
                     is Node.Variable -> copy(
                         annotationSets = visitChildren(annotationSets, newCh),

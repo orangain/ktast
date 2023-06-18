@@ -400,7 +400,7 @@ open class Visitor {
                     visitChildren(lPar)
                     visitChildren(variables)
                     visitChildren(rPar)
-                    visitChildren(destructType)
+                    visitChildren(destructuringType)
                 }
                 is Node.Variable -> {
                     visitChildren(annotationSets)

@@ -492,9 +492,9 @@ open class Writer(
                     children(lPar)
                     children(variables, ",")
                     children(rPar)
-                    if (destructType != null) {
+                    if (destructuringType != null) {
                         append(":")
-                        children(destructType)
+                        children(destructuringType)
                     }
                 }
                 is Node.Variable -> {

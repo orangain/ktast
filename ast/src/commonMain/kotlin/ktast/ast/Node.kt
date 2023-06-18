@@ -1477,13 +1477,13 @@ sealed interface Node {
      * @property lPar left parenthesis of this parameter if exists, otherwise `null`.
      * @property variables list of variables.
      * @property rPar right parenthesis of this parameter if exists, otherwise `null`.
-     * @property destructType type of destructuring if exists, otherwise `null`.
+     * @property destructuringType type of whole parameter on destructuring if exists, otherwise `null`.
      */
     data class LambdaParam(
         val lPar: Keyword.LPar?,
         val variables: List<Variable>,
         val rPar: Keyword.RPar?,
-        val destructType: Type?,
+        val destructuringType: Type?,
         override var tag: Any? = null,
     ) : Node {
         init {

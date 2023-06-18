@@ -773,14 +773,14 @@ open class Converter {
                 lPar = destructuringDeclaration.lPar?.let(::convertKeyword),
                 variables = destructuringDeclaration.entries.map(::convertVariable),
                 rPar = destructuringDeclaration.rPar?.let(::convertKeyword),
-                destructType = v.typeReference?.let(::convertType),
+                destructuringType = v.typeReference?.let(::convertType),
             ).map(v)
         } else {
             Node.LambdaParam(
                 lPar = null,
                 variables = listOf(convertVariable(v)),
                 rPar = null,
-                destructType = null,
+                destructuringType = null,
             ).map(v)
         }
     }
