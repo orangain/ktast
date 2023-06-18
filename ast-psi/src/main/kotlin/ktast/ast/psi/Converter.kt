@@ -489,7 +489,7 @@ open class Converter {
     }
 
     protected fun convertConditionalWhenBranch(v: KtWhenEntry) = Node.Expression.WhenExpression.ConditionalWhenBranch(
-        whenConditions = v.conditions.map(::convertWhenCondition),
+        conditions = v.conditions.map(::convertWhenCondition),
         arrow = convertKeyword(v.arrow ?: error("No arrow symbol for $v")),
         body = convertExpression(v.expression ?: error("No when entry body for $v")),
     ).map(v)

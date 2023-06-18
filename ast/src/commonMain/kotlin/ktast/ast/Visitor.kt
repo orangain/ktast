@@ -262,7 +262,7 @@ open class Visitor {
                     visitChildren(rPar)
                 }
                 is Node.Expression.WhenExpression.ConditionalWhenBranch -> {
-                    visitChildren(whenConditions)
+                    visitChildren(conditions)
                     visitChildren(arrow)
                     visitChildren(body)
                 }

@@ -290,7 +290,7 @@ open class MutableVisitor(
                         rPar = visitChildren(rPar, newCh),
                     )
                     is Node.Expression.WhenExpression.ConditionalWhenBranch -> copy(
-                        whenConditions = visitChildren(whenConditions, newCh),
+                        conditions = visitChildren(conditions, newCh),
                         arrow = visitChildren(arrow, newCh),
                         body = visitChildren(body, newCh),
                     )

@@ -853,12 +853,12 @@ sealed interface Node {
             /**
              * Common interface for when branches. The node corresponds to KtWhenEntry.
              *
-             * @property whenConditions list of conditions.
+             * @property conditions list of conditions.
              * @property arrow arrow symbol.
              * @property body body expression of this branch.
              */
             sealed interface WhenBranch : Node {
-                val whenConditions: List<WhenCondition>
+                val conditions: List<WhenCondition>
                 val arrow: Keyword.Arrow
                 val body: Expression
             }
@@ -866,24 +866,24 @@ sealed interface Node {
             /**
              * AST node that represents a when branch with conditions.
              *
-             * @property whenConditions non-empty list of conditions.
+             * @property conditions non-empty list of conditions.
              * @property body body expression of this branch.
              */
             data class ConditionalWhenBranch(
-                override val whenConditions: List<WhenCondition>,
+                override val conditions: List<WhenCondition>,
                 override val arrow: Keyword.Arrow,
                 override val body: Expression,
                 override var tag: Any? = null,
             ) : WhenBranch {
                 init {
-                    require(whenConditions.isNotEmpty()) { "whenConditions must not be empty" }
+                    require(conditions.isNotEmpty()) { "conditions must not be empty" }
                 }
             }
 
             /**
              * AST node that represents a when branch with else keyword.
              *
-             * @property whenConditions always empty list.
+             * @property conditions always empty list.
              * @property body body expression of this branch.
              */
             data class ElseWhenBranch(
@@ -891,7 +891,7 @@ sealed interface Node {
                 override val body: Expression,
                 override var tag: Any? = null,
             ) : WhenBranch {
-                override val whenConditions = listOf<WhenCondition>()
+                override val conditions = listOf<WhenCondition>()
             }
 
             /**

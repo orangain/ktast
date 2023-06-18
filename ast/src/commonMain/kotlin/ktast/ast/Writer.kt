@@ -336,7 +336,7 @@ open class Writer(
                     children(expression, rPar)
                 }
                 is Node.Expression.WhenExpression.ConditionalWhenBranch -> {
-                    children(whenConditions, ",")
+                    children(conditions, ",")
                     children(arrow, body)
                 }
                 is Node.Expression.WhenExpression.ElseWhenBranch -> {
