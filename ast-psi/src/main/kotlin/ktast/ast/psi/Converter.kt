@@ -89,7 +89,8 @@ open class Converter {
 
     protected fun convertDeclaration(v: KtDeclaration): Node.Declaration = when (v) {
         is KtEnumEntry -> error("KtEnumEntry is handled in convertEnumEntry")
-        is KtClassOrObject -> convertClassDeclaration(v)
+        is KtClass -> convertClassDeclaration(v)
+        is KtObjectDeclaration -> convertObjectDeclaration(v)
         is KtAnonymousInitializer -> convertInitializer(v)
         is KtNamedFunction -> convertFunctionDeclaration(v)
         is KtDestructuringDeclaration -> convertPropertyDeclaration(v)
@@ -99,11 +100,11 @@ open class Converter {
         else -> error("Unrecognized declaration type for $v")
     }
 
-    protected fun convertClassDeclaration(v: KtClassOrObject) = Node.Declaration.ClassDeclaration(
+    protected fun convertClassDeclaration(v: KtClass) = Node.Declaration.ClassDeclaration(
         modifiers = convertModifiers(v.modifierList),
         classDeclarationKeyword = v.getDeclarationKeyword()?.let(::convertKeyword)
             ?: error("declarationKeyword not found"),
-        name = v.nameIdentifier?.let(::convertNameExpression),
+        name = convertNameExpression(v.nameIdentifier ?: error("No name identifier for $v")),
         lAngle = v.typeParameterList?.leftAngle?.let(::convertKeyword),
         typeParams = convertTypeParams(v.typeParameterList),
         rAngle = v.typeParameterList?.rightAngle?.let(::convertKeyword),
@@ -115,7 +116,24 @@ open class Converter {
         classBody = v.body?.let(::convertClassBody),
     ).map(v)
 
-    protected fun convertClassParents(v: KtSuperTypeList?): List<Node.Declaration.ClassDeclaration.ClassParent> =
+    protected fun convertObjectDeclaration(v: KtObjectDeclaration): Node.Declaration.ObjectDeclaration {
+        if (v.typeParameterList != null) {
+            throw Unsupported("Object declaration with type parameters is not supported")
+        }
+        if (v.primaryConstructor != null) {
+            throw Unsupported("Object declaration with primary constructor is not supported")
+        }
+        return Node.Declaration.ObjectDeclaration(
+            modifiers = convertModifiers(v.modifierList),
+            classDeclarationKeyword = v.getDeclarationKeyword()?.let(::convertKeyword)
+                ?: error("declarationKeyword not found"),
+            name = v.nameIdentifier?.let(::convertNameExpression),
+            classParents = convertClassParents(v.getSuperTypeList()),
+            classBody = v.body?.let(::convertClassBody),
+        ).map(v)
+    }
+
+    protected fun convertClassParents(v: KtSuperTypeList?): List<Node.Declaration.ClassOrObject.ClassParent> =
         v?.entries.orEmpty().map(::convertClassParent)
 
     protected fun convertClassParent(v: KtSuperTypeListEntry) = when (v) {
@@ -126,24 +144,24 @@ open class Converter {
     }
 
     protected fun convertConstructorClassParent(v: KtSuperTypeCallEntry) =
-        Node.Declaration.ClassDeclaration.ConstructorClassParent(
+        Node.Declaration.ClassOrObject.ConstructorClassParent(
             type = v.typeReference?.let(::convertType) as? Node.Type.SimpleType
                 ?: error("Bad type on super call $v"),
             lPar = v.valueArgumentList?.leftParenthesis?.let(::convertKeyword)
                 ?: error("No left parenthesis for $v"),
-            args = convertValueArgs(v.valueArgumentList) ?: error("No value arguments for $v"),
+            args = convertValueArgs(v.valueArgumentList),
             rPar = v.valueArgumentList?.rightParenthesis?.let(::convertKeyword)
                 ?: error("No right parenthesis for $v"),
         ).map(v)
 
     protected fun convertDelegationClassParent(v: KtDelegatedSuperTypeEntry) =
-        Node.Declaration.ClassDeclaration.DelegationClassParent(
+        Node.Declaration.ClassOrObject.DelegationClassParent(
             type = v.typeReference?.let(::convertType)
                 ?: error("No type on delegated super type $v"),
             expression = convertExpression(v.delegateExpression ?: error("Missing delegateExpression for $v")),
         ).map(v)
 
-    protected fun convertTypeClassParent(v: KtSuperTypeEntry) = Node.Declaration.ClassDeclaration.TypeClassParent(
+    protected fun convertTypeClassParent(v: KtSuperTypeEntry) = Node.Declaration.ClassOrObject.TypeClassParent(
         type = v.typeReference?.let(::convertType)
             ?: error("No type on super type $v"),
     ).map(v)
@@ -157,17 +175,17 @@ open class Converter {
             rPar = v.valueParameterList?.rightParenthesis?.let(::convertKeyword),
         ).map(v)
 
-    protected fun convertClassBody(v: KtClassBody): Node.Declaration.ClassDeclaration.ClassBody {
+    protected fun convertClassBody(v: KtClassBody): Node.Declaration.ClassOrObject.ClassBody {
         val ktEnumEntries = v.declarations.filterIsInstance<KtEnumEntry>()
         val declarationsExcludingKtEnumEntry = v.declarations.filter { it !is KtEnumEntry }
-        return Node.Declaration.ClassDeclaration.ClassBody(
+        return Node.Declaration.ClassOrObject.ClassBody(
             enumEntries = ktEnumEntries.map(::convertEnumEntry),
             declarations = declarationsExcludingKtEnumEntry.map(::convertDeclaration),
         ).map(v)
     }
 
-    protected fun convertEnumEntry(v: KtEnumEntry): Node.Declaration.ClassDeclaration.ClassBody.EnumEntry =
-        Node.Declaration.ClassDeclaration.ClassBody.EnumEntry(
+    protected fun convertEnumEntry(v: KtEnumEntry): Node.Declaration.ClassOrObject.ClassBody.EnumEntry =
+        Node.Declaration.ClassOrObject.ClassBody.EnumEntry(
             modifiers = convertModifiers(v.modifierList),
             name = v.nameIdentifier?.let(::convertNameExpression) ?: error("Unnamed enum"),
             lPar = v.initializerList?.valueArgumentList?.leftParenthesis?.let(::convertKeyword),
@@ -176,17 +194,17 @@ open class Converter {
             classBody = v.body?.let(::convertClassBody),
         ).map(v)
 
-    protected fun convertInitializer(v: KtAnonymousInitializer): Node.Declaration.ClassDeclaration.ClassBody.Initializer {
+    protected fun convertInitializer(v: KtAnonymousInitializer): Node.Declaration.ClassOrObject.ClassBody.Initializer {
         if (v.modifierList != null) {
             throw Unsupported("Anonymous initializer with modifiers not supported")
         }
-        return Node.Declaration.ClassDeclaration.ClassBody.Initializer(
+        return Node.Declaration.ClassOrObject.ClassBody.Initializer(
             block = convertBlockExpression(v.body as? KtBlockExpression ?: error("No init block for $v")),
         ).map(v)
     }
 
     protected fun convertSecondaryConstructor(v: KtSecondaryConstructor) =
-        Node.Declaration.ClassDeclaration.ClassBody.SecondaryConstructor(
+        Node.Declaration.ClassOrObject.ClassBody.SecondaryConstructor(
             modifiers = convertModifiers(v.modifierList),
             constructorKeyword = convertKeyword(v.getConstructorKeyword()),
             lPar = v.valueParameterList?.leftParenthesis?.let(::convertKeyword),
@@ -351,7 +369,11 @@ open class Converter {
             rAngle = typeEl.typeArgumentList?.rightAngle?.let(::convertKeyword),
         ).map(v)
 
-    protected fun convertDynamicType(v: KtElement, modifierList: KtModifierList?, typeEl: KtDynamicType) =
+    protected fun convertDynamicType(
+        v: KtElement,
+        modifierList: KtModifierList?,
+        @Suppress("UNUSED_PARAMETER") typeEl: KtDynamicType
+    ) =
         Node.Type.DynamicType(
             modifiers = convertModifiers(modifierList),
         ).map(v)
@@ -666,7 +688,7 @@ open class Converter {
 
     protected fun convertObjectLiteralExpression(v: KtObjectLiteralExpression) =
         Node.Expression.ObjectLiteralExpression(
-            declaration = convertClassDeclaration(v.objectDeclaration),
+            declaration = convertObjectDeclaration(v.objectDeclaration),
         ).map(v)
 
     protected fun convertCollectionLiteralExpression(v: KtCollectionLiteralExpression) =

@@ -144,7 +144,7 @@ class WriterTest {
     fun testConstructorModifiers() {
         assertParseAndWriteExact(
             """
-                object Foo @[foo] private @[bar()] ()
+                class Foo @[foo] private @[bar()] ()
             """.trimIndent()
         )
     }
@@ -207,7 +207,7 @@ class WriterTest {
     fun testObjectLiteralExpression() {
         assertParseAndWriteExact(
             """
-                val foo = object<T, R> private (x: Int, y: Int) : Bar, Baz {
+                val foo = object : Bar, Baz {
                     fun foo() {}
                 }
             """.trimIndent()

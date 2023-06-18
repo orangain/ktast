@@ -252,56 +252,48 @@ sealed interface Node {
      */
     sealed interface Declaration : Statement {
         /**
-         * AST node that represents a class, object or interface declaration. The node corresponds to KtClassOrObject.
+         * Common interface for [ClassDeclaration] and [ObjectDeclaration].
          *
-         * @property modifiers list of modifiers.
-         * @property classDeclarationKeyword class declaration keyword.
-         * @property name name of the class. If the object is anonymous, the name is `null`.
-         * @property lAngle left angle bracket of the type parameters.
-         * @property typeParams list of type parameters.
-         * @property rAngle right angle bracket of the type parameters.
-         * @property primaryConstructor primary constructor if exists, otherwise `null`.
+         * @property classDeclarationKeyword keyword that is used to declare a class.
+         * @property name name of the node if exists, otherwise `null`.
          * @property classParents list of class parents.
-         * @property typeConstraintSet type constraint set if exists, otherwise `null`.
-         * @property classBody class body if exists, otherwise `null`.
+         * @property classBody body of the class if exists, otherwise `null`.
          */
-        data class ClassDeclaration(
-            override val modifiers: List<Modifier>,
-            val classDeclarationKeyword: ClassDeclarationKeyword,
-            val name: Expression.NameExpression?,
-            override val lAngle: Keyword.Less?,
-            override val typeParams: List<TypeParam>,
-            override val rAngle: Keyword.Greater?,
-            val primaryConstructor: PrimaryConstructor?,
-            val classParents: List<ClassParent>,
-            val typeConstraintSet: PostModifier.TypeConstraintSet?,
-            val classBody: ClassBody?,
-            override var tag: Any? = null,
-        ) : Declaration, WithModifiers, WithTypeParams {
+        sealed interface ClassOrObject : Declaration, WithModifiers {
+            val classDeclarationKeyword: ClassDeclarationKeyword
+            val name: Expression.NameExpression?
+            val classParents: List<ClassParent>
+            val classBody: ClassBody?
+
             /**
              * Returns `true` if the node is a class, `false` otherwise.
              */
-            val isClass = classDeclarationKeyword is Keyword.Class
+            val isClass: Boolean
+                get() = classDeclarationKeyword is Keyword.Class
 
             /**
              * Returns `true` if the node is an object, `false` otherwise.
              */
-            val isObject = classDeclarationKeyword is Keyword.Object
+            val isObject: Boolean
+                get() = classDeclarationKeyword is Keyword.Object
 
             /**
              * Returns `true` if the node is an interface, `false` otherwise.
              */
-            val isInterface = classDeclarationKeyword is Keyword.Interface
+            val isInterface: Boolean
+                get() = classDeclarationKeyword is Keyword.Interface
 
             /**
              * Returns `true` if the node has a companion modifier, `false` otherwise.
              */
-            val isCompanion = modifiers.any { it is Keyword.Companion }
+            val isCompanion: Boolean
+                get() = modifiers.any { it is Keyword.Companion }
 
             /**
              * Returns `true` if the node has an enum modifier, `false` otherwise.
              */
-            val isEnum = modifiers.any { it is Keyword.Enum }
+            val isEnum: Boolean
+                get() = modifiers.any { it is Keyword.Enum }
 
             /**
              * Common interface for keyword nodes that are used to declare a class.
@@ -376,22 +368,6 @@ sealed interface Node {
             }
 
             /**
-             * AST node that represents a primary constructor. The node corresponds to KtPrimaryConstructor.
-             *
-             * @property modifiers list of modifiers.
-             * @property constructorKeyword `constructor` keyword if exists, otherwise `null`.
-             * @property params list of parameters of the constructor.
-             */
-            data class PrimaryConstructor(
-                override val modifiers: List<Modifier>,
-                val constructorKeyword: Keyword.Constructor?,
-                override val lPar: Keyword.LPar?,
-                override val params: List<FunctionParam>,
-                override val rPar: Keyword.RPar?,
-                override var tag: Any? = null,
-            ) : Node, WithModifiers, WithFunctionParams
-
-            /**
              * AST node that represents a class body. The node corresponds to KtClassBody.
              *
              * @property enumEntries list of enum entries.
@@ -452,6 +428,68 @@ sealed interface Node {
                 ) : Declaration, WithModifiers, WithFunctionParams
             }
         }
+
+        /**
+         * AST node that represents a class or interface declaration. The node corresponds to KtClass.
+         *
+         * @property modifiers list of modifiers.
+         * @property classDeclarationKeyword class declaration keyword.
+         * @property name name of the class.
+         * @property lAngle left angle bracket of the type parameters.
+         * @property typeParams list of type parameters.
+         * @property rAngle right angle bracket of the type parameters.
+         * @property primaryConstructor primary constructor if exists, otherwise `null`.
+         * @property classParents list of class parents.
+         * @property typeConstraintSet type constraint set if exists, otherwise `null`.
+         * @property classBody class body if exists, otherwise `null`.
+         */
+        data class ClassDeclaration(
+            override val modifiers: List<Modifier>,
+            override val classDeclarationKeyword: ClassOrInterfaceKeyword,
+            override val name: Expression.NameExpression,
+            override val lAngle: Keyword.Less?,
+            override val typeParams: List<TypeParam>,
+            override val rAngle: Keyword.Greater?,
+            val primaryConstructor: PrimaryConstructor?,
+            override val classParents: List<ClassOrObject.ClassParent>,
+            val typeConstraintSet: PostModifier.TypeConstraintSet?,
+            override val classBody: ClassOrObject.ClassBody?,
+            override var tag: Any? = null,
+        ) : ClassOrObject, WithTypeParams {
+
+            /**
+             * Common interface for class or interface keywords.
+             */
+            sealed interface ClassOrInterfaceKeyword : ClassOrObject.ClassDeclarationKeyword
+
+            /**
+             * AST node that represents a primary constructor. The node corresponds to KtPrimaryConstructor.
+             *
+             * @property modifiers list of modifiers.
+             * @property constructorKeyword `constructor` keyword if exists, otherwise `null`.
+             * @property params list of parameters of the constructor.
+             */
+            data class PrimaryConstructor(
+                override val modifiers: List<Modifier>,
+                val constructorKeyword: Keyword.Constructor?,
+                override val lPar: Keyword.LPar?,
+                override val params: List<FunctionParam>,
+                override val rPar: Keyword.RPar?,
+                override var tag: Any? = null,
+            ) : Node, WithModifiers, WithFunctionParams
+        }
+
+        /**
+         * AST node that represents an object declaration. The node corresponds to KtObjectDeclaration.
+         */
+        data class ObjectDeclaration(
+            override val modifiers: List<Modifier>,
+            override val classDeclarationKeyword: Keyword.Object,
+            override val name: Expression.NameExpression?,
+            override val classParents: List<ClassOrObject.ClassParent>,
+            override val classBody: ClassOrObject.ClassBody?,
+            override var tag: Any? = null,
+        ) : ClassOrObject
 
         /**
          * AST node that represents a function declaration. The node corresponds to KtNamedFunction.
@@ -1309,7 +1347,7 @@ sealed interface Node {
          * @property declaration class declaration of this object literal expression.
          */
         data class ObjectLiteralExpression(
-            val declaration: Declaration.ClassDeclaration,
+            val declaration: Declaration.ObjectDeclaration,
             override var tag: Any? = null,
         ) : Expression
 
@@ -1609,18 +1647,18 @@ sealed interface Node {
         sealed interface ValOrVarKeyword : Keyword
 
         data class Class(override var tag: Any? = null) : Keyword,
-            Declaration.ClassDeclaration.ClassDeclarationKeyword {
+            Declaration.ClassDeclaration.ClassOrInterfaceKeyword {
             override val text = "class"
         }
 
-        data class Object(override var tag: Any? = null) : Keyword,
-            Declaration.ClassDeclaration.ClassDeclarationKeyword {
-            override val text = "object"
+        data class Interface(override var tag: Any? = null) : Keyword,
+            Declaration.ClassDeclaration.ClassOrInterfaceKeyword {
+            override val text = "interface"
         }
 
-        data class Interface(override var tag: Any? = null) : Keyword,
-            Declaration.ClassDeclaration.ClassDeclarationKeyword {
-            override val text = "interface"
+        data class Object(override var tag: Any? = null) : Keyword,
+            Declaration.ClassOrObject.ClassDeclarationKeyword {
+            override val text = "object"
         }
 
         data class Constructor(override var tag: Any? = null) : Keyword {
