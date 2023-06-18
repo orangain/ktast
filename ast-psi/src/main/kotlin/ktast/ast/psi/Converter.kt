@@ -104,7 +104,7 @@ open class Converter {
         modifiers = convertModifiers(v.modifierList),
         classDeclarationKeyword = v.getDeclarationKeyword()?.let(::convertKeyword)
             ?: error("declarationKeyword not found"),
-        name = v.nameIdentifier?.let(::convertNameExpression),
+        name = convertNameExpression(v.nameIdentifier ?: error("No name identifier for $v")),
         lAngle = v.typeParameterList?.leftAngle?.let(::convertKeyword),
         typeParams = convertTypeParams(v.typeParameterList),
         rAngle = v.typeParameterList?.rightAngle?.let(::convertKeyword),

@@ -434,7 +434,7 @@ sealed interface Node {
          *
          * @property modifiers list of modifiers.
          * @property classDeclarationKeyword class declaration keyword.
-         * @property name name of the class. If the object is anonymous, the name is `null`.
+         * @property name name of the class.
          * @property lAngle left angle bracket of the type parameters.
          * @property typeParams list of type parameters.
          * @property rAngle right angle bracket of the type parameters.
@@ -446,7 +446,7 @@ sealed interface Node {
         data class ClassDeclaration(
             override val modifiers: List<Modifier>,
             override val classDeclarationKeyword: ClassDeclarationBase.ClassDeclarationKeyword,
-            override val name: Expression.NameExpression?,
+            override val name: Expression.NameExpression,
             override val lAngle: Keyword.Less?,
             override val typeParams: List<TypeParam>,
             override val rAngle: Keyword.Greater?,
