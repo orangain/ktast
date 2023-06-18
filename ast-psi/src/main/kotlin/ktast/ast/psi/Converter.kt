@@ -460,7 +460,7 @@ open class Converter {
     protected fun convertWhenExpression(v: KtWhenExpression) = Node.Expression.WhenExpression(
         whenKeyword = convertKeyword(v.whenKeyword),
         subject = if (v.subjectExpression == null) null else convertWhenSubject(v),
-        whenBranches = v.entries.map(::convertWhenBranch),
+        branches = v.entries.map(::convertWhenBranch),
     ).map(v)
 
     protected fun convertWhenSubject(v: KtWhenExpression) = Node.Expression.WhenExpression.WhenSubject(

@@ -822,12 +822,12 @@ sealed interface Node {
          *
          * @property whenKeyword keyword of when expression.
          * @property subject subject of when expression if exists, otherwise `null`.
-         * @property whenBranches list of when branches.
+         * @property branches list of when branches.
          */
         data class WhenExpression(
             val whenKeyword: Keyword.When,
             val subject: WhenSubject?,
-            val whenBranches: List<WhenBranch>,
+            val branches: List<WhenBranch>,
             override var tag: Any? = null,
         ) : Expression {
             /**

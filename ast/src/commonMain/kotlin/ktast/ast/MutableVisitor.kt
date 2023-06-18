@@ -279,7 +279,7 @@ open class MutableVisitor(
                     is Node.Expression.WhenExpression -> copy(
                         whenKeyword = visitChildren(whenKeyword, newCh),
                         subject = visitChildren(subject, newCh),
-                        whenBranches = visitChildren(whenBranches, newCh),
+                        branches = visitChildren(branches, newCh),
                     )
                     is Node.Expression.WhenExpression.WhenSubject -> copy(
                         lPar = visitChildren(lPar, newCh),

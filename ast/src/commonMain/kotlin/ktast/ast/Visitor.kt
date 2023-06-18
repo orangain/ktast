@@ -251,7 +251,7 @@ open class Visitor {
                 is Node.Expression.WhenExpression -> {
                     visitChildren(whenKeyword)
                     visitChildren(subject)
-                    visitChildren(whenBranches)
+                    visitChildren(branches)
                 }
                 is Node.Expression.WhenExpression.WhenSubject -> {
                     visitChildren(lPar)

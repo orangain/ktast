@@ -323,7 +323,7 @@ open class Writer(
                 is Node.Expression.WhenExpression -> {
                     children(whenKeyword, subject)
                     writeBlock {
-                        children(whenBranches)
+                        children(branches)
                     }
                 }
                 is Node.Expression.WhenExpression.WhenSubject -> {
@@ -622,7 +622,7 @@ open class Writer(
             }
         }
         if (parentNode is Node.Expression.WhenExpression && node is Node.Expression.WhenExpression.WhenBranch) {
-            if (parentNode.whenBranches.first() !== node && !containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
+            if (parentNode.branches.first() !== node && !containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
                 append("\n")
             }
         }
