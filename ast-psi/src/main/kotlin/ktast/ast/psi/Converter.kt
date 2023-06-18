@@ -102,18 +102,18 @@ open class Converter {
 
     protected fun convertClassDeclaration(v: KtClass) = Node.Declaration.ClassDeclaration(
         modifiers = convertModifiers(v.modifierList),
-        classDeclarationKeyword = v.getDeclarationKeyword()?.let(::convertKeyword)
+        declarationKeyword = v.getDeclarationKeyword()?.let(::convertKeyword)
             ?: error("declarationKeyword not found"),
         name = convertNameExpression(v.nameIdentifier ?: error("No name identifier for $v")),
         lAngle = v.typeParameterList?.leftAngle?.let(::convertKeyword),
         typeParams = convertTypeParams(v.typeParameterList),
         rAngle = v.typeParameterList?.rightAngle?.let(::convertKeyword),
         primaryConstructor = v.primaryConstructor?.let(::convertPrimaryConstructor),
-        classParents = convertClassParents(v.getSuperTypeList()),
+        parents = convertClassParents(v.getSuperTypeList()),
         typeConstraintSet = v.typeConstraintList?.let { typeConstraintList ->
             convertTypeConstraintSet(v, typeConstraintList)
         },
-        classBody = v.body?.let(::convertClassBody),
+        body = v.body?.let(::convertClassBody),
     ).map(v)
 
     protected fun convertObjectDeclaration(v: KtObjectDeclaration): Node.Declaration.ObjectDeclaration {
@@ -125,11 +125,11 @@ open class Converter {
         }
         return Node.Declaration.ObjectDeclaration(
             modifiers = convertModifiers(v.modifierList),
-            classDeclarationKeyword = v.getDeclarationKeyword()?.let(::convertKeyword)
+            declarationKeyword = v.getDeclarationKeyword()?.let(::convertKeyword)
                 ?: error("declarationKeyword not found"),
             name = v.nameIdentifier?.let(::convertNameExpression),
-            classParents = convertClassParents(v.getSuperTypeList()),
-            classBody = v.body?.let(::convertClassBody),
+            parents = convertClassParents(v.getSuperTypeList()),
+            body = v.body?.let(::convertClassBody),
         ).map(v)
     }
 
@@ -460,7 +460,7 @@ open class Converter {
     protected fun convertWhenExpression(v: KtWhenExpression) = Node.Expression.WhenExpression(
         whenKeyword = convertKeyword(v.whenKeyword),
         subject = if (v.subjectExpression == null) null else convertWhenSubject(v),
-        whenBranches = v.entries.map(::convertWhenBranch),
+        branches = v.entries.map(::convertWhenBranch),
     ).map(v)
 
     protected fun convertWhenSubject(v: KtWhenExpression) = Node.Expression.WhenExpression.WhenSubject(
@@ -469,7 +469,6 @@ open class Converter {
             is KtProperty -> convertAnnotationSets(expression.modifierList)
             else -> listOf()
         },
-        valKeyword = v.subjectVariable?.valOrVarKeyword?.let(::convertKeyword),
         variable = v.subjectVariable?.let(::convertVariable),
         expression = convertExpression(
             when (val expression = v.subjectExpression) {
@@ -489,7 +488,7 @@ open class Converter {
     }
 
     protected fun convertConditionalWhenBranch(v: KtWhenEntry) = Node.Expression.WhenExpression.ConditionalWhenBranch(
-        whenConditions = v.conditions.map(::convertWhenCondition),
+        conditions = v.conditions.map(::convertWhenCondition),
         arrow = convertKeyword(v.arrow ?: error("No arrow symbol for $v")),
         body = convertExpression(v.expression ?: error("No when entry body for $v")),
     ).map(v)
@@ -701,7 +700,7 @@ open class Converter {
     ).map(v)
 
     protected fun convertSuperExpression(v: KtSuperExpression) = Node.Expression.SuperExpression(
-        typeArgType = v.superTypeQualifier?.let(::convertType),
+        typeArg = v.superTypeQualifier?.let(::convertTypeArg),
         label = v.getTargetLabel()?.let(::convertNameExpression),
     ).map(v)
 
@@ -711,7 +710,7 @@ open class Converter {
                 label = null,
             ).map(v)
             "super" -> Node.Expression.SuperExpression(
-                typeArgType = null,
+                typeArg = null,
                 label = null,
             ).map(v)
             else -> error("Unrecognized this/super expr $v")
@@ -813,6 +812,11 @@ open class Converter {
             KtProjectionKind.STAR -> convertSimpleType(v)
             else -> convertType(v.typeReference ?: error("Missing type ref for $v"))
         },
+    ).map(v)
+
+    protected fun convertTypeArg(v: KtTypeReference) = Node.TypeArg(
+        modifiers = listOf(),
+        type = convertType(v),
     ).map(v)
 
     protected fun convertSimpleType(v: KtTypeProjection) = Node.Type.SimpleType(

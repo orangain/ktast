@@ -140,15 +140,15 @@ open class MutableVisitor(
                     )
                     is Node.Declaration.ClassDeclaration -> copy(
                         modifiers = visitChildren(modifiers, newCh),
-                        classDeclarationKeyword = visitChildren(classDeclarationKeyword, newCh),
+                        declarationKeyword = visitChildren(declarationKeyword, newCh),
                         name = visitChildren(name, newCh),
                         lAngle = visitChildren(lAngle, newCh),
                         typeParams = visitChildren(typeParams, newCh),
                         rAngle = visitChildren(rAngle, newCh),
                         primaryConstructor = visitChildren(primaryConstructor, newCh),
-                        classParents = visitChildren(classParents, newCh),
+                        parents = visitChildren(parents, newCh),
                         typeConstraintSet = visitChildren(typeConstraintSet, newCh),
-                        classBody = visitChildren(classBody, newCh)
+                        body = visitChildren(body, newCh)
                     )
                     is Node.Declaration.ClassDeclaration.PrimaryConstructor -> copy(
                         modifiers = visitChildren(modifiers, newCh),
@@ -159,10 +159,10 @@ open class MutableVisitor(
                     )
                     is Node.Declaration.ObjectDeclaration -> copy(
                         modifiers = visitChildren(modifiers, newCh),
-                        classDeclarationKeyword = visitChildren(classDeclarationKeyword, newCh),
+                        declarationKeyword = visitChildren(declarationKeyword, newCh),
                         name = visitChildren(name, newCh),
-                        classParents = visitChildren(classParents, newCh),
-                        classBody = visitChildren(classBody, newCh)
+                        parents = visitChildren(parents, newCh),
+                        body = visitChildren(body, newCh)
                     )
                     is Node.Declaration.FunctionDeclaration -> copy(
                         modifiers = visitChildren(modifiers, newCh),
@@ -279,18 +279,17 @@ open class MutableVisitor(
                     is Node.Expression.WhenExpression -> copy(
                         whenKeyword = visitChildren(whenKeyword, newCh),
                         subject = visitChildren(subject, newCh),
-                        whenBranches = visitChildren(whenBranches, newCh),
+                        branches = visitChildren(branches, newCh),
                     )
                     is Node.Expression.WhenExpression.WhenSubject -> copy(
                         lPar = visitChildren(lPar, newCh),
                         annotationSets = visitChildren(annotationSets, newCh),
-                        valKeyword = visitChildren(valKeyword, newCh),
                         variable = visitChildren(variable, newCh),
                         expression = visitChildren(expression, newCh),
                         rPar = visitChildren(rPar, newCh),
                     )
                     is Node.Expression.WhenExpression.ConditionalWhenBranch -> copy(
-                        whenConditions = visitChildren(whenConditions, newCh),
+                        conditions = visitChildren(conditions, newCh),
                         arrow = visitChildren(arrow, newCh),
                         body = visitChildren(body, newCh),
                     )
@@ -394,7 +393,7 @@ open class MutableVisitor(
                         label = visitChildren(label, newCh),
                     )
                     is Node.Expression.SuperExpression -> copy(
-                        typeArgType = visitChildren(typeArgType, newCh),
+                        typeArg = visitChildren(typeArg, newCh),
                         label = visitChildren(label, newCh),
                     )
                     is Node.Expression.NameExpression -> this

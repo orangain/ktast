@@ -254,34 +254,34 @@ sealed interface Node {
         /**
          * Common interface for [ClassDeclaration] and [ObjectDeclaration].
          *
-         * @property classDeclarationKeyword keyword that is used to declare a class.
-         * @property name name of the node if exists, otherwise `null`.
-         * @property classParents list of class parents.
-         * @property classBody body of the class if exists, otherwise `null`.
+         * @property declarationKeyword keyword that is used to declare a class, interface or object.
+         * @property name name of the declaration if exists, otherwise `null`.
+         * @property parents list of class parents.
+         * @property body body of the class if exists, otherwise `null`.
          */
         sealed interface ClassOrObject : Declaration, WithModifiers {
-            val classDeclarationKeyword: ClassDeclarationKeyword
+            val declarationKeyword: ClassDeclarationKeyword
             val name: Expression.NameExpression?
-            val classParents: List<ClassParent>
-            val classBody: ClassBody?
+            val parents: List<ClassParent>
+            val body: ClassBody?
 
             /**
              * Returns `true` if the node is a class, `false` otherwise.
              */
             val isClass: Boolean
-                get() = classDeclarationKeyword is Keyword.Class
+                get() = declarationKeyword is Keyword.Class
 
             /**
              * Returns `true` if the node is an object, `false` otherwise.
              */
             val isObject: Boolean
-                get() = classDeclarationKeyword is Keyword.Object
+                get() = declarationKeyword is Keyword.Object
 
             /**
              * Returns `true` if the node is an interface, `false` otherwise.
              */
             val isInterface: Boolean
-                get() = classDeclarationKeyword is Keyword.Interface
+                get() = declarationKeyword is Keyword.Interface
 
             /**
              * Returns `true` if the node has a companion modifier, `false` otherwise.
@@ -433,27 +433,27 @@ sealed interface Node {
          * AST node that represents a class or interface declaration. The node corresponds to KtClass.
          *
          * @property modifiers list of modifiers.
-         * @property classDeclarationKeyword class declaration keyword.
+         * @property declarationKeyword class declaration keyword.
          * @property name name of the class.
          * @property lAngle left angle bracket of the type parameters.
          * @property typeParams list of type parameters.
          * @property rAngle right angle bracket of the type parameters.
          * @property primaryConstructor primary constructor if exists, otherwise `null`.
-         * @property classParents list of class parents.
+         * @property parents list of class parents.
          * @property typeConstraintSet type constraint set if exists, otherwise `null`.
-         * @property classBody class body if exists, otherwise `null`.
+         * @property body class body if exists, otherwise `null`.
          */
         data class ClassDeclaration(
             override val modifiers: List<Modifier>,
-            override val classDeclarationKeyword: ClassOrInterfaceKeyword,
+            override val declarationKeyword: ClassOrInterfaceKeyword,
             override val name: Expression.NameExpression,
             override val lAngle: Keyword.Less?,
             override val typeParams: List<TypeParam>,
             override val rAngle: Keyword.Greater?,
             val primaryConstructor: PrimaryConstructor?,
-            override val classParents: List<ClassOrObject.ClassParent>,
+            override val parents: List<ClassOrObject.ClassParent>,
             val typeConstraintSet: PostModifier.TypeConstraintSet?,
-            override val classBody: ClassOrObject.ClassBody?,
+            override val body: ClassOrObject.ClassBody?,
             override var tag: Any? = null,
         ) : ClassOrObject, WithTypeParams {
 
@@ -484,10 +484,10 @@ sealed interface Node {
          */
         data class ObjectDeclaration(
             override val modifiers: List<Modifier>,
-            override val classDeclarationKeyword: Keyword.Object,
+            override val declarationKeyword: Keyword.Object,
             override val name: Expression.NameExpression?,
-            override val classParents: List<ClassOrObject.ClassParent>,
-            override val classBody: ClassOrObject.ClassBody?,
+            override val parents: List<ClassOrObject.ClassParent>,
+            override val body: ClassOrObject.ClassBody?,
             override var tag: Any? = null,
         ) : ClassOrObject
 
@@ -822,12 +822,12 @@ sealed interface Node {
          *
          * @property whenKeyword keyword of when expression.
          * @property subject subject of when expression if exists, otherwise `null`.
-         * @property whenBranches list of when branches.
+         * @property branches list of when branches.
          */
         data class WhenExpression(
             val whenKeyword: Keyword.When,
             val subject: WhenSubject?,
-            val whenBranches: List<WhenBranch>,
+            val branches: List<WhenBranch>,
             override var tag: Any? = null,
         ) : Expression {
             /**
@@ -835,7 +835,6 @@ sealed interface Node {
              *
              * @property lPar left parenthesis of when subject.
              * @property annotationSets list of annotation sets.
-             * @property valKeyword `val` keyword if exists, otherwise `null`.
              * @property variable variable of when subject if exists, otherwise `null`.
              * @property expression expression of when subject.
              * @property rPar right parenthesis of when subject.
@@ -843,7 +842,6 @@ sealed interface Node {
             data class WhenSubject(
                 val lPar: Keyword.LPar,
                 override val annotationSets: List<Modifier.AnnotationSet>,
-                val valKeyword: Keyword.Val?,
                 val variable: Variable?,
                 val expression: Expression,
                 val rPar: Keyword.RPar,
@@ -853,12 +851,12 @@ sealed interface Node {
             /**
              * Common interface for when branches. The node corresponds to KtWhenEntry.
              *
-             * @property whenConditions list of conditions.
+             * @property conditions list of conditions.
              * @property arrow arrow symbol.
              * @property body body expression of this branch.
              */
             sealed interface WhenBranch : Node {
-                val whenConditions: List<WhenCondition>
+                val conditions: List<WhenCondition>
                 val arrow: Keyword.Arrow
                 val body: Expression
             }
@@ -866,24 +864,24 @@ sealed interface Node {
             /**
              * AST node that represents a when branch with conditions.
              *
-             * @property whenConditions non-empty list of conditions.
+             * @property conditions non-empty list of conditions.
              * @property body body expression of this branch.
              */
             data class ConditionalWhenBranch(
-                override val whenConditions: List<WhenCondition>,
+                override val conditions: List<WhenCondition>,
                 override val arrow: Keyword.Arrow,
                 override val body: Expression,
                 override var tag: Any? = null,
             ) : WhenBranch {
                 init {
-                    require(whenConditions.isNotEmpty()) { "whenConditions must not be empty" }
+                    require(conditions.isNotEmpty()) { "conditions must not be empty" }
                 }
             }
 
             /**
              * AST node that represents a when branch with else keyword.
              *
-             * @property whenConditions always empty list.
+             * @property conditions always empty list.
              * @property body body expression of this branch.
              */
             data class ElseWhenBranch(
@@ -891,7 +889,7 @@ sealed interface Node {
                 override val body: Expression,
                 override var tag: Any? = null,
             ) : WhenBranch {
-                override val whenConditions = listOf<WhenCondition>()
+                override val conditions = listOf<WhenCondition>()
             }
 
             /**
@@ -1344,7 +1342,7 @@ sealed interface Node {
         /**
          * AST node that represents an object literal expression. The node corresponds to KtObjectLiteralExpression.
          *
-         * @property declaration class declaration of this object literal expression.
+         * @property declaration object declaration of the expression.
          */
         data class ObjectLiteralExpression(
             val declaration: Declaration.ObjectDeclaration,
@@ -1374,11 +1372,11 @@ sealed interface Node {
         /**
          * AST node that represents a super expression. The node corresponds to KtSuperExpression or KtConstructorDelegationReferenceExpression whose text is "super".
          *
-         * @property typeArgType type of type argument if exists, otherwise `null`.
+         * @property typeArg type argument if exists, otherwise `null`.
          * @property label label of this expression if exists, otherwise `null`.
          */
         data class SuperExpression(
-            val typeArgType: Type?,
+            val typeArg: TypeArg?,
             override val label: NameExpression?,
             override var tag: Any? = null,
         ) : Expression, WithLabel

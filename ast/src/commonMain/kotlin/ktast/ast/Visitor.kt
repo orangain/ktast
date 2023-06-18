@@ -112,15 +112,15 @@ open class Visitor {
                 }
                 is Node.Declaration.ClassDeclaration -> {
                     visitChildren(modifiers)
-                    visitChildren(classDeclarationKeyword)
+                    visitChildren(declarationKeyword)
                     visitChildren(name)
                     visitChildren(lAngle)
                     visitChildren(typeParams)
                     visitChildren(rAngle)
                     visitChildren(primaryConstructor)
-                    visitChildren(classParents)
+                    visitChildren(parents)
                     visitChildren(typeConstraintSet)
-                    visitChildren(classBody)
+                    visitChildren(body)
                 }
                 is Node.Declaration.ClassDeclaration.PrimaryConstructor -> {
                     visitChildren(modifiers)
@@ -131,10 +131,10 @@ open class Visitor {
                 }
                 is Node.Declaration.ObjectDeclaration -> {
                     visitChildren(modifiers)
-                    visitChildren(classDeclarationKeyword)
+                    visitChildren(declarationKeyword)
                     visitChildren(name)
-                    visitChildren(classParents)
-                    visitChildren(classBody)
+                    visitChildren(parents)
+                    visitChildren(body)
                 }
                 is Node.Declaration.FunctionDeclaration -> {
                     visitChildren(modifiers)
@@ -251,18 +251,17 @@ open class Visitor {
                 is Node.Expression.WhenExpression -> {
                     visitChildren(whenKeyword)
                     visitChildren(subject)
-                    visitChildren(whenBranches)
+                    visitChildren(branches)
                 }
                 is Node.Expression.WhenExpression.WhenSubject -> {
                     visitChildren(lPar)
                     visitChildren(annotationSets)
-                    visitChildren(valKeyword)
                     visitChildren(variable)
                     visitChildren(expression)
                     visitChildren(rPar)
                 }
                 is Node.Expression.WhenExpression.ConditionalWhenBranch -> {
-                    visitChildren(whenConditions)
+                    visitChildren(conditions)
                     visitChildren(arrow)
                     visitChildren(body)
                 }
@@ -366,7 +365,7 @@ open class Visitor {
                     visitChildren(label)
                 }
                 is Node.Expression.SuperExpression -> {
-                    visitChildren(typeArgType)
+                    visitChildren(typeArg)
                     visitChildren(label)
                 }
                 is Node.Expression.NameExpression -> {}

@@ -184,16 +184,16 @@ open class Writer(
                 }
                 is Node.Declaration.ClassDeclaration -> {
                     children(modifiers)
-                    children(classDeclarationKeyword)
+                    children(declarationKeyword)
                     children(name)
                     commaSeparatedChildren(lAngle, typeParams, rAngle)
                     children(primaryConstructor)
-                    if (classParents.isNotEmpty()) {
+                    if (parents.isNotEmpty()) {
                         append(":")
                     }
-                    commaSeparatedChildren(classParents)
+                    commaSeparatedChildren(parents)
                     children(typeConstraintSet)
-                    children(classBody)
+                    children(body)
                 }
                 is Node.Declaration.ClassDeclaration.PrimaryConstructor -> {
                     children(modifiers)
@@ -202,13 +202,13 @@ open class Writer(
                 }
                 is Node.Declaration.ObjectDeclaration -> {
                     children(modifiers)
-                    children(classDeclarationKeyword)
+                    children(declarationKeyword)
                     children(name)
-                    if (classParents.isNotEmpty()) {
+                    if (parents.isNotEmpty()) {
                         append(":")
                     }
-                    commaSeparatedChildren(classParents)
-                    children(classBody)
+                    commaSeparatedChildren(parents)
+                    children(body)
                 }
                 is Node.Declaration.FunctionDeclaration -> {
                     children(modifiers)
@@ -323,20 +323,21 @@ open class Writer(
                 is Node.Expression.WhenExpression -> {
                     children(whenKeyword, subject)
                     writeBlock {
-                        children(whenBranches)
+                        children(branches)
                     }
                 }
                 is Node.Expression.WhenExpression.WhenSubject -> {
                     children(lPar)
                     children(annotationSets)
-                    children(valKeyword, variable)
                     if (variable != null) {
+                        append("val")
+                        children(variable)
                         append("=")
                     }
                     children(expression, rPar)
                 }
                 is Node.Expression.WhenExpression.ConditionalWhenBranch -> {
-                    children(whenConditions, ",")
+                    children(conditions, ",")
                     children(arrow, body)
                 }
                 is Node.Expression.WhenExpression.ElseWhenBranch -> {
@@ -457,7 +458,7 @@ open class Writer(
                 }
                 is Node.Expression.SuperExpression -> {
                     append("super")
-                    if (typeArgType != null) append('<').also { children(typeArgType) }.append('>')
+                    if (typeArg != null) append('<').also { children(typeArg) }.append('>')
                     appendLabel(label)
                 }
                 is Node.Expression.NameExpression ->
@@ -622,7 +623,7 @@ open class Writer(
             }
         }
         if (parentNode is Node.Expression.WhenExpression && node is Node.Expression.WhenExpression.WhenBranch) {
-            if (parentNode.whenBranches.first() !== node && !containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
+            if (parentNode.branches.first() !== node && !containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
                 append("\n")
             }
         }
