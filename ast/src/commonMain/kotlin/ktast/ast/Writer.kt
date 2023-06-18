@@ -164,16 +164,16 @@ open class Writer(
                     commaSeparatedChildren(classParents)
                     children(classBody)
                 }
-                is Node.Declaration.ClassDeclarationBase.ConstructorClassParent -> {
+                is Node.Declaration.ClassOrObject.ConstructorClassParent -> {
                     children(type)
                     commaSeparatedChildren(lPar, args, rPar)
                 }
-                is Node.Declaration.ClassDeclarationBase.DelegationClassParent -> {
+                is Node.Declaration.ClassOrObject.DelegationClassParent -> {
                     children(type)
                     append("by")
                     children(expression)
                 }
-                is Node.Declaration.ClassDeclarationBase.TypeClassParent -> {
+                is Node.Declaration.ClassOrObject.TypeClassParent -> {
                     children(type)
                 }
                 is Node.Declaration.ClassDeclaration.PrimaryConstructor -> {
@@ -181,7 +181,7 @@ open class Writer(
                     children(constructorKeyword)
                     commaSeparatedChildren(lPar, params, rPar)
                 }
-                is Node.Declaration.ClassDeclarationBase.ClassBody -> {
+                is Node.Declaration.ClassOrObject.ClassBody -> {
                     writeBlock {
                         children(enumEntries, ",")
                         if (enumEntries.isNotEmpty() && declarations.isNotEmpty() && !containsSemicolon(
@@ -193,7 +193,7 @@ open class Writer(
                         children(declarations)
                     }
                 }
-                is Node.Declaration.ClassDeclarationBase.ClassBody.Initializer -> {
+                is Node.Declaration.ClassOrObject.ClassBody.Initializer -> {
                     append("init")
                     children(block)
                 }
@@ -259,14 +259,14 @@ open class Writer(
                     append("=")
                     children(type)
                 }
-                is Node.Declaration.ClassDeclarationBase.ClassBody.SecondaryConstructor -> {
+                is Node.Declaration.ClassOrObject.ClassBody.SecondaryConstructor -> {
                     children(modifiers)
                     children(constructorKeyword)
                     commaSeparatedChildren(lPar, params, rPar)
                     if (delegationCall != null) append(":").also { children(delegationCall) }
                     children(block)
                 }
-                is Node.Declaration.ClassDeclarationBase.ClassBody.EnumEntry -> {
+                is Node.Declaration.ClassOrObject.ClassBody.EnumEntry -> {
                     children(modifiers)
                     children(name)
                     commaSeparatedChildren(lPar, args, rPar)

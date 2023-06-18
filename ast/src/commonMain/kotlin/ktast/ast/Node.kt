@@ -259,7 +259,7 @@ sealed interface Node {
          * @property classParents list of class parents.
          * @property classBody body of the class if exists, otherwise `null`.
          */
-        sealed interface ClassDeclarationBase : Declaration, WithModifiers {
+        sealed interface ClassOrObject : Declaration, WithModifiers {
             val classDeclarationKeyword: ClassDeclarationKeyword
             val name: Expression.NameExpression?
             val classParents: List<ClassParent>
@@ -451,16 +451,16 @@ sealed interface Node {
             override val typeParams: List<TypeParam>,
             override val rAngle: Keyword.Greater?,
             val primaryConstructor: PrimaryConstructor?,
-            override val classParents: List<ClassDeclarationBase.ClassParent>,
+            override val classParents: List<ClassOrObject.ClassParent>,
             val typeConstraintSet: PostModifier.TypeConstraintSet?,
-            override val classBody: ClassDeclarationBase.ClassBody?,
+            override val classBody: ClassOrObject.ClassBody?,
             override var tag: Any? = null,
-        ) : ClassDeclarationBase, WithTypeParams {
+        ) : ClassOrObject, WithTypeParams {
 
             /**
              * Common interface for class or interface keywords.
              */
-            sealed interface ClassOrInterfaceKeyword : ClassDeclarationBase.ClassDeclarationKeyword
+            sealed interface ClassOrInterfaceKeyword : ClassOrObject.ClassDeclarationKeyword
 
             /**
              * AST node that represents a primary constructor. The node corresponds to KtPrimaryConstructor.
@@ -486,10 +486,10 @@ sealed interface Node {
             override val modifiers: List<Modifier>,
             override val classDeclarationKeyword: Keyword.Object,
             override val name: Expression.NameExpression?,
-            override val classParents: List<ClassDeclarationBase.ClassParent>,
-            override val classBody: ClassDeclarationBase.ClassBody?,
+            override val classParents: List<ClassOrObject.ClassParent>,
+            override val classBody: ClassOrObject.ClassBody?,
             override var tag: Any? = null,
-        ) : ClassDeclarationBase
+        ) : ClassOrObject
 
         /**
          * AST node that represents a function declaration. The node corresponds to KtNamedFunction.
@@ -1652,7 +1652,7 @@ sealed interface Node {
         }
 
         data class Object(override var tag: Any? = null) : Keyword,
-            Declaration.ClassDeclarationBase.ClassDeclarationKeyword {
+            Declaration.ClassOrObject.ClassDeclarationKeyword {
             override val text = "object"
         }
 
