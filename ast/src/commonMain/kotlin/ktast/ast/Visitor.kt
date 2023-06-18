@@ -365,7 +365,7 @@ open class Visitor {
                     visitChildren(label)
                 }
                 is Node.Expression.SuperExpression -> {
-                    visitChildren(typeArgType)
+                    visitChildren(typeArg)
                     visitChildren(label)
                 }
                 is Node.Expression.NameExpression -> {}

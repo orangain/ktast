@@ -393,7 +393,7 @@ open class MutableVisitor(
                         label = visitChildren(label, newCh),
                     )
                     is Node.Expression.SuperExpression -> copy(
-                        typeArgType = visitChildren(typeArgType, newCh),
+                        typeArg = visitChildren(typeArg, newCh),
                         label = visitChildren(label, newCh),
                     )
                     is Node.Expression.NameExpression -> this

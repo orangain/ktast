@@ -700,7 +700,7 @@ open class Converter {
     ).map(v)
 
     protected fun convertSuperExpression(v: KtSuperExpression) = Node.Expression.SuperExpression(
-        typeArgType = v.superTypeQualifier?.let(::convertType),
+        typeArg = v.superTypeQualifier?.let(::convertTypeArg),
         label = v.getTargetLabel()?.let(::convertNameExpression),
     ).map(v)
 
@@ -710,7 +710,7 @@ open class Converter {
                 label = null,
             ).map(v)
             "super" -> Node.Expression.SuperExpression(
-                typeArgType = null,
+                typeArg = null,
                 label = null,
             ).map(v)
             else -> error("Unrecognized this/super expr $v")
@@ -812,6 +812,11 @@ open class Converter {
             KtProjectionKind.STAR -> convertSimpleType(v)
             else -> convertType(v.typeReference ?: error("Missing type ref for $v"))
         },
+    ).map(v)
+
+    protected fun convertTypeArg(v: KtTypeReference) = Node.TypeArg(
+        modifiers = listOf(),
+        type = convertType(v),
     ).map(v)
 
     protected fun convertSimpleType(v: KtTypeProjection) = Node.Type.SimpleType(
