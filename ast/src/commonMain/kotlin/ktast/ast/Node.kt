@@ -259,7 +259,7 @@ sealed interface Node {
          * @property classParents list of class parents.
          * @property classBody body of the class if exists, otherwise `null`.
          */
-        sealed interface ClassBase {
+        sealed interface ClassDeclarationBase : Declaration {
             val classDeclarationKeyword: ClassDeclarationKeyword
             val name: Expression.NameExpression?
             val classParents: List<ClassParent>
@@ -415,17 +415,17 @@ sealed interface Node {
          */
         data class ClassDeclaration(
             override val modifiers: List<Modifier>,
-            override val classDeclarationKeyword: ClassBase.ClassDeclarationKeyword,
+            override val classDeclarationKeyword: ClassDeclarationBase.ClassDeclarationKeyword,
             override val name: Expression.NameExpression?,
             override val lAngle: Keyword.Less?,
             override val typeParams: List<TypeParam>,
             override val rAngle: Keyword.Greater?,
             val primaryConstructor: PrimaryConstructor?,
-            override val classParents: List<ClassBase.ClassParent>,
+            override val classParents: List<ClassDeclarationBase.ClassParent>,
             val typeConstraintSet: PostModifier.TypeConstraintSet?,
-            override val classBody: ClassBase.ClassBody?,
+            override val classBody: ClassDeclarationBase.ClassBody?,
             override var tag: Any? = null,
-        ) : Declaration, ClassBase, WithModifiers, WithTypeParams {
+        ) : ClassDeclarationBase, WithModifiers, WithTypeParams {
             /**
              * Returns `true` if the node is a class, `false` otherwise.
              */
@@ -475,10 +475,10 @@ sealed interface Node {
             override val modifiers: List<Modifier>,
             override val classDeclarationKeyword: Keyword.Object,
             override val name: Expression.NameExpression?,
-            override val classParents: List<ClassBase.ClassParent>,
-            override val classBody: ClassBase.ClassBody?,
+            override val classParents: List<ClassDeclarationBase.ClassParent>,
+            override val classBody: ClassDeclarationBase.ClassBody?,
             override var tag: Any? = null,
-        ) : Declaration, ClassBase, WithModifiers {
+        ) : ClassDeclarationBase, WithModifiers {
             /**
              * Returns `true` if the node is a companion object, `false` otherwise.
              */
@@ -1641,17 +1641,17 @@ sealed interface Node {
         sealed interface ValOrVarKeyword : Keyword
 
         data class Class(override var tag: Any? = null) : Keyword,
-            Declaration.ClassBase.ClassDeclarationKeyword {
+            Declaration.ClassDeclarationBase.ClassDeclarationKeyword {
             override val text = "class"
         }
 
         data class Object(override var tag: Any? = null) : Keyword,
-            Declaration.ClassBase.ClassDeclarationKeyword {
+            Declaration.ClassDeclarationBase.ClassDeclarationKeyword {
             override val text = "object"
         }
 
         data class Interface(override var tag: Any? = null) : Keyword,
-            Declaration.ClassBase.ClassDeclarationKeyword {
+            Declaration.ClassDeclarationBase.ClassDeclarationKeyword {
             override val text = "interface"
         }
 

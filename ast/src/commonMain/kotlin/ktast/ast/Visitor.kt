@@ -92,17 +92,17 @@ open class Visitor {
                     visitChildren(classParents)
                     visitChildren(classBody)
                 }
-                is Node.Declaration.ClassBase.ConstructorClassParent -> {
+                is Node.Declaration.ClassDeclarationBase.ConstructorClassParent -> {
                     visitChildren(type)
                     visitChildren(lPar)
                     visitChildren(args)
                     visitChildren(rPar)
                 }
-                is Node.Declaration.ClassBase.DelegationClassParent -> {
+                is Node.Declaration.ClassDeclarationBase.DelegationClassParent -> {
                     visitChildren(type)
                     visitChildren(expression)
                 }
-                is Node.Declaration.ClassBase.TypeClassParent -> {
+                is Node.Declaration.ClassDeclarationBase.TypeClassParent -> {
                     visitChildren(type)
                 }
                 is Node.Declaration.ClassDeclaration.PrimaryConstructor -> {
@@ -112,11 +112,11 @@ open class Visitor {
                     visitChildren(params)
                     visitChildren(rPar)
                 }
-                is Node.Declaration.ClassBase.ClassBody -> {
+                is Node.Declaration.ClassDeclarationBase.ClassBody -> {
                     visitChildren(enumEntries)
                     visitChildren(declarations)
                 }
-                is Node.Declaration.ClassBase.ClassBody.Initializer -> {
+                is Node.Declaration.ClassDeclarationBase.ClassBody.Initializer -> {
                     visitChildren(block)
                 }
                 is Node.Declaration.FunctionDeclaration -> {
@@ -184,7 +184,7 @@ open class Visitor {
                     visitChildren(rAngle)
                     visitChildren(type)
                 }
-                is Node.Declaration.ClassBase.ClassBody.SecondaryConstructor -> {
+                is Node.Declaration.ClassDeclarationBase.ClassBody.SecondaryConstructor -> {
                     visitChildren(modifiers)
                     visitChildren(constructorKeyword)
                     visitChildren(lPar)
@@ -193,7 +193,7 @@ open class Visitor {
                     visitChildren(delegationCall)
                     visitChildren(block)
                 }
-                is Node.Declaration.ClassBase.ClassBody.EnumEntry -> {
+                is Node.Declaration.ClassDeclarationBase.ClassBody.EnumEntry -> {
                     visitChildren(modifiers)
                     visitChildren(name)
                     visitChildren(lPar)
