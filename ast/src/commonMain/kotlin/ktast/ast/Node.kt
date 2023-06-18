@@ -445,7 +445,7 @@ sealed interface Node {
          */
         data class ClassDeclaration(
             override val modifiers: List<Modifier>,
-            override val classDeclarationKeyword: ClassDeclarationBase.ClassDeclarationKeyword,
+            override val classDeclarationKeyword: ClassOrInterfaceKeyword,
             override val name: Expression.NameExpression,
             override val lAngle: Keyword.Less?,
             override val typeParams: List<TypeParam>,
@@ -456,6 +456,11 @@ sealed interface Node {
             override val classBody: ClassDeclarationBase.ClassBody?,
             override var tag: Any? = null,
         ) : ClassDeclarationBase, WithTypeParams {
+
+            /**
+             * Common interface for class or interface keywords.
+             */
+            sealed interface ClassOrInterfaceKeyword : ClassDeclarationBase.ClassDeclarationKeyword
 
             /**
              * AST node that represents a primary constructor. The node corresponds to KtPrimaryConstructor.
@@ -1642,7 +1647,7 @@ sealed interface Node {
         sealed interface ValOrVarKeyword : Keyword
 
         data class Class(override var tag: Any? = null) : Keyword,
-            Declaration.ClassDeclarationBase.ClassDeclarationKeyword {
+            Declaration.ClassDeclaration.ClassOrInterfaceKeyword {
             override val text = "class"
         }
 
@@ -1652,7 +1657,7 @@ sealed interface Node {
         }
 
         data class Interface(override var tag: Any? = null) : Keyword,
-            Declaration.ClassDeclarationBase.ClassDeclarationKeyword {
+            Declaration.ClassDeclaration.ClassOrInterfaceKeyword {
             override val text = "interface"
         }
 
