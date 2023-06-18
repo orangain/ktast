@@ -254,8 +254,8 @@ sealed interface Node {
         /**
          * Common interface for [ClassDeclaration] and [ObjectDeclaration].
          *
-         * @property declarationKeyword keyword that is used to declare a class.
-         * @property name name of the node if exists, otherwise `null`.
+         * @property declarationKeyword keyword that is used to declare a class, interface or object.
+         * @property name name of the declaration if exists, otherwise `null`.
          * @property parents list of class parents.
          * @property body body of the class if exists, otherwise `null`.
          */
