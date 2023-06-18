@@ -1,7 +1,6 @@
-package ktast.ast
+package ktast.ast.psi
 
-import ktast.ast.psi.ConverterWithExtras
-import ktast.ast.psi.Parser
+import ktast.ast.Dumper
 import org.junit.Test
 import kotlin.test.assertEquals
 
