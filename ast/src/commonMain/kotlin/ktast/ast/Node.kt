@@ -1111,6 +1111,17 @@ sealed interface Node {
         sealed interface DoubleColonExpression : Expression {
             val lhs: Expression?
             val questionMarks: List<Keyword.Question>
+
+            /**
+             * Convert [lhs] to [Type] if possible. Otherwise, return `null`.
+             */
+            fun lhsAsType(): Type? {
+                val type = toType(lhs ?: return null)
+                if (questionMarks.isNotEmpty()) {
+                    checkNotNull(type) { "lhs must be a type questionMarks is not empty" }
+                }
+                return wrapWithNullableType(type ?: return null, questionMarks)
+            }
         }
 
         /**
