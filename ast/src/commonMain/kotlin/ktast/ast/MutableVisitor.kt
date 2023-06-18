@@ -148,7 +148,7 @@ open class MutableVisitor(
                         primaryConstructor = visitChildren(primaryConstructor, newCh),
                         parents = visitChildren(parents, newCh),
                         typeConstraintSet = visitChildren(typeConstraintSet, newCh),
-                        classBody = visitChildren(classBody, newCh)
+                        body = visitChildren(body, newCh)
                     )
                     is Node.Declaration.ClassDeclaration.PrimaryConstructor -> copy(
                         modifiers = visitChildren(modifiers, newCh),
@@ -162,7 +162,7 @@ open class MutableVisitor(
                         declarationKeyword = visitChildren(declarationKeyword, newCh),
                         name = visitChildren(name, newCh),
                         parents = visitChildren(parents, newCh),
-                        classBody = visitChildren(classBody, newCh)
+                        body = visitChildren(body, newCh)
                     )
                     is Node.Declaration.FunctionDeclaration -> copy(
                         modifiers = visitChildren(modifiers, newCh),

@@ -193,7 +193,7 @@ open class Writer(
                     }
                     commaSeparatedChildren(parents)
                     children(typeConstraintSet)
-                    children(classBody)
+                    children(body)
                 }
                 is Node.Declaration.ClassDeclaration.PrimaryConstructor -> {
                     children(modifiers)
@@ -208,7 +208,7 @@ open class Writer(
                         append(":")
                     }
                     commaSeparatedChildren(parents)
-                    children(classBody)
+                    children(body)
                 }
                 is Node.Declaration.FunctionDeclaration -> {
                     children(modifiers)

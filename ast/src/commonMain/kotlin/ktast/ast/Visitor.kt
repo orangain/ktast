@@ -120,7 +120,7 @@ open class Visitor {
                     visitChildren(primaryConstructor)
                     visitChildren(parents)
                     visitChildren(typeConstraintSet)
-                    visitChildren(classBody)
+                    visitChildren(body)
                 }
                 is Node.Declaration.ClassDeclaration.PrimaryConstructor -> {
                     visitChildren(modifiers)
@@ -134,7 +134,7 @@ open class Visitor {
                     visitChildren(declarationKeyword)
                     visitChildren(name)
                     visitChildren(parents)
-                    visitChildren(classBody)
+                    visitChildren(body)
                 }
                 is Node.Declaration.FunctionDeclaration -> {
                     visitChildren(modifiers)

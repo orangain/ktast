@@ -257,13 +257,13 @@ sealed interface Node {
          * @property declarationKeyword keyword that is used to declare a class.
          * @property name name of the node if exists, otherwise `null`.
          * @property parents list of class parents.
-         * @property classBody body of the class if exists, otherwise `null`.
+         * @property body body of the class if exists, otherwise `null`.
          */
         sealed interface ClassOrObject : Declaration, WithModifiers {
             val declarationKeyword: ClassDeclarationKeyword
             val name: Expression.NameExpression?
             val parents: List<ClassParent>
-            val classBody: ClassBody?
+            val body: ClassBody?
 
             /**
              * Returns `true` if the node is a class, `false` otherwise.
@@ -441,7 +441,7 @@ sealed interface Node {
          * @property primaryConstructor primary constructor if exists, otherwise `null`.
          * @property parents list of class parents.
          * @property typeConstraintSet type constraint set if exists, otherwise `null`.
-         * @property classBody class body if exists, otherwise `null`.
+         * @property body class body if exists, otherwise `null`.
          */
         data class ClassDeclaration(
             override val modifiers: List<Modifier>,
@@ -453,7 +453,7 @@ sealed interface Node {
             val primaryConstructor: PrimaryConstructor?,
             override val parents: List<ClassOrObject.ClassParent>,
             val typeConstraintSet: PostModifier.TypeConstraintSet?,
-            override val classBody: ClassOrObject.ClassBody?,
+            override val body: ClassOrObject.ClassBody?,
             override var tag: Any? = null,
         ) : ClassOrObject, WithTypeParams {
 
@@ -487,7 +487,7 @@ sealed interface Node {
             override val declarationKeyword: Keyword.Object,
             override val name: Expression.NameExpression?,
             override val parents: List<ClassOrObject.ClassParent>,
-            override val classBody: ClassOrObject.ClassBody?,
+            override val body: ClassOrObject.ClassBody?,
             override var tag: Any? = null,
         ) : ClassOrObject
 

@@ -113,7 +113,7 @@ open class Converter {
         typeConstraintSet = v.typeConstraintList?.let { typeConstraintList ->
             convertTypeConstraintSet(v, typeConstraintList)
         },
-        classBody = v.body?.let(::convertClassBody),
+        body = v.body?.let(::convertClassBody),
     ).map(v)
 
     protected fun convertObjectDeclaration(v: KtObjectDeclaration): Node.Declaration.ObjectDeclaration {
@@ -129,7 +129,7 @@ open class Converter {
                 ?: error("declarationKeyword not found"),
             name = v.nameIdentifier?.let(::convertNameExpression),
             parents = convertClassParents(v.getSuperTypeList()),
-            classBody = v.body?.let(::convertClassBody),
+            body = v.body?.let(::convertClassBody),
         ).map(v)
     }
 
