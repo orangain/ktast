@@ -1024,7 +1024,7 @@ sealed interface Node {
          * @property calleeExpression callee expression.
          * @property typeArgs list of type arguments.
          * @property args list of value arguments.
-         * @property lambdaArg lambda argument if exists, otherwise `null`.
+         * @property lambdaArg lambda argument expression if exists, otherwise `null`. This can be one of [LambdaExpression], [AnnotatedExpression] or [LabeledExpression].
          */
         data class CallExpression(
             val calleeExpression: Expression,
@@ -1034,7 +1034,7 @@ sealed interface Node {
             override val lPar: Keyword.LPar?,
             override val args: List<ValueArg>,
             override val rPar: Keyword.RPar?,
-            val lambdaArg: LambdaArg?,
+            val lambdaArg: Expression?,
             override var tag: Any? = null,
         ) : Expression, WithTypeArgs, WithValueArgs {
             /**

@@ -557,7 +557,7 @@ open class Converter {
                 // However, Kotlin compiler can parse multiple lambda arguments.
                 throw Unsupported("At most one lambda argument is allowed")
             }
-        }.firstOrNull()?.let(::convertLambdaArg)
+        }.firstOrNull()?.getArgumentExpression()?.let(::convertExpression)
     ).map(v)
 
     protected fun convertLambdaArg(v: KtLambdaArgument): Node.Expression.CallExpression.LambdaArg {
