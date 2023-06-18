@@ -140,7 +140,7 @@ open class MutableVisitor(
                     )
                     is Node.Declaration.ClassDeclaration -> copy(
                         modifiers = visitChildren(modifiers, newCh),
-                        classDeclarationKeyword = visitChildren(classDeclarationKeyword, newCh),
+                        declarationKeyword = visitChildren(declarationKeyword, newCh),
                         name = visitChildren(name, newCh),
                         lAngle = visitChildren(lAngle, newCh),
                         typeParams = visitChildren(typeParams, newCh),
@@ -159,7 +159,7 @@ open class MutableVisitor(
                     )
                     is Node.Declaration.ObjectDeclaration -> copy(
                         modifiers = visitChildren(modifiers, newCh),
-                        classDeclarationKeyword = visitChildren(classDeclarationKeyword, newCh),
+                        declarationKeyword = visitChildren(declarationKeyword, newCh),
                         name = visitChildren(name, newCh),
                         classParents = visitChildren(classParents, newCh),
                         classBody = visitChildren(classBody, newCh)

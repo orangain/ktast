@@ -184,7 +184,7 @@ open class Writer(
                 }
                 is Node.Declaration.ClassDeclaration -> {
                     children(modifiers)
-                    children(classDeclarationKeyword)
+                    children(declarationKeyword)
                     children(name)
                     commaSeparatedChildren(lAngle, typeParams, rAngle)
                     children(primaryConstructor)
@@ -202,7 +202,7 @@ open class Writer(
                 }
                 is Node.Declaration.ObjectDeclaration -> {
                     children(modifiers)
-                    children(classDeclarationKeyword)
+                    children(declarationKeyword)
                     children(name)
                     if (classParents.isNotEmpty()) {
                         append(":")

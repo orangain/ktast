@@ -254,13 +254,13 @@ sealed interface Node {
         /**
          * Common interface for [ClassDeclaration] and [ObjectDeclaration].
          *
-         * @property classDeclarationKeyword keyword that is used to declare a class.
+         * @property declarationKeyword keyword that is used to declare a class.
          * @property name name of the node if exists, otherwise `null`.
          * @property classParents list of class parents.
          * @property classBody body of the class if exists, otherwise `null`.
          */
         sealed interface ClassOrObject : Declaration, WithModifiers {
-            val classDeclarationKeyword: ClassDeclarationKeyword
+            val declarationKeyword: ClassDeclarationKeyword
             val name: Expression.NameExpression?
             val classParents: List<ClassParent>
             val classBody: ClassBody?
@@ -269,19 +269,19 @@ sealed interface Node {
              * Returns `true` if the node is a class, `false` otherwise.
              */
             val isClass: Boolean
-                get() = classDeclarationKeyword is Keyword.Class
+                get() = declarationKeyword is Keyword.Class
 
             /**
              * Returns `true` if the node is an object, `false` otherwise.
              */
             val isObject: Boolean
-                get() = classDeclarationKeyword is Keyword.Object
+                get() = declarationKeyword is Keyword.Object
 
             /**
              * Returns `true` if the node is an interface, `false` otherwise.
              */
             val isInterface: Boolean
-                get() = classDeclarationKeyword is Keyword.Interface
+                get() = declarationKeyword is Keyword.Interface
 
             /**
              * Returns `true` if the node has a companion modifier, `false` otherwise.
@@ -433,7 +433,7 @@ sealed interface Node {
          * AST node that represents a class or interface declaration. The node corresponds to KtClass.
          *
          * @property modifiers list of modifiers.
-         * @property classDeclarationKeyword class declaration keyword.
+         * @property declarationKeyword class declaration keyword.
          * @property name name of the class.
          * @property lAngle left angle bracket of the type parameters.
          * @property typeParams list of type parameters.
@@ -445,7 +445,7 @@ sealed interface Node {
          */
         data class ClassDeclaration(
             override val modifiers: List<Modifier>,
-            override val classDeclarationKeyword: ClassOrInterfaceKeyword,
+            override val declarationKeyword: ClassOrInterfaceKeyword,
             override val name: Expression.NameExpression,
             override val lAngle: Keyword.Less?,
             override val typeParams: List<TypeParam>,
@@ -484,7 +484,7 @@ sealed interface Node {
          */
         data class ObjectDeclaration(
             override val modifiers: List<Modifier>,
-            override val classDeclarationKeyword: Keyword.Object,
+            override val declarationKeyword: Keyword.Object,
             override val name: Expression.NameExpression?,
             override val classParents: List<ClassOrObject.ClassParent>,
             override val classBody: ClassOrObject.ClassBody?,

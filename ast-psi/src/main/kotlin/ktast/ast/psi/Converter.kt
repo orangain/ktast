@@ -102,7 +102,7 @@ open class Converter {
 
     protected fun convertClassDeclaration(v: KtClass) = Node.Declaration.ClassDeclaration(
         modifiers = convertModifiers(v.modifierList),
-        classDeclarationKeyword = v.getDeclarationKeyword()?.let(::convertKeyword)
+        declarationKeyword = v.getDeclarationKeyword()?.let(::convertKeyword)
             ?: error("declarationKeyword not found"),
         name = convertNameExpression(v.nameIdentifier ?: error("No name identifier for $v")),
         lAngle = v.typeParameterList?.leftAngle?.let(::convertKeyword),
@@ -125,7 +125,7 @@ open class Converter {
         }
         return Node.Declaration.ObjectDeclaration(
             modifiers = convertModifiers(v.modifierList),
-            classDeclarationKeyword = v.getDeclarationKeyword()?.let(::convertKeyword)
+            declarationKeyword = v.getDeclarationKeyword()?.let(::convertKeyword)
                 ?: error("declarationKeyword not found"),
             name = v.nameIdentifier?.let(::convertNameExpression),
             classParents = convertClassParents(v.getSuperTypeList()),

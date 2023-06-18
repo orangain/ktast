@@ -112,7 +112,7 @@ open class Visitor {
                 }
                 is Node.Declaration.ClassDeclaration -> {
                     visitChildren(modifiers)
-                    visitChildren(classDeclarationKeyword)
+                    visitChildren(declarationKeyword)
                     visitChildren(name)
                     visitChildren(lAngle)
                     visitChildren(typeParams)
@@ -131,7 +131,7 @@ open class Visitor {
                 }
                 is Node.Declaration.ObjectDeclaration -> {
                     visitChildren(modifiers)
-                    visitChildren(classDeclarationKeyword)
+                    visitChildren(declarationKeyword)
                     visitChildren(name)
                     visitChildren(classParents)
                     visitChildren(classBody)
