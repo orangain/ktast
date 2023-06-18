@@ -2,8 +2,10 @@
 
 Ktast is a simple library to manipulate Kotlin source code as a set of AST objects. Features:
 
-* Simple and immutable set of hierarchical [data classes](ast/src/commonMain/kotlin/ktast/ast/Node.kt) that represent the Kotlin Abstract Syntax Tree (AST).
-* Support for [parsing](ast-psi/src/main/kotlin/ktast/ast/psi/Parser.kt) the latest version of Kotlin code (via Kotlin compiler's parser) and
+* Simple and immutable set of hierarchical [data classes](ast/src/commonMain/kotlin/ktast/ast/Node.kt) that represent
+  the Kotlin Abstract Syntax Tree (AST).
+* Support for [parsing](ast-psi/src/main/kotlin/ktast/ast/psi/Parser.kt) the latest version of Kotlin code (via Kotlin
+  compiler's parser) and
   [converting](ast-psi/src/main/kotlin/ktast/ast/psi/Converter.kt) them to the AST.
 * Simple [writer implementation](ast/src/commonMain/kotlin/ktast/ast/Writer.kt) that turn the AST back into Kotlin code.
 * Support for [regular](ast/src/commonMain/kotlin/ktast/ast/Visitor.kt) and
