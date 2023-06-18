@@ -252,7 +252,7 @@ sealed interface Node {
      */
     sealed interface Declaration : Statement {
         /**
-         * Common interface for class-like nodes.
+         * Common interface for [ClassDeclaration] and [ObjectDeclaration].
          *
          * @property classDeclarationKeyword keyword that is used to declare a class.
          * @property name name of the node if exists, otherwise `null`.
