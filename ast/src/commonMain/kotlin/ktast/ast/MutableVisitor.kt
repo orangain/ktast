@@ -204,7 +204,7 @@ open class MutableVisitor(
                     is Node.Declaration.PropertyDeclaration.Setter -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         lPar = visitChildren(lPar, newCh),
-                        params = visitChildren(params, newCh),
+                        param = visitChildren(param, newCh),
                         rPar = visitChildren(rPar, newCh),
                         postModifiers = visitChildren(postModifiers, newCh),
                         body = visitChildren(body, newCh),
@@ -428,7 +428,7 @@ open class MutableVisitor(
                         lPar = visitChildren(lPar, newCh),
                         variables = visitChildren(variables, newCh),
                         rPar = visitChildren(rPar, newCh),
-                        destructType = visitChildren(destructType, newCh),
+                        destructuringType = visitChildren(destructuringType, newCh),
                     )
                     is Node.Variable -> copy(
                         annotationSets = visitChildren(annotationSets, newCh),

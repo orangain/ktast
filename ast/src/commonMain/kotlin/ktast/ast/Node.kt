@@ -595,24 +595,24 @@ sealed interface Node {
              * AST node that represents a property setter.
              *
              * @property modifiers list of modifiers.
-             * @property params list of parameters of the setter.
+             * @property param parameter of the setter if exists, otherwise `null`.
              * @property postModifiers post-modifiers of the setter.
              * @property body body of the setter if exists, otherwise `null`.
              */
             data class Setter(
                 override val modifiers: List<Modifier>,
                 override val lPar: Keyword.LPar?,
-                val params: List<LambdaParam>,
+                val param: FunctionParam?,
                 override val rPar: Keyword.RPar?,
                 override val postModifiers: List<PostModifier>,
                 override val body: Expression?,
                 override var tag: Any? = null,
             ) : Accessor {
                 init {
-                    if (params.isEmpty()) {
-                        require(body == null) { "body must be null when params is empty" }
+                    if (param == null) {
+                        require(body == null) { "body must be null when param is null" }
                     } else {
-                        require(body != null) { "body must be non-null when params is non-empty" }
+                        require(body != null) { "body must not be null when param is not null" }
                     }
                 }
             }
@@ -1472,17 +1472,18 @@ sealed interface Node {
 
     /**
      * AST node that represents a formal parameter of lambda expression. For example, `x` in `{ x -> ... }` is a lambda parameter. The node corresponds to KtParameter under KtLambdaExpression.
+     * Unlike [FunctionParam], this node can have multiple variables, i.e. destructuring declaration.
      *
      * @property lPar left parenthesis of this parameter if exists, otherwise `null`.
      * @property variables list of variables.
      * @property rPar right parenthesis of this parameter if exists, otherwise `null`.
-     * @property destructType type of destructuring if exists, otherwise `null`.
+     * @property destructuringType type of whole parameter on destructuring if exists, otherwise `null`.
      */
     data class LambdaParam(
         val lPar: Keyword.LPar?,
         val variables: List<Variable>,
         val rPar: Keyword.RPar?,
-        val destructType: Type?,
+        val destructuringType: Type?,
         override var tag: Any? = null,
     ) : Node {
         init {

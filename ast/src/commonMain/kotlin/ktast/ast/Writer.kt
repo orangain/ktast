@@ -248,7 +248,7 @@ open class Writer(
                 is Node.Declaration.PropertyDeclaration.Setter -> {
                     children(modifiers)
                     append("set")
-                    commaSeparatedChildren(lPar, params, rPar)
+                    children(lPar, param, rPar)
                     children(postModifiers)
                     writeFunctionBody(body)
                 }
@@ -492,9 +492,9 @@ open class Writer(
                     children(lPar)
                     children(variables, ",")
                     children(rPar)
-                    if (destructType != null) {
+                    if (destructuringType != null) {
                         append(":")
-                        children(destructType)
+                        children(destructuringType)
                     }
                 }
                 is Node.Variable -> {
