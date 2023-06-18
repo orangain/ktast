@@ -251,9 +251,13 @@ open class MutableVisitor(
                     )
                     is Node.Type.SimpleType -> copy(
                         modifiers = visitChildren(modifiers, newCh),
-                        pieces = visitChildren(pieces, newCh),
+                        qualifiers = visitChildren(qualifiers, newCh),
+                        name = visitChildren(name, newCh),
+                        lAngle = visitChildren(lAngle, newCh),
+                        typeArgs = visitChildren(typeArgs, newCh),
+                        rAngle = visitChildren(rAngle, newCh),
                     )
-                    is Node.Type.SimpleType.SimpleTypePiece -> copy(
+                    is Node.Type.SimpleType.SimpleTypeQualifier -> copy(
                         name = visitChildren(name, newCh),
                         lAngle = visitChildren(lAngle, newCh),
                         typeArgs = visitChildren(typeArgs, newCh),

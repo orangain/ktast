@@ -335,23 +335,21 @@ open class Converter {
     protected fun convertSimpleType(v: KtElement, modifierList: KtModifierList?, typeEl: KtUserType) =
         Node.Type.SimpleType(
             modifiers = convertModifiers(modifierList),
-            pieces = generateSequence(typeEl) { it.qualifier }.toList().reversed()
-                .map { convertSimpleTypePiece(v, it) },
+            qualifiers = generateSequence(typeEl.qualifier) { it.qualifier }.toList().reversed()
+                .map { convertTypeSimpleQualifier(v, it) },
+            name = convertNameExpression(typeEl.referenceExpression ?: error("No type name for $typeEl")),
+            lAngle = typeEl.typeArgumentList?.leftAngle?.let(::convertKeyword),
+            typeArgs = convertTypeArgs(typeEl.typeArgumentList),
+            rAngle = typeEl.typeArgumentList?.rightAngle?.let(::convertKeyword),
         ).map(v)
 
-    protected fun convertSimpleTypePiece(v: KtElement, typeEl: KtUserType) = Node.Type.SimpleType.SimpleTypePiece(
-        name = convertNameExpression(typeEl.referenceExpression ?: error("No type name for $typeEl")),
-        lAngle = typeEl.typeArgumentList?.leftAngle?.let(::convertKeyword),
-        typeArgs = convertTypeArgs(typeEl.typeArgumentList),
-        rAngle = typeEl.typeArgumentList?.rightAngle?.let(::convertKeyword),
-    ).map(v)
-
-    protected fun convertSimpleTypePiece(v: PsiElement) = Node.Type.SimpleType.SimpleTypePiece(
-        name = convertNameExpression(v),
-        lAngle = null,
-        typeArgs = listOf(),
-        rAngle = null,
-    ).map(v)
+    protected fun convertTypeSimpleQualifier(v: KtElement, typeEl: KtUserType) =
+        Node.Type.SimpleType.SimpleTypeQualifier(
+            name = convertNameExpression(typeEl.referenceExpression ?: error("No type name for $typeEl")),
+            lAngle = typeEl.typeArgumentList?.leftAngle?.let(::convertKeyword),
+            typeArgs = convertTypeArgs(typeEl.typeArgumentList),
+            rAngle = typeEl.typeArgumentList?.rightAngle?.let(::convertKeyword),
+        ).map(v)
 
     protected fun convertDynamicType(v: KtElement, modifierList: KtModifierList?, typeEl: KtDynamicType) =
         Node.Type.DynamicType(
@@ -797,7 +795,11 @@ open class Converter {
 
     protected fun convertSimpleType(v: KtTypeProjection) = Node.Type.SimpleType(
         modifiers = listOf(),
-        pieces = listOf(convertSimpleTypePiece(v.projectionToken ?: error("Missing projection token for $v"))),
+        qualifiers = listOf(),
+        name = convertNameExpression(v.projectionToken ?: error("Missing projection token for $v")),
+        lAngle = null,
+        typeArgs = listOf(),
+        rAngle = null,
     ).map(v)
 
     protected fun convertValueArgs(v: KtValueArgumentList?): List<Node.ValueArg> =
