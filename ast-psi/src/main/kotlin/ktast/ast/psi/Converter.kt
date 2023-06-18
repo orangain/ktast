@@ -615,7 +615,9 @@ open class Converter {
         ).map(v)
 
     protected fun convertClassLiteralExpression(v: KtClassLiteralExpression) = Node.Expression.ClassLiteralExpression(
-        lhs = v.receiverExpression?.let(::convertExpression),
+        lhs = convertExpression(
+            v.receiverExpression ?: throw Unsupported("Class literal expression without receiver is not supported")
+        ),
         questionMarks = v.questionMarks.map(::convertKeyword),
     ).map(v)
 

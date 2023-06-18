@@ -1111,6 +1111,17 @@ sealed interface Node {
         sealed interface DoubleColonExpression : Expression {
             val lhs: Expression?
             val questionMarks: List<Keyword.Question>
+
+            /**
+             * Convert [lhs] to [Type] if possible. Otherwise, return `null`.
+             */
+            fun lhsAsType(): Type? {
+                val type = toType(lhs ?: return null)
+                if (questionMarks.isNotEmpty()) {
+                    checkNotNull(type) { "lhs must be a type questionMarks is not empty" }
+                }
+                return wrapWithNullableType(type ?: return null, questionMarks)
+            }
         }
 
         /**
@@ -1131,11 +1142,11 @@ sealed interface Node {
         /**
          * AST node that represents a class literal expression. The node corresponds to KtClassLiteralExpression.
          *
-         * @property lhs left-hand side expression if exists, otherwise `null`. Note that class literal expression without lhs is not supported in Kotlin syntax, but the Kotlin compiler does parse it.
+         * @property lhs left-hand side expression.
          * @property questionMarks list of question marks after [lhs].
          */
         data class ClassLiteralExpression(
-            override val lhs: Expression?,
+            override val lhs: Expression,
             override val questionMarks: List<Keyword.Question>,
             override var tag: Any? = null,
         ) : DoubleColonExpression
