@@ -595,24 +595,24 @@ sealed interface Node {
              * AST node that represents a property setter.
              *
              * @property modifiers list of modifiers.
-             * @property params list of parameters of the setter.
+             * @property param parameter of the setter if exists, otherwise `null`.
              * @property postModifiers post-modifiers of the setter.
              * @property body body of the setter if exists, otherwise `null`.
              */
             data class Setter(
                 override val modifiers: List<Modifier>,
                 override val lPar: Keyword.LPar?,
-                val params: List<LambdaParam>,
+                val param: LambdaParam?,
                 override val rPar: Keyword.RPar?,
                 override val postModifiers: List<PostModifier>,
                 override val body: Expression?,
                 override var tag: Any? = null,
             ) : Accessor {
                 init {
-                    if (params.isEmpty()) {
-                        require(body == null) { "body must be null when params is empty" }
+                    if (param == null) {
+                        require(body == null) { "body must be null when param is null" }
                     } else {
-                        require(body != null) { "body must be non-null when params is non-empty" }
+                        require(body != null) { "body must not be null when param is not null" }
                     }
                 }
             }

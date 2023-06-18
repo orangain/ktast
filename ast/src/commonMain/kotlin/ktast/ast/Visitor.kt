@@ -176,7 +176,7 @@ open class Visitor {
                 is Node.Declaration.PropertyDeclaration.Setter -> {
                     visitChildren(modifiers)
                     visitChildren(lPar)
-                    visitChildren(params)
+                    visitChildren(param)
                     visitChildren(rPar)
                     visitChildren(postModifiers)
                     visitChildren(body)

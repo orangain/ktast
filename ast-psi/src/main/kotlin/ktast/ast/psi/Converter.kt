@@ -295,7 +295,7 @@ open class Converter {
     protected fun convertSetter(v: KtPropertyAccessor) = Node.Declaration.PropertyDeclaration.Setter(
         modifiers = convertModifiers(v.modifierList),
         lPar = v.leftParenthesis?.let(::convertKeyword),
-        params = convertLambdaParams(v.parameterList),
+        param = convertLambdaParams(v.parameterList).firstOrNull(),
         rPar = v.rightParenthesis?.let(::convertKeyword),
         postModifiers = convertPostModifiers(v),
         body = v.bodyExpression?.let(::convertExpression),

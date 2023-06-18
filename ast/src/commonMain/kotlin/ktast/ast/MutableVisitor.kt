@@ -204,7 +204,7 @@ open class MutableVisitor(
                     is Node.Declaration.PropertyDeclaration.Setter -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         lPar = visitChildren(lPar, newCh),
-                        params = visitChildren(params, newCh),
+                        param = visitChildren(param, newCh),
                         rPar = visitChildren(rPar, newCh),
                         postModifiers = visitChildren(postModifiers, newCh),
                         body = visitChildren(body, newCh),

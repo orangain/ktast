@@ -248,7 +248,7 @@ open class Writer(
                 is Node.Declaration.PropertyDeclaration.Setter -> {
                     children(modifiers)
                     append("set")
-                    commaSeparatedChildren(lPar, params, rPar)
+                    children(lPar, param, rPar)
                     children(postModifiers)
                     writeFunctionBody(body)
                 }
