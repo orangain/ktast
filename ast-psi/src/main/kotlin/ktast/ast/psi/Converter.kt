@@ -149,7 +149,7 @@ open class Converter {
                 ?: error("Bad type on super call $v"),
             lPar = v.valueArgumentList?.leftParenthesis?.let(::convertKeyword)
                 ?: error("No left parenthesis for $v"),
-            args = convertValueArgs(v.valueArgumentList) ?: error("No value arguments for $v"),
+            args = convertValueArgs(v.valueArgumentList),
             rPar = v.valueArgumentList?.rightParenthesis?.let(::convertKeyword)
                 ?: error("No right parenthesis for $v"),
         ).map(v)
@@ -369,7 +369,11 @@ open class Converter {
             rAngle = typeEl.typeArgumentList?.rightAngle?.let(::convertKeyword),
         ).map(v)
 
-    protected fun convertDynamicType(v: KtElement, modifierList: KtModifierList?, typeEl: KtDynamicType) =
+    protected fun convertDynamicType(
+        v: KtElement,
+        modifierList: KtModifierList?,
+        @Suppress("UNUSED_PARAMETER") typeEl: KtDynamicType
+    ) =
         Node.Type.DynamicType(
             modifiers = convertModifiers(modifierList),
         ).map(v)
