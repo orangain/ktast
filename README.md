@@ -1,16 +1,23 @@
 # Ktast [![](https://jitpack.io/v/orangain/ktast.svg)](https://jitpack.io/#orangain/ktast) [![Java CI](https://github.com/orangain/ktast/actions/workflows/java_ci.yaml/badge.svg)](https://github.com/orangain/ktast/actions/workflows/java_ci.yaml)
 
-Ktast is a simple library to manipulate Kotlin source code as a set of AST objects. Features:
+ktast is a simple library that represents Kotlin source code as an Abstract Syntax Tree (AST), allowing for node
+manipulation. It can parse Kotlin source code into an AST, make modifications, and write it back to the source code. The
+features of the ktast are as follows:
 
-* Simple and immutable set of hierarchical [data classes](ast/src/commonMain/kotlin/ktast/ast/Node.kt) that represent
-  the Kotlin Abstract Syntax Tree (AST).
-* Support for [parsing](ast-psi/src/main/kotlin/ktast/ast/psi/Parser.kt) the latest version of Kotlin code (via Kotlin
-  compiler's parser) and
-  [converting](ast-psi/src/main/kotlin/ktast/ast/psi/Converter.kt) them to the AST.
-* Simple [writer implementation](ast/src/commonMain/kotlin/ktast/ast/Writer.kt) that turn the AST back into Kotlin code.
-* Support for [regular](ast/src/commonMain/kotlin/ktast/ast/Visitor.kt) and
-  [mutable](ast/src/commonMain/kotlin/ktast/ast/MutableVisitor.kt) visitors.
-* Preserve whitespaces and comments even when manipulating the AST.
+* It supports the grammar of the latest version of Kotlin
+* AST nodes are represented as immutable data classes, and the copy method can be utilized
+* It can handle whitespaces and comments while maintaining them
+
+It includes the following components:
+
+* Hierarchically organized [node classes](https://orangain.github.io/ktast/latest/api/ast/ktast.ast/-node/index.html)
+* A [Parser](https://orangain.github.io/ktast/latest/api/ast-psi/ktast.ast.psi/-parser/index.html) to parse source code,
+  and a [Converter](https://orangain.github.io/ktast/latest/api/ast-psi/ktast.ast.psi/-converter/index.html) to
+  transform the result into AST nodes
+* A [Writer](https://orangain.github.io/ktast/latest/api/ast/ktast.ast/-writer/index.html) to write back the AST nodes
+* A [Visitor](https://orangain.github.io/ktast/latest/api/ast/ktast.ast/-visitor/index.html) to traverse a node tree and
+  a [MutableVisitor](https://orangain.github.io/ktast/latest/api/ast/ktast.ast/-mutable-visitor/index.html) to modify
+  the tree
 
 ## Related work
 
@@ -62,7 +69,7 @@ https://orangain.github.io/ktast/latest/api/
 
 Examples below are simple Kotlin scripts.
 
-#### Parse code
+#### Parsing code
 
 In this example, we use the wrapper around the Kotlin compiler's parser:
 
@@ -81,7 +88,7 @@ val code = """
 """.trimIndent()
 // Call the parser with the code
 val file = Parser.parseFile(code)
-// The file var is now a ktast.ast.Node.File that is used in future examples...
+// The file var is now a ktast.ast.Node.KotlinFile that is used in future examples...
 ```
 
 The `file` variable has the full AST. Note, if you want to parse with blank line and comment information, you can create
@@ -97,7 +104,7 @@ val file = Parser(extrasMap).parseFile(code)
 // extrasMap is an instance of ktast.ast.ExtrasMap
 ```
 
-#### Write code
+#### Writing code
 
 To write the code created above, simply use the writer
 
@@ -120,7 +127,7 @@ println(Writer.write(file, extrasMap))
 
 This outputs the code with the comments.
 
-#### View nodes of a type
+#### Visiting nodes
 
 This will get all strings:
 
@@ -130,18 +137,22 @@ import ktast.ast.Visitor
 
 // ...
 
-var strings = emptyList<String>()
-Visitor.visit(file) { v, _ ->
-    if (v is Node.Expression.StringTemplate.Entry.Regular) strings += v.str
+val strings = mutableListOf<String>()
+Visitor.traverse(file) { path ->
+    val node = path.node
+    if (node is Node.Expression.StringLiteralExpression.LiteralStringEntry) {
+        strings.add(node.text)
+    }
 }
 // Prints [Hello, World!, Hello, again!]
 println(strings)
 ```
 
-The first parameter of the lambda is the nullable node and the second parameter is the parent. There is a `tag` var on
-each node that can be used to store per-node state if desired.
+The parameter of the lambda is
+a [NodePath](https://orangain.github.io/ktast/latest/api/ast/ktast.ast/-node-path/index.html) object that has `node`
+and `parent` NodePath. There is a `tag` var on each node that can be used to store per-node state if desired.
 
-#### Modify nodes
+#### Modifying nodes
 
 This will change "Hello, World!" and "Hello, again!" to "Howdy, World!" and "Howdy, again":
 
@@ -150,18 +161,21 @@ import ktast.ast.MutableVisitor
 
 // ...
 
-val newFile = MutableVisitor.preVisit(file) { v, _ ->
-    if (v !is Node.Expression.StringTemplate.Entry.Regular) v
-    else v.copy(str = v.str.replace("Hello", "Howdy"))
+val newFile = MutableVisitor.traverse(file) { path ->
+    val node = path.node
+    if (node !is Node.Expression.StringLiteralExpression.LiteralStringEntry) node
+    else node.copy(text = node.text.replace("Hello", "Howdy"))
 }
 ```
 
-Now `newFile` is a transformed version of `file`. As before, the first parameter of the lambda is the nullable node and
-the second parameter is the parent. The difference between `preVisit` (as used here) and `postVisit` is that `preVisit`
-is called before children are traversed/mutated whereas `postVisit` is called afterwards.
+Now `newFile` is a transformed version of `file`. As before, the parameter of the lambda is a NodePath object.
 
 Note, since `extraMap` support relies on object identities and this creates entirely new objects in the immutable tree,
-the extra map becomes invalid on this step. This is not solved in the library yet, but could be done fairly easily.
+the extra map becomes invalid on this step. When you mutate an AST tree, it is recommended to
+use [ConverterWithMutableExtras](https://orangain.github.io/ktast/latest/api/ast-psi/ktast.ast.psi/-converter-with-mutable-extras/index.html)
+that
+implements [MutableExtrasMap](https://orangain.github.io/ktast/latest/api/ast/ktast.ast/-mutable-extras-map/index.html)
+interface.
 
 ## Running tests
 
