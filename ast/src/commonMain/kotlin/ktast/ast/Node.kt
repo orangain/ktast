@@ -1342,7 +1342,7 @@ sealed interface Node {
         /**
          * AST node that represents an object literal expression. The node corresponds to KtObjectLiteralExpression.
          *
-         * @property declaration class declaration of this object literal expression.
+         * @property declaration object declaration of the expression.
          */
         data class ObjectLiteralExpression(
             val declaration: Declaration.ObjectDeclaration,
