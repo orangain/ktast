@@ -1262,8 +1262,8 @@ sealed interface Node {
                 override var tag: Any? = null,
             ) : StringEntry {
                 init {
-                    require(!short || expression is NameExpression) {
-                        "Short template string entry must be a name expression."
+                    require(!short || expression is NameExpression || expression is ThisExpression) {
+                        "Short template string entry must be a name expression or this expression."
                     }
                 }
             }
