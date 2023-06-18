@@ -401,7 +401,7 @@ sealed interface Node {
     sealed interface Declaration : Statement {
 
         /**
-         * AST node that represents a class, object or interface declaration. The node corresponds to KtClassOrObject.
+         * AST node that represents a class or interface declaration. The node corresponds to KtClass.
          *
          * @property modifiers list of modifiers.
          * @property classDeclarationKeyword class declaration keyword.
@@ -467,6 +467,23 @@ sealed interface Node {
                 override val rPar: Keyword.RPar?,
                 override var tag: Any? = null,
             ) : Node, WithModifiers, WithFunctionParams
+        }
+
+        /**
+         * AST node that represents an object declaration. The node corresponds to KtObjectDeclaration.
+         */
+        data class ObjectDeclaration(
+            override val modifiers: List<Modifier>,
+            override val classDeclarationKeyword: Keyword.Object,
+            override val name: Expression.NameExpression?,
+            override val classParents: List<ClassBase.ClassParent>,
+            override val classBody: ClassBase.ClassBody?,
+            override var tag: Any? = null,
+        ) : Declaration, ClassBase, WithModifiers {
+            /**
+             * Returns `true` if the node is a companion object, `false` otherwise.
+             */
+            val isCompanion = modifiers.any { it is Keyword.Companion }
         }
 
         /**
