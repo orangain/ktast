@@ -284,7 +284,6 @@ open class MutableVisitor(
                     is Node.Expression.WhenExpression.WhenSubject -> copy(
                         lPar = visitChildren(lPar, newCh),
                         annotationSets = visitChildren(annotationSets, newCh),
-                        valKeyword = visitChildren(valKeyword, newCh),
                         variable = visitChildren(variable, newCh),
                         expression = visitChildren(expression, newCh),
                         rPar = visitChildren(rPar, newCh),

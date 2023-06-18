@@ -469,7 +469,6 @@ open class Converter {
             is KtProperty -> convertAnnotationSets(expression.modifierList)
             else -> listOf()
         },
-        valKeyword = v.subjectVariable?.valOrVarKeyword?.let(::convertKeyword),
         variable = v.subjectVariable?.let(::convertVariable),
         expression = convertExpression(
             when (val expression = v.subjectExpression) {

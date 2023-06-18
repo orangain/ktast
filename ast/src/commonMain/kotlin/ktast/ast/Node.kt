@@ -835,7 +835,6 @@ sealed interface Node {
              *
              * @property lPar left parenthesis of when subject.
              * @property annotationSets list of annotation sets.
-             * @property valKeyword `val` keyword if exists, otherwise `null`.
              * @property variable variable of when subject if exists, otherwise `null`.
              * @property expression expression of when subject.
              * @property rPar right parenthesis of when subject.
@@ -843,7 +842,6 @@ sealed interface Node {
             data class WhenSubject(
                 val lPar: Keyword.LPar,
                 override val annotationSets: List<Modifier.AnnotationSet>,
-                val valKeyword: Keyword.Val?,
                 val variable: Variable?,
                 val expression: Expression,
                 val rPar: Keyword.RPar,

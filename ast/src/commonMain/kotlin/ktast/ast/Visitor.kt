@@ -256,7 +256,6 @@ open class Visitor {
                 is Node.Expression.WhenExpression.WhenSubject -> {
                     visitChildren(lPar)
                     visitChildren(annotationSets)
-                    visitChildren(valKeyword)
                     visitChildren(variable)
                     visitChildren(expression)
                     visitChildren(rPar)

@@ -329,8 +329,9 @@ open class Writer(
                 is Node.Expression.WhenExpression.WhenSubject -> {
                     children(lPar)
                     children(annotationSets)
-                    children(valKeyword, variable)
                     if (variable != null) {
+                        append("val")
+                        children(variable)
                         append("=")
                     }
                     children(expression, rPar)
