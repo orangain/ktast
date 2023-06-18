@@ -602,7 +602,7 @@ sealed interface Node {
             data class Setter(
                 override val modifiers: List<Modifier>,
                 override val lPar: Keyword.LPar?,
-                val param: LambdaParam?,
+                val param: FunctionParam?,
                 override val rPar: Keyword.RPar?,
                 override val postModifiers: List<PostModifier>,
                 override val body: Expression?,
