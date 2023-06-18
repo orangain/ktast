@@ -1651,14 +1651,14 @@ sealed interface Node {
             override val text = "class"
         }
 
-        data class Object(override var tag: Any? = null) : Keyword,
-            Declaration.ClassOrObject.ClassDeclarationKeyword {
-            override val text = "object"
-        }
-
         data class Interface(override var tag: Any? = null) : Keyword,
             Declaration.ClassDeclaration.ClassOrInterfaceKeyword {
             override val text = "interface"
+        }
+
+        data class Object(override var tag: Any? = null) : Keyword,
+            Declaration.ClassOrObject.ClassDeclarationKeyword {
+            override val text = "object"
         }
 
         data class Constructor(override var tag: Any? = null) : Keyword {
