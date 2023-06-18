@@ -256,10 +256,143 @@ sealed interface Node {
      * @property classBody body of the class if exists, otherwise `null`.
      */
     sealed interface ClassBase {
-        val classDeclarationKeyword: Declaration.ClassDeclaration.ClassDeclarationKeyword
+        val classDeclarationKeyword: ClassDeclarationKeyword
         val name: Expression.NameExpression?
-        val classParents: List<Declaration.ClassDeclaration.ClassParent>
-        val classBody: Declaration.ClassDeclaration.ClassBody?
+        val classParents: List<ClassParent>
+        val classBody: ClassBody?
+
+        /**
+         * Common interface for keyword nodes that are used to declare a class.
+         */
+        sealed interface ClassDeclarationKeyword : Keyword
+
+        /**
+         * AST node that represents a parent of the class. The node corresponds to KtSuperTypeListEntry.
+         *
+         * @property type type of the parent.
+         * @property lPar left parenthesis of the value arguments.
+         * @property args list of value arguments of the parent call.
+         * @property rPar right parenthesis of the value arguments.
+         * @property expression expression of the delegation if exists, otherwise `null`.
+         */
+        sealed interface ClassParent : Node, WithValueArgs {
+            val type: Type
+            val expression: Expression?
+        }
+
+        /**
+         * ClassParent node that represents constructor invocation. The node corresponds to KtSuperTypeCallEntry.
+         *
+         * @property type type of the parent.
+         * @property args list of value arguments of the parent call.
+         * @property expression always `null`.
+         */
+        data class ConstructorClassParent(
+            override val type: Type.SimpleType,
+            override val lPar: Keyword.LPar,
+            override val args: List<ValueArg>,
+            override val rPar: Keyword.RPar,
+            override var tag: Any? = null,
+        ) : ClassParent {
+            override val expression: Expression? = null
+        }
+
+        /**
+         * ClassParent node that represents explicit delegation. The node corresponds to KtDelegatedSuperTypeEntry.
+         *
+         * @property type type of the interface delegated to.
+         * @property args always empty list.
+         * @property expression expression of the delegation.
+         */
+        data class DelegationClassParent(
+            override val type: Type,
+            override val expression: Expression,
+            override var tag: Any? = null,
+        ) : ClassParent {
+            override val lPar: Keyword.LPar? = null
+            override val args: List<ValueArg> = listOf()
+            override val rPar: Keyword.RPar? = null
+        }
+
+        /**
+         * ClassParent node that represents just a type. The node corresponds to KtSuperTypeEntry.
+         *
+         * @property type type of the parent.
+         * @property lPar always `null`.
+         * @property args always empty list.
+         * @property rPar always `null`.
+         * @property expression always `null`.
+         */
+        data class TypeClassParent(
+            override val type: Type,
+            override var tag: Any? = null,
+        ) : ClassParent {
+            override val lPar: Keyword.LPar? = null
+            override val args: List<ValueArg> = listOf()
+            override val rPar: Keyword.RPar? = null
+            override val expression: Expression? = null
+        }
+
+        /**
+         * AST node that represents a class body. The node corresponds to KtClassBody.
+         *
+         * @property enumEntries list of enum entries.
+         * @property declarations list of declarations.
+         */
+        data class ClassBody(
+            val enumEntries: List<EnumEntry>,
+            override val declarations: List<Declaration>,
+            override var tag: Any? = null,
+        ) : Node, WithDeclarations {
+
+            /**
+             * AST node that represents an enum entry. The node corresponds to KtEnumEntry.
+             *
+             * @property modifiers list of modifiers.
+             * @property name name of the enum entry.
+             * @property args list of value arguments of the enum entry.
+             * @property classBody class body of the enum entry if exists, otherwise `null`.
+             */
+            data class EnumEntry(
+                override val modifiers: List<Modifier>,
+                val name: Expression.NameExpression,
+                override val lPar: Keyword.LPar?,
+                override val args: List<ValueArg>,
+                override val rPar: Keyword.RPar?,
+                val classBody: ClassBody?,
+                override var tag: Any? = null,
+            ) : Node, WithModifiers, WithValueArgs
+
+            /**
+             * AST node that represents an init block, a.k.a. initializer. The node corresponds to KtAnonymousInitializer.
+             *
+             * @property block block of the initializer.
+             */
+            data class Initializer(
+                val block: Expression.BlockExpression,
+                override var tag: Any? = null,
+            ) : Declaration
+
+            /**
+             * AST node that represents a secondary constructor. The node corresponds to KtSecondaryConstructor.
+             *
+             * @property modifiers list of modifiers.
+             * @property constructorKeyword `constructor` keyword.
+             * @property params list of parameters of the secondary constructor.
+             * @property delegationCall delegation call expression of the secondary constructor if exists, otherwise `null`.
+             * @property block block of the constructor if exists, otherwise `null`.
+             */
+            data class SecondaryConstructor(
+                override val modifiers: List<Modifier>,
+                val constructorKeyword: Keyword.Constructor,
+                override val lPar: Keyword.LPar?,
+                override val params: List<FunctionParam>,
+                override val rPar: Keyword.RPar?,
+                val delegationCall: Expression.CallExpression?,
+                val block: Expression.BlockExpression?,
+                override var tag: Any? = null,
+            ) : Declaration, WithModifiers, WithFunctionParams
+        }
     }
 
     /**
@@ -283,17 +416,17 @@ sealed interface Node {
          */
         data class ClassDeclaration(
             override val modifiers: List<Modifier>,
-            val classDeclarationKeyword: ClassDeclarationKeyword,
-            val name: Expression.NameExpression?,
+            override val classDeclarationKeyword: ClassBase.ClassDeclarationKeyword,
+            override val name: Expression.NameExpression?,
             override val lAngle: Keyword.Less?,
             override val typeParams: List<TypeParam>,
             override val rAngle: Keyword.Greater?,
             val primaryConstructor: PrimaryConstructor?,
-            val classParents: List<ClassParent>,
+            override val classParents: List<ClassBase.ClassParent>,
             val typeConstraintSet: PostModifier.TypeConstraintSet?,
-            val classBody: ClassBody?,
+            override val classBody: ClassBase.ClassBody?,
             override var tag: Any? = null,
-        ) : Declaration, WithModifiers, WithTypeParams {
+        ) : Declaration, ClassBase, WithModifiers, WithTypeParams {
             /**
              * Returns `true` if the node is a class, `false` otherwise.
              */
@@ -320,78 +453,6 @@ sealed interface Node {
             val isEnum = modifiers.any { it is Keyword.Enum }
 
             /**
-             * Common interface for keyword nodes that are used to declare a class.
-             */
-            sealed interface ClassDeclarationKeyword : Keyword
-
-            /**
-             * AST node that represents a parent of the class. The node corresponds to KtSuperTypeListEntry.
-             *
-             * @property type type of the parent.
-             * @property lPar left parenthesis of the value arguments.
-             * @property args list of value arguments of the parent call.
-             * @property rPar right parenthesis of the value arguments.
-             * @property expression expression of the delegation if exists, otherwise `null`.
-             */
-            sealed interface ClassParent : Node, WithValueArgs {
-                val type: Type
-                val expression: Expression?
-            }
-
-            /**
-             * ClassParent node that represents constructor invocation. The node corresponds to KtSuperTypeCallEntry.
-             *
-             * @property type type of the parent.
-             * @property args list of value arguments of the parent call.
-             * @property expression always `null`.
-             */
-            data class ConstructorClassParent(
-                override val type: Type.SimpleType,
-                override val lPar: Keyword.LPar,
-                override val args: List<ValueArg>,
-                override val rPar: Keyword.RPar,
-                override var tag: Any? = null,
-            ) : ClassParent {
-                override val expression: Expression? = null
-            }
-
-            /**
-             * ClassParent node that represents explicit delegation. The node corresponds to KtDelegatedSuperTypeEntry.
-             *
-             * @property type type of the interface delegated to.
-             * @property args always empty list.
-             * @property expression expression of the delegation.
-             */
-            data class DelegationClassParent(
-                override val type: Type,
-                override val expression: Expression,
-                override var tag: Any? = null,
-            ) : ClassParent {
-                override val lPar: Keyword.LPar? = null
-                override val args: List<ValueArg> = listOf()
-                override val rPar: Keyword.RPar? = null
-            }
-
-            /**
-             * ClassParent node that represents just a type. The node corresponds to KtSuperTypeEntry.
-             *
-             * @property type type of the parent.
-             * @property lPar always `null`.
-             * @property args always empty list.
-             * @property rPar always `null`.
-             * @property expression always `null`.
-             */
-            data class TypeClassParent(
-                override val type: Type,
-                override var tag: Any? = null,
-            ) : ClassParent {
-                override val lPar: Keyword.LPar? = null
-                override val args: List<ValueArg> = listOf()
-                override val rPar: Keyword.RPar? = null
-                override val expression: Expression? = null
-            }
-
-            /**
              * AST node that represents a primary constructor. The node corresponds to KtPrimaryConstructor.
              *
              * @property modifiers list of modifiers.
@@ -406,67 +467,6 @@ sealed interface Node {
                 override val rPar: Keyword.RPar?,
                 override var tag: Any? = null,
             ) : Node, WithModifiers, WithFunctionParams
-
-            /**
-             * AST node that represents a class body. The node corresponds to KtClassBody.
-             *
-             * @property enumEntries list of enum entries.
-             * @property declarations list of declarations.
-             */
-            data class ClassBody(
-                val enumEntries: List<EnumEntry>,
-                override val declarations: List<Declaration>,
-                override var tag: Any? = null,
-            ) : Node, WithDeclarations {
-
-                /**
-                 * AST node that represents an enum entry. The node corresponds to KtEnumEntry.
-                 *
-                 * @property modifiers list of modifiers.
-                 * @property name name of the enum entry.
-                 * @property args list of value arguments of the enum entry.
-                 * @property classBody class body of the enum entry if exists, otherwise `null`.
-                 */
-                data class EnumEntry(
-                    override val modifiers: List<Modifier>,
-                    val name: Expression.NameExpression,
-                    override val lPar: Keyword.LPar?,
-                    override val args: List<ValueArg>,
-                    override val rPar: Keyword.RPar?,
-                    val classBody: ClassBody?,
-                    override var tag: Any? = null,
-                ) : Node, WithModifiers, WithValueArgs
-
-                /**
-                 * AST node that represents an init block, a.k.a. initializer. The node corresponds to KtAnonymousInitializer.
-                 *
-                 * @property block block of the initializer.
-                 */
-                data class Initializer(
-                    val block: Expression.BlockExpression,
-                    override var tag: Any? = null,
-                ) : Declaration
-
-                /**
-                 * AST node that represents a secondary constructor. The node corresponds to KtSecondaryConstructor.
-                 *
-                 * @property modifiers list of modifiers.
-                 * @property constructorKeyword `constructor` keyword.
-                 * @property params list of parameters of the secondary constructor.
-                 * @property delegationCall delegation call expression of the secondary constructor if exists, otherwise `null`.
-                 * @property block block of the constructor if exists, otherwise `null`.
-                 */
-                data class SecondaryConstructor(
-                    override val modifiers: List<Modifier>,
-                    val constructorKeyword: Keyword.Constructor,
-                    override val lPar: Keyword.LPar?,
-                    override val params: List<FunctionParam>,
-                    override val rPar: Keyword.RPar?,
-                    val delegationCall: Expression.CallExpression?,
-                    val block: Expression.BlockExpression?,
-                    override var tag: Any? = null,
-                ) : Declaration, WithModifiers, WithFunctionParams
-            }
         }
 
         /**
@@ -1625,17 +1625,17 @@ sealed interface Node {
         sealed interface ValOrVarKeyword : Keyword
 
         data class Class(override var tag: Any? = null) : Keyword,
-            Declaration.ClassDeclaration.ClassDeclarationKeyword {
+            ClassBase.ClassDeclarationKeyword {
             override val text = "class"
         }
 
         data class Object(override var tag: Any? = null) : Keyword,
-            Declaration.ClassDeclaration.ClassDeclarationKeyword {
+            ClassBase.ClassDeclarationKeyword {
             override val text = "object"
         }
 
         data class Interface(override var tag: Any? = null) : Keyword,
-            Declaration.ClassDeclaration.ClassDeclarationKeyword {
+            ClassBase.ClassDeclarationKeyword {
             override val text = "interface"
         }
 

@@ -115,7 +115,7 @@ open class Converter {
         classBody = v.body?.let(::convertClassBody),
     ).map(v)
 
-    protected fun convertClassParents(v: KtSuperTypeList?): List<Node.Declaration.ClassDeclaration.ClassParent> =
+    protected fun convertClassParents(v: KtSuperTypeList?): List<Node.ClassBase.ClassParent> =
         v?.entries.orEmpty().map(::convertClassParent)
 
     protected fun convertClassParent(v: KtSuperTypeListEntry) = when (v) {
@@ -126,7 +126,7 @@ open class Converter {
     }
 
     protected fun convertConstructorClassParent(v: KtSuperTypeCallEntry) =
-        Node.Declaration.ClassDeclaration.ConstructorClassParent(
+        Node.ClassBase.ConstructorClassParent(
             type = v.typeReference?.let(::convertType) as? Node.Type.SimpleType
                 ?: error("Bad type on super call $v"),
             lPar = v.valueArgumentList?.leftParenthesis?.let(::convertKeyword)
@@ -137,13 +137,13 @@ open class Converter {
         ).map(v)
 
     protected fun convertDelegationClassParent(v: KtDelegatedSuperTypeEntry) =
-        Node.Declaration.ClassDeclaration.DelegationClassParent(
+        Node.ClassBase.DelegationClassParent(
             type = v.typeReference?.let(::convertType)
                 ?: error("No type on delegated super type $v"),
             expression = convertExpression(v.delegateExpression ?: error("Missing delegateExpression for $v")),
         ).map(v)
 
-    protected fun convertTypeClassParent(v: KtSuperTypeEntry) = Node.Declaration.ClassDeclaration.TypeClassParent(
+    protected fun convertTypeClassParent(v: KtSuperTypeEntry) = Node.ClassBase.TypeClassParent(
         type = v.typeReference?.let(::convertType)
             ?: error("No type on super type $v"),
     ).map(v)
@@ -157,17 +157,17 @@ open class Converter {
             rPar = v.valueParameterList?.rightParenthesis?.let(::convertKeyword),
         ).map(v)
 
-    protected fun convertClassBody(v: KtClassBody): Node.Declaration.ClassDeclaration.ClassBody {
+    protected fun convertClassBody(v: KtClassBody): Node.ClassBase.ClassBody {
         val ktEnumEntries = v.declarations.filterIsInstance<KtEnumEntry>()
         val declarationsExcludingKtEnumEntry = v.declarations.filter { it !is KtEnumEntry }
-        return Node.Declaration.ClassDeclaration.ClassBody(
+        return Node.ClassBase.ClassBody(
             enumEntries = ktEnumEntries.map(::convertEnumEntry),
             declarations = declarationsExcludingKtEnumEntry.map(::convertDeclaration),
         ).map(v)
     }
 
-    protected fun convertEnumEntry(v: KtEnumEntry): Node.Declaration.ClassDeclaration.ClassBody.EnumEntry =
-        Node.Declaration.ClassDeclaration.ClassBody.EnumEntry(
+    protected fun convertEnumEntry(v: KtEnumEntry): Node.ClassBase.ClassBody.EnumEntry =
+        Node.ClassBase.ClassBody.EnumEntry(
             modifiers = convertModifiers(v.modifierList),
             name = v.nameIdentifier?.let(::convertNameExpression) ?: error("Unnamed enum"),
             lPar = v.initializerList?.valueArgumentList?.leftParenthesis?.let(::convertKeyword),
@@ -176,17 +176,17 @@ open class Converter {
             classBody = v.body?.let(::convertClassBody),
         ).map(v)
 
-    protected fun convertInitializer(v: KtAnonymousInitializer): Node.Declaration.ClassDeclaration.ClassBody.Initializer {
+    protected fun convertInitializer(v: KtAnonymousInitializer): Node.ClassBase.ClassBody.Initializer {
         if (v.modifierList != null) {
             throw Unsupported("Anonymous initializer with modifiers not supported")
         }
-        return Node.Declaration.ClassDeclaration.ClassBody.Initializer(
+        return Node.ClassBase.ClassBody.Initializer(
             block = convertBlockExpression(v.body as? KtBlockExpression ?: error("No init block for $v")),
         ).map(v)
     }
 
     protected fun convertSecondaryConstructor(v: KtSecondaryConstructor) =
-        Node.Declaration.ClassDeclaration.ClassBody.SecondaryConstructor(
+        Node.ClassBase.ClassBody.SecondaryConstructor(
             modifiers = convertModifiers(v.modifierList),
             constructorKeyword = convertKeyword(v.getConstructorKeyword()),
             lPar = v.valueParameterList?.leftParenthesis?.let(::convertKeyword),
