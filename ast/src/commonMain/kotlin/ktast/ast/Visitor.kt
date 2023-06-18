@@ -85,6 +85,13 @@ open class Visitor {
                     visitChildren(typeConstraintSet)
                     visitChildren(classBody)
                 }
+                is Node.Declaration.ObjectDeclaration -> {
+                    visitChildren(modifiers)
+                    visitChildren(classDeclarationKeyword)
+                    visitChildren(name)
+                    visitChildren(classParents)
+                    visitChildren(classBody)
+                }
                 is Node.ClassBase.ConstructorClassParent -> {
                     visitChildren(type)
                     visitChildren(lPar)

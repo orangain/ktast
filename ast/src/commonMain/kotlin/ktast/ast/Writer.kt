@@ -154,6 +154,16 @@ open class Writer(
                     children(typeConstraintSet)
                     children(classBody)
                 }
+                is Node.Declaration.ObjectDeclaration -> {
+                    children(modifiers)
+                    children(classDeclarationKeyword)
+                    children(name)
+                    if (classParents.isNotEmpty()) {
+                        append(":")
+                    }
+                    commaSeparatedChildren(classParents)
+                    children(classBody)
+                }
                 is Node.ClassBase.ConstructorClassParent -> {
                     children(type)
                     commaSeparatedChildren(lPar, args, rPar)

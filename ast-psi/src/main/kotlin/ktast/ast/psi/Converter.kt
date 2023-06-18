@@ -89,7 +89,8 @@ open class Converter {
 
     protected fun convertDeclaration(v: KtDeclaration): Node.Declaration = when (v) {
         is KtEnumEntry -> error("KtEnumEntry is handled in convertEnumEntry")
-        is KtClassOrObject -> convertClassDeclaration(v)
+        is KtClass -> convertClassDeclaration(v)
+        is KtObjectDeclaration -> convertObjectDeclaration(v)
         is KtAnonymousInitializer -> convertInitializer(v)
         is KtNamedFunction -> convertFunctionDeclaration(v)
         is KtDestructuringDeclaration -> convertPropertyDeclaration(v)
@@ -99,7 +100,7 @@ open class Converter {
         else -> error("Unrecognized declaration type for $v")
     }
 
-    protected fun convertClassDeclaration(v: KtClassOrObject) = Node.Declaration.ClassDeclaration(
+    protected fun convertClassDeclaration(v: KtClass) = Node.Declaration.ClassDeclaration(
         modifiers = convertModifiers(v.modifierList),
         classDeclarationKeyword = v.getDeclarationKeyword()?.let(::convertKeyword)
             ?: error("declarationKeyword not found"),
@@ -114,6 +115,23 @@ open class Converter {
         },
         classBody = v.body?.let(::convertClassBody),
     ).map(v)
+
+    protected fun convertObjectDeclaration(v: KtObjectDeclaration): Node.Declaration.ObjectDeclaration {
+        if (v.typeParameterList != null) {
+            throw Unsupported("Object declaration with type parameters is not supported")
+        }
+        if (v.primaryConstructor != null) {
+            throw Unsupported("Object declaration with primary constructor is not supported")
+        }
+        return Node.Declaration.ObjectDeclaration(
+            modifiers = convertModifiers(v.modifierList),
+            classDeclarationKeyword = v.getDeclarationKeyword()?.let(::convertKeyword)
+                ?: error("declarationKeyword not found"),
+            name = v.nameIdentifier?.let(::convertNameExpression),
+            classParents = convertClassParents(v.getSuperTypeList()),
+            classBody = v.body?.let(::convertClassBody),
+        ).map(v)
+    }
 
     protected fun convertClassParents(v: KtSuperTypeList?): List<Node.ClassBase.ClassParent> =
         v?.entries.orEmpty().map(::convertClassParent)
@@ -666,7 +684,7 @@ open class Converter {
 
     protected fun convertObjectLiteralExpression(v: KtObjectLiteralExpression) =
         Node.Expression.ObjectLiteralExpression(
-            declaration = convertClassDeclaration(v.objectDeclaration),
+            declaration = convertObjectDeclaration(v.objectDeclaration),
         ).map(v)
 
     protected fun convertCollectionLiteralExpression(v: KtCollectionLiteralExpression) =

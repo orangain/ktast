@@ -1342,7 +1342,7 @@ sealed interface Node {
          * @property declaration class declaration of this object literal expression.
          */
         data class ObjectLiteralExpression(
-            val declaration: Declaration.ClassDeclaration,
+            val declaration: Declaration.ObjectDeclaration,
             override var tag: Any? = null,
         ) : Expression
 
