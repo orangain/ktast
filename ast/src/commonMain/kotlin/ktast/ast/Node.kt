@@ -1472,6 +1472,7 @@ sealed interface Node {
 
     /**
      * AST node that represents a formal parameter of lambda expression. For example, `x` in `{ x -> ... }` is a lambda parameter. The node corresponds to KtParameter under KtLambdaExpression.
+     * Unlike [FunctionParam], this node can have multiple variables, i.e. destructuring declaration.
      *
      * @property lPar left parenthesis of this parameter if exists, otherwise `null`.
      * @property variables list of variables.
