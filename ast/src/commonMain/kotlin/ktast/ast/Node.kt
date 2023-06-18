@@ -634,29 +634,38 @@ sealed interface Node {
             override var tag: Any? = null,
         ) : Type
 
+        private interface NameWithTypeArgs : WithTypeArgs {
+            val name: Expression.NameExpression
+        }
+
         /**
          * AST node that represents a simple named type. The node corresponds to KtUserType and modifiers of its parent.
          *
          * @property modifiers list of modifiers.
-         * @property pieces list of pieces separated by dots. The piece represents a pair of a name and type arguments.
+         * @property qualifiers list of qualifiers separated by dots.
+         * @property name name of the type.
          */
         data class SimpleType(
             override val modifiers: List<Modifier>,
-            val pieces: List<SimpleTypePiece>,
+            val qualifiers: List<SimpleTypeQualifier>,
+            override val name: Expression.NameExpression,
+            override val lAngle: Keyword.Less?,
+            override val typeArgs: List<TypeArg>,
+            override val rAngle: Keyword.Greater?,
             override var tag: Any? = null,
-        ) : Type {
+        ) : Type, NameWithTypeArgs {
             /**
-             * AST node that represents a piece of simple named type. corresponds to KtUserType used as a piece.
+             * AST node that represents a qualifier of simple named type. The node corresponds to KtUserType used as a qualifier.
              *
-             * @property name name of the piece.
+             * @property name name of the qualifier.
              */
-            data class SimpleTypePiece(
-                val name: Expression.NameExpression,
+            data class SimpleTypeQualifier(
+                override val name: Expression.NameExpression,
                 override val lAngle: Keyword.Less?,
                 override val typeArgs: List<TypeArg>,
                 override val rAngle: Keyword.Greater?,
                 override var tag: Any? = null,
-            ) : Node, WithTypeArgs
+            ) : Node, NameWithTypeArgs
         }
 
         /**
