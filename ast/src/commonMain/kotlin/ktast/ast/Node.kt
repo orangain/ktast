@@ -1024,7 +1024,7 @@ sealed interface Node {
          * @property calleeExpression callee expression.
          * @property typeArgs list of type arguments.
          * @property args list of value arguments.
-         * @property lambdaArg lambda argument expression if exists, otherwise `null`. This can be one of [LambdaExpression], [AnnotatedExpression] or [LabeledExpression].
+         * @property lambdaArg lambda argument expression if exists, otherwise `null`. This can be one of [LambdaExpression], [AnnotatedExpression] or [LabeledExpression]. To extract the lambda expression, use [lambdaExpression].
          */
         data class CallExpression(
             val calleeExpression: Expression,
