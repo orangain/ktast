@@ -106,7 +106,7 @@ open class Converter {
             ?: error("declarationKeyword not found"),
         name = convertNameExpression(v.nameIdentifier ?: error("No name identifier for $v")),
         lAngle = v.typeParameterList?.leftAngle?.let(::convertKeyword),
-        typeParams = convertTypeParams(v.typeParameterList),
+        typeParameters = convertTypeParams(v.typeParameterList),
         rAngle = v.typeParameterList?.rightAngle?.let(::convertKeyword),
         primaryConstructor = v.primaryConstructor?.let(::convertPrimaryConstructor),
         parents = convertClassParents(v.getSuperTypeList()),
@@ -230,7 +230,7 @@ open class Converter {
         return Node.Declaration.FunctionDeclaration(
             modifiers = convertModifiers(v.modifierList),
             lAngle = v.typeParameterList?.leftAngle?.let(::convertKeyword),
-            typeParams = convertTypeParams(v.typeParameterList),
+            typeParameters = convertTypeParams(v.typeParameterList),
             rAngle = v.typeParameterList?.rightAngle?.let(::convertKeyword),
             receiverType = v.receiverTypeReference?.let(::convertType),
             name = v.nameIdentifier?.let(::convertNameExpression),
@@ -247,7 +247,7 @@ open class Converter {
         modifiers = convertModifiers(v.modifierList),
         valOrVarKeyword = convertKeyword(v.valOrVarKeyword),
         lAngle = v.typeParameterList?.leftAngle?.let(::convertKeyword),
-        typeParams = convertTypeParams(v.typeParameterList),
+        typeParameters = convertTypeParams(v.typeParameterList),
         rAngle = v.typeParameterList?.rightAngle?.let(::convertKeyword),
         receiverType = v.receiverTypeReference?.let(::convertType),
         lPar = null,
@@ -265,7 +265,7 @@ open class Converter {
         modifiers = convertModifiers(v.modifierList),
         valOrVarKeyword = v.valOrVarKeyword?.let(::convertKeyword) ?: error("Missing valOrVarKeyword"),
         lAngle = null,
-        typeParams = listOf(),
+        typeParameters = listOf(),
         rAngle = null,
         receiverType = null,
         lPar = v.lPar?.let(::convertKeyword),
@@ -305,7 +305,7 @@ open class Converter {
         modifiers = convertModifiers(v.modifierList),
         name = v.nameIdentifier?.let(::convertNameExpression) ?: error("No type alias name for $v"),
         lAngle = v.typeParameterList?.leftAngle?.let(::convertKeyword),
-        typeParams = convertTypeParams(v.typeParameterList),
+        typeParameters = convertTypeParams(v.typeParameterList),
         rAngle = v.typeParameterList?.rightAngle?.let(::convertKeyword),
         type = convertType(v.getTypeReference() ?: error("No type alias ref for $v"))
     ).map(v)
@@ -721,10 +721,10 @@ open class Converter {
         function = convertFunctionDeclaration(v),
     ).map(v)
 
-    protected fun convertTypeParams(v: KtTypeParameterList?): List<Node.TypeParam> =
+    protected fun convertTypeParams(v: KtTypeParameterList?): List<Node.TypeParameter> =
         v?.parameters.orEmpty().map(::convertTypeParam)
 
-    protected fun convertTypeParam(v: KtTypeParameter) = Node.TypeParam(
+    protected fun convertTypeParam(v: KtTypeParameter) = Node.TypeParameter(
         modifiers = convertModifiers(v.modifierList),
         name = v.nameIdentifier?.let(::convertNameExpression) ?: error("No type param name for $v"),
         type = v.extendsBound?.let(::convertType)

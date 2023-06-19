@@ -51,12 +51,12 @@ sealed interface Node {
      * Common interface for AST nodes that have type parameters.
      *
      * @property lAngle left angle bracket of the type parameters if exists, otherwise `null`.
-     * @property typeParams list of type parameters.
+     * @property typeParameters list of type parameters.
      * @property rAngle right angle bracket of the type parameters if exists, otherwise `null`.
      */
-    interface WithTypeParams {
+    interface WithTypeParameters {
         val lAngle: Keyword.Less?
-        val typeParams: List<TypeParam>
+        val typeParameters: List<TypeParameter>
         val rAngle: Keyword.Greater?
     }
 
@@ -436,7 +436,7 @@ sealed interface Node {
          * @property declarationKeyword class declaration keyword.
          * @property name name of the class.
          * @property lAngle left angle bracket of the type parameters.
-         * @property typeParams list of type parameters.
+         * @property typeParameters list of type parameters.
          * @property rAngle right angle bracket of the type parameters.
          * @property primaryConstructor primary constructor if exists, otherwise `null`.
          * @property parents list of class parents.
@@ -448,14 +448,14 @@ sealed interface Node {
             override val declarationKeyword: ClassOrInterfaceKeyword,
             override val name: Expression.NameExpression,
             override val lAngle: Keyword.Less?,
-            override val typeParams: List<TypeParam>,
+            override val typeParameters: List<TypeParameter>,
             override val rAngle: Keyword.Greater?,
             val primaryConstructor: PrimaryConstructor?,
             override val parents: List<ClassOrObject.ClassParent>,
             val typeConstraintSet: PostModifier.TypeConstraintSet?,
             override val body: ClassOrObject.ClassBody?,
             override var tag: Any? = null,
-        ) : ClassOrObject, WithTypeParams {
+        ) : ClassOrObject, WithTypeParameters {
 
             /**
              * Common interface for class or interface keywords.
@@ -495,7 +495,7 @@ sealed interface Node {
          * AST node that represents a function declaration. The node corresponds to KtNamedFunction.
          *
          * @property modifiers list of modifiers.
-         * @property typeParams list of type parameters of the function.
+         * @property typeParameters list of type parameters of the function.
          * @property receiverType receiver type of the function if exists, otherwise `null`.
          * @property name name of the function. If the function is anonymous, the name is `null`.
          * @property params list of parameters of the function.
@@ -506,7 +506,7 @@ sealed interface Node {
         data class FunctionDeclaration(
             override val modifiers: List<Modifier>,
             override val lAngle: Keyword.Less?,
-            override val typeParams: List<TypeParam>,
+            override val typeParameters: List<TypeParameter>,
             override val rAngle: Keyword.Greater?,
             val receiverType: Type?,
             val name: Expression.NameExpression?,
@@ -517,14 +517,14 @@ sealed interface Node {
             override val postModifiers: List<PostModifier>,
             val body: Expression?,
             override var tag: Any? = null,
-        ) : Declaration, WithModifiers, WithTypeParams, WithFunctionParams, WithPostModifiers
+        ) : Declaration, WithModifiers, WithTypeParameters, WithFunctionParams, WithPostModifiers
 
         /**
          * AST node that represents a property declaration. The node corresponds to KtProperty or KtDestructuringDeclaration.
          *
          * @property modifiers list of modifiers.
          * @property valOrVarKeyword `val` or `var` keyword.
-         * @property typeParams list of type parameters of the property.
+         * @property typeParameters list of type parameters of the property.
          * @property receiverType receiver type of the property if exists, otherwise `null`.
          * @property lPar `(` keyword if exists, otherwise `null`. When there are two or more variables, the keyword must exist.
          * @property variables variables of the property. Always at least one, more than one means destructuring.
@@ -538,7 +538,7 @@ sealed interface Node {
             override val modifiers: List<Modifier>,
             val valOrVarKeyword: Keyword.ValOrVarKeyword,
             override val lAngle: Keyword.Less?,
-            override val typeParams: List<TypeParam>,
+            override val typeParameters: List<TypeParameter>,
             override val rAngle: Keyword.Greater?,
             val receiverType: Type?,
             val lPar: Keyword.LPar?,
@@ -549,7 +549,7 @@ sealed interface Node {
             val delegateExpression: Expression?,
             val accessors: List<Accessor>,
             override var tag: Any? = null,
-        ) : Declaration, WithModifiers, WithTypeParams {
+        ) : Declaration, WithModifiers, WithTypeParameters {
             init {
                 require(variables.isNotEmpty()) { "variables must not be empty" }
                 if (variables.size >= 2) {
@@ -623,18 +623,18 @@ sealed interface Node {
          *
          * @property modifiers list of modifiers.
          * @property name name of the type alias.
-         * @property typeParams list of type parameters of the type alias.
+         * @property typeParameters list of type parameters of the type alias.
          * @property type existing type of the type alias.
          */
         data class TypeAliasDeclaration(
             override val modifiers: List<Modifier>,
             val name: Expression.NameExpression,
             override val lAngle: Keyword.Less?,
-            override val typeParams: List<TypeParam>,
+            override val typeParameters: List<TypeParameter>,
             override val rAngle: Keyword.Greater?,
             val type: Type,
             override var tag: Any? = null,
-        ) : Declaration, WithModifiers, WithTypeParams
+        ) : Declaration, WithModifiers, WithTypeParameters
     }
 
     /**
@@ -1436,7 +1436,7 @@ sealed interface Node {
      * @property name name of the type parameter.
      * @property type type of the type parameter if exists, otherwise `null`.
      */
-    data class TypeParam(
+    data class TypeParameter(
         override val modifiers: List<Modifier>,
         val name: Expression.NameExpression,
         val type: Type?,

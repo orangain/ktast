@@ -115,7 +115,7 @@ open class Visitor {
                     visitChildren(declarationKeyword)
                     visitChildren(name)
                     visitChildren(lAngle)
-                    visitChildren(typeParams)
+                    visitChildren(typeParameters)
                     visitChildren(rAngle)
                     visitChildren(primaryConstructor)
                     visitChildren(parents)
@@ -139,7 +139,7 @@ open class Visitor {
                 is Node.Declaration.FunctionDeclaration -> {
                     visitChildren(modifiers)
                     visitChildren(lAngle)
-                    visitChildren(typeParams)
+                    visitChildren(typeParameters)
                     visitChildren(rAngle)
                     visitChildren(receiverType)
                     visitChildren(name)
@@ -154,7 +154,7 @@ open class Visitor {
                     visitChildren(modifiers)
                     visitChildren(valOrVarKeyword)
                     visitChildren(lAngle)
-                    visitChildren(typeParams)
+                    visitChildren(typeParameters)
                     visitChildren(rAngle)
                     visitChildren(receiverType)
                     visitChildren(lPar)
@@ -185,7 +185,7 @@ open class Visitor {
                     visitChildren(modifiers)
                     visitChildren(name)
                     visitChildren(lAngle)
-                    visitChildren(typeParams)
+                    visitChildren(typeParameters)
                     visitChildren(rAngle)
                     visitChildren(type)
                 }
@@ -379,7 +379,7 @@ open class Visitor {
                 is Node.Expression.AnonymousFunctionExpression -> {
                     visitChildren(function)
                 }
-                is Node.TypeParam -> {
+                is Node.TypeParameter -> {
                     visitChildren(modifiers)
                     visitChildren(name)
                     visitChildren(type)

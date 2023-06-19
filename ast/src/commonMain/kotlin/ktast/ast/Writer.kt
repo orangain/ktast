@@ -186,7 +186,7 @@ open class Writer(
                     children(modifiers)
                     children(declarationKeyword)
                     children(name)
-                    commaSeparatedChildren(lAngle, typeParams, rAngle)
+                    commaSeparatedChildren(lAngle, typeParameters, rAngle)
                     children(primaryConstructor)
                     if (parents.isNotEmpty()) {
                         append(":")
@@ -213,7 +213,7 @@ open class Writer(
                 is Node.Declaration.FunctionDeclaration -> {
                     children(modifiers)
                     append("fun")
-                    commaSeparatedChildren(lAngle, typeParams, rAngle)
+                    commaSeparatedChildren(lAngle, typeParameters, rAngle)
                     if (receiverType != null) children(receiverType).append(".")
                     name?.also { children(it) }
                     commaSeparatedChildren(lPar, params, rPar)
@@ -224,7 +224,7 @@ open class Writer(
                 is Node.Declaration.PropertyDeclaration -> {
                     children(modifiers)
                     children(valOrVarKeyword)
-                    commaSeparatedChildren(lAngle, typeParams, rAngle)
+                    commaSeparatedChildren(lAngle, typeParameters, rAngle)
                     if (receiverType != null) children(receiverType).append('.')
                     children(lPar)
                     children(variables, ",")
@@ -256,7 +256,7 @@ open class Writer(
                     children(modifiers)
                     append("typealias")
                     children(name)
-                    commaSeparatedChildren(lAngle, typeParams, rAngle)
+                    commaSeparatedChildren(lAngle, typeParameters, rAngle)
                     append("=")
                     children(type)
                 }
@@ -468,7 +468,7 @@ open class Writer(
                 }
                 is Node.Expression.AnonymousFunctionExpression ->
                     children(function)
-                is Node.TypeParam -> {
+                is Node.TypeParameter -> {
                     children(modifiers)
                     children(name)
                     if (type != null) append(":").also { children(type) }
