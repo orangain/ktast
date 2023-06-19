@@ -66,7 +66,7 @@ open class Converter {
 
     protected fun convertForStatement(v: KtForExpression) = Node.Statement.ForStatement(
         lPar = convertKeyword(v.leftParenthesis ?: error("No left parenthesis for $v")),
-        loopParam = convertLambdaParam(v.loopParameter ?: error("No param on for $v")),
+        loopParam = convertLambdaParam(v.loopParameter ?: error("No parameter on for $v")),
         inKeyword = convertKeyword(v.inKeyword ?: error("No in keyword for $v")),
         loopRange = convertExpression(v.loopRange ?: error("No loop range expression for $v")),
         rPar = convertKeyword(v.rightParenthesis ?: error("No right parenthesis for $v")),
@@ -394,7 +394,7 @@ open class Converter {
 
     protected fun convertTypeFunctionParam(v: KtParameter) = Node.Type.FunctionType.FunctionTypeParameter(
         name = v.nameIdentifier?.let(::convertNameExpression),
-        type = convertType(v.typeReference ?: error("No param type"))
+        type = convertType(v.typeReference ?: error("No parameter type"))
     ).map(v)
 
     protected fun convertExpression(v: KtExpression): Node.Expression = when (v) {
@@ -452,7 +452,7 @@ open class Converter {
 
     protected fun convertCatchClause(v: KtCatchClause) = Node.Expression.TryExpression.CatchClause(
         lPar = convertKeyword(v.parameterList?.leftParenthesis ?: error("No catch lpar for $v")),
-        parameters = convertFuncParams(v.parameterList ?: error("No catch params for $v")),
+        parameters = convertFuncParams(v.parameterList ?: error("No catch parameters for $v")),
         rPar = convertKeyword(v.parameterList?.rightParenthesis ?: error("No catch rpar for $v")),
         block = convertBlockExpression(v.catchBody as? KtBlockExpression ?: error("No catch block for $v")),
     ).map(v)
@@ -726,7 +726,7 @@ open class Converter {
 
     protected fun convertTypeParam(v: KtTypeParameter) = Node.TypeParameter(
         modifiers = convertModifiers(v.modifierList),
-        name = v.nameIdentifier?.let(::convertNameExpression) ?: error("No type param name for $v"),
+        name = v.nameIdentifier?.let(::convertNameExpression) ?: error("No type parameter name for $v"),
         type = v.extendsBound?.let(::convertType)
     ).map(v)
 
@@ -736,7 +736,7 @@ open class Converter {
     protected fun convertFuncParam(v: KtParameter) = Node.FunctionParameter(
         modifiers = convertModifiers(v.modifierList),
         valOrVarKeyword = v.valOrVarKeyword?.let(::convertKeyword),
-        name = v.nameIdentifier?.let(::convertNameExpression) ?: error("No param name"),
+        name = v.nameIdentifier?.let(::convertNameExpression) ?: error("No parameter name"),
         type = v.typeReference?.let(::convertType),
         defaultValue = v.defaultValue?.let(::convertExpression),
     ).map(v)
@@ -777,7 +777,7 @@ open class Converter {
 
     protected fun convertVariable(v: KtParameter) = Node.Variable(
         annotationSets = convertAnnotationSets(v.modifierList),
-        name = v.nameIdentifier?.let(::convertNameExpression) ?: error("No lambda param name on $v"),
+        name = v.nameIdentifier?.let(::convertNameExpression) ?: error("No lambda parameter name on $v"),
         type = v.typeReference?.let(::convertType),
     ).map(v)
 
@@ -812,12 +812,13 @@ open class Converter {
     protected fun convertValueArg(v: KtValueArgument) = Node.ValueArgument(
         name = v.getArgumentName()?.referenceExpression?.let(::convertNameExpression),
         spreadOperator = v.getSpreadElement()?.let(::convertKeyword),
-        expression = convertExpression(v.getArgumentExpression() ?: error("No expr for value arg"))
+        expression = convertExpression(v.getArgumentExpression() ?: error("No expression for value argument"))
     ).map(v)
 
     protected fun convertContextReceiver(v: KtContextReceiverList) = Node.ContextReceiver(
         lPar = convertKeyword(v.leftParenthesis),
-        receiverTypes = v.contextReceivers().map { convertType(it.typeReference() ?: error("No type ref for $it")) },
+        receiverTypes = v.contextReceivers()
+            .map { convertType(it.typeReference() ?: error("No type reference for $it")) },
         rPar = convertKeyword(v.rightParenthesis),
     ).map(v)
 

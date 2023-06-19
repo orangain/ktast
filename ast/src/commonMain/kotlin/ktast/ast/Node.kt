@@ -610,9 +610,9 @@ sealed interface Node {
             ) : Accessor {
                 init {
                     if (parameter == null) {
-                        require(body == null) { "body must be null when param is null" }
+                        require(body == null) { "body must be null when parameter is null" }
                     } else {
-                        require(body != null) { "body must not be null when param is not null" }
+                        require(body != null) { "body must not be null when parameter is not null" }
                     }
                 }
             }
