@@ -66,7 +66,7 @@ open class Converter {
 
     protected fun convertForStatement(v: KtForExpression) = Node.Statement.ForStatement(
         lPar = convertKeyword(v.leftParenthesis ?: error("No left parenthesis for $v")),
-        loopParam = convertLambdaParam(v.loopParameter ?: error("No param on for $v")),
+        loopParameter = convertLambdaParameter(v.loopParameter ?: error("No parameter on for $v")),
         inKeyword = convertKeyword(v.inKeyword ?: error("No in keyword for $v")),
         loopRange = convertExpression(v.loopRange ?: error("No loop range expression for $v")),
         rPar = convertKeyword(v.rightParenthesis ?: error("No right parenthesis for $v")),
@@ -106,7 +106,7 @@ open class Converter {
             ?: error("declarationKeyword not found"),
         name = convertNameExpression(v.nameIdentifier ?: error("No name identifier for $v")),
         lAngle = v.typeParameterList?.leftAngle?.let(::convertKeyword),
-        typeParams = convertTypeParams(v.typeParameterList),
+        typeParameters = convertTypeParameters(v.typeParameterList),
         rAngle = v.typeParameterList?.rightAngle?.let(::convertKeyword),
         primaryConstructor = v.primaryConstructor?.let(::convertPrimaryConstructor),
         parents = convertClassParents(v.getSuperTypeList()),
@@ -149,7 +149,7 @@ open class Converter {
                 ?: error("Bad type on super call $v"),
             lPar = v.valueArgumentList?.leftParenthesis?.let(::convertKeyword)
                 ?: error("No left parenthesis for $v"),
-            args = convertValueArgs(v.valueArgumentList),
+            arguments = convertValueArguments(v.valueArgumentList),
             rPar = v.valueArgumentList?.rightParenthesis?.let(::convertKeyword)
                 ?: error("No right parenthesis for $v"),
         ).map(v)
@@ -171,7 +171,7 @@ open class Converter {
             modifiers = convertModifiers(v.modifierList),
             constructorKeyword = v.getConstructorKeyword()?.let(::convertKeyword),
             lPar = v.valueParameterList?.leftParenthesis?.let(::convertKeyword),
-            params = convertFuncParams(v.valueParameterList),
+            parameters = convertFunctionParameters(v.valueParameterList),
             rPar = v.valueParameterList?.rightParenthesis?.let(::convertKeyword),
         ).map(v)
 
@@ -189,7 +189,7 @@ open class Converter {
             modifiers = convertModifiers(v.modifierList),
             name = v.nameIdentifier?.let(::convertNameExpression) ?: error("Unnamed enum"),
             lPar = v.initializerList?.valueArgumentList?.leftParenthesis?.let(::convertKeyword),
-            args = convertValueArgs(v.initializerList?.valueArgumentList),
+            arguments = convertValueArguments(v.initializerList?.valueArgumentList),
             rPar = v.initializerList?.valueArgumentList?.rightParenthesis?.let(::convertKeyword),
             classBody = v.body?.let(::convertClassBody),
         ).map(v)
@@ -208,7 +208,7 @@ open class Converter {
             modifiers = convertModifiers(v.modifierList),
             constructorKeyword = convertKeyword(v.getConstructorKeyword()),
             lPar = v.valueParameterList?.leftParenthesis?.let(::convertKeyword),
-            params = convertFuncParams(v.valueParameterList),
+            parameters = convertFunctionParameters(v.valueParameterList),
             rPar = v.valueParameterList?.rightParenthesis?.let(::convertKeyword),
             delegationCall = if (v.hasImplicitDelegationCall()) null else convertCallExpression(
                 v.getDelegationCall()
@@ -230,12 +230,12 @@ open class Converter {
         return Node.Declaration.FunctionDeclaration(
             modifiers = convertModifiers(v.modifierList),
             lAngle = v.typeParameterList?.leftAngle?.let(::convertKeyword),
-            typeParams = convertTypeParams(v.typeParameterList),
+            typeParameters = convertTypeParameters(v.typeParameterList),
             rAngle = v.typeParameterList?.rightAngle?.let(::convertKeyword),
             receiverType = v.receiverTypeReference?.let(::convertType),
             name = v.nameIdentifier?.let(::convertNameExpression),
             lPar = v.valueParameterList?.leftParenthesis?.let(::convertKeyword),
-            params = convertFuncParams(v.valueParameterList),
+            parameters = convertFunctionParameters(v.valueParameterList),
             rPar = v.valueParameterList?.rightParenthesis?.let(::convertKeyword),
             returnType = v.typeReference?.let(::convertType),
             postModifiers = convertPostModifiers(v),
@@ -247,7 +247,7 @@ open class Converter {
         modifiers = convertModifiers(v.modifierList),
         valOrVarKeyword = convertKeyword(v.valOrVarKeyword),
         lAngle = v.typeParameterList?.leftAngle?.let(::convertKeyword),
-        typeParams = convertTypeParams(v.typeParameterList),
+        typeParameters = convertTypeParameters(v.typeParameterList),
         rAngle = v.typeParameterList?.rightAngle?.let(::convertKeyword),
         receiverType = v.receiverTypeReference?.let(::convertType),
         lPar = null,
@@ -265,7 +265,7 @@ open class Converter {
         modifiers = convertModifiers(v.modifierList),
         valOrVarKeyword = v.valOrVarKeyword?.let(::convertKeyword) ?: error("Missing valOrVarKeyword"),
         lAngle = null,
-        typeParams = listOf(),
+        typeParameters = listOf(),
         rAngle = null,
         receiverType = null,
         lPar = v.lPar?.let(::convertKeyword),
@@ -295,7 +295,7 @@ open class Converter {
     protected fun convertSetter(v: KtPropertyAccessor) = Node.Declaration.PropertyDeclaration.Setter(
         modifiers = convertModifiers(v.modifierList),
         lPar = v.leftParenthesis?.let(::convertKeyword),
-        param = v.parameter?.let(::convertFuncParam),
+        parameter = v.parameter?.let(::convertFunctionParameter),
         rPar = v.rightParenthesis?.let(::convertKeyword),
         postModifiers = convertPostModifiers(v),
         body = v.bodyExpression?.let(::convertExpression),
@@ -305,7 +305,7 @@ open class Converter {
         modifiers = convertModifiers(v.modifierList),
         name = v.nameIdentifier?.let(::convertNameExpression) ?: error("No type alias name for $v"),
         lAngle = v.typeParameterList?.leftAngle?.let(::convertKeyword),
-        typeParams = convertTypeParams(v.typeParameterList),
+        typeParameters = convertTypeParameters(v.typeParameterList),
         rAngle = v.typeParameterList?.rightAngle?.let(::convertKeyword),
         type = convertType(v.getTypeReference() ?: error("No type alias ref for $v"))
     ).map(v)
@@ -357,7 +357,7 @@ open class Converter {
                 .map { convertTypeSimpleQualifier(v, it) },
             name = convertNameExpression(typeEl.referenceExpression ?: error("No type name for $typeEl")),
             lAngle = typeEl.typeArgumentList?.leftAngle?.let(::convertKeyword),
-            typeArgs = convertTypeArgs(typeEl.typeArgumentList),
+            typeArguments = convertTypeArguments(typeEl.typeArgumentList),
             rAngle = typeEl.typeArgumentList?.rightAngle?.let(::convertKeyword),
         ).map(v)
 
@@ -365,7 +365,7 @@ open class Converter {
         Node.Type.SimpleType.SimpleTypeQualifier(
             name = convertNameExpression(typeEl.referenceExpression ?: error("No type name for $typeEl")),
             lAngle = typeEl.typeArgumentList?.leftAngle?.let(::convertKeyword),
-            typeArgs = convertTypeArgs(typeEl.typeArgumentList),
+            typeArguments = convertTypeArguments(typeEl.typeArgumentList),
             rAngle = typeEl.typeArgumentList?.rightAngle?.let(::convertKeyword),
         ).map(v)
 
@@ -384,17 +384,17 @@ open class Converter {
             contextReceiver = typeEl.contextReceiverList?.let(::convertContextReceiver),
             receiverType = typeEl.receiver?.typeReference?.let(::convertType),
             lPar = typeEl.parameterList?.leftParenthesis?.let(::convertKeyword),
-            params = convertTypeFunctionParams(typeEl.parameterList),
+            parameters = convertTypeFunctionParameters(typeEl.parameterList),
             rPar = typeEl.parameterList?.rightParenthesis?.let(::convertKeyword),
             returnType = convertType(typeEl.returnTypeReference ?: error("No return type for $typeEl")),
         ).map(v)
 
-    protected fun convertTypeFunctionParams(v: KtParameterList?): List<Node.Type.FunctionType.FunctionTypeParam> =
-        v?.parameters.orEmpty().map(::convertTypeFunctionParam)
+    protected fun convertTypeFunctionParameters(v: KtParameterList?): List<Node.Type.FunctionType.FunctionTypeParameter> =
+        v?.parameters.orEmpty().map(::convertTypeFunctionParameter)
 
-    protected fun convertTypeFunctionParam(v: KtParameter) = Node.Type.FunctionType.FunctionTypeParam(
+    protected fun convertTypeFunctionParameter(v: KtParameter) = Node.Type.FunctionType.FunctionTypeParameter(
         name = v.nameIdentifier?.let(::convertNameExpression),
-        type = convertType(v.typeReference ?: error("No param type"))
+        type = convertType(v.typeReference ?: error("No parameter type"))
     ).map(v)
 
     protected fun convertExpression(v: KtExpression): Node.Expression = when (v) {
@@ -452,7 +452,7 @@ open class Converter {
 
     protected fun convertCatchClause(v: KtCatchClause) = Node.Expression.TryExpression.CatchClause(
         lPar = convertKeyword(v.parameterList?.leftParenthesis ?: error("No catch lpar for $v")),
-        params = convertFuncParams(v.parameterList ?: error("No catch params for $v")),
+        parameters = convertFunctionParameters(v.parameterList ?: error("No catch parameters for $v")),
         rPar = convertKeyword(v.parameterList?.rightParenthesis ?: error("No catch rpar for $v")),
         block = convertBlockExpression(v.catchBody as? KtBlockExpression ?: error("No catch block for $v")),
     ).map(v)
@@ -546,12 +546,12 @@ open class Converter {
     protected fun convertCallExpression(v: KtCallElement) = Node.Expression.CallExpression(
         calleeExpression = convertExpression(v.calleeExpression ?: error("No call expr for $v")),
         lAngle = v.typeArgumentList?.leftAngle?.let(::convertKeyword),
-        typeArgs = convertTypeArgs(v.typeArgumentList),
+        typeArguments = convertTypeArguments(v.typeArgumentList),
         rAngle = v.typeArgumentList?.rightAngle?.let(::convertKeyword),
         lPar = v.valueArgumentList?.leftParenthesis?.let(::convertKeyword),
-        args = convertValueArgs(v.valueArgumentList),
+        arguments = convertValueArguments(v.valueArgumentList),
         rPar = v.valueArgumentList?.rightParenthesis?.let(::convertKeyword),
-        lambdaArg = v.lambdaArguments.also {
+        lambdaArgument = v.lambdaArguments.also {
             if (it.size >= 2) {
                 // According to the Kotlin syntax, at most one lambda argument is allowed.
                 // However, Kotlin compiler can parse multiple lambda arguments.
@@ -561,7 +561,7 @@ open class Converter {
     ).map(v)
 
     protected fun convertLambdaExpression(v: KtLambdaExpression) = Node.Expression.LambdaExpression(
-        params = convertLambdaParams(v.functionLiteral.valueParameterList),
+        parameters = convertLambdaParameters(v.functionLiteral.valueParameterList),
         arrow = v.functionLiteral.arrow?.let(::convertKeyword),
         statements = v.bodyExpression?.statements.orEmpty().map(::convertStatement),
     ).map(v)
@@ -678,7 +678,7 @@ open class Converter {
     ).map(v)
 
     protected fun convertSuperExpression(v: KtSuperExpression) = Node.Expression.SuperExpression(
-        typeArg = v.superTypeQualifier?.let(::convertTypeArg),
+        typeArgument = v.superTypeQualifier?.let(::convertTypeArgument),
         label = v.getTargetLabel()?.let(::convertNameExpression),
     ).map(v)
 
@@ -688,7 +688,7 @@ open class Converter {
                 label = null,
             ).map(v)
             "super" -> Node.Expression.SuperExpression(
-                typeArg = null,
+                typeArgument = null,
                 label = null,
             ).map(v)
             else -> error("Unrecognized this/super expr $v")
@@ -721,40 +721,40 @@ open class Converter {
         function = convertFunctionDeclaration(v),
     ).map(v)
 
-    protected fun convertTypeParams(v: KtTypeParameterList?): List<Node.TypeParam> =
-        v?.parameters.orEmpty().map(::convertTypeParam)
+    protected fun convertTypeParameters(v: KtTypeParameterList?): List<Node.TypeParameter> =
+        v?.parameters.orEmpty().map(::convertTypeParameter)
 
-    protected fun convertTypeParam(v: KtTypeParameter) = Node.TypeParam(
+    protected fun convertTypeParameter(v: KtTypeParameter) = Node.TypeParameter(
         modifiers = convertModifiers(v.modifierList),
-        name = v.nameIdentifier?.let(::convertNameExpression) ?: error("No type param name for $v"),
+        name = v.nameIdentifier?.let(::convertNameExpression) ?: error("No type parameter name for $v"),
         type = v.extendsBound?.let(::convertType)
     ).map(v)
 
-    protected fun convertFuncParams(v: KtParameterList?): List<Node.FunctionParam> =
-        v?.parameters.orEmpty().map(::convertFuncParam)
+    protected fun convertFunctionParameters(v: KtParameterList?): List<Node.FunctionParameter> =
+        v?.parameters.orEmpty().map(::convertFunctionParameter)
 
-    protected fun convertFuncParam(v: KtParameter) = Node.FunctionParam(
+    protected fun convertFunctionParameter(v: KtParameter) = Node.FunctionParameter(
         modifiers = convertModifiers(v.modifierList),
         valOrVarKeyword = v.valOrVarKeyword?.let(::convertKeyword),
-        name = v.nameIdentifier?.let(::convertNameExpression) ?: error("No param name"),
+        name = v.nameIdentifier?.let(::convertNameExpression) ?: error("No parameter name"),
         type = v.typeReference?.let(::convertType),
         defaultValue = v.defaultValue?.let(::convertExpression),
     ).map(v)
 
-    protected fun convertLambdaParams(v: KtParameterList?): List<Node.LambdaParam> =
-        v?.parameters.orEmpty().map(::convertLambdaParam)
+    protected fun convertLambdaParameters(v: KtParameterList?): List<Node.LambdaParameter> =
+        v?.parameters.orEmpty().map(::convertLambdaParameter)
 
-    protected fun convertLambdaParam(v: KtParameter): Node.LambdaParam {
+    protected fun convertLambdaParameter(v: KtParameter): Node.LambdaParameter {
         val destructuringDeclaration = v.destructuringDeclaration
         return if (destructuringDeclaration != null) {
-            Node.LambdaParam(
+            Node.LambdaParameter(
                 lPar = destructuringDeclaration.lPar?.let(::convertKeyword),
                 variables = destructuringDeclaration.entries.map(::convertVariable),
                 rPar = destructuringDeclaration.rPar?.let(::convertKeyword),
                 destructuringType = v.typeReference?.let(::convertType),
             ).map(v)
         } else {
-            Node.LambdaParam(
+            Node.LambdaParameter(
                 lPar = null,
                 variables = listOf(convertVariable(v)),
                 rPar = null,
@@ -777,14 +777,14 @@ open class Converter {
 
     protected fun convertVariable(v: KtParameter) = Node.Variable(
         annotationSets = convertAnnotationSets(v.modifierList),
-        name = v.nameIdentifier?.let(::convertNameExpression) ?: error("No lambda param name on $v"),
+        name = v.nameIdentifier?.let(::convertNameExpression) ?: error("No lambda parameter name on $v"),
         type = v.typeReference?.let(::convertType),
     ).map(v)
 
-    protected fun convertTypeArgs(v: KtTypeArgumentList?): List<Node.TypeArg> =
-        v?.arguments.orEmpty().map(::convertTypeArg)
+    protected fun convertTypeArguments(v: KtTypeArgumentList?): List<Node.TypeArgument> =
+        v?.arguments.orEmpty().map(::convertTypeArgument)
 
-    protected fun convertTypeArg(v: KtTypeProjection) = Node.TypeArg(
+    protected fun convertTypeArgument(v: KtTypeProjection) = Node.TypeArgument(
         modifiers = convertModifiers(v.modifierList),
         type = when (v.projectionKind) {
             KtProjectionKind.STAR -> convertSimpleType(v)
@@ -792,7 +792,7 @@ open class Converter {
         },
     ).map(v)
 
-    protected fun convertTypeArg(v: KtTypeReference) = Node.TypeArg(
+    protected fun convertTypeArgument(v: KtTypeReference) = Node.TypeArgument(
         modifiers = listOf(),
         type = convertType(v),
     ).map(v)
@@ -802,22 +802,23 @@ open class Converter {
         qualifiers = listOf(),
         name = convertNameExpression(v.projectionToken ?: error("Missing projection token for $v")),
         lAngle = null,
-        typeArgs = listOf(),
+        typeArguments = listOf(),
         rAngle = null,
     ).map(v)
 
-    protected fun convertValueArgs(v: KtValueArgumentList?): List<Node.ValueArg> =
-        v?.arguments.orEmpty().map(::convertValueArg)
+    protected fun convertValueArguments(v: KtValueArgumentList?): List<Node.ValueArgument> =
+        v?.arguments.orEmpty().map(::convertValueArgument)
 
-    protected fun convertValueArg(v: KtValueArgument) = Node.ValueArg(
+    protected fun convertValueArgument(v: KtValueArgument) = Node.ValueArgument(
         name = v.getArgumentName()?.referenceExpression?.let(::convertNameExpression),
         spreadOperator = v.getSpreadElement()?.let(::convertKeyword),
-        expression = convertExpression(v.getArgumentExpression() ?: error("No expr for value arg"))
+        expression = convertExpression(v.getArgumentExpression() ?: error("No expression for value argument"))
     ).map(v)
 
     protected fun convertContextReceiver(v: KtContextReceiverList) = Node.ContextReceiver(
         lPar = convertKeyword(v.leftParenthesis),
-        receiverTypes = v.contextReceivers().map { convertType(it.typeReference() ?: error("No type ref for $it")) },
+        receiverTypes = v.contextReceivers()
+            .map { convertType(it.typeReference() ?: error("No type reference for $it")) },
         rPar = convertKeyword(v.rightParenthesis),
     ).map(v)
 
@@ -860,7 +861,7 @@ open class Converter {
             v.calleeExpression?.typeReference ?: error("No callee expression, type reference or type element for $v")
         ) as? Node.Type.SimpleType ?: error("calleeExpression is not simple type"),
         lPar = v.valueArgumentList?.leftParenthesis?.let(::convertKeyword),
-        args = convertValueArgs(v.valueArgumentList),
+        arguments = convertValueArguments(v.valueArgumentList),
         rPar = v.valueArgumentList?.rightParenthesis?.let(::convertKeyword),
     ).map(v)
 

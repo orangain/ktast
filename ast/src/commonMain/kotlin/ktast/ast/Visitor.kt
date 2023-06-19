@@ -55,7 +55,7 @@ open class Visitor {
                 }
                 is Node.Statement.ForStatement -> {
                     visitChildren(lPar)
-                    visitChildren(loopParam)
+                    visitChildren(loopParameter)
                     visitChildren(inKeyword)
                     visitChildren(loopRange)
                     visitChildren(rPar)
@@ -76,7 +76,7 @@ open class Visitor {
                 is Node.Declaration.ClassOrObject.ConstructorClassParent -> {
                     visitChildren(type)
                     visitChildren(lPar)
-                    visitChildren(args)
+                    visitChildren(arguments)
                     visitChildren(rPar)
                 }
                 is Node.Declaration.ClassOrObject.DelegationClassParent -> {
@@ -94,7 +94,7 @@ open class Visitor {
                     visitChildren(modifiers)
                     visitChildren(name)
                     visitChildren(lPar)
-                    visitChildren(args)
+                    visitChildren(arguments)
                     visitChildren(rPar)
                     visitChildren(classBody)
                 }
@@ -105,7 +105,7 @@ open class Visitor {
                     visitChildren(modifiers)
                     visitChildren(constructorKeyword)
                     visitChildren(lPar)
-                    visitChildren(params)
+                    visitChildren(parameters)
                     visitChildren(rPar)
                     visitChildren(delegationCall)
                     visitChildren(block)
@@ -115,7 +115,7 @@ open class Visitor {
                     visitChildren(declarationKeyword)
                     visitChildren(name)
                     visitChildren(lAngle)
-                    visitChildren(typeParams)
+                    visitChildren(typeParameters)
                     visitChildren(rAngle)
                     visitChildren(primaryConstructor)
                     visitChildren(parents)
@@ -126,7 +126,7 @@ open class Visitor {
                     visitChildren(modifiers)
                     visitChildren(constructorKeyword)
                     visitChildren(lPar)
-                    visitChildren(params)
+                    visitChildren(parameters)
                     visitChildren(rPar)
                 }
                 is Node.Declaration.ObjectDeclaration -> {
@@ -139,12 +139,12 @@ open class Visitor {
                 is Node.Declaration.FunctionDeclaration -> {
                     visitChildren(modifiers)
                     visitChildren(lAngle)
-                    visitChildren(typeParams)
+                    visitChildren(typeParameters)
                     visitChildren(rAngle)
                     visitChildren(receiverType)
                     visitChildren(name)
                     visitChildren(lPar)
-                    visitChildren(params)
+                    visitChildren(parameters)
                     visitChildren(rPar)
                     visitChildren(returnType)
                     visitChildren(postModifiers)
@@ -154,7 +154,7 @@ open class Visitor {
                     visitChildren(modifiers)
                     visitChildren(valOrVarKeyword)
                     visitChildren(lAngle)
-                    visitChildren(typeParams)
+                    visitChildren(typeParameters)
                     visitChildren(rAngle)
                     visitChildren(receiverType)
                     visitChildren(lPar)
@@ -176,7 +176,7 @@ open class Visitor {
                 is Node.Declaration.PropertyDeclaration.Setter -> {
                     visitChildren(modifiers)
                     visitChildren(lPar)
-                    visitChildren(param)
+                    visitChildren(parameter)
                     visitChildren(rPar)
                     visitChildren(postModifiers)
                     visitChildren(body)
@@ -185,7 +185,7 @@ open class Visitor {
                     visitChildren(modifiers)
                     visitChildren(name)
                     visitChildren(lAngle)
-                    visitChildren(typeParams)
+                    visitChildren(typeParameters)
                     visitChildren(rAngle)
                     visitChildren(type)
                 }
@@ -205,13 +205,13 @@ open class Visitor {
                     visitChildren(qualifiers)
                     visitChildren(name)
                     visitChildren(lAngle)
-                    visitChildren(typeArgs)
+                    visitChildren(typeArguments)
                     visitChildren(rAngle)
                 }
                 is Node.Type.SimpleType.SimpleTypeQualifier -> {
                     visitChildren(name)
                     visitChildren(lAngle)
-                    visitChildren(typeArgs)
+                    visitChildren(typeArguments)
                     visitChildren(rAngle)
                 }
                 is Node.Type.DynamicType -> {
@@ -222,11 +222,11 @@ open class Visitor {
                     visitChildren(contextReceiver)
                     visitChildren(receiverType)
                     visitChildren(lPar)
-                    visitChildren(params)
+                    visitChildren(parameters)
                     visitChildren(rPar)
                     visitChildren(returnType)
                 }
-                is Node.Type.FunctionType.FunctionTypeParam -> {
+                is Node.Type.FunctionType.FunctionTypeParameter -> {
                     visitChildren(name)
                     visitChildren(type)
                 }
@@ -244,7 +244,7 @@ open class Visitor {
                 }
                 is Node.Expression.TryExpression.CatchClause -> {
                     visitChildren(lPar)
-                    visitChildren(params)
+                    visitChildren(parameters)
                     visitChildren(rPar)
                     visitChildren(block)
                 }
@@ -299,15 +299,15 @@ open class Visitor {
                 is Node.Expression.CallExpression -> {
                     visitChildren(calleeExpression)
                     visitChildren(lAngle)
-                    visitChildren(typeArgs)
+                    visitChildren(typeArguments)
                     visitChildren(rAngle)
                     visitChildren(lPar)
-                    visitChildren(args)
+                    visitChildren(arguments)
                     visitChildren(rPar)
-                    visitChildren(lambdaArg)
+                    visitChildren(lambdaArgument)
                 }
                 is Node.Expression.LambdaExpression -> {
-                    visitChildren(params)
+                    visitChildren(parameters)
                     visitChildren(arrow)
                     visitChildren(statements)
                 }
@@ -360,7 +360,7 @@ open class Visitor {
                     visitChildren(label)
                 }
                 is Node.Expression.SuperExpression -> {
-                    visitChildren(typeArg)
+                    visitChildren(typeArgument)
                     visitChildren(label)
                 }
                 is Node.Expression.NameExpression -> {}
@@ -379,19 +379,19 @@ open class Visitor {
                 is Node.Expression.AnonymousFunctionExpression -> {
                     visitChildren(function)
                 }
-                is Node.TypeParam -> {
+                is Node.TypeParameter -> {
                     visitChildren(modifiers)
                     visitChildren(name)
                     visitChildren(type)
                 }
-                is Node.FunctionParam -> {
+                is Node.FunctionParameter -> {
                     visitChildren(modifiers)
                     visitChildren(valOrVarKeyword)
                     visitChildren(name)
                     visitChildren(type)
                     visitChildren(defaultValue)
                 }
-                is Node.LambdaParam -> {
+                is Node.LambdaParameter -> {
                     visitChildren(lPar)
                     visitChildren(variables)
                     visitChildren(rPar)
@@ -402,11 +402,11 @@ open class Visitor {
                     visitChildren(name)
                     visitChildren(type)
                 }
-                is Node.TypeArg -> {
+                is Node.TypeArgument -> {
                     visitChildren(modifiers)
                     visitChildren(type)
                 }
-                is Node.ValueArg -> {
+                is Node.ValueArgument -> {
                     visitChildren(name)
                     visitChildren(spreadOperator)
                     visitChildren(expression)
@@ -425,7 +425,7 @@ open class Visitor {
                 is Node.Modifier.AnnotationSet.Annotation -> {
                     visitChildren(type)
                     visitChildren(lPar)
-                    visitChildren(args)
+                    visitChildren(arguments)
                     visitChildren(rPar)
                 }
                 is Node.PostModifier.TypeConstraintSet -> {

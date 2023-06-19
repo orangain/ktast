@@ -51,12 +51,12 @@ sealed interface Node {
      * Common interface for AST nodes that have type parameters.
      *
      * @property lAngle left angle bracket of the type parameters if exists, otherwise `null`.
-     * @property typeParams list of type parameters.
+     * @property typeParameters list of type parameters.
      * @property rAngle right angle bracket of the type parameters if exists, otherwise `null`.
      */
-    interface WithTypeParams {
+    interface WithTypeParameters {
         val lAngle: Keyword.Less?
-        val typeParams: List<TypeParam>
+        val typeParameters: List<TypeParameter>
         val rAngle: Keyword.Greater?
     }
 
@@ -64,12 +64,12 @@ sealed interface Node {
      * Common interface for AST nodes that have function parameters.
      *
      * @property lPar left parenthesis of the function parameters if exists, otherwise `null`.
-     * @property params list of function parameters.
+     * @property parameters list of function parameters.
      * @property rPar right parenthesis of the function parameters if exists, otherwise `null`.
      */
-    interface WithFunctionParams {
+    interface WithFunctionParameters {
         val lPar: Keyword.LPar?
-        val params: List<FunctionParam>
+        val parameters: List<FunctionParameter>
         val rPar: Keyword.RPar?
     }
 
@@ -77,12 +77,12 @@ sealed interface Node {
      * Common interface for AST nodes that have type arguments.
      *
      * @property lAngle left angle bracket of the type arguments if exists, otherwise `null`.
-     * @property typeArgs list of type arguments.
+     * @property typeArguments list of type arguments.
      * @property rAngle right angle bracket of the type arguments if exists, otherwise `null`.
      */
-    interface WithTypeArgs {
+    interface WithTypeArguments {
         val lAngle: Keyword.Less?
-        val typeArgs: List<TypeArg>
+        val typeArguments: List<TypeArgument>
         val rAngle: Keyword.Greater?
     }
 
@@ -90,12 +90,12 @@ sealed interface Node {
      * Common interface for AST nodes that have value arguments.
      *
      * @property lPar left parenthesis of the value arguments if exists, otherwise `null`.
-     * @property args list of value arguments.
+     * @property arguments list of value arguments.
      * @property rPar right parenthesis of the value arguments if exists, otherwise `null`.
      */
-    interface WithValueArgs {
+    interface WithValueArguments {
         val lPar: Keyword.LPar?
-        val args: List<ValueArg>
+        val arguments: List<ValueArgument>
         val rPar: Keyword.RPar?
     }
 
@@ -189,11 +189,11 @@ sealed interface Node {
          * AST node that represents a for statement. The node corresponds to KtForExpression.
          *
          * ```
-         * for ([loopParam] in [loopRange]) [body]
+         * for ([loopParameter] in [loopRange]) [body]
          * ```
          *
          * @property lPar left parenthesis of the loop condition.
-         * @property loopParam loop parameter before `in` keyword.
+         * @property loopParameter loop parameter before `in` keyword.
          * @property inKeyword `in` keyword.
          * @property loopRange loop range expression after `in` keyword.
          * @property rPar right parenthesis of the loop condition.
@@ -201,7 +201,7 @@ sealed interface Node {
          */
         data class ForStatement(
             val lPar: Keyword.LPar,
-            val loopParam: LambdaParam,
+            val loopParameter: LambdaParameter,
             val inKeyword: Keyword.In,
             val loopRange: Expression,
             val rPar: Keyword.RPar,
@@ -305,11 +305,11 @@ sealed interface Node {
              *
              * @property type type of the parent.
              * @property lPar left parenthesis of the value arguments.
-             * @property args list of value arguments of the parent call.
+             * @property arguments list of value arguments of the parent call.
              * @property rPar right parenthesis of the value arguments.
              * @property expression expression of the delegation if exists, otherwise `null`.
              */
-            sealed interface ClassParent : Node, WithValueArgs {
+            sealed interface ClassParent : Node, WithValueArguments {
                 val type: Type
                 val expression: Expression?
             }
@@ -318,13 +318,13 @@ sealed interface Node {
              * ClassParent node that represents constructor invocation. The node corresponds to KtSuperTypeCallEntry.
              *
              * @property type type of the parent.
-             * @property args list of value arguments of the parent call.
+             * @property arguments list of value arguments of the parent call.
              * @property expression always `null`.
              */
             data class ConstructorClassParent(
                 override val type: Type.SimpleType,
                 override val lPar: Keyword.LPar,
-                override val args: List<ValueArg>,
+                override val arguments: List<ValueArgument>,
                 override val rPar: Keyword.RPar,
                 override var tag: Any? = null,
             ) : ClassParent {
@@ -335,7 +335,7 @@ sealed interface Node {
              * ClassParent node that represents explicit delegation. The node corresponds to KtDelegatedSuperTypeEntry.
              *
              * @property type type of the interface delegated to.
-             * @property args always empty list.
+             * @property arguments always empty list.
              * @property expression expression of the delegation.
              */
             data class DelegationClassParent(
@@ -344,7 +344,7 @@ sealed interface Node {
                 override var tag: Any? = null,
             ) : ClassParent {
                 override val lPar: Keyword.LPar? = null
-                override val args: List<ValueArg> = listOf()
+                override val arguments: List<ValueArgument> = listOf()
                 override val rPar: Keyword.RPar? = null
             }
 
@@ -353,7 +353,7 @@ sealed interface Node {
              *
              * @property type type of the parent.
              * @property lPar always `null`.
-             * @property args always empty list.
+             * @property arguments always empty list.
              * @property rPar always `null`.
              * @property expression always `null`.
              */
@@ -362,7 +362,7 @@ sealed interface Node {
                 override var tag: Any? = null,
             ) : ClassParent {
                 override val lPar: Keyword.LPar? = null
-                override val args: List<ValueArg> = listOf()
+                override val arguments: List<ValueArgument> = listOf()
                 override val rPar: Keyword.RPar? = null
                 override val expression: Expression? = null
             }
@@ -384,18 +384,18 @@ sealed interface Node {
                  *
                  * @property modifiers list of modifiers.
                  * @property name name of the enum entry.
-                 * @property args list of value arguments of the enum entry.
+                 * @property arguments list of value arguments of the enum entry.
                  * @property classBody class body of the enum entry if exists, otherwise `null`.
                  */
                 data class EnumEntry(
                     override val modifiers: List<Modifier>,
                     val name: Expression.NameExpression,
                     override val lPar: Keyword.LPar?,
-                    override val args: List<ValueArg>,
+                    override val arguments: List<ValueArgument>,
                     override val rPar: Keyword.RPar?,
                     val classBody: ClassBody?,
                     override var tag: Any? = null,
-                ) : Node, WithModifiers, WithValueArgs
+                ) : Node, WithModifiers, WithValueArguments
 
                 /**
                  * AST node that represents an init block, a.k.a. initializer. The node corresponds to KtAnonymousInitializer.
@@ -412,7 +412,7 @@ sealed interface Node {
                  *
                  * @property modifiers list of modifiers.
                  * @property constructorKeyword `constructor` keyword.
-                 * @property params list of parameters of the secondary constructor.
+                 * @property parameters list of parameters of the secondary constructor.
                  * @property delegationCall delegation call expression of the secondary constructor if exists, otherwise `null`.
                  * @property block block of the constructor if exists, otherwise `null`.
                  */
@@ -420,12 +420,12 @@ sealed interface Node {
                     override val modifiers: List<Modifier>,
                     val constructorKeyword: Keyword.Constructor,
                     override val lPar: Keyword.LPar?,
-                    override val params: List<FunctionParam>,
+                    override val parameters: List<FunctionParameter>,
                     override val rPar: Keyword.RPar?,
                     val delegationCall: Expression.CallExpression?,
                     val block: Expression.BlockExpression?,
                     override var tag: Any? = null,
-                ) : Declaration, WithModifiers, WithFunctionParams
+                ) : Declaration, WithModifiers, WithFunctionParameters
             }
         }
 
@@ -436,7 +436,7 @@ sealed interface Node {
          * @property declarationKeyword class declaration keyword.
          * @property name name of the class.
          * @property lAngle left angle bracket of the type parameters.
-         * @property typeParams list of type parameters.
+         * @property typeParameters list of type parameters.
          * @property rAngle right angle bracket of the type parameters.
          * @property primaryConstructor primary constructor if exists, otherwise `null`.
          * @property parents list of class parents.
@@ -448,14 +448,14 @@ sealed interface Node {
             override val declarationKeyword: ClassOrInterfaceKeyword,
             override val name: Expression.NameExpression,
             override val lAngle: Keyword.Less?,
-            override val typeParams: List<TypeParam>,
+            override val typeParameters: List<TypeParameter>,
             override val rAngle: Keyword.Greater?,
             val primaryConstructor: PrimaryConstructor?,
             override val parents: List<ClassOrObject.ClassParent>,
             val typeConstraintSet: PostModifier.TypeConstraintSet?,
             override val body: ClassOrObject.ClassBody?,
             override var tag: Any? = null,
-        ) : ClassOrObject, WithTypeParams {
+        ) : ClassOrObject, WithTypeParameters {
 
             /**
              * Common interface for class or interface keywords.
@@ -467,16 +467,16 @@ sealed interface Node {
              *
              * @property modifiers list of modifiers.
              * @property constructorKeyword `constructor` keyword if exists, otherwise `null`.
-             * @property params list of parameters of the constructor.
+             * @property parameters list of parameters of the constructor.
              */
             data class PrimaryConstructor(
                 override val modifiers: List<Modifier>,
                 val constructorKeyword: Keyword.Constructor?,
                 override val lPar: Keyword.LPar?,
-                override val params: List<FunctionParam>,
+                override val parameters: List<FunctionParameter>,
                 override val rPar: Keyword.RPar?,
                 override var tag: Any? = null,
-            ) : Node, WithModifiers, WithFunctionParams
+            ) : Node, WithModifiers, WithFunctionParameters
         }
 
         /**
@@ -495,10 +495,10 @@ sealed interface Node {
          * AST node that represents a function declaration. The node corresponds to KtNamedFunction.
          *
          * @property modifiers list of modifiers.
-         * @property typeParams list of type parameters of the function.
+         * @property typeParameters list of type parameters of the function.
          * @property receiverType receiver type of the function if exists, otherwise `null`.
          * @property name name of the function. If the function is anonymous, the name is `null`.
-         * @property params list of parameters of the function.
+         * @property parameters list of parameters of the function.
          * @property returnType return type of the function if exists, otherwise `null`.
          * @property postModifiers post-modifiers of the function.
          * @property body body of the function if exists, otherwise `null`.
@@ -506,25 +506,25 @@ sealed interface Node {
         data class FunctionDeclaration(
             override val modifiers: List<Modifier>,
             override val lAngle: Keyword.Less?,
-            override val typeParams: List<TypeParam>,
+            override val typeParameters: List<TypeParameter>,
             override val rAngle: Keyword.Greater?,
             val receiverType: Type?,
             val name: Expression.NameExpression?,
             override val lPar: Keyword.LPar?,
-            override val params: List<FunctionParam>,
+            override val parameters: List<FunctionParameter>,
             override val rPar: Keyword.RPar?,
             val returnType: Type?,
             override val postModifiers: List<PostModifier>,
             val body: Expression?,
             override var tag: Any? = null,
-        ) : Declaration, WithModifiers, WithTypeParams, WithFunctionParams, WithPostModifiers
+        ) : Declaration, WithModifiers, WithTypeParameters, WithFunctionParameters, WithPostModifiers
 
         /**
          * AST node that represents a property declaration. The node corresponds to KtProperty or KtDestructuringDeclaration.
          *
          * @property modifiers list of modifiers.
          * @property valOrVarKeyword `val` or `var` keyword.
-         * @property typeParams list of type parameters of the property.
+         * @property typeParameters list of type parameters of the property.
          * @property receiverType receiver type of the property if exists, otherwise `null`.
          * @property lPar `(` keyword if exists, otherwise `null`. When there are two or more variables, the keyword must exist.
          * @property variables variables of the property. Always at least one, more than one means destructuring.
@@ -538,7 +538,7 @@ sealed interface Node {
             override val modifiers: List<Modifier>,
             val valOrVarKeyword: Keyword.ValOrVarKeyword,
             override val lAngle: Keyword.Less?,
-            override val typeParams: List<TypeParam>,
+            override val typeParameters: List<TypeParameter>,
             override val rAngle: Keyword.Greater?,
             val receiverType: Type?,
             val lPar: Keyword.LPar?,
@@ -549,7 +549,7 @@ sealed interface Node {
             val delegateExpression: Expression?,
             val accessors: List<Accessor>,
             override var tag: Any? = null,
-        ) : Declaration, WithModifiers, WithTypeParams {
+        ) : Declaration, WithModifiers, WithTypeParameters {
             init {
                 require(variables.isNotEmpty()) { "variables must not be empty" }
                 if (variables.size >= 2) {
@@ -595,24 +595,24 @@ sealed interface Node {
              * AST node that represents a property setter.
              *
              * @property modifiers list of modifiers.
-             * @property param parameter of the setter if exists, otherwise `null`.
+             * @property parameter parameter of the setter if exists, otherwise `null`.
              * @property postModifiers post-modifiers of the setter.
              * @property body body of the setter if exists, otherwise `null`.
              */
             data class Setter(
                 override val modifiers: List<Modifier>,
                 override val lPar: Keyword.LPar?,
-                val param: FunctionParam?,
+                val parameter: FunctionParameter?,
                 override val rPar: Keyword.RPar?,
                 override val postModifiers: List<PostModifier>,
                 override val body: Expression?,
                 override var tag: Any? = null,
             ) : Accessor {
                 init {
-                    if (param == null) {
-                        require(body == null) { "body must be null when param is null" }
+                    if (parameter == null) {
+                        require(body == null) { "body must be null when parameter is null" }
                     } else {
-                        require(body != null) { "body must not be null when param is not null" }
+                        require(body != null) { "body must not be null when parameter is not null" }
                     }
                 }
             }
@@ -623,18 +623,18 @@ sealed interface Node {
          *
          * @property modifiers list of modifiers.
          * @property name name of the type alias.
-         * @property typeParams list of type parameters of the type alias.
+         * @property typeParameters list of type parameters of the type alias.
          * @property type existing type of the type alias.
          */
         data class TypeAliasDeclaration(
             override val modifiers: List<Modifier>,
             val name: Expression.NameExpression,
             override val lAngle: Keyword.Less?,
-            override val typeParams: List<TypeParam>,
+            override val typeParameters: List<TypeParameter>,
             override val rAngle: Keyword.Greater?,
             val type: Type,
             override var tag: Any? = null,
-        ) : Declaration, WithModifiers, WithTypeParams
+        ) : Declaration, WithModifiers, WithTypeParameters
     }
 
     /**
@@ -672,7 +672,7 @@ sealed interface Node {
             override var tag: Any? = null,
         ) : Type
 
-        private interface NameWithTypeArgs : WithTypeArgs {
+        private interface NameWithTypeArguments : WithTypeArguments {
             val name: Expression.NameExpression
         }
 
@@ -688,10 +688,10 @@ sealed interface Node {
             val qualifiers: List<SimpleTypeQualifier>,
             override val name: Expression.NameExpression,
             override val lAngle: Keyword.Less?,
-            override val typeArgs: List<TypeArg>,
+            override val typeArguments: List<TypeArgument>,
             override val rAngle: Keyword.Greater?,
             override var tag: Any? = null,
-        ) : Type, NameWithTypeArgs {
+        ) : Type, NameWithTypeArguments {
             /**
              * AST node that represents a qualifier of simple named type. The node corresponds to KtUserType used as a qualifier.
              *
@@ -700,10 +700,10 @@ sealed interface Node {
             data class SimpleTypeQualifier(
                 override val name: Expression.NameExpression,
                 override val lAngle: Keyword.Less?,
-                override val typeArgs: List<TypeArg>,
+                override val typeArguments: List<TypeArgument>,
                 override val rAngle: Keyword.Greater?,
                 override var tag: Any? = null,
-            ) : Node, NameWithTypeArgs
+            ) : Node, NameWithTypeArguments
         }
 
         /**
@@ -723,7 +723,7 @@ sealed interface Node {
          * @property contextReceiver context receivers if exists, otherwise `null`.
          * @property receiverType receiver type if exists, otherwise `null`.
          * @property lPar left parenthesis if exists, otherwise `null`.
-         * @property params list of parameters of the function type.
+         * @property parameters list of parameters of the function type.
          * @property rPar right parenthesis if exists, otherwise `null`.
          * @property returnType return type of the function type.
          */
@@ -732,7 +732,7 @@ sealed interface Node {
             val contextReceiver: ContextReceiver?,
             val receiverType: Type?,
             val lPar: Keyword.LPar?,
-            val params: List<FunctionTypeParam>,
+            val parameters: List<FunctionTypeParameter>,
             val rPar: Keyword.RPar?,
             val returnType: Type,
             override var tag: Any? = null,
@@ -740,12 +740,12 @@ sealed interface Node {
 
             /**
              * AST node that represents a formal function parameter of a function type. For example, `x: Int` in `(x: Int) -> Unit` is a function parameter. The node corresponds to KtParameter inside KtFunctionType.
-             * Unlike [FunctionParam], [name] is optional, but [type] is mandatory.
+             * Unlike [FunctionParameter], [name] is optional, but [type] is mandatory.
              *
              * @property name name of the parameter if exists, otherwise `null`.
              * @property type type of the parameter.
              */
-            data class FunctionTypeParam(
+            data class FunctionTypeParameter(
                 val name: Expression.NameExpression?,
                 val type: Type,
                 override var tag: Any? = null,
@@ -801,18 +801,18 @@ sealed interface Node {
             /**
              * AST node that represents a catch clause. The node corresponds to KtCatchClause.
              *
-             * @property params list of parameters of the catch clause.
+             * @property parameters list of parameters of the catch clause.
              * @property block block expression.
              */
             data class CatchClause(
                 override val lPar: Keyword.LPar,
-                override val params: List<FunctionParam>,
+                override val parameters: List<FunctionParameter>,
                 override val rPar: Keyword.RPar,
                 val block: BlockExpression,
                 override var tag: Any? = null,
-            ) : Node, WithFunctionParams {
+            ) : Node, WithFunctionParameters {
                 init {
-                    require(params.isNotEmpty()) { "catch clause must have at least one parameter" }
+                    require(parameters.isNotEmpty()) { "catch clause must have at least one parameter" }
                 }
             }
         }
@@ -1022,38 +1022,38 @@ sealed interface Node {
          * AST node that represents a call expression. The node corresponds to KtCallElement.
          *
          * @property calleeExpression callee expression.
-         * @property typeArgs list of type arguments.
-         * @property args list of value arguments.
-         * @property lambdaArg lambda argument expression if exists, otherwise `null`. This can be one of [LambdaExpression], [AnnotatedExpression] or [LabeledExpression]. To extract the lambda expression, use [lambdaExpression].
+         * @property typeArguments list of type arguments.
+         * @property arguments list of value arguments.
+         * @property lambdaArgument lambda argument expression if exists, otherwise `null`. This can be one of [LambdaExpression], [AnnotatedExpression] or [LabeledExpression]. To extract the lambda expression, use [lambdaExpression].
          */
         data class CallExpression(
             val calleeExpression: Expression,
             override val lAngle: Keyword.Less?,
-            override val typeArgs: List<TypeArg>,
+            override val typeArguments: List<TypeArgument>,
             override val rAngle: Keyword.Greater?,
             override val lPar: Keyword.LPar?,
-            override val args: List<ValueArg>,
+            override val arguments: List<ValueArgument>,
             override val rPar: Keyword.RPar?,
-            val lambdaArg: Expression?,
+            val lambdaArgument: Expression?,
             override var tag: Any? = null,
-        ) : Expression, WithTypeArgs, WithValueArgs {
+        ) : Expression, WithTypeArguments, WithValueArguments {
             /**
              * Returns the lambda expression of the lambda argument if exists, otherwise `null`.
              */
-            fun lambdaExpression(): LambdaExpression? = lambdaArg?.let(::getLambdaExpression)
+            fun lambdaExpression(): LambdaExpression? = lambdaArgument?.let(::getLambdaExpression)
         }
 
         /**
          * AST node that represents a lambda expression. The node corresponds to KtLambdaExpression.
          *
-         * [LambdaExpression] = { [LambdaParam], [LambdaParam] -> [Statement] [Statement]... }
+         * [LambdaExpression] = { [LambdaParameter], [LambdaParameter] -> [Statement] [Statement]... }
          *
-         * @property params list of parameters in the lambda expression.
+         * @property parameters list of parameters in the lambda expression.
          * @property arrow arrow symbol of the lambda expression if exists, otherwise `null`.
          * @property statements list of statements in the lambda expression.
          */
         data class LambdaExpression(
-            val params: List<LambdaParam>,
+            val parameters: List<LambdaParameter>,
             val arrow: Keyword.Arrow?,
             override val statements: List<Statement>,
             override var tag: Any? = null,
@@ -1363,11 +1363,11 @@ sealed interface Node {
         /**
          * AST node that represents a super expression. The node corresponds to KtSuperExpression or KtConstructorDelegationReferenceExpression whose text is "super".
          *
-         * @property typeArg type argument if exists, otherwise `null`.
+         * @property typeArgument type argument if exists, otherwise `null`.
          * @property label label of this expression if exists, otherwise `null`.
          */
         data class SuperExpression(
-            val typeArg: TypeArg?,
+            val typeArgument: TypeArgument?,
             override val label: NameExpression?,
             override var tag: Any? = null,
         ) : Expression, WithLabel
@@ -1436,7 +1436,7 @@ sealed interface Node {
      * @property name name of the type parameter.
      * @property type type of the type parameter if exists, otherwise `null`.
      */
-    data class TypeParam(
+    data class TypeParameter(
         override val modifiers: List<Modifier>,
         val name: Expression.NameExpression,
         val type: Type?,
@@ -1452,7 +1452,7 @@ sealed interface Node {
      * @property type type of the parameter. Can be `null` for anonymous function parameters.
      * @property defaultValue default value of the parameter if exists, otherwise `null`.
      */
-    data class FunctionParam(
+    data class FunctionParameter(
         override val modifiers: List<Modifier>,
         val valOrVarKeyword: Keyword.ValOrVarKeyword?,
         val name: Expression.NameExpression,
@@ -1463,14 +1463,14 @@ sealed interface Node {
 
     /**
      * AST node that represents a formal parameter of lambda expression. For example, `x` in `{ x -> ... }` is a lambda parameter. The node corresponds to KtParameter under KtLambdaExpression.
-     * Unlike [FunctionParam], this node can have multiple variables, i.e. destructuring declaration.
+     * Unlike [FunctionParameter], this node can have multiple variables, i.e. destructuring declaration.
      *
      * @property lPar left parenthesis of this parameter if exists, otherwise `null`.
      * @property variables list of variables.
      * @property rPar right parenthesis of this parameter if exists, otherwise `null`.
      * @property destructuringType type of whole parameter on destructuring if exists, otherwise `null`.
      */
-    data class LambdaParam(
+    data class LambdaParameter(
         val lPar: Keyword.LPar?,
         val variables: List<Variable>,
         val rPar: Keyword.RPar?,
@@ -1504,7 +1504,7 @@ sealed interface Node {
      * @property modifiers list of modifiers.
      * @property type projection type. When the type argument is a star projection, this is [Type.SimpleType] that has a single [Type.SimpleType.SimpleTypePiece] whose name is "*".
      */
-    data class TypeArg(
+    data class TypeArgument(
         override val modifiers: List<Modifier>,
         val type: Type,
         override var tag: Any? = null,
@@ -1517,7 +1517,7 @@ sealed interface Node {
      * @property spreadOperator spread operator if exists, otherwise `null`.
      * @property expression expression of the argument.
      */
-    data class ValueArg(
+    data class ValueArgument(
         val name: Expression.NameExpression?,
         val spreadOperator: Keyword.Asterisk?,
         val expression: Expression,
@@ -1566,15 +1566,15 @@ sealed interface Node {
              * AST node that represents an annotation. The node corresponds to KtAnnotationEntry under KtAnnotation or a part of KtAnnotationEntry not under KtAnnotation.
              *
              * @property type type of this annotation.
-             * @property args list of value arguments.
+             * @property arguments list of value arguments.
              */
             data class Annotation(
                 val type: Type.SimpleType,
                 override val lPar: Keyword.LPar?,
-                override val args: List<ValueArg>,
+                override val arguments: List<ValueArgument>,
                 override val rPar: Keyword.RPar?,
                 override var tag: Any? = null,
-            ) : Node, WithValueArgs
+            ) : Node, WithValueArguments
         }
 
         /**
@@ -1756,20 +1756,20 @@ sealed interface Node {
             override val text = "!in"
         }
 
-        data class Greater(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
-            override val text = ">"
-        }
-
-        data class GreaterEqual(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
-            override val text = ">="
-        }
-
         data class Less(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
             override val text = "<"
         }
 
         data class LessEqual(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
             override val text = "<="
+        }
+
+        data class Greater(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
+            override val text = ">"
+        }
+
+        data class GreaterEqual(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
+            override val text = ">="
         }
 
         data class EqualEqual(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {

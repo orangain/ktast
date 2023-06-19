@@ -86,7 +86,7 @@ class LambdaArgLambdaExpressionTest(private val code: String) {
             (functionDeclaration.body as Node.Expression.BlockExpression).statements.filterIsInstance<Node.Expression.CallExpression>()
         assertEquals(1, callExpressions.size)
         callExpressions.forEach { callExpression ->
-            assertEquals("x", callExpression.lambdaExpression()!!.params[0].variables[0].name.text)
+            assertEquals("x", callExpression.lambdaExpression()!!.parameters[0].variables[0].name.text)
         }
     }
 

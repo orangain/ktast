@@ -8,18 +8,18 @@ internal fun toType(e: Node.Expression): Node.Type? {
                 qualifiers = listOf(),
                 name = e,
                 lAngle = null,
-                typeArgs = listOf(),
+                typeArguments = listOf(),
                 rAngle = null,
             )
         }
         is Node.Expression.CallExpression -> {
-            if (e.args.isEmpty() && e.lPar == null && e.rPar == null && e.lambdaArg == null) {
+            if (e.arguments.isEmpty() && e.lPar == null && e.rPar == null && e.lambdaArgument == null) {
                 return Node.Type.SimpleType(
                     modifiers = listOf(),
                     qualifiers = listOf(),
                     name = e.calleeExpression as Node.Expression.NameExpression,
                     lAngle = e.lAngle,
-                    typeArgs = e.typeArgs,
+                    typeArguments = e.typeArguments,
                     rAngle = e.rAngle,
                 )
             }
@@ -34,12 +34,12 @@ internal fun toType(e: Node.Expression): Node.Type? {
                         qualifiers = lhs.qualifiers + Node.Type.SimpleType.SimpleTypeQualifier(
                             name = lhs.name,
                             lAngle = lhs.lAngle,
-                            typeArgs = lhs.typeArgs,
+                            typeArguments = lhs.typeArguments,
                             rAngle = lhs.rAngle,
                         ),
                         name = rhs.name,
                         lAngle = rhs.lAngle,
-                        typeArgs = rhs.typeArgs,
+                        typeArguments = rhs.typeArguments,
                         rAngle = rhs.rAngle,
                     )
                 }

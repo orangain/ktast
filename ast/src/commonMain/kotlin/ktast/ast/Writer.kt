@@ -129,7 +129,7 @@ open class Writer(
                 }
                 is Node.Statement.ForStatement -> {
                     append("for")
-                    children(lPar, loopParam, inKeyword, loopRange, rPar, body)
+                    children(lPar, loopParameter, inKeyword, loopRange, rPar, body)
                 }
                 is Node.Statement.WhileStatement -> {
                     append("while")
@@ -143,7 +143,7 @@ open class Writer(
                 }
                 is Node.Declaration.ClassOrObject.ConstructorClassParent -> {
                     children(type)
-                    commaSeparatedChildren(lPar, args, rPar)
+                    commaSeparatedChildren(lPar, arguments, rPar)
                 }
                 is Node.Declaration.ClassOrObject.DelegationClassParent -> {
                     children(type)
@@ -168,7 +168,7 @@ open class Writer(
                 is Node.Declaration.ClassOrObject.ClassBody.EnumEntry -> {
                     children(modifiers)
                     children(name)
-                    commaSeparatedChildren(lPar, args, rPar)
+                    commaSeparatedChildren(lPar, arguments, rPar)
                     children(classBody)
                 }
                 is Node.Declaration.ClassOrObject.ClassBody.Initializer -> {
@@ -178,7 +178,7 @@ open class Writer(
                 is Node.Declaration.ClassOrObject.ClassBody.SecondaryConstructor -> {
                     children(modifiers)
                     children(constructorKeyword)
-                    commaSeparatedChildren(lPar, params, rPar)
+                    commaSeparatedChildren(lPar, parameters, rPar)
                     if (delegationCall != null) append(":").also { children(delegationCall) }
                     children(block)
                 }
@@ -186,7 +186,7 @@ open class Writer(
                     children(modifiers)
                     children(declarationKeyword)
                     children(name)
-                    commaSeparatedChildren(lAngle, typeParams, rAngle)
+                    commaSeparatedChildren(lAngle, typeParameters, rAngle)
                     children(primaryConstructor)
                     if (parents.isNotEmpty()) {
                         append(":")
@@ -198,7 +198,7 @@ open class Writer(
                 is Node.Declaration.ClassDeclaration.PrimaryConstructor -> {
                     children(modifiers)
                     children(constructorKeyword)
-                    commaSeparatedChildren(lPar, params, rPar)
+                    commaSeparatedChildren(lPar, parameters, rPar)
                 }
                 is Node.Declaration.ObjectDeclaration -> {
                     children(modifiers)
@@ -213,10 +213,10 @@ open class Writer(
                 is Node.Declaration.FunctionDeclaration -> {
                     children(modifiers)
                     append("fun")
-                    commaSeparatedChildren(lAngle, typeParams, rAngle)
+                    commaSeparatedChildren(lAngle, typeParameters, rAngle)
                     if (receiverType != null) children(receiverType).append(".")
                     name?.also { children(it) }
-                    commaSeparatedChildren(lPar, params, rPar)
+                    commaSeparatedChildren(lPar, parameters, rPar)
                     if (returnType != null) append(":").also { children(returnType) }
                     children(postModifiers)
                     writeFunctionBody(body)
@@ -224,7 +224,7 @@ open class Writer(
                 is Node.Declaration.PropertyDeclaration -> {
                     children(modifiers)
                     children(valOrVarKeyword)
-                    commaSeparatedChildren(lAngle, typeParams, rAngle)
+                    commaSeparatedChildren(lAngle, typeParameters, rAngle)
                     if (receiverType != null) children(receiverType).append('.')
                     children(lPar)
                     children(variables, ",")
@@ -248,7 +248,7 @@ open class Writer(
                 is Node.Declaration.PropertyDeclaration.Setter -> {
                     children(modifiers)
                     append("set")
-                    children(lPar, param, rPar)
+                    children(lPar, parameter, rPar)
                     children(postModifiers)
                     writeFunctionBody(body)
                 }
@@ -256,7 +256,7 @@ open class Writer(
                     children(modifiers)
                     append("typealias")
                     children(name)
-                    commaSeparatedChildren(lAngle, typeParams, rAngle)
+                    commaSeparatedChildren(lAngle, typeParameters, rAngle)
                     append("=")
                     children(type)
                 }
@@ -278,11 +278,11 @@ open class Writer(
                         append(".")
                     }
                     children(name)
-                    commaSeparatedChildren(lAngle, typeArgs, rAngle)
+                    commaSeparatedChildren(lAngle, typeArguments, rAngle)
                 }
                 is Node.Type.SimpleType.SimpleTypeQualifier -> {
                     children(name)
-                    commaSeparatedChildren(lAngle, typeArgs, rAngle)
+                    commaSeparatedChildren(lAngle, typeArguments, rAngle)
                 }
                 is Node.Type.DynamicType -> {
                     children(modifiers)
@@ -293,11 +293,11 @@ open class Writer(
                     children(contextReceiver)
                     children(receiverType)
                     if (receiverType != null) append(".")
-                    commaSeparatedChildren(lPar, params, rPar)
+                    commaSeparatedChildren(lPar, parameters, rPar)
                     append("->")
                     children(returnType)
                 }
-                is Node.Type.FunctionType.FunctionTypeParam -> {
+                is Node.Type.FunctionType.FunctionTypeParameter -> {
                     if (name != null) children(name).append(":")
                     children(type)
                 }
@@ -317,7 +317,7 @@ open class Writer(
                 }
                 is Node.Expression.TryExpression.CatchClause -> {
                     append("catch")
-                    commaSeparatedChildren(lPar, params, rPar)
+                    commaSeparatedChildren(lPar, parameters, rPar)
                     children(block)
                 }
                 is Node.Expression.WhenExpression -> {
@@ -377,13 +377,13 @@ open class Writer(
                 }
                 is Node.Expression.CallExpression -> {
                     children(calleeExpression)
-                    commaSeparatedChildren(lAngle, typeArgs, rAngle)
-                    commaSeparatedChildren(lPar, args, rPar)
-                    children(lambdaArg)
+                    commaSeparatedChildren(lAngle, typeArguments, rAngle)
+                    commaSeparatedChildren(lPar, arguments, rPar)
+                    children(lambdaArgument)
                 }
                 is Node.Expression.LambdaExpression -> {
                     writeBlock {
-                        commaSeparatedChildren(params)
+                        commaSeparatedChildren(parameters)
                         children(arrow)
                         children(statements)
                     }
@@ -450,7 +450,7 @@ open class Writer(
                 }
                 is Node.Expression.SuperExpression -> {
                     append("super")
-                    if (typeArg != null) append('<').also { children(typeArg) }.append('>')
+                    if (typeArgument != null) append('<').also { children(typeArgument) }.append('>')
                     appendLabel(label)
                 }
                 is Node.Expression.NameExpression ->
@@ -468,19 +468,19 @@ open class Writer(
                 }
                 is Node.Expression.AnonymousFunctionExpression ->
                     children(function)
-                is Node.TypeParam -> {
+                is Node.TypeParameter -> {
                     children(modifiers)
                     children(name)
                     if (type != null) append(":").also { children(type) }
                 }
-                is Node.FunctionParam -> {
+                is Node.FunctionParameter -> {
                     children(modifiers)
                     children(valOrVarKeyword)
                     children(name)
                     if (type != null) append(":").also { children(type) }
                     writeFunctionBody(defaultValue)
                 }
-                is Node.LambdaParam -> {
+                is Node.LambdaParameter -> {
                     children(lPar)
                     children(variables, ",")
                     children(rPar)
@@ -494,11 +494,11 @@ open class Writer(
                     children(name)
                     if (type != null) append(":").also { children(type) }
                 }
-                is Node.TypeArg -> {
+                is Node.TypeArgument -> {
                     children(modifiers)
                     children(type)
                 }
-                is Node.ValueArg -> {
+                is Node.ValueArgument -> {
                     if (name != null) children(name).append("=")
                     children(spreadOperator)
                     children(expression)
@@ -519,7 +519,7 @@ open class Writer(
                 }
                 is Node.Modifier.AnnotationSet.Annotation -> {
                     children(type)
-                    commaSeparatedChildren(lPar, args, rPar)
+                    commaSeparatedChildren(lPar, arguments, rPar)
                     val parentNode = path.parent?.node
                     if (parentNode is Node.Modifier.AnnotationSet && parentNode.rBracket == null) {
                         nextHeuristicWhitespace = " " // Insert heuristic space after annotation if single form
@@ -677,7 +677,7 @@ open class Writer(
                 append(";")
             }
         }
-        if (node is Node.Expression.CallExpression && node.lambdaArg == null && next is Node.Expression.LambdaExpression) {
+        if (node is Node.Expression.CallExpression && node.lambdaArgument == null && next is Node.Expression.LambdaExpression) {
             if (!containsSemicolon(extrasSinceLastNonSymbol)) {
                 append(";")
             }
