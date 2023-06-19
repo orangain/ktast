@@ -1756,20 +1756,20 @@ sealed interface Node {
             override val text = "!in"
         }
 
-        data class Greater(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
-            override val text = ">"
-        }
-
-        data class GreaterEqual(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
-            override val text = ">="
-        }
-
         data class Less(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
             override val text = "<"
         }
 
         data class LessEqual(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
             override val text = "<="
+        }
+
+        data class Greater(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
+            override val text = ">"
+        }
+
+        data class GreaterEqual(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
+            override val text = ">="
         }
 
         data class EqualEqual(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
