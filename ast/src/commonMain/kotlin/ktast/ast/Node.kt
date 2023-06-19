@@ -80,7 +80,7 @@ sealed interface Node {
      * @property typeArguments list of type arguments.
      * @property rAngle right angle bracket of the type arguments if exists, otherwise `null`.
      */
-    interface WithTypeArgs {
+    interface WithTypeArguments {
         val lAngle: Keyword.Less?
         val typeArguments: List<TypeArgument>
         val rAngle: Keyword.Greater?
@@ -672,7 +672,7 @@ sealed interface Node {
             override var tag: Any? = null,
         ) : Type
 
-        private interface NameWithTypeArgs : WithTypeArgs {
+        private interface NameWithTypeArguments : WithTypeArguments {
             val name: Expression.NameExpression
         }
 
@@ -691,7 +691,7 @@ sealed interface Node {
             override val typeArguments: List<TypeArgument>,
             override val rAngle: Keyword.Greater?,
             override var tag: Any? = null,
-        ) : Type, NameWithTypeArgs {
+        ) : Type, NameWithTypeArguments {
             /**
              * AST node that represents a qualifier of simple named type. The node corresponds to KtUserType used as a qualifier.
              *
@@ -703,7 +703,7 @@ sealed interface Node {
                 override val typeArguments: List<TypeArgument>,
                 override val rAngle: Keyword.Greater?,
                 override var tag: Any? = null,
-            ) : Node, NameWithTypeArgs
+            ) : Node, NameWithTypeArguments
         }
 
         /**
@@ -1036,7 +1036,7 @@ sealed interface Node {
             override val rPar: Keyword.RPar?,
             val lambdaArg: Expression?,
             override var tag: Any? = null,
-        ) : Expression, WithTypeArgs, WithValueArguments {
+        ) : Expression, WithTypeArguments, WithValueArguments {
             /**
              * Returns the lambda expression of the lambda argument if exists, otherwise `null`.
              */
