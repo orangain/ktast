@@ -307,7 +307,7 @@ open class Visitor {
                     visitChildren(lambdaArg)
                 }
                 is Node.Expression.LambdaExpression -> {
-                    visitChildren(params)
+                    visitChildren(parameters)
                     visitChildren(arrow)
                     visitChildren(statements)
                 }
@@ -391,7 +391,7 @@ open class Visitor {
                     visitChildren(type)
                     visitChildren(defaultValue)
                 }
-                is Node.LambdaParam -> {
+                is Node.LambdaParameter -> {
                     visitChildren(lPar)
                     visitChildren(variables)
                     visitChildren(rPar)

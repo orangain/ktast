@@ -201,7 +201,7 @@ sealed interface Node {
          */
         data class ForStatement(
             val lPar: Keyword.LPar,
-            val loopParam: LambdaParam,
+            val loopParam: LambdaParameter,
             val inKeyword: Keyword.In,
             val loopRange: Expression,
             val rPar: Keyword.RPar,
@@ -1046,14 +1046,14 @@ sealed interface Node {
         /**
          * AST node that represents a lambda expression. The node corresponds to KtLambdaExpression.
          *
-         * [LambdaExpression] = { [LambdaParam], [LambdaParam] -> [Statement] [Statement]... }
+         * [LambdaExpression] = { [LambdaParameter], [LambdaParameter] -> [Statement] [Statement]... }
          *
-         * @property params list of parameters in the lambda expression.
+         * @property parameters list of parameters in the lambda expression.
          * @property arrow arrow symbol of the lambda expression if exists, otherwise `null`.
          * @property statements list of statements in the lambda expression.
          */
         data class LambdaExpression(
-            val params: List<LambdaParam>,
+            val parameters: List<LambdaParameter>,
             val arrow: Keyword.Arrow?,
             override val statements: List<Statement>,
             override var tag: Any? = null,
@@ -1470,7 +1470,7 @@ sealed interface Node {
      * @property rPar right parenthesis of this parameter if exists, otherwise `null`.
      * @property destructuringType type of whole parameter on destructuring if exists, otherwise `null`.
      */
-    data class LambdaParam(
+    data class LambdaParameter(
         val lPar: Keyword.LPar?,
         val variables: List<Variable>,
         val rPar: Keyword.RPar?,

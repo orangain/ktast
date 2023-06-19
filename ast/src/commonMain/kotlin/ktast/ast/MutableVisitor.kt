@@ -335,7 +335,7 @@ open class MutableVisitor(
                         lambdaArg = visitChildren(lambdaArg, newCh),
                     )
                     is Node.Expression.LambdaExpression -> copy(
-                        params = visitChildren(params, newCh),
+                        parameters = visitChildren(parameters, newCh),
                         arrow = visitChildren(arrow, newCh),
                         statements = visitChildren(statements, newCh),
                     )
@@ -419,7 +419,7 @@ open class MutableVisitor(
                         type = visitChildren(type, newCh),
                         defaultValue = visitChildren(defaultValue, newCh),
                     )
-                    is Node.LambdaParam -> copy(
+                    is Node.LambdaParameter -> copy(
                         lPar = visitChildren(lPar, newCh),
                         variables = visitChildren(variables, newCh),
                         rPar = visitChildren(rPar, newCh),

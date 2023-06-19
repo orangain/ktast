@@ -383,7 +383,7 @@ open class Writer(
                 }
                 is Node.Expression.LambdaExpression -> {
                     writeBlock {
-                        commaSeparatedChildren(params)
+                        commaSeparatedChildren(parameters)
                         children(arrow)
                         children(statements)
                     }
@@ -480,7 +480,7 @@ open class Writer(
                     if (type != null) append(":").also { children(type) }
                     writeFunctionBody(defaultValue)
                 }
-                is Node.LambdaParam -> {
+                is Node.LambdaParameter -> {
                     children(lPar)
                     children(variables, ",")
                     children(rPar)

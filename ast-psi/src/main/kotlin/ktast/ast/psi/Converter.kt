@@ -561,7 +561,7 @@ open class Converter {
     ).map(v)
 
     protected fun convertLambdaExpression(v: KtLambdaExpression) = Node.Expression.LambdaExpression(
-        params = convertLambdaParams(v.functionLiteral.valueParameterList),
+        parameters = convertLambdaParams(v.functionLiteral.valueParameterList),
         arrow = v.functionLiteral.arrow?.let(::convertKeyword),
         statements = v.bodyExpression?.statements.orEmpty().map(::convertStatement),
     ).map(v)
@@ -741,20 +741,20 @@ open class Converter {
         defaultValue = v.defaultValue?.let(::convertExpression),
     ).map(v)
 
-    protected fun convertLambdaParams(v: KtParameterList?): List<Node.LambdaParam> =
+    protected fun convertLambdaParams(v: KtParameterList?): List<Node.LambdaParameter> =
         v?.parameters.orEmpty().map(::convertLambdaParam)
 
-    protected fun convertLambdaParam(v: KtParameter): Node.LambdaParam {
+    protected fun convertLambdaParam(v: KtParameter): Node.LambdaParameter {
         val destructuringDeclaration = v.destructuringDeclaration
         return if (destructuringDeclaration != null) {
-            Node.LambdaParam(
+            Node.LambdaParameter(
                 lPar = destructuringDeclaration.lPar?.let(::convertKeyword),
                 variables = destructuringDeclaration.entries.map(::convertVariable),
                 rPar = destructuringDeclaration.rPar?.let(::convertKeyword),
                 destructuringType = v.typeReference?.let(::convertType),
             ).map(v)
         } else {
-            Node.LambdaParam(
+            Node.LambdaParameter(
                 lPar = null,
                 variables = listOf(convertVariable(v)),
                 rPar = null,
