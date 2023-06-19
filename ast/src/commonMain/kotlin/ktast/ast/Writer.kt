@@ -178,7 +178,7 @@ open class Writer(
                 is Node.Declaration.ClassOrObject.ClassBody.SecondaryConstructor -> {
                     children(modifiers)
                     children(constructorKeyword)
-                    commaSeparatedChildren(lPar, params, rPar)
+                    commaSeparatedChildren(lPar, parameters, rPar)
                     if (delegationCall != null) append(":").also { children(delegationCall) }
                     children(block)
                 }
@@ -198,7 +198,7 @@ open class Writer(
                 is Node.Declaration.ClassDeclaration.PrimaryConstructor -> {
                     children(modifiers)
                     children(constructorKeyword)
-                    commaSeparatedChildren(lPar, params, rPar)
+                    commaSeparatedChildren(lPar, parameters, rPar)
                 }
                 is Node.Declaration.ObjectDeclaration -> {
                     children(modifiers)
@@ -216,7 +216,7 @@ open class Writer(
                     commaSeparatedChildren(lAngle, typeParameters, rAngle)
                     if (receiverType != null) children(receiverType).append(".")
                     name?.also { children(it) }
-                    commaSeparatedChildren(lPar, params, rPar)
+                    commaSeparatedChildren(lPar, parameters, rPar)
                     if (returnType != null) append(":").also { children(returnType) }
                     children(postModifiers)
                     writeFunctionBody(body)
@@ -248,7 +248,7 @@ open class Writer(
                 is Node.Declaration.PropertyDeclaration.Setter -> {
                     children(modifiers)
                     append("set")
-                    children(lPar, param, rPar)
+                    children(lPar, parameter, rPar)
                     children(postModifiers)
                     writeFunctionBody(body)
                 }
@@ -317,7 +317,7 @@ open class Writer(
                 }
                 is Node.Expression.TryExpression.CatchClause -> {
                     append("catch")
-                    commaSeparatedChildren(lPar, params, rPar)
+                    commaSeparatedChildren(lPar, parameters, rPar)
                     children(block)
                 }
                 is Node.Expression.WhenExpression -> {
@@ -473,7 +473,7 @@ open class Writer(
                     children(name)
                     if (type != null) append(":").also { children(type) }
                 }
-                is Node.FunctionParam -> {
+                is Node.FunctionParameter -> {
                     children(modifiers)
                     children(valOrVarKeyword)
                     children(name)

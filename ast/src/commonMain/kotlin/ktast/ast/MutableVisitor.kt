@@ -134,7 +134,7 @@ open class MutableVisitor(
                         modifiers = visitChildren(modifiers, newCh),
                         constructorKeyword = visitChildren(constructorKeyword, newCh),
                         lPar = visitChildren(lPar, newCh),
-                        params = visitChildren(params, newCh),
+                        parameters = visitChildren(parameters, newCh),
                         rPar = visitChildren(rPar, newCh), delegationCall = visitChildren(delegationCall, newCh),
                         block = visitChildren(block, newCh)
                     )
@@ -154,7 +154,7 @@ open class MutableVisitor(
                         modifiers = visitChildren(modifiers, newCh),
                         constructorKeyword = visitChildren(constructorKeyword, newCh),
                         lPar = visitChildren(lPar, newCh),
-                        params = visitChildren(params, newCh),
+                        parameters = visitChildren(parameters, newCh),
                         rPar = visitChildren(rPar, newCh),
                     )
                     is Node.Declaration.ObjectDeclaration -> copy(
@@ -172,7 +172,7 @@ open class MutableVisitor(
                         receiverType = visitChildren(receiverType, newCh),
                         name = visitChildren(name, newCh),
                         lPar = visitChildren(lPar, newCh),
-                        params = visitChildren(params, newCh),
+                        parameters = visitChildren(parameters, newCh),
                         rPar = visitChildren(rPar, newCh),
                         returnType = visitChildren(returnType, newCh),
                         postModifiers = visitChildren(postModifiers, newCh),
@@ -204,7 +204,7 @@ open class MutableVisitor(
                     is Node.Declaration.PropertyDeclaration.Setter -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         lPar = visitChildren(lPar, newCh),
-                        param = visitChildren(param, newCh),
+                        parameter = visitChildren(parameter, newCh),
                         rPar = visitChildren(rPar, newCh),
                         postModifiers = visitChildren(postModifiers, newCh),
                         body = visitChildren(body, newCh),
@@ -272,7 +272,7 @@ open class MutableVisitor(
                     )
                     is Node.Expression.TryExpression.CatchClause -> copy(
                         lPar = visitChildren(lPar, newCh),
-                        params = visitChildren(params, newCh),
+                        parameters = visitChildren(parameters, newCh),
                         rPar = visitChildren(rPar, newCh),
                         block = visitChildren(block, newCh),
                     )
@@ -412,7 +412,7 @@ open class MutableVisitor(
                         name = visitChildren(name, newCh),
                         type = visitChildren(type, newCh)
                     )
-                    is Node.FunctionParam -> copy(
+                    is Node.FunctionParameter -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         valOrVarKeyword = visitChildren(valOrVarKeyword, newCh),
                         name = visitChildren(name, newCh),

@@ -64,12 +64,12 @@ sealed interface Node {
      * Common interface for AST nodes that have function parameters.
      *
      * @property lPar left parenthesis of the function parameters if exists, otherwise `null`.
-     * @property params list of function parameters.
+     * @property parameters list of function parameters.
      * @property rPar right parenthesis of the function parameters if exists, otherwise `null`.
      */
-    interface WithFunctionParams {
+    interface WithFunctionParameters {
         val lPar: Keyword.LPar?
-        val params: List<FunctionParam>
+        val parameters: List<FunctionParameter>
         val rPar: Keyword.RPar?
     }
 
@@ -412,7 +412,7 @@ sealed interface Node {
                  *
                  * @property modifiers list of modifiers.
                  * @property constructorKeyword `constructor` keyword.
-                 * @property params list of parameters of the secondary constructor.
+                 * @property parameters list of parameters of the secondary constructor.
                  * @property delegationCall delegation call expression of the secondary constructor if exists, otherwise `null`.
                  * @property block block of the constructor if exists, otherwise `null`.
                  */
@@ -420,12 +420,12 @@ sealed interface Node {
                     override val modifiers: List<Modifier>,
                     val constructorKeyword: Keyword.Constructor,
                     override val lPar: Keyword.LPar?,
-                    override val params: List<FunctionParam>,
+                    override val parameters: List<FunctionParameter>,
                     override val rPar: Keyword.RPar?,
                     val delegationCall: Expression.CallExpression?,
                     val block: Expression.BlockExpression?,
                     override var tag: Any? = null,
-                ) : Declaration, WithModifiers, WithFunctionParams
+                ) : Declaration, WithModifiers, WithFunctionParameters
             }
         }
 
@@ -467,16 +467,16 @@ sealed interface Node {
              *
              * @property modifiers list of modifiers.
              * @property constructorKeyword `constructor` keyword if exists, otherwise `null`.
-             * @property params list of parameters of the constructor.
+             * @property parameters list of parameters of the constructor.
              */
             data class PrimaryConstructor(
                 override val modifiers: List<Modifier>,
                 val constructorKeyword: Keyword.Constructor?,
                 override val lPar: Keyword.LPar?,
-                override val params: List<FunctionParam>,
+                override val parameters: List<FunctionParameter>,
                 override val rPar: Keyword.RPar?,
                 override var tag: Any? = null,
-            ) : Node, WithModifiers, WithFunctionParams
+            ) : Node, WithModifiers, WithFunctionParameters
         }
 
         /**
@@ -498,7 +498,7 @@ sealed interface Node {
          * @property typeParameters list of type parameters of the function.
          * @property receiverType receiver type of the function if exists, otherwise `null`.
          * @property name name of the function. If the function is anonymous, the name is `null`.
-         * @property params list of parameters of the function.
+         * @property parameters list of parameters of the function.
          * @property returnType return type of the function if exists, otherwise `null`.
          * @property postModifiers post-modifiers of the function.
          * @property body body of the function if exists, otherwise `null`.
@@ -511,13 +511,13 @@ sealed interface Node {
             val receiverType: Type?,
             val name: Expression.NameExpression?,
             override val lPar: Keyword.LPar?,
-            override val params: List<FunctionParam>,
+            override val parameters: List<FunctionParameter>,
             override val rPar: Keyword.RPar?,
             val returnType: Type?,
             override val postModifiers: List<PostModifier>,
             val body: Expression?,
             override var tag: Any? = null,
-        ) : Declaration, WithModifiers, WithTypeParameters, WithFunctionParams, WithPostModifiers
+        ) : Declaration, WithModifiers, WithTypeParameters, WithFunctionParameters, WithPostModifiers
 
         /**
          * AST node that represents a property declaration. The node corresponds to KtProperty or KtDestructuringDeclaration.
@@ -595,21 +595,21 @@ sealed interface Node {
              * AST node that represents a property setter.
              *
              * @property modifiers list of modifiers.
-             * @property param parameter of the setter if exists, otherwise `null`.
+             * @property parameter parameter of the setter if exists, otherwise `null`.
              * @property postModifiers post-modifiers of the setter.
              * @property body body of the setter if exists, otherwise `null`.
              */
             data class Setter(
                 override val modifiers: List<Modifier>,
                 override val lPar: Keyword.LPar?,
-                val param: FunctionParam?,
+                val parameter: FunctionParameter?,
                 override val rPar: Keyword.RPar?,
                 override val postModifiers: List<PostModifier>,
                 override val body: Expression?,
                 override var tag: Any? = null,
             ) : Accessor {
                 init {
-                    if (param == null) {
+                    if (parameter == null) {
                         require(body == null) { "body must be null when param is null" }
                     } else {
                         require(body != null) { "body must not be null when param is not null" }
@@ -740,7 +740,7 @@ sealed interface Node {
 
             /**
              * AST node that represents a formal function parameter of a function type. For example, `x: Int` in `(x: Int) -> Unit` is a function parameter. The node corresponds to KtParameter inside KtFunctionType.
-             * Unlike [FunctionParam], [name] is optional, but [type] is mandatory.
+             * Unlike [FunctionParameter], [name] is optional, but [type] is mandatory.
              *
              * @property name name of the parameter if exists, otherwise `null`.
              * @property type type of the parameter.
@@ -801,18 +801,18 @@ sealed interface Node {
             /**
              * AST node that represents a catch clause. The node corresponds to KtCatchClause.
              *
-             * @property params list of parameters of the catch clause.
+             * @property parameters list of parameters of the catch clause.
              * @property block block expression.
              */
             data class CatchClause(
                 override val lPar: Keyword.LPar,
-                override val params: List<FunctionParam>,
+                override val parameters: List<FunctionParameter>,
                 override val rPar: Keyword.RPar,
                 val block: BlockExpression,
                 override var tag: Any? = null,
-            ) : Node, WithFunctionParams {
+            ) : Node, WithFunctionParameters {
                 init {
-                    require(params.isNotEmpty()) { "catch clause must have at least one parameter" }
+                    require(parameters.isNotEmpty()) { "catch clause must have at least one parameter" }
                 }
             }
         }
@@ -1452,7 +1452,7 @@ sealed interface Node {
      * @property type type of the parameter. Can be `null` for anonymous function parameters.
      * @property defaultValue default value of the parameter if exists, otherwise `null`.
      */
-    data class FunctionParam(
+    data class FunctionParameter(
         override val modifiers: List<Modifier>,
         val valOrVarKeyword: Keyword.ValOrVarKeyword?,
         val name: Expression.NameExpression,
@@ -1463,7 +1463,7 @@ sealed interface Node {
 
     /**
      * AST node that represents a formal parameter of lambda expression. For example, `x` in `{ x -> ... }` is a lambda parameter. The node corresponds to KtParameter under KtLambdaExpression.
-     * Unlike [FunctionParam], this node can have multiple variables, i.e. destructuring declaration.
+     * Unlike [FunctionParameter], this node can have multiple variables, i.e. destructuring declaration.
      *
      * @property lPar left parenthesis of this parameter if exists, otherwise `null`.
      * @property variables list of variables.

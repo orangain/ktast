@@ -105,7 +105,7 @@ open class Visitor {
                     visitChildren(modifiers)
                     visitChildren(constructorKeyword)
                     visitChildren(lPar)
-                    visitChildren(params)
+                    visitChildren(parameters)
                     visitChildren(rPar)
                     visitChildren(delegationCall)
                     visitChildren(block)
@@ -126,7 +126,7 @@ open class Visitor {
                     visitChildren(modifiers)
                     visitChildren(constructorKeyword)
                     visitChildren(lPar)
-                    visitChildren(params)
+                    visitChildren(parameters)
                     visitChildren(rPar)
                 }
                 is Node.Declaration.ObjectDeclaration -> {
@@ -144,7 +144,7 @@ open class Visitor {
                     visitChildren(receiverType)
                     visitChildren(name)
                     visitChildren(lPar)
-                    visitChildren(params)
+                    visitChildren(parameters)
                     visitChildren(rPar)
                     visitChildren(returnType)
                     visitChildren(postModifiers)
@@ -176,7 +176,7 @@ open class Visitor {
                 is Node.Declaration.PropertyDeclaration.Setter -> {
                     visitChildren(modifiers)
                     visitChildren(lPar)
-                    visitChildren(param)
+                    visitChildren(parameter)
                     visitChildren(rPar)
                     visitChildren(postModifiers)
                     visitChildren(body)
@@ -244,7 +244,7 @@ open class Visitor {
                 }
                 is Node.Expression.TryExpression.CatchClause -> {
                     visitChildren(lPar)
-                    visitChildren(params)
+                    visitChildren(parameters)
                     visitChildren(rPar)
                     visitChildren(block)
                 }
@@ -384,7 +384,7 @@ open class Visitor {
                     visitChildren(name)
                     visitChildren(type)
                 }
-                is Node.FunctionParam -> {
+                is Node.FunctionParameter -> {
                     visitChildren(modifiers)
                     visitChildren(valOrVarKeyword)
                     visitChildren(name)
