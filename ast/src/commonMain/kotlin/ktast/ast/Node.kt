@@ -189,11 +189,11 @@ sealed interface Node {
          * AST node that represents a for statement. The node corresponds to KtForExpression.
          *
          * ```
-         * for ([loopParam] in [loopRange]) [body]
+         * for ([loopParameter] in [loopRange]) [body]
          * ```
          *
          * @property lPar left parenthesis of the loop condition.
-         * @property loopParam loop parameter before `in` keyword.
+         * @property loopParameter loop parameter before `in` keyword.
          * @property inKeyword `in` keyword.
          * @property loopRange loop range expression after `in` keyword.
          * @property rPar right parenthesis of the loop condition.
@@ -201,7 +201,7 @@ sealed interface Node {
          */
         data class ForStatement(
             val lPar: Keyword.LPar,
-            val loopParam: LambdaParameter,
+            val loopParameter: LambdaParameter,
             val inKeyword: Keyword.In,
             val loopRange: Expression,
             val rPar: Keyword.RPar,

@@ -129,7 +129,7 @@ open class Writer(
                 }
                 is Node.Statement.ForStatement -> {
                     append("for")
-                    children(lPar, loopParam, inKeyword, loopRange, rPar, body)
+                    children(lPar, loopParameter, inKeyword, loopRange, rPar, body)
                 }
                 is Node.Statement.WhileStatement -> {
                     append("while")

@@ -55,7 +55,7 @@ open class Visitor {
                 }
                 is Node.Statement.ForStatement -> {
                     visitChildren(lPar)
-                    visitChildren(loopParam)
+                    visitChildren(loopParameter)
                     visitChildren(inKeyword)
                     visitChildren(loopRange)
                     visitChildren(rPar)
