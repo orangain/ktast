@@ -723,7 +723,7 @@ sealed interface Node {
          * @property contextReceiver context receivers if exists, otherwise `null`.
          * @property receiverType receiver type if exists, otherwise `null`.
          * @property lPar left parenthesis if exists, otherwise `null`.
-         * @property params list of parameters of the function type.
+         * @property parameters list of parameters of the function type.
          * @property rPar right parenthesis if exists, otherwise `null`.
          * @property returnType return type of the function type.
          */
@@ -732,7 +732,7 @@ sealed interface Node {
             val contextReceiver: ContextReceiver?,
             val receiverType: Type?,
             val lPar: Keyword.LPar?,
-            val params: List<FunctionTypeParam>,
+            val parameters: List<FunctionTypeParameter>,
             val rPar: Keyword.RPar?,
             val returnType: Type,
             override var tag: Any? = null,
@@ -745,7 +745,7 @@ sealed interface Node {
              * @property name name of the parameter if exists, otherwise `null`.
              * @property type type of the parameter.
              */
-            data class FunctionTypeParam(
+            data class FunctionTypeParameter(
                 val name: Expression.NameExpression?,
                 val type: Type,
                 override var tag: Any? = null,

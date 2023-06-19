@@ -293,11 +293,11 @@ open class Writer(
                     children(contextReceiver)
                     children(receiverType)
                     if (receiverType != null) append(".")
-                    commaSeparatedChildren(lPar, params, rPar)
+                    commaSeparatedChildren(lPar, parameters, rPar)
                     append("->")
                     children(returnType)
                 }
-                is Node.Type.FunctionType.FunctionTypeParam -> {
+                is Node.Type.FunctionType.FunctionTypeParameter -> {
                     if (name != null) children(name).append(":")
                     children(type)
                 }

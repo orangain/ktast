@@ -222,11 +222,11 @@ open class Visitor {
                     visitChildren(contextReceiver)
                     visitChildren(receiverType)
                     visitChildren(lPar)
-                    visitChildren(params)
+                    visitChildren(parameters)
                     visitChildren(rPar)
                     visitChildren(returnType)
                 }
-                is Node.Type.FunctionType.FunctionTypeParam -> {
+                is Node.Type.FunctionType.FunctionTypeParameter -> {
                     visitChildren(name)
                     visitChildren(type)
                 }

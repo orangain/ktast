@@ -384,15 +384,15 @@ open class Converter {
             contextReceiver = typeEl.contextReceiverList?.let(::convertContextReceiver),
             receiverType = typeEl.receiver?.typeReference?.let(::convertType),
             lPar = typeEl.parameterList?.leftParenthesis?.let(::convertKeyword),
-            params = convertTypeFunctionParams(typeEl.parameterList),
+            parameters = convertTypeFunctionParams(typeEl.parameterList),
             rPar = typeEl.parameterList?.rightParenthesis?.let(::convertKeyword),
             returnType = convertType(typeEl.returnTypeReference ?: error("No return type for $typeEl")),
         ).map(v)
 
-    protected fun convertTypeFunctionParams(v: KtParameterList?): List<Node.Type.FunctionType.FunctionTypeParam> =
+    protected fun convertTypeFunctionParams(v: KtParameterList?): List<Node.Type.FunctionType.FunctionTypeParameter> =
         v?.parameters.orEmpty().map(::convertTypeFunctionParam)
 
-    protected fun convertTypeFunctionParam(v: KtParameter) = Node.Type.FunctionType.FunctionTypeParam(
+    protected fun convertTypeFunctionParam(v: KtParameter) = Node.Type.FunctionType.FunctionTypeParameter(
         name = v.nameIdentifier?.let(::convertNameExpression),
         type = convertType(v.typeReference ?: error("No param type"))
     ).map(v)
