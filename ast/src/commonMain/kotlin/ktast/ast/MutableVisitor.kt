@@ -334,11 +334,6 @@ open class MutableVisitor(
                         rPar = visitChildren(rPar, newCh),
                         lambdaArg = visitChildren(lambdaArg, newCh),
                     )
-                    is Node.Expression.CallExpression.LambdaArg -> copy(
-                        annotationSets = visitChildren(annotationSets, newCh),
-                        label = visitChildren(label, newCh),
-                        expression = visitChildren(expression, newCh),
-                    )
                     is Node.Expression.LambdaExpression -> copy(
                         params = visitChildren(params, newCh),
                         arrow = visitChildren(arrow, newCh),

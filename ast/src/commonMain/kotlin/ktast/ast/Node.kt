@@ -1024,7 +1024,7 @@ sealed interface Node {
          * @property calleeExpression callee expression.
          * @property typeArgs list of type arguments.
          * @property args list of value arguments.
-         * @property lambdaArg lambda argument if exists, otherwise `null`.
+         * @property lambdaArg lambda argument expression if exists, otherwise `null`. This can be one of [LambdaExpression], [AnnotatedExpression] or [LabeledExpression]. To extract the lambda expression, use [lambdaExpression].
          */
         data class CallExpression(
             val calleeExpression: Expression,
@@ -1034,22 +1034,13 @@ sealed interface Node {
             override val lPar: Keyword.LPar?,
             override val args: List<ValueArg>,
             override val rPar: Keyword.RPar?,
-            val lambdaArg: LambdaArg?,
+            val lambdaArg: Expression?,
             override var tag: Any? = null,
         ) : Expression, WithTypeArgs, WithValueArgs {
             /**
-             * AST node that represents a lambda argument. The node corresponds to KtLambdaArgument.
-             *
-             * @property annotationSets list of annotation sets.
-             * @property label label of this lambda argument if exists, otherwise `null`.
-             * @property expression lambda expression.
+             * Returns the lambda expression of the lambda argument if exists, otherwise `null`.
              */
-            data class LambdaArg(
-                override val annotationSets: List<Modifier.AnnotationSet>,
-                override val label: NameExpression?,
-                val expression: LambdaExpression,
-                override var tag: Any? = null,
-            ) : Node, WithAnnotationSets, WithLabel
+            fun lambdaExpression(): LambdaExpression? = lambdaArg?.let(::getLambdaExpression)
         }
 
         /**

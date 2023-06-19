@@ -60,3 +60,12 @@ internal fun wrapWithNullableType(type: Node.Type, questionMarks: List<Node.Keyw
         questionMark = questionMarks.last(),
     )
 }
+
+internal fun getLambdaExpression(node: Node.Statement): Node.Expression.LambdaExpression? {
+    return when (node) {
+        is Node.Expression.LambdaExpression -> node
+        is Node.Expression.AnnotatedExpression -> getLambdaExpression(node.statement)
+        is Node.Expression.LabeledExpression -> getLambdaExpression(node.statement)
+        else -> null
+    }
+}

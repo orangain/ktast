@@ -306,11 +306,6 @@ open class Visitor {
                     visitChildren(rPar)
                     visitChildren(lambdaArg)
                 }
-                is Node.Expression.CallExpression.LambdaArg -> {
-                    visitChildren(annotationSets)
-                    visitChildren(label)
-                    visitChildren(expression)
-                }
                 is Node.Expression.LambdaExpression -> {
                     visitChildren(params)
                     visitChildren(arrow)
