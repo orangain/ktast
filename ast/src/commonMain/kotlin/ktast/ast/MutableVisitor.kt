@@ -332,7 +332,7 @@ open class MutableVisitor(
                         lPar = visitChildren(lPar, newCh),
                         arguments = visitChildren(arguments, newCh),
                         rPar = visitChildren(rPar, newCh),
-                        lambdaArg = visitChildren(lambdaArg, newCh),
+                        lambdaArgument = visitChildren(lambdaArgument, newCh),
                     )
                     is Node.Expression.LambdaExpression -> copy(
                         parameters = visitChildren(parameters, newCh),

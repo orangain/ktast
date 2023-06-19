@@ -551,7 +551,7 @@ open class Converter {
         lPar = v.valueArgumentList?.leftParenthesis?.let(::convertKeyword),
         arguments = convertValueArguments(v.valueArgumentList),
         rPar = v.valueArgumentList?.rightParenthesis?.let(::convertKeyword),
-        lambdaArg = v.lambdaArguments.also {
+        lambdaArgument = v.lambdaArguments.also {
             if (it.size >= 2) {
                 // According to the Kotlin syntax, at most one lambda argument is allowed.
                 // However, Kotlin compiler can parse multiple lambda arguments.

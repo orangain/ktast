@@ -379,7 +379,7 @@ open class Writer(
                     children(calleeExpression)
                     commaSeparatedChildren(lAngle, typeArguments, rAngle)
                     commaSeparatedChildren(lPar, arguments, rPar)
-                    children(lambdaArg)
+                    children(lambdaArgument)
                 }
                 is Node.Expression.LambdaExpression -> {
                     writeBlock {
@@ -677,7 +677,7 @@ open class Writer(
                 append(";")
             }
         }
-        if (node is Node.Expression.CallExpression && node.lambdaArg == null && next is Node.Expression.LambdaExpression) {
+        if (node is Node.Expression.CallExpression && node.lambdaArgument == null && next is Node.Expression.LambdaExpression) {
             if (!containsSemicolon(extrasSinceLastNonSymbol)) {
                 append(";")
             }
