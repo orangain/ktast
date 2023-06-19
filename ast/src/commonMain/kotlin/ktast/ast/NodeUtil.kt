@@ -13,7 +13,7 @@ internal fun toType(e: Node.Expression): Node.Type? {
             )
         }
         is Node.Expression.CallExpression -> {
-            if (e.args.isEmpty() && e.lPar == null && e.rPar == null && e.lambdaArg == null) {
+            if (e.arguments.isEmpty() && e.lPar == null && e.rPar == null && e.lambdaArg == null) {
                 return Node.Type.SimpleType(
                     modifiers = listOf(),
                     qualifiers = listOf(),

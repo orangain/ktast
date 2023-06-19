@@ -76,7 +76,7 @@ open class Visitor {
                 is Node.Declaration.ClassOrObject.ConstructorClassParent -> {
                     visitChildren(type)
                     visitChildren(lPar)
-                    visitChildren(args)
+                    visitChildren(arguments)
                     visitChildren(rPar)
                 }
                 is Node.Declaration.ClassOrObject.DelegationClassParent -> {
@@ -94,7 +94,7 @@ open class Visitor {
                     visitChildren(modifiers)
                     visitChildren(name)
                     visitChildren(lPar)
-                    visitChildren(args)
+                    visitChildren(arguments)
                     visitChildren(rPar)
                     visitChildren(classBody)
                 }
@@ -302,7 +302,7 @@ open class Visitor {
                     visitChildren(typeArguments)
                     visitChildren(rAngle)
                     visitChildren(lPar)
-                    visitChildren(args)
+                    visitChildren(arguments)
                     visitChildren(rPar)
                     visitChildren(lambdaArg)
                 }
@@ -406,7 +406,7 @@ open class Visitor {
                     visitChildren(modifiers)
                     visitChildren(type)
                 }
-                is Node.ValueArg -> {
+                is Node.ValueArgument -> {
                     visitChildren(name)
                     visitChildren(spreadOperator)
                     visitChildren(expression)
@@ -425,7 +425,7 @@ open class Visitor {
                 is Node.Modifier.AnnotationSet.Annotation -> {
                     visitChildren(type)
                     visitChildren(lPar)
-                    visitChildren(args)
+                    visitChildren(arguments)
                     visitChildren(rPar)
                 }
                 is Node.PostModifier.TypeConstraintSet -> {

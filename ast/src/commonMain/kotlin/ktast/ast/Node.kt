@@ -90,12 +90,12 @@ sealed interface Node {
      * Common interface for AST nodes that have value arguments.
      *
      * @property lPar left parenthesis of the value arguments if exists, otherwise `null`.
-     * @property args list of value arguments.
+     * @property arguments list of value arguments.
      * @property rPar right parenthesis of the value arguments if exists, otherwise `null`.
      */
-    interface WithValueArgs {
+    interface WithValueArguments {
         val lPar: Keyword.LPar?
-        val args: List<ValueArg>
+        val arguments: List<ValueArgument>
         val rPar: Keyword.RPar?
     }
 
@@ -305,11 +305,11 @@ sealed interface Node {
              *
              * @property type type of the parent.
              * @property lPar left parenthesis of the value arguments.
-             * @property args list of value arguments of the parent call.
+             * @property arguments list of value arguments of the parent call.
              * @property rPar right parenthesis of the value arguments.
              * @property expression expression of the delegation if exists, otherwise `null`.
              */
-            sealed interface ClassParent : Node, WithValueArgs {
+            sealed interface ClassParent : Node, WithValueArguments {
                 val type: Type
                 val expression: Expression?
             }
@@ -318,13 +318,13 @@ sealed interface Node {
              * ClassParent node that represents constructor invocation. The node corresponds to KtSuperTypeCallEntry.
              *
              * @property type type of the parent.
-             * @property args list of value arguments of the parent call.
+             * @property arguments list of value arguments of the parent call.
              * @property expression always `null`.
              */
             data class ConstructorClassParent(
                 override val type: Type.SimpleType,
                 override val lPar: Keyword.LPar,
-                override val args: List<ValueArg>,
+                override val arguments: List<ValueArgument>,
                 override val rPar: Keyword.RPar,
                 override var tag: Any? = null,
             ) : ClassParent {
@@ -335,7 +335,7 @@ sealed interface Node {
              * ClassParent node that represents explicit delegation. The node corresponds to KtDelegatedSuperTypeEntry.
              *
              * @property type type of the interface delegated to.
-             * @property args always empty list.
+             * @property arguments always empty list.
              * @property expression expression of the delegation.
              */
             data class DelegationClassParent(
@@ -344,7 +344,7 @@ sealed interface Node {
                 override var tag: Any? = null,
             ) : ClassParent {
                 override val lPar: Keyword.LPar? = null
-                override val args: List<ValueArg> = listOf()
+                override val arguments: List<ValueArgument> = listOf()
                 override val rPar: Keyword.RPar? = null
             }
 
@@ -353,7 +353,7 @@ sealed interface Node {
              *
              * @property type type of the parent.
              * @property lPar always `null`.
-             * @property args always empty list.
+             * @property arguments always empty list.
              * @property rPar always `null`.
              * @property expression always `null`.
              */
@@ -362,7 +362,7 @@ sealed interface Node {
                 override var tag: Any? = null,
             ) : ClassParent {
                 override val lPar: Keyword.LPar? = null
-                override val args: List<ValueArg> = listOf()
+                override val arguments: List<ValueArgument> = listOf()
                 override val rPar: Keyword.RPar? = null
                 override val expression: Expression? = null
             }
@@ -384,18 +384,18 @@ sealed interface Node {
                  *
                  * @property modifiers list of modifiers.
                  * @property name name of the enum entry.
-                 * @property args list of value arguments of the enum entry.
+                 * @property arguments list of value arguments of the enum entry.
                  * @property classBody class body of the enum entry if exists, otherwise `null`.
                  */
                 data class EnumEntry(
                     override val modifiers: List<Modifier>,
                     val name: Expression.NameExpression,
                     override val lPar: Keyword.LPar?,
-                    override val args: List<ValueArg>,
+                    override val arguments: List<ValueArgument>,
                     override val rPar: Keyword.RPar?,
                     val classBody: ClassBody?,
                     override var tag: Any? = null,
-                ) : Node, WithModifiers, WithValueArgs
+                ) : Node, WithModifiers, WithValueArguments
 
                 /**
                  * AST node that represents an init block, a.k.a. initializer. The node corresponds to KtAnonymousInitializer.
@@ -1023,7 +1023,7 @@ sealed interface Node {
          *
          * @property calleeExpression callee expression.
          * @property typeArguments list of type arguments.
-         * @property args list of value arguments.
+         * @property arguments list of value arguments.
          * @property lambdaArg lambda argument expression if exists, otherwise `null`. This can be one of [LambdaExpression], [AnnotatedExpression] or [LabeledExpression]. To extract the lambda expression, use [lambdaExpression].
          */
         data class CallExpression(
@@ -1032,11 +1032,11 @@ sealed interface Node {
             override val typeArguments: List<TypeArgument>,
             override val rAngle: Keyword.Greater?,
             override val lPar: Keyword.LPar?,
-            override val args: List<ValueArg>,
+            override val arguments: List<ValueArgument>,
             override val rPar: Keyword.RPar?,
             val lambdaArg: Expression?,
             override var tag: Any? = null,
-        ) : Expression, WithTypeArgs, WithValueArgs {
+        ) : Expression, WithTypeArgs, WithValueArguments {
             /**
              * Returns the lambda expression of the lambda argument if exists, otherwise `null`.
              */
@@ -1517,7 +1517,7 @@ sealed interface Node {
      * @property spreadOperator spread operator if exists, otherwise `null`.
      * @property expression expression of the argument.
      */
-    data class ValueArg(
+    data class ValueArgument(
         val name: Expression.NameExpression?,
         val spreadOperator: Keyword.Asterisk?,
         val expression: Expression,
@@ -1566,15 +1566,15 @@ sealed interface Node {
              * AST node that represents an annotation. The node corresponds to KtAnnotationEntry under KtAnnotation or a part of KtAnnotationEntry not under KtAnnotation.
              *
              * @property type type of this annotation.
-             * @property args list of value arguments.
+             * @property arguments list of value arguments.
              */
             data class Annotation(
                 val type: Type.SimpleType,
                 override val lPar: Keyword.LPar?,
-                override val args: List<ValueArg>,
+                override val arguments: List<ValueArgument>,
                 override val rPar: Keyword.RPar?,
                 override var tag: Any? = null,
-            ) : Node, WithValueArgs
+            ) : Node, WithValueArguments
         }
 
         /**

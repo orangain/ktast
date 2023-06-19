@@ -143,7 +143,7 @@ open class Writer(
                 }
                 is Node.Declaration.ClassOrObject.ConstructorClassParent -> {
                     children(type)
-                    commaSeparatedChildren(lPar, args, rPar)
+                    commaSeparatedChildren(lPar, arguments, rPar)
                 }
                 is Node.Declaration.ClassOrObject.DelegationClassParent -> {
                     children(type)
@@ -168,7 +168,7 @@ open class Writer(
                 is Node.Declaration.ClassOrObject.ClassBody.EnumEntry -> {
                     children(modifiers)
                     children(name)
-                    commaSeparatedChildren(lPar, args, rPar)
+                    commaSeparatedChildren(lPar, arguments, rPar)
                     children(classBody)
                 }
                 is Node.Declaration.ClassOrObject.ClassBody.Initializer -> {
@@ -378,7 +378,7 @@ open class Writer(
                 is Node.Expression.CallExpression -> {
                     children(calleeExpression)
                     commaSeparatedChildren(lAngle, typeArguments, rAngle)
-                    commaSeparatedChildren(lPar, args, rPar)
+                    commaSeparatedChildren(lPar, arguments, rPar)
                     children(lambdaArg)
                 }
                 is Node.Expression.LambdaExpression -> {
@@ -498,7 +498,7 @@ open class Writer(
                     children(modifiers)
                     children(type)
                 }
-                is Node.ValueArg -> {
+                is Node.ValueArgument -> {
                     if (name != null) children(name).append("=")
                     children(spreadOperator)
                     children(expression)
@@ -519,7 +519,7 @@ open class Writer(
                 }
                 is Node.Modifier.AnnotationSet.Annotation -> {
                     children(type)
-                    commaSeparatedChildren(lPar, args, rPar)
+                    commaSeparatedChildren(lPar, arguments, rPar)
                     val parentNode = path.parent?.node
                     if (parentNode is Node.Modifier.AnnotationSet && parentNode.rBracket == null) {
                         nextHeuristicWhitespace = " " // Insert heuristic space after annotation if single form

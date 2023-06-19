@@ -149,7 +149,7 @@ open class Converter {
                 ?: error("Bad type on super call $v"),
             lPar = v.valueArgumentList?.leftParenthesis?.let(::convertKeyword)
                 ?: error("No left parenthesis for $v"),
-            args = convertValueArgs(v.valueArgumentList),
+            arguments = convertValueArgs(v.valueArgumentList),
             rPar = v.valueArgumentList?.rightParenthesis?.let(::convertKeyword)
                 ?: error("No right parenthesis for $v"),
         ).map(v)
@@ -189,7 +189,7 @@ open class Converter {
             modifiers = convertModifiers(v.modifierList),
             name = v.nameIdentifier?.let(::convertNameExpression) ?: error("Unnamed enum"),
             lPar = v.initializerList?.valueArgumentList?.leftParenthesis?.let(::convertKeyword),
-            args = convertValueArgs(v.initializerList?.valueArgumentList),
+            arguments = convertValueArgs(v.initializerList?.valueArgumentList),
             rPar = v.initializerList?.valueArgumentList?.rightParenthesis?.let(::convertKeyword),
             classBody = v.body?.let(::convertClassBody),
         ).map(v)
@@ -549,7 +549,7 @@ open class Converter {
         typeArguments = convertTypeArgs(v.typeArgumentList),
         rAngle = v.typeArgumentList?.rightAngle?.let(::convertKeyword),
         lPar = v.valueArgumentList?.leftParenthesis?.let(::convertKeyword),
-        args = convertValueArgs(v.valueArgumentList),
+        arguments = convertValueArgs(v.valueArgumentList),
         rPar = v.valueArgumentList?.rightParenthesis?.let(::convertKeyword),
         lambdaArg = v.lambdaArguments.also {
             if (it.size >= 2) {
@@ -806,10 +806,10 @@ open class Converter {
         rAngle = null,
     ).map(v)
 
-    protected fun convertValueArgs(v: KtValueArgumentList?): List<Node.ValueArg> =
+    protected fun convertValueArgs(v: KtValueArgumentList?): List<Node.ValueArgument> =
         v?.arguments.orEmpty().map(::convertValueArg)
 
-    protected fun convertValueArg(v: KtValueArgument) = Node.ValueArg(
+    protected fun convertValueArg(v: KtValueArgument) = Node.ValueArgument(
         name = v.getArgumentName()?.referenceExpression?.let(::convertNameExpression),
         spreadOperator = v.getSpreadElement()?.let(::convertKeyword),
         expression = convertExpression(v.getArgumentExpression() ?: error("No expr for value arg"))
@@ -860,7 +860,7 @@ open class Converter {
             v.calleeExpression?.typeReference ?: error("No callee expression, type reference or type element for $v")
         ) as? Node.Type.SimpleType ?: error("calleeExpression is not simple type"),
         lPar = v.valueArgumentList?.leftParenthesis?.let(::convertKeyword),
-        args = convertValueArgs(v.valueArgumentList),
+        arguments = convertValueArgs(v.valueArgumentList),
         rPar = v.valueArgumentList?.rightParenthesis?.let(::convertKeyword),
     ).map(v)
 
