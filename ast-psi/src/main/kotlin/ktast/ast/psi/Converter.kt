@@ -171,7 +171,7 @@ open class Converter {
             modifiers = convertModifiers(v.modifierList),
             constructorKeyword = v.getConstructorKeyword()?.let(::convertKeyword),
             lPar = v.valueParameterList?.leftParenthesis?.let(::convertKeyword),
-            parameters = convertFuncParameters(v.valueParameterList),
+            parameters = convertFunctionParameters(v.valueParameterList),
             rPar = v.valueParameterList?.rightParenthesis?.let(::convertKeyword),
         ).map(v)
 
@@ -208,7 +208,7 @@ open class Converter {
             modifiers = convertModifiers(v.modifierList),
             constructorKeyword = convertKeyword(v.getConstructorKeyword()),
             lPar = v.valueParameterList?.leftParenthesis?.let(::convertKeyword),
-            parameters = convertFuncParameters(v.valueParameterList),
+            parameters = convertFunctionParameters(v.valueParameterList),
             rPar = v.valueParameterList?.rightParenthesis?.let(::convertKeyword),
             delegationCall = if (v.hasImplicitDelegationCall()) null else convertCallExpression(
                 v.getDelegationCall()
@@ -235,7 +235,7 @@ open class Converter {
             receiverType = v.receiverTypeReference?.let(::convertType),
             name = v.nameIdentifier?.let(::convertNameExpression),
             lPar = v.valueParameterList?.leftParenthesis?.let(::convertKeyword),
-            parameters = convertFuncParameters(v.valueParameterList),
+            parameters = convertFunctionParameters(v.valueParameterList),
             rPar = v.valueParameterList?.rightParenthesis?.let(::convertKeyword),
             returnType = v.typeReference?.let(::convertType),
             postModifiers = convertPostModifiers(v),
@@ -295,7 +295,7 @@ open class Converter {
     protected fun convertSetter(v: KtPropertyAccessor) = Node.Declaration.PropertyDeclaration.Setter(
         modifiers = convertModifiers(v.modifierList),
         lPar = v.leftParenthesis?.let(::convertKeyword),
-        parameter = v.parameter?.let(::convertFuncParameter),
+        parameter = v.parameter?.let(::convertFunctionParameter),
         rPar = v.rightParenthesis?.let(::convertKeyword),
         postModifiers = convertPostModifiers(v),
         body = v.bodyExpression?.let(::convertExpression),
@@ -452,7 +452,7 @@ open class Converter {
 
     protected fun convertCatchClause(v: KtCatchClause) = Node.Expression.TryExpression.CatchClause(
         lPar = convertKeyword(v.parameterList?.leftParenthesis ?: error("No catch lpar for $v")),
-        parameters = convertFuncParameters(v.parameterList ?: error("No catch parameters for $v")),
+        parameters = convertFunctionParameters(v.parameterList ?: error("No catch parameters for $v")),
         rPar = convertKeyword(v.parameterList?.rightParenthesis ?: error("No catch rpar for $v")),
         block = convertBlockExpression(v.catchBody as? KtBlockExpression ?: error("No catch block for $v")),
     ).map(v)
@@ -730,10 +730,10 @@ open class Converter {
         type = v.extendsBound?.let(::convertType)
     ).map(v)
 
-    protected fun convertFuncParameters(v: KtParameterList?): List<Node.FunctionParameter> =
-        v?.parameters.orEmpty().map(::convertFuncParameter)
+    protected fun convertFunctionParameters(v: KtParameterList?): List<Node.FunctionParameter> =
+        v?.parameters.orEmpty().map(::convertFunctionParameter)
 
-    protected fun convertFuncParameter(v: KtParameter) = Node.FunctionParameter(
+    protected fun convertFunctionParameter(v: KtParameter) = Node.FunctionParameter(
         modifiers = convertModifiers(v.modifierList),
         valOrVarKeyword = v.valOrVarKeyword?.let(::convertKeyword),
         name = v.nameIdentifier?.let(::convertNameExpression) ?: error("No parameter name"),
