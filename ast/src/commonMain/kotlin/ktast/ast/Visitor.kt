@@ -205,13 +205,13 @@ open class Visitor {
                     visitChildren(qualifiers)
                     visitChildren(name)
                     visitChildren(lAngle)
-                    visitChildren(typeArgs)
+                    visitChildren(typeArguments)
                     visitChildren(rAngle)
                 }
                 is Node.Type.SimpleType.SimpleTypeQualifier -> {
                     visitChildren(name)
                     visitChildren(lAngle)
-                    visitChildren(typeArgs)
+                    visitChildren(typeArguments)
                     visitChildren(rAngle)
                 }
                 is Node.Type.DynamicType -> {
@@ -299,7 +299,7 @@ open class Visitor {
                 is Node.Expression.CallExpression -> {
                     visitChildren(calleeExpression)
                     visitChildren(lAngle)
-                    visitChildren(typeArgs)
+                    visitChildren(typeArguments)
                     visitChildren(rAngle)
                     visitChildren(lPar)
                     visitChildren(args)
@@ -360,7 +360,7 @@ open class Visitor {
                     visitChildren(label)
                 }
                 is Node.Expression.SuperExpression -> {
-                    visitChildren(typeArg)
+                    visitChildren(typeArgument)
                     visitChildren(label)
                 }
                 is Node.Expression.NameExpression -> {}
@@ -402,7 +402,7 @@ open class Visitor {
                     visitChildren(name)
                     visitChildren(type)
                 }
-                is Node.TypeArg -> {
+                is Node.TypeArgument -> {
                     visitChildren(modifiers)
                     visitChildren(type)
                 }

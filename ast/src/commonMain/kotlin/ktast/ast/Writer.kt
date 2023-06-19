@@ -278,11 +278,11 @@ open class Writer(
                         append(".")
                     }
                     children(name)
-                    commaSeparatedChildren(lAngle, typeArgs, rAngle)
+                    commaSeparatedChildren(lAngle, typeArguments, rAngle)
                 }
                 is Node.Type.SimpleType.SimpleTypeQualifier -> {
                     children(name)
-                    commaSeparatedChildren(lAngle, typeArgs, rAngle)
+                    commaSeparatedChildren(lAngle, typeArguments, rAngle)
                 }
                 is Node.Type.DynamicType -> {
                     children(modifiers)
@@ -377,7 +377,7 @@ open class Writer(
                 }
                 is Node.Expression.CallExpression -> {
                     children(calleeExpression)
-                    commaSeparatedChildren(lAngle, typeArgs, rAngle)
+                    commaSeparatedChildren(lAngle, typeArguments, rAngle)
                     commaSeparatedChildren(lPar, args, rPar)
                     children(lambdaArg)
                 }
@@ -450,7 +450,7 @@ open class Writer(
                 }
                 is Node.Expression.SuperExpression -> {
                     append("super")
-                    if (typeArg != null) append('<').also { children(typeArg) }.append('>')
+                    if (typeArgument != null) append('<').also { children(typeArgument) }.append('>')
                     appendLabel(label)
                 }
                 is Node.Expression.NameExpression ->
@@ -494,7 +494,7 @@ open class Writer(
                     children(name)
                     if (type != null) append(":").also { children(type) }
                 }
-                is Node.TypeArg -> {
+                is Node.TypeArgument -> {
                     children(modifiers)
                     children(type)
                 }

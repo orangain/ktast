@@ -357,7 +357,7 @@ open class Converter {
                 .map { convertTypeSimpleQualifier(v, it) },
             name = convertNameExpression(typeEl.referenceExpression ?: error("No type name for $typeEl")),
             lAngle = typeEl.typeArgumentList?.leftAngle?.let(::convertKeyword),
-            typeArgs = convertTypeArgs(typeEl.typeArgumentList),
+            typeArguments = convertTypeArgs(typeEl.typeArgumentList),
             rAngle = typeEl.typeArgumentList?.rightAngle?.let(::convertKeyword),
         ).map(v)
 
@@ -365,7 +365,7 @@ open class Converter {
         Node.Type.SimpleType.SimpleTypeQualifier(
             name = convertNameExpression(typeEl.referenceExpression ?: error("No type name for $typeEl")),
             lAngle = typeEl.typeArgumentList?.leftAngle?.let(::convertKeyword),
-            typeArgs = convertTypeArgs(typeEl.typeArgumentList),
+            typeArguments = convertTypeArgs(typeEl.typeArgumentList),
             rAngle = typeEl.typeArgumentList?.rightAngle?.let(::convertKeyword),
         ).map(v)
 
@@ -546,7 +546,7 @@ open class Converter {
     protected fun convertCallExpression(v: KtCallElement) = Node.Expression.CallExpression(
         calleeExpression = convertExpression(v.calleeExpression ?: error("No call expr for $v")),
         lAngle = v.typeArgumentList?.leftAngle?.let(::convertKeyword),
-        typeArgs = convertTypeArgs(v.typeArgumentList),
+        typeArguments = convertTypeArgs(v.typeArgumentList),
         rAngle = v.typeArgumentList?.rightAngle?.let(::convertKeyword),
         lPar = v.valueArgumentList?.leftParenthesis?.let(::convertKeyword),
         args = convertValueArgs(v.valueArgumentList),
@@ -678,7 +678,7 @@ open class Converter {
     ).map(v)
 
     protected fun convertSuperExpression(v: KtSuperExpression) = Node.Expression.SuperExpression(
-        typeArg = v.superTypeQualifier?.let(::convertTypeArg),
+        typeArgument = v.superTypeQualifier?.let(::convertTypeArg),
         label = v.getTargetLabel()?.let(::convertNameExpression),
     ).map(v)
 
@@ -688,7 +688,7 @@ open class Converter {
                 label = null,
             ).map(v)
             "super" -> Node.Expression.SuperExpression(
-                typeArg = null,
+                typeArgument = null,
                 label = null,
             ).map(v)
             else -> error("Unrecognized this/super expr $v")
@@ -781,10 +781,10 @@ open class Converter {
         type = v.typeReference?.let(::convertType),
     ).map(v)
 
-    protected fun convertTypeArgs(v: KtTypeArgumentList?): List<Node.TypeArg> =
+    protected fun convertTypeArgs(v: KtTypeArgumentList?): List<Node.TypeArgument> =
         v?.arguments.orEmpty().map(::convertTypeArg)
 
-    protected fun convertTypeArg(v: KtTypeProjection) = Node.TypeArg(
+    protected fun convertTypeArg(v: KtTypeProjection) = Node.TypeArgument(
         modifiers = convertModifiers(v.modifierList),
         type = when (v.projectionKind) {
             KtProjectionKind.STAR -> convertSimpleType(v)
@@ -792,7 +792,7 @@ open class Converter {
         },
     ).map(v)
 
-    protected fun convertTypeArg(v: KtTypeReference) = Node.TypeArg(
+    protected fun convertTypeArg(v: KtTypeReference) = Node.TypeArgument(
         modifiers = listOf(),
         type = convertType(v),
     ).map(v)
@@ -802,7 +802,7 @@ open class Converter {
         qualifiers = listOf(),
         name = convertNameExpression(v.projectionToken ?: error("Missing projection token for $v")),
         lAngle = null,
-        typeArgs = listOf(),
+        typeArguments = listOf(),
         rAngle = null,
     ).map(v)
 

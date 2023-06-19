@@ -233,13 +233,13 @@ open class MutableVisitor(
                         qualifiers = visitChildren(qualifiers, newCh),
                         name = visitChildren(name, newCh),
                         lAngle = visitChildren(lAngle, newCh),
-                        typeArgs = visitChildren(typeArgs, newCh),
+                        typeArguments = visitChildren(typeArguments, newCh),
                         rAngle = visitChildren(rAngle, newCh),
                     )
                     is Node.Type.SimpleType.SimpleTypeQualifier -> copy(
                         name = visitChildren(name, newCh),
                         lAngle = visitChildren(lAngle, newCh),
-                        typeArgs = visitChildren(typeArgs, newCh),
+                        typeArguments = visitChildren(typeArguments, newCh),
                         rAngle = visitChildren(rAngle, newCh),
                     )
                     is Node.Type.DynamicType -> copy(
@@ -327,7 +327,7 @@ open class MutableVisitor(
                     is Node.Expression.CallExpression -> copy(
                         calleeExpression = visitChildren(calleeExpression, newCh),
                         lAngle = visitChildren(lAngle, newCh),
-                        typeArgs = visitChildren(typeArgs, newCh),
+                        typeArguments = visitChildren(typeArguments, newCh),
                         rAngle = visitChildren(rAngle, newCh),
                         lPar = visitChildren(lPar, newCh),
                         args = visitChildren(args, newCh),
@@ -388,7 +388,7 @@ open class MutableVisitor(
                         label = visitChildren(label, newCh),
                     )
                     is Node.Expression.SuperExpression -> copy(
-                        typeArg = visitChildren(typeArg, newCh),
+                        typeArgument = visitChildren(typeArgument, newCh),
                         label = visitChildren(label, newCh),
                     )
                     is Node.Expression.NameExpression -> this
@@ -430,7 +430,7 @@ open class MutableVisitor(
                         name = visitChildren(name, newCh),
                         type = visitChildren(type, newCh),
                     )
-                    is Node.TypeArg -> copy(
+                    is Node.TypeArgument -> copy(
                         modifiers = visitChildren(modifiers, newCh),
                         type = visitChildren(type, newCh),
                     )

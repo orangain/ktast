@@ -77,12 +77,12 @@ sealed interface Node {
      * Common interface for AST nodes that have type arguments.
      *
      * @property lAngle left angle bracket of the type arguments if exists, otherwise `null`.
-     * @property typeArgs list of type arguments.
+     * @property typeArguments list of type arguments.
      * @property rAngle right angle bracket of the type arguments if exists, otherwise `null`.
      */
     interface WithTypeArgs {
         val lAngle: Keyword.Less?
-        val typeArgs: List<TypeArg>
+        val typeArguments: List<TypeArgument>
         val rAngle: Keyword.Greater?
     }
 
@@ -688,7 +688,7 @@ sealed interface Node {
             val qualifiers: List<SimpleTypeQualifier>,
             override val name: Expression.NameExpression,
             override val lAngle: Keyword.Less?,
-            override val typeArgs: List<TypeArg>,
+            override val typeArguments: List<TypeArgument>,
             override val rAngle: Keyword.Greater?,
             override var tag: Any? = null,
         ) : Type, NameWithTypeArgs {
@@ -700,7 +700,7 @@ sealed interface Node {
             data class SimpleTypeQualifier(
                 override val name: Expression.NameExpression,
                 override val lAngle: Keyword.Less?,
-                override val typeArgs: List<TypeArg>,
+                override val typeArguments: List<TypeArgument>,
                 override val rAngle: Keyword.Greater?,
                 override var tag: Any? = null,
             ) : Node, NameWithTypeArgs
@@ -1022,14 +1022,14 @@ sealed interface Node {
          * AST node that represents a call expression. The node corresponds to KtCallElement.
          *
          * @property calleeExpression callee expression.
-         * @property typeArgs list of type arguments.
+         * @property typeArguments list of type arguments.
          * @property args list of value arguments.
          * @property lambdaArg lambda argument expression if exists, otherwise `null`. This can be one of [LambdaExpression], [AnnotatedExpression] or [LabeledExpression]. To extract the lambda expression, use [lambdaExpression].
          */
         data class CallExpression(
             val calleeExpression: Expression,
             override val lAngle: Keyword.Less?,
-            override val typeArgs: List<TypeArg>,
+            override val typeArguments: List<TypeArgument>,
             override val rAngle: Keyword.Greater?,
             override val lPar: Keyword.LPar?,
             override val args: List<ValueArg>,
@@ -1363,11 +1363,11 @@ sealed interface Node {
         /**
          * AST node that represents a super expression. The node corresponds to KtSuperExpression or KtConstructorDelegationReferenceExpression whose text is "super".
          *
-         * @property typeArg type argument if exists, otherwise `null`.
+         * @property typeArgument type argument if exists, otherwise `null`.
          * @property label label of this expression if exists, otherwise `null`.
          */
         data class SuperExpression(
-            val typeArg: TypeArg?,
+            val typeArgument: TypeArgument?,
             override val label: NameExpression?,
             override var tag: Any? = null,
         ) : Expression, WithLabel
@@ -1504,7 +1504,7 @@ sealed interface Node {
      * @property modifiers list of modifiers.
      * @property type projection type. When the type argument is a star projection, this is [Type.SimpleType] that has a single [Type.SimpleType.SimpleTypePiece] whose name is "*".
      */
-    data class TypeArg(
+    data class TypeArgument(
         override val modifiers: List<Modifier>,
         val type: Type,
         override var tag: Any? = null,
