@@ -1,6 +1,5 @@
 package ktast.ast.psi
 
-import ktast.ast.ExtrasMap
 import ktast.ast.Node
 import org.jetbrains.kotlin.com.intellij.psi.PsiComment
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
@@ -11,29 +10,20 @@ import org.jetbrains.kotlin.psi.KtEnumEntry
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
 import org.jetbrains.kotlin.psi.psiUtil.siblings
-import java.util.*
-import kotlin.collections.ArrayDeque
 
 /**
  * Converts PSI elements to AST nodes and keeps track of extras.
  */
-open class ConverterWithExtras : Converter(), ExtrasMap {
+open class ConverterWithExtras : Converter() {
     // Sometimes many nodes are created from the same element, but we only want the last node, i.e. the most ancestor node.
     // We remove the previous nodes we've found for the same identity when we see a new one. So we don't have to
     // keep PSI elements around, we hold a map to the element's identity hash code. Then we use that number to tie
     // to the extras to keep duplicates out. Usually using identity hash codes would be problematic due to
     // potential reuse, we know the PSI objects are all around at the same time, so it's good enough.
     protected val psiIdentitiesToNodes = mutableMapOf<Int, Node>()
-    protected val extrasBefore = IdentityHashMap<Node, List<Node.Extra>>()
-    protected val extrasWithin = IdentityHashMap<Node, List<Node.Extra>>()
-    protected val extrasAfter = IdentityHashMap<Node, List<Node.Extra>>()
 
     // This keeps track of ws nodes we've seen before so we don't duplicate them
     private val seenExtraPsiIdentities = mutableSetOf<Int>()
-
-    override fun extrasBefore(node: Node) = extrasBefore[node] ?: emptyList()
-    override fun extrasWithin(node: Node) = extrasWithin[node] ?: emptyList()
-    override fun extrasAfter(node: Node) = extrasAfter[node] ?: emptyList()
 
     override fun onNode(node: Node, element: PsiElement) {
         // We ignore whitespace and comments here to prevent recursion
@@ -44,6 +34,8 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
     }
 
     override fun convert(v: KtFile): Node.KotlinFile {
+        psiIdentitiesToNodes.clear()
+        seenExtraPsiIdentities.clear()
         return super.convert(v).also {
             fillWholeExtras(it, v)
         }
@@ -106,21 +98,27 @@ open class ConverterWithExtras : Converter(), ExtrasMap {
 
             private fun fillExtrasBefore(node: Node) {
                 convertExtras(extraElementsSinceLastNode).also {
-                    if (it.isNotEmpty()) extrasBefore[node] = (extrasBefore[node] ?: listOf()) + it
+                    if (it.isNotEmpty()) {
+                        node.supplement.extrasBefore += it
+                    }
                 }
                 extraElementsSinceLastNode.clear()
             }
 
             private fun fillExtrasAfter(node: Node) {
                 convertExtras(extraElementsSinceLastNode).also {
-                    if (it.isNotEmpty()) extrasAfter[node] = (extrasAfter[node] ?: listOf()) + it
+                    if (it.isNotEmpty()) {
+                        node.supplement.extrasAfter += it
+                    }
                 }
                 extraElementsSinceLastNode.clear()
             }
 
             private fun fillExtrasWithin(node: Node) {
                 convertExtras(extraElementsSinceLastNode).also {
-                    if (it.isNotEmpty()) extrasWithin[node] = (extrasWithin[node] ?: listOf()) + it
+                    if (it.isNotEmpty()) {
+                        node.supplement.extrasWithin += it
+                    }
                 }
                 extraElementsSinceLastNode.clear()
             }

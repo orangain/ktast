@@ -17,7 +17,7 @@ import org.jetbrains.kotlin.psi.psiUtil.collectDescendantsOfType
 /**
  * Parses Kotlin source codes into PSI and converts it to AST.
  */
-open class Parser(protected val converter: Converter = Converter()) {
+open class Parser(protected val converter: Converter = ConverterWithExtras()) {
     companion object : Parser() {
         init {
             // To hide annoying warning on Windows

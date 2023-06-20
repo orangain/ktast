@@ -1,6 +1,5 @@
 package ktast.ast
 
-import ktast.ast.psi.ConverterWithMutableExtras
 import ktast.ast.psi.Parser
 import org.junit.Test
 
@@ -53,12 +52,11 @@ private fun assertMutateAndWriteExact(
     fn: (path: NodePath<*>) -> Node,
     expectedCode: String
 ) {
-    val origExtrasConv = ConverterWithMutableExtras()
-    val origFile = Parser(origExtrasConv).parseFile(origCode)
-    println("----ORIG AST----\n${Dumper.dump(origFile, origExtrasConv)}\n------------")
+    val origFile = Parser.parseFile(origCode)
+    println("----ORIG AST----\n${Dumper.dump(origFile)}\n------------")
 
-    val newFile = MutableVisitor.traverse(origFile, origExtrasConv, fn)
-    val newCode = Writer.write(newFile, origExtrasConv)
+    val newFile = MutableVisitor.traverse(origFile, fn)
+    val newCode = Writer.write(newFile)
     kotlin.test.assertEquals(
         expectedCode.trim(),
         newCode.trim(),
