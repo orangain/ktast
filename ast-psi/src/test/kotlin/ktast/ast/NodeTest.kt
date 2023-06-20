@@ -1,5 +1,6 @@
 package ktast.ast
 
+import ktast.ast.psi.Converter
 import ktast.ast.psi.Parser
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -11,7 +12,7 @@ import kotlin.test.assertNull
 class DoubleColonExpressionTypeTest(private val code: String) {
     @Test
     fun testType() {
-        val node = Parser.parseFile(code)
+        val node = Parser(Converter()).parseFile(code)
         val properties = node.declarations.filterIsInstance<Node.Declaration.PropertyDeclaration>()
         assertEquals(properties.size, 1)
         properties.forEach { property ->
@@ -51,7 +52,7 @@ class DoubleColonExpressionTypeTest(private val code: String) {
 class DoubleColonExpressionExpressionTest(private val code: String) {
     @Test
     fun testExpression() {
-        val node = Parser.parseFile(code)
+        val node = Parser(Converter()).parseFile(code)
         val properties = node.declarations.filterIsInstance<Node.Declaration.PropertyDeclaration>()
         assertEquals(properties.size, 1)
         properties.forEach { property ->
@@ -80,7 +81,7 @@ class DoubleColonExpressionExpressionTest(private val code: String) {
 class LambdaArgLambdaExpressionTest(private val code: String) {
     @Test
     fun testLambdaExpression() {
-        val node = Parser.parseFile(code)
+        val node = Parser(Converter()).parseFile(code)
         val functionDeclaration = node.declarations.filterIsInstance<Node.Declaration.FunctionDeclaration>().first()
         val callExpressions =
             (functionDeclaration.body as Node.Expression.BlockExpression).statements.filterIsInstance<Node.Expression.CallExpression>()
