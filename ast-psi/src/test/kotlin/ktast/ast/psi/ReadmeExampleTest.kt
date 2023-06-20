@@ -71,4 +71,28 @@ class ReadmeExampleTest {
             Writer.write(newFile)
         )
     }
+
+    @Test
+    fun readmeWithoutExtras() {
+        val code = """
+            package foo
+        
+            fun bar() {
+                // Print hello
+                println("Hello, World!")
+            }
+        
+            fun baz() = println("Hello, again!")
+        """.trimIndent()
+
+        val fileWithoutExtras = Parser(Converter()).parseFile(code)
+
+        assertEquals(
+            """
+                package foo fun bar(){println("Hello, World!")}
+                fun baz()=println("Hello, again!")
+            """.trimIndent(),
+            Writer.write(fileWithoutExtras)
+        )
+    }
 }

@@ -90,7 +90,16 @@ val code = """
 val file = Parser.parseFile(code)
 ```
 
-The `file` variable is now a `ktast.ast.Node.KotlinFile`.
+The `file` variable is now a `ktast.ast.Node.KotlinFile`. Each AST nodes have blank line and comment information. If you
+don't need them, you can pass a `Converter` instance to the constructor argument of the `Parser` instead:
+
+```kotlin
+import ktast.ast.psi.Parser
+import ktast.ast.psi.Converter
+
+// ...
+val fileWithoutExtras = Parser(Converter()).parseFile(code)
+```
 
 #### Writing code
 
