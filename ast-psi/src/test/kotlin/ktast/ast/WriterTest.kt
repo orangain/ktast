@@ -237,13 +237,13 @@ class WriterTest {
 
         val origExtrasConv = ConverterWithExtras()
         val origFile = Parser(origExtrasConv).parseFile(origCode)
-        println("----ORIG AST----\n${Dumper.dump(origFile, origExtrasConv)}\n------------")
+        println("----ORIG AST----\n${Dumper.dump(origFile)}\n------------")
 
-        val newCode = Writer.write(origFile, origExtrasConv)
+        val newCode = Writer.write(origFile)
         assertEquals(origCode.trim(), newCode.trim(), "Parse -> Write for original code, not equal")
 
         val identityNode = MutableVisitor.traverse(origFile) { path -> path.node }
-        val identityCode = Writer.write(identityNode, origExtrasConv)
+        val identityCode = Writer.write(identityNode)
 
         assertEquals(
             origCode.trim(),

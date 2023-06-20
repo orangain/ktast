@@ -64,7 +64,7 @@ class ConverterTest {
     private fun assertParsedAs(code: String, expectedDump: String) {
         val converter = ConverterWithExtras()
         val node = Parser(converter).parseFile(code)
-        val actualDump = Dumper.dump(node, converter, verbose = false)
+        val actualDump = Dumper.dump(node, verbose = false)
         assertEquals(expectedDump.trim(), actualDump.trim())
     }
 

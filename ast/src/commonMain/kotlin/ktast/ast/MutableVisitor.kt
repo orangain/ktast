@@ -2,27 +2,21 @@ package ktast.ast
 
 /**
  * Visitor for AST nodes that can mutate the nodes.
- *
- * @param extrasMap optional extras map, defaults to null.
  */
-open class MutableVisitor(
-    protected val extrasMap: MutableExtrasMap? = null
-) {
+open class MutableVisitor {
     companion object {
         /**
          * Traverse the given AST node and its descendants depth-first order and calls the given callback function for each node. When the callback function returns a different node, the node is replaced with the returned node.
          *
          * @param rootNode root AST node to traverse.
-         * @param extrasMap optional extras map, defaults to null.
          * @param callback callback function to be called for each node.
          * @return the modified root node.
          */
         fun <T : Node> traverse(
             rootNode: T,
-            extrasMap: MutableExtrasMap? = null,
             callback: (path: NodePath<*>) -> Node
         ): T =
-            object : MutableVisitor(extrasMap) {
+            object : MutableVisitor() {
                 override fun <C : Node> preVisit(path: NodePath<C>): C = callback(path) as C
             }.traverse(rootNode)
     }
@@ -484,11 +478,7 @@ open class MutableVisitor(
 
     protected fun <T : Node?> NodePath<*>.visitChildren(v: T, ch: ChangedRef): T =
         if (v != null) {
-            visit(childPathOf(v), ch).also { new ->
-                if (ch.changed) {
-                    extrasMap?.moveExtras(v, new)
-                }
-            }
+            visit(childPathOf(v), ch)
         } else {
             v
         }

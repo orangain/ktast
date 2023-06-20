@@ -25,9 +25,9 @@ class CorpusParseAndWriteWithExtrasTest(private val unit: Corpus.Unit) {
             val origCode = StringUtilRt.convertLineSeparators(unit.read())
 //            println("----ORIG CODE----\n$origCode\n------------")
             val origFile = Parser(origExtrasConv).parseFile(origCode)
-            println("----ORIG AST----\n${Dumper.dump(origFile, origExtrasConv)}\n------------")
+            println("----ORIG AST----\n${Dumper.dump(origFile)}\n------------")
 
-            val newCode = Writer.write(origFile, origExtrasConv)
+            val newCode = Writer.write(origFile)
 //            println("----NEW CODE----\n$newCode\n-----------")
             assertEquals(origCode, newCode)
 
