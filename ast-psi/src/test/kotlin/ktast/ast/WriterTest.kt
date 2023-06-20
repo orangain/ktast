@@ -1,6 +1,5 @@
 package ktast.ast
 
-import ktast.ast.psi.ConverterWithExtras
 import ktast.ast.psi.Parser
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -40,8 +39,7 @@ class WriterTest {
     }
 
     private fun assertParseAndWrite(origCode: String, expectedCode: String, withExtras: Boolean) {
-        val origExtrasConv = ConverterWithExtras()
-        val origFile = Parser(origExtrasConv).parseFile(origCode)
+        val origFile = Parser.parseFile(origCode)
         println("----ORIG AST----\n${Dumper.dump(origFile)}\n------------")
 
         val newCode = Writer.write(origFile, withExtras)

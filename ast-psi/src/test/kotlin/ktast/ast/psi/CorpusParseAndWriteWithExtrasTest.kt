@@ -18,13 +18,12 @@ class CorpusParseAndWriteWithExtrasTest(private val unit: Corpus.Unit) {
         // In order to test, we parse the test code (failing and validating errors if present),
         // convert to our AST, write out our AST, and compare
         try {
-            val origExtrasConv = ConverterWithExtras()
             if (unit is Corpus.Unit.FromFile) {
                 println("Loading ${unit.fullPath}")
             }
             val origCode = StringUtilRt.convertLineSeparators(unit.read())
 //            println("----ORIG CODE----\n$origCode\n------------")
-            val origFile = Parser(origExtrasConv).parseFile(origCode)
+            val origFile = Parser.parseFile(origCode)
             println("----ORIG AST----\n${Dumper.dump(origFile)}\n------------")
 
             val newCode = Writer.write(origFile)

@@ -1,6 +1,5 @@
 package ktast.ast
 
-import ktast.ast.psi.ConverterWithExtras
 import ktast.ast.psi.Parser
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -94,8 +93,7 @@ class DumperTest {
     }
 
     private fun assertDumpedAs(code: String, expectedDump: String, withExtras: Boolean, withProperties: Boolean) {
-        val converter = ConverterWithExtras()
-        val node = Parser(converter).parseFile(code)
+        val node = Parser.parseFile(code)
         val actualDump = Dumper.dump(node, withExtras = withExtras, withProperties = withProperties)
         assertEquals(expectedDump.trim(), actualDump.trim())
     }
