@@ -34,6 +34,8 @@ open class ConverterWithExtras : Converter() {
     }
 
     override fun convert(v: KtFile): Node.KotlinFile {
+        psiIdentitiesToNodes.clear()
+        seenExtraPsiIdentities.clear()
         return super.convert(v).also {
             fillWholeExtras(it, v)
         }
