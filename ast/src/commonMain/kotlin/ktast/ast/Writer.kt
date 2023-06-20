@@ -1,38 +1,41 @@
 package ktast.ast
 
 /**
- * Writer that converts AST nodes back to source code. When the [extrasMap] is provided, it will preserve the original whitespaces, comments, semicolons and trailing commas. Even when the [extrasMap] is not provided, it will still insert whitespaces and semicolons automatically to avoid compilation errors or loss of meaning.
+ * Writer that converts AST nodes back to source code. When the [withExtras] is true, which is the default, it will preserve the original whitespaces, comments, semicolons and trailing commas. Even when the [withExtras] is false, it will still insert minimal whitespaces and semicolons automatically to avoid compilation errors or loss of meaning.
  *
  * Example usage:
  * ```
- * // Without extras map
+ * // Write with extras
  * val source = Writer.write(node)
- * // With extras map
- * val sourceWithExtras = Writer.write(node, extrasMap)
+ * // Write without extras
+ * val sourceWithoutExtras = Writer.write(node, withExtras = false)
  * ```
  */
 open class Writer(
-    protected val appendable: Appendable = StringBuilder()
+    protected val appendable: Appendable = StringBuilder(),
+    protected val withExtras: Boolean = true,
 ) : Visitor() {
     companion object {
         /**
          * Converts the given AST node back to source code.
          *
          * @param rootNode root AST node to convert.
+         * @param withExtras whether to write extra nodes such as comments and whitespaces, defaults to true.
          * @return source code.
          */
-        fun write(rootNode: Node): String =
-            write(rootNode, StringBuilder()).toString()
+        fun write(rootNode: Node, withExtras: Boolean = true): String =
+            write(rootNode, StringBuilder(), withExtras).toString()
 
         /**
          * Converts the given AST node back to source code.
          *
          * @param rootNode root AST node to convert.
          * @param appendable appendable to write to.
+         * @param withExtras whether to write extra nodes such as comments and whitespaces, defaults to true.
          * @return appendable.
          */
-        fun <T : Appendable> write(rootNode: Node, appendable: T): T =
-            appendable.also { Writer(it).write(rootNode) }
+        fun <T : Appendable> write(rootNode: Node, appendable: T, withExtras: Boolean = true): T =
+            appendable.also { Writer(it, withExtras).write(rootNode) }
     }
 
     protected val extrasSinceLastNonSymbol = mutableListOf<Node.Extra>()
@@ -710,6 +713,7 @@ open class Writer(
     }
 
     protected open fun NodePath<*>.writeExtras(extras: List<Node.Extra>) {
+        if (!withExtras) return
         extras.forEach {
             append(it.text)
         }

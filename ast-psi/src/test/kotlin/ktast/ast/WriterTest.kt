@@ -6,6 +6,39 @@ import org.junit.Test
 import kotlin.test.assertEquals
 
 class WriterTest {
+
+    @Test
+    fun writeWithExtras() {
+        assertParseAndWrite(
+            """
+                fun x() {
+                    // do nothing
+                }
+            """.trimIndent(),
+            """
+                fun x() {
+                    // do nothing
+                }
+            """.trimIndent(),
+            withExtras = true
+        )
+    }
+
+    @Test
+    fun writeWithoutExtras() {
+        assertParseAndWrite(
+            """
+                fun x() {
+                    // do nothing
+                }
+            """.trimIndent(),
+            """
+                fun x(){}
+            """.trimIndent(),
+            withExtras = false
+        )
+    }
+
     @Test
     fun testIdentifierUnderscoreEscape() {
         assertParseAndWriteExact("const val c = FOO_BAR")
@@ -250,6 +283,15 @@ class WriterTest {
             identityCode.trim(),
             "Parse -> Identity Transform -> Write for original code, not equal"
         )
+    }
+
+    private fun assertParseAndWrite(origCode: String, expectedCode: String, withExtras: Boolean) {
+        val origExtrasConv = ConverterWithExtras()
+        val origFile = Parser(origExtrasConv).parseFile(origCode)
+        println("----ORIG AST----\n${Dumper.dump(origFile)}\n------------")
+
+        val newCode = Writer.write(origFile, withExtras)
+        assertEquals(expectedCode.trim(), newCode.trim(), "Parse -> Write for original code, not equal")
     }
 
 }
