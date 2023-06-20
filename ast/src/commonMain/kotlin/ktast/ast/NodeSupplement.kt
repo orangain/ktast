@@ -9,8 +9,8 @@ package ktast.ast
  * @property tag can be used to store per-node state if desired.
  */
 data class NodeSupplement(
-    val extrasBefore: List<Node.Extra> = listOf(),
-    val extrasWithin: List<Node.Extra> = listOf(),
-    val extrasAfter: List<Node.Extra> = listOf(),
+    var extrasBefore: List<Node.Extra> = listOf(),
+    var extrasWithin: List<Node.Extra> = listOf(),
+    var extrasAfter: List<Node.Extra> = listOf(),
     var tag: Any? = null
 )
