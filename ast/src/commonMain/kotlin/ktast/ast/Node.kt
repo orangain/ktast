@@ -5,9 +5,9 @@ package ktast.ast
  */
 sealed interface Node {
     /**
-     * Property to store any extra data by the user.
+     * Supplemental data for the node.
      */
-    var tag: Any?
+    val supplement: NodeSupplement
 
     /**
      * Common interface for AST nodes that have a simple text representation.
@@ -141,7 +141,7 @@ sealed interface Node {
         override val packageDirective: PackageDirective?,
         override val importDirectives: List<ImportDirective>,
         override val declarations: List<Declaration>,
-        override var tag: Any? = null,
+        override val supplement: NodeSupplement = NodeSupplement(),
     ) : Node, KotlinEntry, WithDeclarations
 
     /**
@@ -155,7 +155,7 @@ sealed interface Node {
         override val packageDirective: PackageDirective?,
         override val importDirectives: List<ImportDirective>,
         val expressions: List<Expression>,
-        override var tag: Any? = null,
+        override val supplement: NodeSupplement = NodeSupplement(),
     ) : Node, KotlinEntry
 
     /**
@@ -165,7 +165,7 @@ sealed interface Node {
      */
     data class PackageDirective(
         val names: List<Expression.NameExpression>,
-        override var tag: Any? = null,
+        override val supplement: NodeSupplement = NodeSupplement(),
     ) : Node
 
     /**
@@ -177,7 +177,7 @@ sealed interface Node {
     data class ImportDirective(
         val names: List<Expression.NameExpression>,
         val aliasName: Expression.NameExpression?,
-        override var tag: Any? = null,
+        override val supplement: NodeSupplement = NodeSupplement(),
     ) : Node
 
     /**
@@ -206,7 +206,7 @@ sealed interface Node {
             val loopRange: Expression,
             val rPar: Keyword.RPar,
             val body: Expression,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : Statement
 
         /**
@@ -232,7 +232,7 @@ sealed interface Node {
             override val condition: Expression,
             override val rPar: Keyword.RPar,
             override val body: Expression,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : WhileStatementBase
 
         /**
@@ -243,7 +243,7 @@ sealed interface Node {
             override val lPar: Keyword.LPar,
             override val condition: Expression,
             override val rPar: Keyword.RPar,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : WhileStatementBase
     }
 
@@ -326,7 +326,7 @@ sealed interface Node {
                 override val lPar: Keyword.LPar,
                 override val arguments: List<ValueArgument>,
                 override val rPar: Keyword.RPar,
-                override var tag: Any? = null,
+                override val supplement: NodeSupplement = NodeSupplement(),
             ) : ClassParent {
                 override val expression: Expression? = null
             }
@@ -341,7 +341,7 @@ sealed interface Node {
             data class DelegationClassParent(
                 override val type: Type,
                 override val expression: Expression,
-                override var tag: Any? = null,
+                override val supplement: NodeSupplement = NodeSupplement(),
             ) : ClassParent {
                 override val lPar: Keyword.LPar? = null
                 override val arguments: List<ValueArgument> = listOf()
@@ -359,7 +359,7 @@ sealed interface Node {
              */
             data class TypeClassParent(
                 override val type: Type,
-                override var tag: Any? = null,
+                override val supplement: NodeSupplement = NodeSupplement(),
             ) : ClassParent {
                 override val lPar: Keyword.LPar? = null
                 override val arguments: List<ValueArgument> = listOf()
@@ -376,7 +376,7 @@ sealed interface Node {
             data class ClassBody(
                 val enumEntries: List<EnumEntry>,
                 override val declarations: List<Declaration>,
-                override var tag: Any? = null,
+                override val supplement: NodeSupplement = NodeSupplement(),
             ) : Node, WithDeclarations {
 
                 /**
@@ -394,7 +394,7 @@ sealed interface Node {
                     override val arguments: List<ValueArgument>,
                     override val rPar: Keyword.RPar?,
                     val classBody: ClassBody?,
-                    override var tag: Any? = null,
+                    override val supplement: NodeSupplement = NodeSupplement(),
                 ) : Node, WithModifiers, WithValueArguments
 
                 /**
@@ -404,7 +404,7 @@ sealed interface Node {
                  */
                 data class Initializer(
                     val block: Expression.BlockExpression,
-                    override var tag: Any? = null,
+                    override val supplement: NodeSupplement = NodeSupplement(),
                 ) : Declaration
 
                 /**
@@ -424,7 +424,7 @@ sealed interface Node {
                     override val rPar: Keyword.RPar?,
                     val delegationCall: Expression.CallExpression?,
                     val block: Expression.BlockExpression?,
-                    override var tag: Any? = null,
+                    override val supplement: NodeSupplement = NodeSupplement(),
                 ) : Declaration, WithModifiers, WithFunctionParameters
             }
         }
@@ -454,7 +454,7 @@ sealed interface Node {
             override val parents: List<ClassOrObject.ClassParent>,
             val typeConstraintSet: PostModifier.TypeConstraintSet?,
             override val body: ClassOrObject.ClassBody?,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : ClassOrObject, WithTypeParameters {
 
             /**
@@ -475,7 +475,7 @@ sealed interface Node {
                 override val lPar: Keyword.LPar?,
                 override val parameters: List<FunctionParameter>,
                 override val rPar: Keyword.RPar?,
-                override var tag: Any? = null,
+                override val supplement: NodeSupplement = NodeSupplement(),
             ) : Node, WithModifiers, WithFunctionParameters
         }
 
@@ -488,7 +488,7 @@ sealed interface Node {
             override val name: Expression.NameExpression?,
             override val parents: List<ClassOrObject.ClassParent>,
             override val body: ClassOrObject.ClassBody?,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : ClassOrObject
 
         /**
@@ -516,7 +516,7 @@ sealed interface Node {
             val returnType: Type?,
             override val postModifiers: List<PostModifier>,
             val body: Expression?,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : Declaration, WithModifiers, WithTypeParameters, WithFunctionParameters, WithPostModifiers
 
         /**
@@ -548,7 +548,7 @@ sealed interface Node {
             val initializerExpression: Expression?,
             val delegateExpression: Expression?,
             val accessors: List<Accessor>,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : Declaration, WithModifiers, WithTypeParameters {
             init {
                 require(variables.isNotEmpty()) { "variables must not be empty" }
@@ -588,7 +588,7 @@ sealed interface Node {
                 val type: Type?,
                 override val postModifiers: List<PostModifier>,
                 override val body: Expression?,
-                override var tag: Any? = null,
+                override val supplement: NodeSupplement = NodeSupplement(),
             ) : Accessor
 
             /**
@@ -606,7 +606,7 @@ sealed interface Node {
                 override val rPar: Keyword.RPar?,
                 override val postModifiers: List<PostModifier>,
                 override val body: Expression?,
-                override var tag: Any? = null,
+                override val supplement: NodeSupplement = NodeSupplement(),
             ) : Accessor {
                 init {
                     if (parameter == null) {
@@ -633,7 +633,7 @@ sealed interface Node {
             override val typeParameters: List<TypeParameter>,
             override val rAngle: Keyword.Greater?,
             val type: Type,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : Declaration, WithModifiers, WithTypeParameters
     }
 
@@ -655,7 +655,7 @@ sealed interface Node {
             val lPar: Keyword.LPar,
             val innerType: Type,
             val rPar: Keyword.RPar,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : Type
 
         /**
@@ -669,7 +669,7 @@ sealed interface Node {
             override val modifiers: List<Modifier>,
             val innerType: Type,
             val questionMark: Keyword.Question,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : Type
 
         private interface NameWithTypeArguments : WithTypeArguments {
@@ -690,7 +690,7 @@ sealed interface Node {
             override val lAngle: Keyword.Less?,
             override val typeArguments: List<TypeArgument>,
             override val rAngle: Keyword.Greater?,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : Type, NameWithTypeArguments {
             /**
              * AST node that represents a qualifier of simple named type. The node corresponds to KtUserType used as a qualifier.
@@ -702,7 +702,7 @@ sealed interface Node {
                 override val lAngle: Keyword.Less?,
                 override val typeArguments: List<TypeArgument>,
                 override val rAngle: Keyword.Greater?,
-                override var tag: Any? = null,
+                override val supplement: NodeSupplement = NodeSupplement(),
             ) : Node, NameWithTypeArguments
         }
 
@@ -713,7 +713,7 @@ sealed interface Node {
          */
         data class DynamicType(
             override val modifiers: List<Modifier>,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : Type
 
         /**
@@ -735,7 +735,7 @@ sealed interface Node {
             val parameters: List<FunctionTypeParameter>,
             val rPar: Keyword.RPar?,
             val returnType: Type,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : Type {
 
             /**
@@ -748,7 +748,7 @@ sealed interface Node {
             data class FunctionTypeParameter(
                 val name: Expression.NameExpression?,
                 val type: Type,
-                override var tag: Any? = null,
+                override val supplement: NodeSupplement = NodeSupplement(),
             ) : Node
         }
     }
@@ -782,7 +782,7 @@ sealed interface Node {
             val rPar: Keyword.RPar,
             val body: Expression,
             val elseBody: Expression?,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : Expression
 
         /**
@@ -796,7 +796,7 @@ sealed interface Node {
             val block: BlockExpression,
             val catchClauses: List<CatchClause>,
             val finallyBlock: BlockExpression?,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : Expression {
             /**
              * AST node that represents a catch clause. The node corresponds to KtCatchClause.
@@ -809,7 +809,7 @@ sealed interface Node {
                 override val parameters: List<FunctionParameter>,
                 override val rPar: Keyword.RPar,
                 val block: BlockExpression,
-                override var tag: Any? = null,
+                override val supplement: NodeSupplement = NodeSupplement(),
             ) : Node, WithFunctionParameters {
                 init {
                     require(parameters.isNotEmpty()) { "catch clause must have at least one parameter" }
@@ -828,7 +828,7 @@ sealed interface Node {
             val whenKeyword: Keyword.When,
             val subject: WhenSubject?,
             val branches: List<WhenBranch>,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : Expression {
             /**
              * AST node that represents a subject of when expression. The node corresponds to a part of KtWhenExpression.
@@ -845,7 +845,7 @@ sealed interface Node {
                 val variable: Variable?,
                 val expression: Expression,
                 val rPar: Keyword.RPar,
-                override var tag: Any? = null,
+                override val supplement: NodeSupplement = NodeSupplement(),
             ) : Node, WithAnnotationSets
 
             /**
@@ -871,7 +871,7 @@ sealed interface Node {
                 override val conditions: List<WhenCondition>,
                 override val arrow: Keyword.Arrow,
                 override val body: Expression,
-                override var tag: Any? = null,
+                override val supplement: NodeSupplement = NodeSupplement(),
             ) : WhenBranch {
                 init {
                     require(conditions.isNotEmpty()) { "conditions must not be empty" }
@@ -887,7 +887,7 @@ sealed interface Node {
             data class ElseWhenBranch(
                 override val arrow: Keyword.Arrow,
                 override val body: Expression,
-                override var tag: Any? = null,
+                override val supplement: NodeSupplement = NodeSupplement(),
             ) : WhenBranch {
                 override val conditions = listOf<WhenCondition>()
             }
@@ -929,7 +929,7 @@ sealed interface Node {
              */
             data class ExpressionWhenCondition(
                 override val expression: Expression,
-                override var tag: Any? = null,
+                override val supplement: NodeSupplement = NodeSupplement(),
             ) : WhenCondition {
                 override val operator = null
                 override val type = null
@@ -945,7 +945,7 @@ sealed interface Node {
             data class RangeWhenCondition(
                 override val operator: WhenConditionRangeOperator,
                 override val expression: Expression,
-                override var tag: Any? = null,
+                override val supplement: NodeSupplement = NodeSupplement(),
             ) : WhenCondition {
                 override val type = null
             }
@@ -960,7 +960,7 @@ sealed interface Node {
             data class TypeWhenCondition(
                 override val operator: WhenConditionTypeOperator,
                 override val type: Type,
-                override var tag: Any? = null,
+                override val supplement: NodeSupplement = NodeSupplement(),
             ) : WhenCondition {
                 override val expression = null
             }
@@ -973,7 +973,7 @@ sealed interface Node {
          */
         data class ThrowExpression(
             val expression: Expression,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : Expression
 
         /**
@@ -985,7 +985,7 @@ sealed interface Node {
         data class ReturnExpression(
             override val label: NameExpression?,
             val expression: Expression?,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : Expression, WithLabel
 
         /**
@@ -995,7 +995,7 @@ sealed interface Node {
          */
         data class ContinueExpression(
             override val label: NameExpression?,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : Expression, WithLabel
 
         /**
@@ -1005,7 +1005,7 @@ sealed interface Node {
          */
         data class BreakExpression(
             override val label: NameExpression?,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : Expression, WithLabel
 
         /**
@@ -1015,7 +1015,7 @@ sealed interface Node {
          */
         data class BlockExpression(
             override val statements: List<Statement>,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : Expression, WithStatements
 
         /**
@@ -1035,7 +1035,7 @@ sealed interface Node {
             override val arguments: List<ValueArgument>,
             override val rPar: Keyword.RPar?,
             val lambdaArgument: Expression?,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : Expression, WithTypeArguments, WithValueArguments {
             /**
              * Returns the lambda expression of the lambda argument if exists, otherwise `null`.
@@ -1056,7 +1056,7 @@ sealed interface Node {
             val parameters: List<LambdaParameter>,
             val arrow: Keyword.Arrow?,
             override val statements: List<Statement>,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : Expression, WithStatements
 
         /**
@@ -1070,7 +1070,7 @@ sealed interface Node {
             val lhs: Expression,
             val operator: BinaryOperator,
             val rhs: Expression,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : Expression {
             /**
              * Common interface for AST nodes that represent binary operators.
@@ -1104,7 +1104,7 @@ sealed interface Node {
         data class PrefixUnaryExpression(
             override val operator: UnaryExpression.UnaryOperator,
             override val expression: Expression,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : UnaryExpression
 
         /**
@@ -1116,7 +1116,7 @@ sealed interface Node {
         data class PostfixUnaryExpression(
             override val expression: Expression,
             override val operator: UnaryExpression.UnaryOperator,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : UnaryExpression
 
         /**
@@ -1130,7 +1130,7 @@ sealed interface Node {
             val lhs: Expression,
             val operator: BinaryTypeOperator,
             val rhs: Type,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : Expression {
             /**
              * Common interface for AST nodes that represent binary type operators.
@@ -1172,7 +1172,7 @@ sealed interface Node {
             override val lhs: Expression?,
             override val questionMarks: List<Keyword.Question>,
             val rhs: NameExpression,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : DoubleColonExpression
 
         /**
@@ -1184,7 +1184,7 @@ sealed interface Node {
         data class ClassLiteralExpression(
             override val lhs: Expression,
             override val questionMarks: List<Keyword.Question>,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : DoubleColonExpression
 
         /**
@@ -1194,7 +1194,7 @@ sealed interface Node {
          */
         data class ParenthesizedExpression(
             val innerExpression: Expression,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : Expression
 
         /**
@@ -1206,7 +1206,7 @@ sealed interface Node {
         data class StringLiteralExpression(
             val entries: List<StringEntry>,
             val raw: Boolean,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : Expression {
             /**
              * Common interface for string entries. The node corresponds to KtStringTemplateEntry.
@@ -1220,7 +1220,7 @@ sealed interface Node {
              */
             data class LiteralStringEntry(
                 override val text: String,
-                override var tag: Any? = null,
+                override val supplement: NodeSupplement = NodeSupplement(),
             ) : StringEntry, SimpleTextNode
 
             /**
@@ -1230,7 +1230,7 @@ sealed interface Node {
              */
             data class EscapeStringEntry(
                 override val text: String,
-                override var tag: Any? = null,
+                override val supplement: NodeSupplement = NodeSupplement(),
             ) : StringEntry, SimpleTextNode {
                 init {
                     require(text.startsWith('\\')) {
@@ -1248,7 +1248,7 @@ sealed interface Node {
             data class TemplateStringEntry(
                 val expression: Expression,
                 val short: Boolean,
-                override var tag: Any? = null,
+                override val supplement: NodeSupplement = NodeSupplement(),
             ) : StringEntry {
                 init {
                     require(!short || expression is NameExpression || expression is ThisExpression) {
@@ -1274,7 +1274,7 @@ sealed interface Node {
          */
         data class BooleanLiteralExpression(
             override val text: String,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : ConstantLiteralExpression {
             init {
                 require(text == "true" || text == "false") {
@@ -1290,7 +1290,7 @@ sealed interface Node {
          */
         data class CharacterLiteralExpression(
             override val text: String,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : ConstantLiteralExpression {
             init {
                 require(text.startsWith('\'') && text.endsWith('\'')) {
@@ -1306,7 +1306,7 @@ sealed interface Node {
          */
         data class IntegerLiteralExpression(
             override val text: String,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : ConstantLiteralExpression
 
         /**
@@ -1317,14 +1317,14 @@ sealed interface Node {
 
         data class RealLiteralExpression(
             override val text: String,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : ConstantLiteralExpression
 
         /**
          * AST node that represents a null literal expression. The node corresponds to KtConstantExpression whose expressionType is KtNodeTypes.NULL.
          */
         data class NullLiteralExpression(
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : ConstantLiteralExpression {
             override val text: String
                 get() = "null"
@@ -1337,7 +1337,7 @@ sealed interface Node {
          */
         data class ObjectLiteralExpression(
             val declaration: Declaration.ObjectDeclaration,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : Expression
 
         /**
@@ -1347,7 +1347,7 @@ sealed interface Node {
          */
         data class CollectionLiteralExpression(
             val expressions: List<Expression>,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : Expression
 
         /**
@@ -1357,7 +1357,7 @@ sealed interface Node {
          */
         data class ThisExpression(
             override val label: NameExpression?,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : Expression, WithLabel
 
         /**
@@ -1369,7 +1369,7 @@ sealed interface Node {
         data class SuperExpression(
             val typeArgument: TypeArgument?,
             override val label: NameExpression?,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : Expression, WithLabel
 
         /**
@@ -1379,7 +1379,7 @@ sealed interface Node {
          */
         data class NameExpression(
             override val text: String,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : Expression, BinaryExpression.BinaryOperator
 
         /**
@@ -1391,7 +1391,7 @@ sealed interface Node {
         data class LabeledExpression(
             val label: NameExpression,
             val statement: Statement,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : Expression
 
         /**
@@ -1403,7 +1403,7 @@ sealed interface Node {
         data class AnnotatedExpression(
             override val annotationSets: List<Modifier.AnnotationSet>,
             val statement: Statement,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : Expression, WithAnnotationSets
 
         /**
@@ -1415,7 +1415,7 @@ sealed interface Node {
         data class IndexedAccessExpression(
             val expression: Expression,
             val indices: List<Expression>,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : Expression
 
         /**
@@ -1425,7 +1425,7 @@ sealed interface Node {
          */
         data class AnonymousFunctionExpression(
             val function: Declaration.FunctionDeclaration,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : Expression
     }
 
@@ -1440,7 +1440,7 @@ sealed interface Node {
         override val modifiers: List<Modifier>,
         val name: Expression.NameExpression,
         val type: Type?,
-        override var tag: Any? = null,
+        override val supplement: NodeSupplement = NodeSupplement(),
     ) : Node, WithModifiers
 
     /**
@@ -1458,7 +1458,7 @@ sealed interface Node {
         val name: Expression.NameExpression,
         val type: Type?,
         val defaultValue: Expression?,
-        override var tag: Any? = null,
+        override val supplement: NodeSupplement = NodeSupplement(),
     ) : Node, WithModifiers
 
     /**
@@ -1475,7 +1475,7 @@ sealed interface Node {
         val variables: List<Variable>,
         val rPar: Keyword.RPar?,
         val destructuringType: Type?,
-        override var tag: Any? = null,
+        override val supplement: NodeSupplement = NodeSupplement(),
     ) : Node {
         init {
             if (variables.size >= 2) {
@@ -1495,7 +1495,7 @@ sealed interface Node {
         override val annotationSets: List<Modifier.AnnotationSet>,
         val name: Expression.NameExpression,
         val type: Type?,
-        override var tag: Any? = null,
+        override val supplement: NodeSupplement = NodeSupplement(),
     ) : Node, WithAnnotationSets
 
     /**
@@ -1507,7 +1507,7 @@ sealed interface Node {
     data class TypeArgument(
         override val modifiers: List<Modifier>,
         val type: Type,
-        override var tag: Any? = null,
+        override val supplement: NodeSupplement = NodeSupplement(),
     ) : Node, WithModifiers
 
     /**
@@ -1521,7 +1521,7 @@ sealed interface Node {
         val name: Expression.NameExpression?,
         val spreadOperator: Keyword.Asterisk?,
         val expression: Expression,
-        override var tag: Any? = null,
+        override val supplement: NodeSupplement = NodeSupplement(),
     ) : Node
 
     /**
@@ -1535,7 +1535,7 @@ sealed interface Node {
         val lPar: Keyword.LPar,
         val receiverTypes: List<Type>,
         val rPar: Keyword.RPar,
-        override var tag: Any? = null,
+        override val supplement: NodeSupplement = NodeSupplement(),
     ) : Node
 
     /**
@@ -1555,7 +1555,7 @@ sealed interface Node {
             val lBracket: Keyword.LBracket?,
             val annotations: List<Annotation>,
             val rBracket: Keyword.RBracket?,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : Modifier {
             /**
              * Common interface for annotation target keywords.
@@ -1573,7 +1573,7 @@ sealed interface Node {
                 override val lPar: Keyword.LPar?,
                 override val arguments: List<ValueArgument>,
                 override val rPar: Keyword.RPar?,
-                override var tag: Any? = null,
+                override val supplement: NodeSupplement = NodeSupplement(),
             ) : Node, WithValueArguments
         }
 
@@ -1594,7 +1594,7 @@ sealed interface Node {
          */
         data class TypeConstraintSet(
             val constraints: List<TypeConstraint>,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : PostModifier {
 
             /**
@@ -1608,7 +1608,7 @@ sealed interface Node {
                 override val annotationSets: List<Modifier.AnnotationSet>,
                 val name: Expression.NameExpression,
                 val type: Type,
-                override var tag: Any? = null,
+                override val supplement: NodeSupplement = NodeSupplement(),
             ) : Node, WithAnnotationSets
         }
 
@@ -1623,7 +1623,7 @@ sealed interface Node {
             val lBracket: Keyword.LBracket,
             val contractEffects: List<Expression>,
             val rBracket: Keyword.RBracket,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : PostModifier
     }
 
@@ -1636,358 +1636,429 @@ sealed interface Node {
          */
         sealed interface ValOrVarKeyword : Keyword
 
-        data class Class(override var tag: Any? = null) : Keyword,
+        data class Class(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
             Declaration.ClassDeclaration.ClassOrInterfaceKeyword {
             override val text = "class"
         }
 
-        data class Interface(override var tag: Any? = null) : Keyword,
+        data class Interface(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
             Declaration.ClassDeclaration.ClassOrInterfaceKeyword {
             override val text = "interface"
         }
 
-        data class Object(override var tag: Any? = null) : Keyword,
+        data class Object(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
             Declaration.ClassOrObject.ClassDeclarationKeyword {
             override val text = "object"
         }
 
-        data class Constructor(override var tag: Any? = null) : Keyword {
+        data class Constructor(override val supplement: NodeSupplement = NodeSupplement()) : Keyword {
             override val text = "constructor"
         }
 
-        data class Val(override var tag: Any? = null) : Keyword, ValOrVarKeyword {
+        data class Val(override val supplement: NodeSupplement = NodeSupplement()) : Keyword, ValOrVarKeyword {
             override val text = "val"
         }
 
-        data class Var(override var tag: Any? = null) : Keyword, ValOrVarKeyword {
+        data class Var(override val supplement: NodeSupplement = NodeSupplement()) : Keyword, ValOrVarKeyword {
             override val text = "var"
         }
 
-        data class When(override var tag: Any? = null) : Keyword {
+        data class When(override val supplement: NodeSupplement = NodeSupplement()) : Keyword {
             override val text = "when"
         }
 
-        data class Field(override var tag: Any? = null) : Keyword, Modifier.AnnotationSet.AnnotationTarget {
+        data class Field(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Modifier.AnnotationSet.AnnotationTarget {
             override val text = "field"
         }
 
-        data class File(override var tag: Any? = null) : Keyword, Modifier.AnnotationSet.AnnotationTarget {
+        data class File(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Modifier.AnnotationSet.AnnotationTarget {
             override val text = "file"
         }
 
-        data class Property(override var tag: Any? = null) : Keyword, Modifier.AnnotationSet.AnnotationTarget {
+        data class Property(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Modifier.AnnotationSet.AnnotationTarget {
             override val text = "property"
         }
 
-        data class Get(override var tag: Any? = null) : Keyword, Modifier.AnnotationSet.AnnotationTarget {
+        data class Get(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Modifier.AnnotationSet.AnnotationTarget {
             override val text = "get"
         }
 
-        data class Set(override var tag: Any? = null) : Keyword, Modifier.AnnotationSet.AnnotationTarget {
+        data class Set(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Modifier.AnnotationSet.AnnotationTarget {
             override val text = "set"
         }
 
-        data class Receiver(override var tag: Any? = null) : Keyword, Modifier.AnnotationSet.AnnotationTarget {
+        data class Receiver(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Modifier.AnnotationSet.AnnotationTarget {
             override val text = "receiver"
         }
 
-        data class Param(override var tag: Any? = null) : Keyword, Modifier.AnnotationSet.AnnotationTarget {
+        data class Param(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Modifier.AnnotationSet.AnnotationTarget {
             override val text = "param"
         }
 
-        data class SetParam(override var tag: Any? = null) : Keyword, Modifier.AnnotationSet.AnnotationTarget {
+        data class SetParam(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Modifier.AnnotationSet.AnnotationTarget {
             override val text = "setparam"
         }
 
-        data class Delegate(override var tag: Any? = null) : Keyword, Modifier.AnnotationSet.AnnotationTarget {
+        data class Delegate(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Modifier.AnnotationSet.AnnotationTarget {
             override val text = "delegate"
         }
 
-        data class LPar(override var tag: Any? = null) : Keyword {
+        data class LPar(override val supplement: NodeSupplement = NodeSupplement()) : Keyword {
             override val text = "("
         }
 
-        data class RPar(override var tag: Any? = null) : Keyword {
+        data class RPar(override val supplement: NodeSupplement = NodeSupplement()) : Keyword {
             override val text = ")"
         }
 
-        data class LBracket(override var tag: Any? = null) : Keyword {
+        data class LBracket(override val supplement: NodeSupplement = NodeSupplement()) : Keyword {
             override val text = "["
         }
 
-        data class RBracket(override var tag: Any? = null) : Keyword {
+        data class RBracket(override val supplement: NodeSupplement = NodeSupplement()) : Keyword {
             override val text = "]"
         }
 
-        data class Arrow(override var tag: Any? = null) : Keyword {
+        data class Arrow(override val supplement: NodeSupplement = NodeSupplement()) : Keyword {
             override val text = "->"
         }
 
-        data class Asterisk(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
+        data class Asterisk(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Expression.BinaryExpression.BinaryOperator {
             override val text = "*"
         }
 
-        data class Slash(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
+        data class Slash(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Expression.BinaryExpression.BinaryOperator {
             override val text = "/"
         }
 
-        data class Percent(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
+        data class Percent(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Expression.BinaryExpression.BinaryOperator {
             override val text = "%"
         }
 
-        data class Plus(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator,
+        data class Plus(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Expression.BinaryExpression.BinaryOperator,
             Expression.UnaryExpression.UnaryOperator {
             override val text = "+"
         }
 
-        data class Minus(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator,
+        data class Minus(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Expression.BinaryExpression.BinaryOperator,
             Expression.UnaryExpression.UnaryOperator {
             override val text = "-"
         }
 
-        data class In(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator,
+        data class In(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Expression.BinaryExpression.BinaryOperator,
             Modifier.KeywordModifier,
             Expression.WhenExpression.WhenConditionRangeOperator {
             override val text = "in"
         }
 
-        data class NotIn(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator,
+        data class NotIn(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Expression.BinaryExpression.BinaryOperator,
             Expression.WhenExpression.WhenConditionRangeOperator {
             override val text = "!in"
         }
 
-        data class Less(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
+        data class Less(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Expression.BinaryExpression.BinaryOperator {
             override val text = "<"
         }
 
-        data class LessEqual(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
+        data class LessEqual(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Expression.BinaryExpression.BinaryOperator {
             override val text = "<="
         }
 
-        data class Greater(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
+        data class Greater(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Expression.BinaryExpression.BinaryOperator {
             override val text = ">"
         }
 
-        data class GreaterEqual(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
+        data class GreaterEqual(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Expression.BinaryExpression.BinaryOperator {
             override val text = ">="
         }
 
-        data class EqualEqual(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
+        data class EqualEqual(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Expression.BinaryExpression.BinaryOperator {
             override val text = "=="
         }
 
-        data class NotEqual(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
+        data class NotEqual(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Expression.BinaryExpression.BinaryOperator {
             override val text = "!="
         }
 
-        data class AsteriskEqual(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
+        data class AsteriskEqual(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Expression.BinaryExpression.BinaryOperator {
             override val text = "*="
         }
 
-        data class SlashEqual(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
+        data class SlashEqual(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Expression.BinaryExpression.BinaryOperator {
             override val text = "/="
         }
 
-        data class PercentEqual(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
+        data class PercentEqual(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Expression.BinaryExpression.BinaryOperator {
             override val text = "%="
         }
 
-        data class PlusEqual(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
+        data class PlusEqual(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Expression.BinaryExpression.BinaryOperator {
             override val text = "+="
         }
 
-        data class MinusEqual(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
+        data class MinusEqual(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Expression.BinaryExpression.BinaryOperator {
             override val text = "-="
         }
 
-        data class OrOr(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
+        data class OrOr(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Expression.BinaryExpression.BinaryOperator {
             override val text = "||"
         }
 
-        data class AndAnd(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
+        data class AndAnd(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Expression.BinaryExpression.BinaryOperator {
             override val text = "&&"
         }
 
-        data class QuestionColon(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
+        data class QuestionColon(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Expression.BinaryExpression.BinaryOperator {
             override val text = "?:"
         }
 
-        data class DotDot(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
+        data class DotDot(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Expression.BinaryExpression.BinaryOperator {
             override val text = ".."
         }
 
-        data class DotDotLess(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
+        data class DotDotLess(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Expression.BinaryExpression.BinaryOperator {
             override val text = "..<"
         }
 
-        data class Dot(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
+        data class Dot(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Expression.BinaryExpression.BinaryOperator {
             override val text = "."
         }
 
-        data class QuestionDot(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
+        data class QuestionDot(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Expression.BinaryExpression.BinaryOperator {
             override val text = "?."
         }
 
-        data class Question(override var tag: Any? = null) : Keyword, Expression.BinaryExpression.BinaryOperator {
+        data class Question(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Expression.BinaryExpression.BinaryOperator {
             override val text = "?"
         }
 
-        data class PlusPlus(override var tag: Any? = null) : Keyword, Expression.UnaryExpression.UnaryOperator {
+        data class PlusPlus(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Expression.UnaryExpression.UnaryOperator {
             override val text = "++"
         }
 
-        data class MinusMinus(override var tag: Any? = null) : Keyword, Expression.UnaryExpression.UnaryOperator {
+        data class MinusMinus(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Expression.UnaryExpression.UnaryOperator {
             override val text = "--"
         }
 
-        data class Not(override var tag: Any? = null) : Keyword, Expression.UnaryExpression.UnaryOperator {
+        data class Not(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Expression.UnaryExpression.UnaryOperator {
             override val text = "!"
         }
 
-        data class NotNot(override var tag: Any? = null) : Keyword, Expression.UnaryExpression.UnaryOperator {
+        data class NotNot(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Expression.UnaryExpression.UnaryOperator {
             override val text = "!!"
         }
 
-        data class As(override var tag: Any? = null) : Keyword, Expression.BinaryTypeExpression.BinaryTypeOperator {
+        data class As(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Expression.BinaryTypeExpression.BinaryTypeOperator {
             override val text = "as"
         }
 
-        data class AsQuestion(override var tag: Any? = null) : Keyword,
+        data class AsQuestion(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
             Expression.BinaryTypeExpression.BinaryTypeOperator {
             override val text = "as?"
         }
 
-        data class Is(override var tag: Any? = null) : Keyword, Expression.BinaryTypeExpression.BinaryTypeOperator,
+        data class Is(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Expression.BinaryTypeExpression.BinaryTypeOperator,
             Expression.WhenExpression.WhenConditionTypeOperator {
             override val text = "is"
         }
 
-        data class NotIs(override var tag: Any? = null) : Keyword, Expression.BinaryTypeExpression.BinaryTypeOperator,
+        data class NotIs(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Expression.BinaryTypeExpression.BinaryTypeOperator,
             Expression.WhenExpression.WhenConditionTypeOperator {
             override val text = "!is"
         }
 
-        data class Abstract(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
+        data class Abstract(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Modifier.KeywordModifier {
             override val text = "abstract"
         }
 
-        data class Final(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
+        data class Final(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Modifier.KeywordModifier {
             override val text = "final"
         }
 
-        data class Open(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
+        data class Open(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Modifier.KeywordModifier {
             override val text = "open"
         }
 
-        data class Annotation(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
+        data class Annotation(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Modifier.KeywordModifier {
             override val text = "annotation"
         }
 
-        data class Sealed(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
+        data class Sealed(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Modifier.KeywordModifier {
             override val text = "sealed"
         }
 
-        data class Data(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
+        data class Data(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Modifier.KeywordModifier {
             override val text = "data"
         }
 
-        data class Override(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
+        data class Override(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Modifier.KeywordModifier {
             override val text = "override"
         }
 
-        data class LateInit(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
+        data class LateInit(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Modifier.KeywordModifier {
             override val text = "lateinit"
         }
 
-        data class Inner(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
+        data class Inner(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Modifier.KeywordModifier {
             override val text = "inner"
         }
 
-        data class Enum(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
+        data class Enum(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Modifier.KeywordModifier {
             override val text = "enum"
         }
 
-        data class Companion(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
+        data class Companion(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Modifier.KeywordModifier {
             override val text = "companion"
         }
 
-        data class Value(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
+        data class Value(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Modifier.KeywordModifier {
             override val text = "value"
         }
 
-        data class Private(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
+        data class Private(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Modifier.KeywordModifier {
             override val text = "private"
         }
 
-        data class Protected(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
+        data class Protected(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Modifier.KeywordModifier {
             override val text = "protected"
         }
 
-        data class Public(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
+        data class Public(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Modifier.KeywordModifier {
             override val text = "public"
         }
 
-        data class Internal(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
+        data class Internal(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Modifier.KeywordModifier {
             override val text = "internal"
         }
 
-        data class Out(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
+        data class Out(override val supplement: NodeSupplement = NodeSupplement()) : Keyword, Modifier.KeywordModifier {
             override val text = "out"
         }
 
-        data class Noinline(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
+        data class Noinline(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Modifier.KeywordModifier {
             override val text = "noinline"
         }
 
-        data class CrossInline(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
+        data class CrossInline(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Modifier.KeywordModifier {
             override val text = "crossinline"
         }
 
-        data class Vararg(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
+        data class Vararg(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Modifier.KeywordModifier {
             override val text = "vararg"
         }
 
-        data class Reified(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
+        data class Reified(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Modifier.KeywordModifier {
             override val text = "reified"
         }
 
-        data class TailRec(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
+        data class TailRec(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Modifier.KeywordModifier {
             override val text = "tailrec"
         }
 
-        data class Operator(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
+        data class Operator(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Modifier.KeywordModifier {
             override val text = "operator"
         }
 
-        data class Infix(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
+        data class Infix(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Modifier.KeywordModifier {
             override val text = "infix"
         }
 
-        data class Inline(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
+        data class Inline(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Modifier.KeywordModifier {
             override val text = "inline"
         }
 
-        data class External(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
+        data class External(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Modifier.KeywordModifier {
             override val text = "external"
         }
 
-        data class Suspend(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
+        data class Suspend(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Modifier.KeywordModifier {
             override val text = "suspend"
         }
 
-        data class Const(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
+        data class Const(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Modifier.KeywordModifier {
             override val text = "const"
         }
 
-        data class Fun(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
+        data class Fun(override val supplement: NodeSupplement = NodeSupplement()) : Keyword, Modifier.KeywordModifier {
             override val text = "fun"
         }
 
-        data class Actual(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
+        data class Actual(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Modifier.KeywordModifier {
             override val text = "actual"
         }
 
-        data class Expect(override var tag: Any? = null) : Keyword, Modifier.KeywordModifier {
+        data class Expect(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Modifier.KeywordModifier {
             override val text = "expect"
         }
     }
@@ -2003,7 +2074,7 @@ sealed interface Node {
          */
         data class Whitespace(
             override val text: String,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : Extra
 
         /**
@@ -2013,7 +2084,7 @@ sealed interface Node {
          */
         data class Comment(
             override val text: String,
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : Extra
 
         /**
@@ -2022,7 +2093,7 @@ sealed interface Node {
          * @property text always be ";".
          */
         data class Semicolon(
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : Extra {
             override val text = ";"
         }
@@ -2033,7 +2104,7 @@ sealed interface Node {
          * @property text always be ",".
          */
         data class TrailingComma(
-            override var tag: Any? = null,
+            override val supplement: NodeSupplement = NodeSupplement(),
         ) : Extra {
             override val text = ","
         }
