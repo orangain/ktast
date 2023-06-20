@@ -20,6 +20,7 @@ package ktast.ast
  */
 class Dumper(
     private val appendable: Appendable = StringBuilder(),
+    private val withExtras: Boolean = true,
     private val withProperties: Boolean = true,
 ) : Visitor() {
 
@@ -28,11 +29,12 @@ class Dumper(
          * Dumps the given AST node.
          *
          * @param node root AST node to dump.
+         * @param withExtras whether to dump extra nodes, defaults to true.
          * @param withProperties whether to dump node properties, defaults to true.
          */
-        fun dump(node: Node, withProperties: Boolean = true): String {
+        fun dump(node: Node, withExtras: Boolean = true, withProperties: Boolean = true): String {
             val builder = StringBuilder()
-            Dumper(builder, withProperties = withProperties).dump(node)
+            Dumper(builder, withExtras = withExtras, withProperties = withProperties).dump(node)
             return builder.toString()
         }
     }
@@ -59,18 +61,19 @@ class Dumper(
     }
 
     private fun NodePath<*>.writeExtrasBefore() {
-        if (parent == null) return
+        if (!withExtras || parent == null) return
         val extraPaths = node.supplement.extrasBefore.map { parent.childPathOf(it) }
         writeExtras(extraPaths, ExtraType.BEFORE)
     }
 
     private fun NodePath<*>.writeExtrasWithin() {
+        if (!withExtras) return
         val extraPaths = node.supplement.extrasWithin.map { childPathOf(it) }
         writeExtras(extraPaths, ExtraType.WITHIN)
     }
 
     private fun NodePath<*>.writeExtrasAfter() {
-        if (parent == null) return
+        if (!withExtras || parent == null) return
         val extraPaths = node.supplement.extrasAfter.map { parent.childPathOf(it) }
         writeExtras(extraPaths, ExtraType.AFTER)
     }
