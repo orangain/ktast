@@ -71,7 +71,7 @@ Examples below are simple Kotlin scripts.
 
 #### Parsing code
 
-In this example, we use the wrapper around the Kotlin compiler's parser:
+In this example, we use the Parser, which is a wrapper around the Kotlin compiler's parser:
 
 ```kotlin
 import ktast.ast.psi.Parser
@@ -88,25 +88,13 @@ val code = """
 """.trimIndent()
 // Call the parser with the code
 val file = Parser.parseFile(code)
-// The file var is now a ktast.ast.Node.KotlinFile that is used in future examples...
 ```
 
-The `file` variable has the full AST. Note, if you want to parse with blank line and comment information, you can create
-a converter that holds the extras:
-
-```kotlin
-import ktast.ast.psi.ConverterWithExtras
-
-// ...
-
-val extrasMap = ConverterWithExtras()
-val file = Parser(extrasMap).parseFile(code)
-// extrasMap is an instance of ktast.ast.ExtrasMap
-```
+The `file` variable is now a `ktast.ast.Node.KotlinFile`.
 
 #### Writing code
 
-To write the code created above, simply use the writer
+To write the code from the node created above, simply use the Writer:
 
 ```kotlin
 import ktast.ast.Writer
@@ -116,20 +104,23 @@ import ktast.ast.Writer
 println(Writer.write(file))
 ```
 
-This outputs a string of the written code from the AST `file` object. To include the extra blank line and comment info
-from the previous parse example, pass in the extras map:
+This outputs the following code, which is exactly the same code as the input. This is because the AST nodes have blank
+line and comment information.
 
 ```kotlin
-// ...
+package foo
 
-println(Writer.write(file, extrasMap))
+fun bar() {
+    // Print hello
+    println("Hello, World!")
+}
+
+fun baz() = println("Hello, again!")
 ```
-
-This outputs the code with the comments.
 
 #### Visiting nodes
 
-This will get all strings:
+To get all strings from the file, we can use the Visitor:
 
 ```kotlin
 import ktast.ast.Node
@@ -150,11 +141,12 @@ println(strings)
 
 The parameter of the lambda is
 a [NodePath](https://orangain.github.io/ktast/latest/api/ast/ktast.ast/-node-path/index.html) object that has `node`
-and `parent` NodePath. There is a `tag` var on each node that can be used to store per-node state if desired.
+and `parent` NodePath.
 
 #### Modifying nodes
 
-This will change "Hello, World!" and "Hello, again!" to "Howdy, World!" and "Howdy, again":
+To modify the file, we can use the MutableVisitor. The following code will change "Hello, World!" and "Hello, again!"
+to "Howdy, World!" and "Howdy, again":
 
 ```kotlin
 import ktast.ast.MutableVisitor
@@ -166,16 +158,25 @@ val newFile = MutableVisitor.traverse(file) { path ->
     if (node !is Node.Expression.StringLiteralExpression.LiteralStringEntry) node
     else node.copy(text = node.text.replace("Hello", "Howdy"))
 }
+
+Writer.write(newFile)
 ```
 
-Now `newFile` is a transformed version of `file`. As before, the parameter of the lambda is a NodePath object.
+Now `newFile` is a transformed version of `file`. As before, the parameter of the lambda is a NodePath object. The
+output will be the following code:
 
-Note, since `extraMap` support relies on object identities and this creates entirely new objects in the immutable tree,
-the extra map becomes invalid on this step. When you mutate an AST tree, it is recommended to
-use [ConverterWithMutableExtras](https://orangain.github.io/ktast/latest/api/ast-psi/ktast.ast.psi/-converter-with-mutable-extras/index.html)
-that
-implements [MutableExtrasMap](https://orangain.github.io/ktast/latest/api/ast/ktast.ast/-mutable-extras-map/index.html)
-interface.
+```kotlin
+package foo
+
+fun bar() {
+    // Print hello
+    println("Howdy, World!")
+}
+
+fun baz() = println("Howdy, again!")
+```
+
+Note that the comments and blank lines are preserved.
 
 ## Running tests
 
