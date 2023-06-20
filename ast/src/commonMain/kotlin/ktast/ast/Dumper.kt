@@ -20,7 +20,7 @@ package ktast.ast
  */
 class Dumper(
     private val appendable: Appendable = StringBuilder(),
-    private val verbose: Boolean = true,
+    private val withProperties: Boolean = true,
 ) : Visitor() {
 
     companion object {
@@ -28,11 +28,11 @@ class Dumper(
          * Dumps the given AST node.
          *
          * @param node root AST node to dump.
-         * @param verbose whether to dump extra node attributes, defaults to true.
+         * @param withProperties whether to dump node properties, defaults to true.
          */
-        fun dump(node: Node, verbose: Boolean = true): String {
+        fun dump(node: Node, withProperties: Boolean = true): String {
             val builder = StringBuilder()
-            Dumper(builder, verbose).dump(node)
+            Dumper(builder, withProperties = withProperties).dump(node)
             return builder.toString()
         }
     }
@@ -90,7 +90,7 @@ class Dumper(
         appendable.append("  ".repeat(level))
         appendable.append(prefix)
         appendable.append(node::class.qualifiedName?.substring(10)) // 10 means length of "ktast.ast."
-        if (verbose) {
+        if (withProperties) {
             node.apply {
                 when (this) {
                     is Node.Expression.StringLiteralExpression -> mapOf("raw" to raw)
