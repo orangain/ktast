@@ -5,7 +5,6 @@ import org.jetbrains.kotlin.com.intellij.psi.PsiComment
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
 import org.jetbrains.kotlin.lexer.KtTokens
-import org.jetbrains.kotlin.psi.KtClassBody
 import org.jetbrains.kotlin.psi.KtEnumEntry
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
@@ -74,7 +73,7 @@ open class ConverterWithExtras : Converter() {
             private fun fillExtrasFor(element: PsiElement) {
                 if (isExtra(element)) {
                     extraElementsSinceLastNode.add(element)
-                    if (isSemicolon(element) && lastNode != null) {
+                    if (isSemicolon(element) && lastNode != null && !ancestors.contains(lastNode)) {
                         fillExtrasAfter(lastNode!!)
                     }
                     return
@@ -141,12 +140,9 @@ open class ConverterWithExtras : Converter() {
 
     protected fun isTrailingComma(e: PsiElement): Boolean {
         if (e.node.elementType != KtTokens.COMMA) return false
-        if (e.parent is KtEnumEntry) {
-            // EnumEntry contains comma for each entry, so we only want the last one.
-            check(e.parent.parent is KtClassBody)
-            val lastEnumEntry = e.parent.parent.children.findLast { it is KtEnumEntry }
-            return lastEnumEntry == e.parent
-        }
+        // EnumEntry contains comma for each entry, and we treat them all as trailing commas.
+        if (e.parent is KtEnumEntry) return true
+
         val nextNonExtraElement = e.node.siblings(forward = true)
             .filterNot { it is PsiWhiteSpace || it is PsiComment }.firstOrNull()?.psi
         return nextNonExtraElement == null || suffixTokens.contains(nextNonExtraElement.node.elementType)

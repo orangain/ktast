@@ -155,7 +155,7 @@ open class Writer(
                 }
                 is Node.Declaration.ClassOrObject.ClassBody -> {
                     writeBlock {
-                        children(enumEntries, ",")
+                        children(enumEntries) // Comma between enum entries is represented as a trailing comma of each enum entry
                         if (enumEntries.isNotEmpty() && declarations.isNotEmpty() && !containsSemicolon(
                                 extrasSinceLastNonSymbol
                             )
@@ -330,7 +330,6 @@ open class Writer(
                     children(lPar)
                     children(annotationSets)
                     if (variable != null) {
-                        append("val")
                         children(variable)
                         append("=")
                     }
@@ -491,6 +490,10 @@ open class Writer(
                 }
                 is Node.Variable -> {
                     children(annotationSets)
+                    if (parent?.node is Node.Expression.WhenExpression.WhenSubject) {
+                        // Output "val" here rather than in WhenSubject because "val" token exists inside KtProperty.
+                        append("val")
+                    }
                     children(name)
                     if (type != null) append(":").also { children(type) }
                 }
@@ -682,6 +685,11 @@ open class Writer(
                 append(";")
             }
         }
+        if (node is Node.Declaration.ClassOrObject.ClassBody.EnumEntry && next != null) {
+            if (!containsTrailingComma(extrasSinceLastNonSymbol)) {
+                append(",")
+            }
+        }
     }
 
     protected fun containsNewlineOrSemicolon(extras: List<Node.Extra>): Boolean {
@@ -697,6 +705,12 @@ open class Writer(
     protected fun containsSemicolon(extras: List<Node.Extra>): Boolean {
         return extras.any {
             it is Node.Extra.Semicolon
+        }
+    }
+
+    protected fun containsTrailingComma(extras: List<Node.Extra>): Boolean {
+        return extras.any {
+            it is Node.Extra.TrailingComma
         }
     }
 
