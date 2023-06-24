@@ -722,18 +722,18 @@ sealed interface Node {
          * @property modifiers list of modifiers.
          * @property contextReceiver context receivers if exists, otherwise `null`.
          * @property receiverType receiver type if exists, otherwise `null`.
-         * @property lPar left parenthesis if exists, otherwise `null`.
+         * @property lPar left parenthesis of the parameters.
          * @property parameters list of parameters of the function type.
-         * @property rPar right parenthesis if exists, otherwise `null`.
+         * @property rPar right parenthesis of the parameters.
          * @property returnType return type of the function type.
          */
         data class FunctionType(
             override val modifiers: List<Modifier>,
             val contextReceiver: ContextReceiver?,
             val receiverType: Type?,
-            val lPar: Keyword.LPar?,
+            val lPar: Keyword.LPar,
             val parameters: List<FunctionTypeParameter>,
-            val rPar: Keyword.RPar?,
+            val rPar: Keyword.RPar,
             val returnType: Type,
             override val supplement: NodeSupplement = NodeSupplement(),
         ) : Type {

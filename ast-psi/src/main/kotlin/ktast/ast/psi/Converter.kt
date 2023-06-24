@@ -395,9 +395,13 @@ open class Converter {
             modifiers = convertModifiers(modifierList),
             contextReceiver = typeEl.contextReceiverList?.let(::convertContextReceiver),
             receiverType = typeEl.receiver?.typeReference?.let(::convertType),
-            lPar = typeEl.parameterList?.leftParenthesis?.let(::convertKeyword),
+            lPar = convertKeyword(
+                typeEl.parameterList?.leftParenthesis ?: error("No left parenthesis for ${typeEl.parameterList}")
+            ),
             parameters = convertTypeFunctionParameters(typeEl.parameterList),
-            rPar = typeEl.parameterList?.rightParenthesis?.let(::convertKeyword),
+            rPar = convertKeyword(
+                typeEl.parameterList?.rightParenthesis ?: error("No right parenthesis for ${typeEl.parameterList}")
+            ),
             returnType = convertType(typeEl.returnTypeReference ?: error("No return type for $typeEl")),
         ).map(v)
 
