@@ -22,13 +22,13 @@ class CorpusParseAndWriteHeuristicTest(private val unit: Corpus.Unit) {
             }
             val origCode = StringUtilRt.convertLineSeparators(unit.read())
             println("----ORIG CODE----\n$origCode\n------------")
-            val origFile = Parser.parseFile(origCode)
+            val origFile = Parser(Converter()).parseFile(origCode)
             val origDump = Dumper.dump(origFile)
             println("----ORIG AST----\n$origDump\n------------")
 
             val newCode = Writer.write(origFile)
             println("----NEW CODE----\n$newCode\n-----------")
-            val newFile = Parser.parseFile(newCode)
+            val newFile = Parser(Converter()).parseFile(newCode)
             val newDump = Dumper.dump(newFile)
 
 //            assertEquals(origCode, newCode)
