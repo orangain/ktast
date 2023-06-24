@@ -73,7 +73,7 @@ open class ConverterWithExtras : Converter() {
             private fun fillExtrasFor(element: PsiElement) {
                 if (isExtra(element)) {
                     extraElementsSinceLastNode.add(element)
-                    if (isSemicolon(element) && lastNode != null) {
+                    if (isSemicolon(element) && lastNode != null && !ancestors.contains(lastNode)) {
                         fillExtrasAfter(lastNode!!)
                     }
                     return
