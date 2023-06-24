@@ -330,7 +330,6 @@ open class Writer(
                     children(lPar)
                     children(annotationSets)
                     if (variable != null) {
-                        append("val")
                         children(variable)
                         append("=")
                     }
@@ -491,6 +490,10 @@ open class Writer(
                 }
                 is Node.Variable -> {
                     children(annotationSets)
+                    if (parent?.node is Node.Expression.WhenExpression.WhenSubject) {
+                        // Output "val" here rather than in WhenSubject because "val" token exists inside KtProperty.
+                        append("val")
+                    }
                     children(name)
                     if (type != null) append(":").also { children(type) }
                 }

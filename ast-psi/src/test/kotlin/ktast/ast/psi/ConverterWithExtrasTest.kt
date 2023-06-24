@@ -77,6 +77,92 @@ class ConverterWithExtrasTest {
             """.trimIndent()
         )
     }
+
+    @Test
+    fun testWhenExpression() {
+        assertParsedAs(
+            """
+                fun main() {
+                    when ( a == 1 ) {
+                        x -> {}
+                    }
+                }
+            """.trimIndent(),
+            ::getFunctionBody,
+            """
+                Node.Expression.BlockExpression
+                  BEFORE: Node.Extra.Whitespace
+                  Node.Expression.WhenExpression
+                    Node.Keyword.When
+                    Node.Expression.WhenExpression.WhenSubject
+                      BEFORE: Node.Extra.Whitespace
+                      Node.Keyword.LPar
+                      BEFORE: Node.Extra.Whitespace
+                      Node.Expression.BinaryExpression
+                        Node.Expression.NameExpression
+                        BEFORE: Node.Extra.Whitespace
+                        Node.Keyword.EqualEqual
+                        BEFORE: Node.Extra.Whitespace
+                        Node.Expression.IntegerLiteralExpression
+                      BEFORE: Node.Extra.Whitespace
+                      Node.Keyword.RPar
+                      AFTER: Node.Extra.Whitespace
+                    BEFORE: Node.Extra.Whitespace
+                    Node.Expression.WhenExpression.ConditionalWhenBranch
+                      Node.Expression.WhenExpression.ExpressionWhenCondition
+                        Node.Expression.NameExpression
+                      BEFORE: Node.Extra.Whitespace
+                      Node.Keyword.Arrow
+                      BEFORE: Node.Extra.Whitespace
+                      Node.Expression.BlockExpression
+                    AFTER: Node.Extra.Whitespace
+                  AFTER: Node.Extra.Whitespace
+            """.trimIndent()
+        )
+    }
+
+    @Test
+    fun testWhenExpressionWithSubjectVariable() {
+        assertParsedAs(
+            """
+                fun main() {
+                    when ( val a = 1 ) {
+                        x -> {}
+                    }
+                }
+            """.trimIndent(),
+            ::getFunctionBody,
+            """
+                Node.Expression.BlockExpression
+                  BEFORE: Node.Extra.Whitespace
+                  Node.Expression.WhenExpression
+                    Node.Keyword.When
+                    Node.Expression.WhenExpression.WhenSubject
+                      BEFORE: Node.Extra.Whitespace
+                      Node.Keyword.LPar
+                      BEFORE: Node.Extra.Whitespace
+                      Node.Variable
+                        BEFORE: Node.Extra.Whitespace
+                        Node.Expression.NameExpression
+                        AFTER: Node.Extra.Whitespace
+                      BEFORE: Node.Extra.Whitespace
+                      Node.Expression.IntegerLiteralExpression
+                      BEFORE: Node.Extra.Whitespace
+                      Node.Keyword.RPar
+                      AFTER: Node.Extra.Whitespace
+                    BEFORE: Node.Extra.Whitespace
+                    Node.Expression.WhenExpression.ConditionalWhenBranch
+                      Node.Expression.WhenExpression.ExpressionWhenCondition
+                        Node.Expression.NameExpression
+                      BEFORE: Node.Extra.Whitespace
+                      Node.Keyword.Arrow
+                      BEFORE: Node.Extra.Whitespace
+                      Node.Expression.BlockExpression
+                    AFTER: Node.Extra.Whitespace
+                  AFTER: Node.Extra.Whitespace
+            """.trimIndent()
+        )
+    }
 }
 
 private fun assertParsedAs(code: String, expectedDump: String) {
