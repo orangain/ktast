@@ -170,9 +170,13 @@ open class Converter {
         Node.Declaration.ClassDeclaration.PrimaryConstructor(
             modifiers = convertModifiers(v.modifierList),
             constructorKeyword = v.getConstructorKeyword()?.let(::convertKeyword),
-            lPar = v.valueParameterList?.leftParenthesis?.let(::convertKeyword),
+            lPar = convertKeyword(
+                v.valueParameterList?.leftParenthesis ?: error("No left parenthesis for ${v.valueParameterList}")
+            ),
             parameters = convertFunctionParameters(v.valueParameterList),
-            rPar = v.valueParameterList?.rightParenthesis?.let(::convertKeyword),
+            rPar = convertKeyword(
+                v.valueParameterList?.rightParenthesis ?: error("No right parenthesis for ${v.valueParameterList}")
+            ),
         ).map(v)
 
     protected fun convertClassBody(v: KtClassBody): Node.Declaration.ClassOrObject.ClassBody {
@@ -207,9 +211,13 @@ open class Converter {
         Node.Declaration.ClassOrObject.ClassBody.SecondaryConstructor(
             modifiers = convertModifiers(v.modifierList),
             constructorKeyword = convertKeyword(v.getConstructorKeyword()),
-            lPar = v.valueParameterList?.leftParenthesis?.let(::convertKeyword),
+            lPar = convertKeyword(
+                v.valueParameterList?.leftParenthesis ?: error("No left parenthesis for ${v.valueParameterList}")
+            ),
             parameters = convertFunctionParameters(v.valueParameterList),
-            rPar = v.valueParameterList?.rightParenthesis?.let(::convertKeyword),
+            rPar = convertKeyword(
+                v.valueParameterList?.rightParenthesis ?: error("No right parenthesis for ${v.valueParameterList}")
+            ),
             delegationCall = if (v.hasImplicitDelegationCall()) null else convertCallExpression(
                 v.getDelegationCall()
             ),
@@ -234,9 +242,13 @@ open class Converter {
             rAngle = v.typeParameterList?.rightAngle?.let(::convertKeyword),
             receiverType = v.receiverTypeReference?.let(::convertType),
             name = v.nameIdentifier?.let(::convertNameExpression),
-            lPar = v.valueParameterList?.leftParenthesis?.let(::convertKeyword),
+            lPar = convertKeyword(
+                v.valueParameterList?.leftParenthesis ?: error("No left parenthesis for ${v.valueParameterList}")
+            ),
             parameters = convertFunctionParameters(v.valueParameterList),
-            rPar = v.valueParameterList?.rightParenthesis?.let(::convertKeyword),
+            rPar = convertKeyword(
+                v.valueParameterList?.rightParenthesis ?: error("No right parenthesis for ${v.valueParameterList}")
+            ),
             returnType = v.typeReference?.let(::convertType),
             postModifiers = convertPostModifiers(v),
             body = v.bodyExpression?.let(::convertExpression),

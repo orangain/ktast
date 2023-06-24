@@ -63,14 +63,14 @@ sealed interface Node {
     /**
      * Common interface for AST nodes that have function parameters.
      *
-     * @property lPar left parenthesis of the function parameters if exists, otherwise `null`.
+     * @property lPar left parenthesis of the function parameters.
      * @property parameters list of function parameters.
-     * @property rPar right parenthesis of the function parameters if exists, otherwise `null`.
+     * @property rPar right parenthesis of the function parameters.
      */
     interface WithFunctionParameters {
-        val lPar: Keyword.LPar?
+        val lPar: Keyword.LPar
         val parameters: List<FunctionParameter>
-        val rPar: Keyword.RPar?
+        val rPar: Keyword.RPar
     }
 
     /**
@@ -419,9 +419,9 @@ sealed interface Node {
                 data class SecondaryConstructor(
                     override val modifiers: List<Modifier>,
                     val constructorKeyword: Keyword.Constructor,
-                    override val lPar: Keyword.LPar?,
+                    override val lPar: Keyword.LPar,
                     override val parameters: List<FunctionParameter>,
-                    override val rPar: Keyword.RPar?,
+                    override val rPar: Keyword.RPar,
                     val delegationCall: Expression.CallExpression?,
                     val block: Expression.BlockExpression?,
                     override val supplement: NodeSupplement = NodeSupplement(),
@@ -472,9 +472,9 @@ sealed interface Node {
             data class PrimaryConstructor(
                 override val modifiers: List<Modifier>,
                 val constructorKeyword: Keyword.Constructor?,
-                override val lPar: Keyword.LPar?,
+                override val lPar: Keyword.LPar,
                 override val parameters: List<FunctionParameter>,
-                override val rPar: Keyword.RPar?,
+                override val rPar: Keyword.RPar,
                 override val supplement: NodeSupplement = NodeSupplement(),
             ) : Node, WithModifiers, WithFunctionParameters
         }
@@ -510,9 +510,9 @@ sealed interface Node {
             override val rAngle: Keyword.Greater?,
             val receiverType: Type?,
             val name: Expression.NameExpression?,
-            override val lPar: Keyword.LPar?,
+            override val lPar: Keyword.LPar,
             override val parameters: List<FunctionParameter>,
-            override val rPar: Keyword.RPar?,
+            override val rPar: Keyword.RPar,
             val returnType: Type?,
             override val postModifiers: List<PostModifier>,
             val body: Expression?,
