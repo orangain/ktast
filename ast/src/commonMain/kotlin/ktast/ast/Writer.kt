@@ -622,7 +622,7 @@ open class Writer(
                 append("\n")
             }
         }
-        if (parentNode is Node.Expression.AnnotatedExpression && (node is Node.Expression.BinaryExpression || node is Node.Expression.BinaryTypeExpression)) {
+        if (parentNode is Node.Expression.AnnotatedExpression && ((node is Node.Expression.BinaryExpression && node.operator !is Node.Keyword.Dot) || node is Node.Expression.BinaryTypeExpression)) {
             // Annotated expression requires newline between annotation and expression when expression is a binary operation.
             // This is because, without newline, annotated expression of binary expression is ambiguous with binary expression of annotated expression.
             if (!containsNewlineOrSemicolon(extrasSinceLastNonSymbol)) {
