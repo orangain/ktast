@@ -43,56 +43,55 @@ open class ConverterWithExtras : Converter() {
     protected open fun fillWholeExtras(rootNode: Node.KotlinEntry, rootElement: PsiElement) {
         val extraElementsSinceLastNode = mutableListOf<PsiElement>()
 
-        val visitor = object : PsiElementVisitor() {
+        val visitor = object : PsiElementAndNodeVisitor({ psiIdentitiesToNodes[System.identityHashCode(it)] }) {
             private var lastNode: Node? = null
-            private val ancestors = ArrayDeque<Node>()
 
-            override fun onBeginElement(element: PsiElement) {
-                fillExtrasFor(element)
-                val node = psiIdentitiesToNodes[System.identityHashCode(element)]
-                if (node != null) {
-                    ancestors.add(node)
+            override fun onBeginElement(element: PsiElement, node: Node?) {
+                if (isExtra(element)) {
+                    onExtra(element)
+                } else {
+                    fillExtrasFor(element, node)
                 }
             }
 
-            override fun onEndElement(element: PsiElement) {
-                val node = psiIdentitiesToNodes[System.identityHashCode(element)] ?: return
+            override fun onEndElement(element: PsiElement, node: Node?) {
+                if (node == null) return
+
                 if (lastNode != null && lastNode !== node) {
                     fillExtrasAfter(lastNode!!)
                 } else {
                     fillExtrasWithin(node)
                 }
                 lastNode = node
-                ancestors.removeLast()
             }
 
-            override fun onLeafElement(element: PsiElement) {
-                fillExtrasFor(element)
-            }
-
-            private fun fillExtrasFor(element: PsiElement) {
+            override fun onLeafElement(element: PsiElement, node: Node?) {
                 if (isExtra(element)) {
-                    extraElementsSinceLastNode.add(element)
-                    if (isSemicolon(element) && lastNode != null && !ancestors.contains(lastNode)) {
-                        fillExtrasAfter(lastNode!!)
-                    }
-                    return
+                    onExtra(element)
+                } else {
+                    fillExtrasFor(element, node)
                 }
-                val node = psiIdentitiesToNodes[System.identityHashCode(element)]
+            }
 
+            private fun onExtra(element: PsiElement) {
+                extraElementsSinceLastNode.add(element)
+                if (isSemicolon(element) && lastNode != null && !ancestors.contains(lastNode)) {
+                    fillExtrasAfter(lastNode!!)
+                }
+            }
+
+            private fun fillExtrasFor(element: PsiElement, node: Node?) {
                 if (node == null) {
-                    if (lastNode != null) {
-                        if (ancestors.contains(lastNode)) {
-                            return // Don't update lastNode if lastNode is an ancestor of this node
-                        }
+                    if (lastNode != null && !ancestors.contains(lastNode)) {
                         fillExtrasAfter(lastNode!!)
+                        lastNode = null
                     }
                 } else {
-                    // Add first extra children of this element as extrasBefore.
+                    // Add first extra children of this element as extrasBefore. This is necessary to handle extras before "fun" keyword.
                     extraElementsSinceLastNode.addAll(element.allChildren.takeWhile(::isExtra))
                     fillExtrasBefore(node)
+                    lastNode = node
                 }
-                lastNode = node
             }
 
             private fun fillExtrasBefore(node: Node) {
