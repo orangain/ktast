@@ -1,0 +1,184 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>Declaration</title>
+<link href="../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="../../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../../styles/style.css" rel="Stylesheet">
+<link href="../../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../../styles/main.css" rel="Stylesheet">
+<link href="../../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../../../index.html">
+<span>ktast</span>            </a>    </div>
+    <div>0.9.3
+    </div>
+    <div class="pull-right d-flex">
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":ast:dokkaHtmlPartial/commonMain">common</button>
+        </div>
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="ast::ktast.ast/Node.Declaration///PointingToDeclaration//-1242834013">
+  <div class="breadcrumbs"><a href="../../../index.html">ast</a><span class="delimiter">/</span><a href="../../index.html">ktast.ast</a><span class="delimiter">/</span><a href="../index.html">Node</a><span class="delimiter">/</span><span class="current">Declaration</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Declaration</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">Declaration</a> : <a href="../-statement/index.html">Node.Statement</a></div><p class="paragraph">Common interface for AST nodes that are main contents of a Kotlin file or a class body.</p><h4 class="">Inheritors</h4><div class="table"><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-class-or-object/index.html">ClassOrObject</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-class-or-object/-class-body/-initializer/index.html">Initializer</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-class-or-object/-class-body/-secondary-constructor/index.html">SecondaryConstructor</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-function-declaration/index.html">FunctionDeclaration</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-property-declaration/index.html">PropertyDeclaration</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-type-alias-declaration/index.html">TypeAliasDeclaration</a></div></span></div><div></div></div></div></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="396411089%2FClasslikes%2F-1242834013" anchor-label="ClassDeclaration" id="396411089%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-class-declaration/index.html"><span>Class</span><wbr><span><span>Declaration</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="396411089%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-class-declaration/index.html">ClassDeclaration</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>modifiers<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-modifier/index.html">Node.Modifier</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>declarationKeyword<span class="token operator">: </span><a href="-class-declaration/-class-or-interface-keyword/index.html">Node.Declaration.ClassDeclaration.ClassOrInterfaceKeyword</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>name<span class="token operator">: </span><a href="../-expression/-name-expression/index.html">Node.Expression.NameExpression</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>lAngle<span class="token operator">: </span><a href="../-keyword/-less/index.html">Node.Keyword.Less</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>typeParameters<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-type-parameter/index.html">Node.TypeParameter</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>rAngle<span class="token operator">: </span><a href="../-keyword/-greater/index.html">Node.Keyword.Greater</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>primaryConstructor<span class="token operator">: </span><a href="-class-declaration/-primary-constructor/index.html">Node.Declaration.ClassDeclaration.PrimaryConstructor</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>parents<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-class-or-object/-class-parent/index.html">Node.Declaration.ClassOrObject.ClassParent</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>typeConstraintSet<span class="token operator">: </span><a href="../-post-modifier/-type-constraint-set/index.html">Node.PostModifier.TypeConstraintSet</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>body<span class="token operator">: </span><a href="-class-or-object/-class-body/index.html">Node.Declaration.ClassOrObject.ClassBody</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="-class-or-object/index.html">Node.Declaration.ClassOrObject</a>, <a href="../-with-type-parameters/index.html">Node.WithTypeParameters</a></div><div class="brief "><p class="paragraph">AST node that represents a class or interface declaration. The node corresponds to KtClass.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1166126891%2FClasslikes%2F-1242834013" anchor-label="ClassOrObject" id="-1166126891%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-class-or-object/index.html"><span>Class</span><wbr><span>Or</span><wbr><span><span>Object</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1166126891%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-class-or-object/index.html">ClassOrObject</a> : <a href="index.html">Node.Declaration</a>, <a href="../-with-modifiers/index.html">Node.WithModifiers</a></div><div class="brief "><p class="paragraph">Common interface for <a href="-class-declaration/index.html">ClassDeclaration</a> and <a href="-object-declaration/index.html">ObjectDeclaration</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1342732653%2FClasslikes%2F-1242834013" anchor-label="FunctionDeclaration" id="1342732653%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-function-declaration/index.html"><span>Function</span><wbr><span><span>Declaration</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1342732653%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-function-declaration/index.html">FunctionDeclaration</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>modifiers<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-modifier/index.html">Node.Modifier</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>lAngle<span class="token operator">: </span><a href="../-keyword/-less/index.html">Node.Keyword.Less</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>typeParameters<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-type-parameter/index.html">Node.TypeParameter</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>rAngle<span class="token operator">: </span><a href="../-keyword/-greater/index.html">Node.Keyword.Greater</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>receiverType<span class="token operator">: </span><a href="../-type/index.html">Node.Type</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>name<span class="token operator">: </span><a href="../-expression/-name-expression/index.html">Node.Expression.NameExpression</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>lPar<span class="token operator">: </span><a href="../-keyword/-l-par/index.html">Node.Keyword.LPar</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>parameters<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-function-parameter/index.html">Node.FunctionParameter</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>rPar<span class="token operator">: </span><a href="../-keyword/-r-par/index.html">Node.Keyword.RPar</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>returnType<span class="token operator">: </span><a href="../-type/index.html">Node.Type</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>postModifiers<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-post-modifier/index.html">Node.PostModifier</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>body<span class="token operator">: </span><a href="../-expression/index.html">Node.Expression</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Declaration</a>, <a href="../-with-modifiers/index.html">Node.WithModifiers</a>, <a href="../-with-type-parameters/index.html">Node.WithTypeParameters</a>, <a href="../-with-function-parameters/index.html">Node.WithFunctionParameters</a>, <a href="../-with-post-modifiers/index.html">Node.WithPostModifiers</a></div><div class="brief "><p class="paragraph">AST node that represents a function declaration. The node corresponds to KtNamedFunction.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="254413012%2FClasslikes%2F-1242834013" anchor-label="ObjectDeclaration" id="254413012%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-object-declaration/index.html"><span>Object</span><wbr><span><span>Declaration</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="254413012%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-object-declaration/index.html">ObjectDeclaration</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>modifiers<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-modifier/index.html">Node.Modifier</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>declarationKeyword<span class="token operator">: </span><a href="../-keyword/-object/index.html">Node.Keyword.Object</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>name<span class="token operator">: </span><a href="../-expression/-name-expression/index.html">Node.Expression.NameExpression</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>parents<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-class-or-object/-class-parent/index.html">Node.Declaration.ClassOrObject.ClassParent</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>body<span class="token operator">: </span><a href="-class-or-object/-class-body/index.html">Node.Declaration.ClassOrObject.ClassBody</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="-class-or-object/index.html">Node.Declaration.ClassOrObject</a></div><div class="brief "><p class="paragraph">AST node that represents an object declaration. The node corresponds to KtObjectDeclaration.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="505571562%2FClasslikes%2F-1242834013" anchor-label="PropertyDeclaration" id="505571562%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-property-declaration/index.html"><span>Property</span><wbr><span><span>Declaration</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="505571562%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-property-declaration/index.html">PropertyDeclaration</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>modifiers<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-modifier/index.html">Node.Modifier</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>valOrVarKeyword<span class="token operator">: </span><a href="../-keyword/-val-or-var-keyword/index.html">Node.Keyword.ValOrVarKeyword</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>lAngle<span class="token operator">: </span><a href="../-keyword/-less/index.html">Node.Keyword.Less</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>typeParameters<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-type-parameter/index.html">Node.TypeParameter</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>rAngle<span class="token operator">: </span><a href="../-keyword/-greater/index.html">Node.Keyword.Greater</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>receiverType<span class="token operator">: </span><a href="../-type/index.html">Node.Type</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>lPar<span class="token operator">: </span><a href="../-keyword/-l-par/index.html">Node.Keyword.LPar</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>variables<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-variable/index.html">Node.Variable</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>rPar<span class="token operator">: </span><a href="../-keyword/-r-par/index.html">Node.Keyword.RPar</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>typeConstraintSet<span class="token operator">: </span><a href="../-post-modifier/-type-constraint-set/index.html">Node.PostModifier.TypeConstraintSet</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>initializerExpression<span class="token operator">: </span><a href="../-expression/index.html">Node.Expression</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>delegateExpression<span class="token operator">: </span><a href="../-expression/index.html">Node.Expression</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>accessors<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-property-declaration/-accessor/index.html">Node.Declaration.PropertyDeclaration.Accessor</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Declaration</a>, <a href="../-with-modifiers/index.html">Node.WithModifiers</a>, <a href="../-with-type-parameters/index.html">Node.WithTypeParameters</a></div><div class="brief "><p class="paragraph">AST node that represents a property declaration. The node corresponds to KtProperty or KtDestructuringDeclaration.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1396594033%2FClasslikes%2F-1242834013" anchor-label="TypeAliasDeclaration" id="-1396594033%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-type-alias-declaration/index.html"><span>Type</span><wbr><span>Alias</span><wbr><span><span>Declaration</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1396594033%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-type-alias-declaration/index.html">TypeAliasDeclaration</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>modifiers<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-modifier/index.html">Node.Modifier</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>name<span class="token operator">: </span><a href="../-expression/-name-expression/index.html">Node.Expression.NameExpression</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>lAngle<span class="token operator">: </span><a href="../-keyword/-less/index.html">Node.Keyword.Less</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>typeParameters<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-type-parameter/index.html">Node.TypeParameter</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>rAngle<span class="token operator">: </span><a href="../-keyword/-greater/index.html">Node.Keyword.Greater</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>type<span class="token operator">: </span><a href="../-type/index.html">Node.Type</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Declaration</a>, <a href="../-with-modifiers/index.html">Node.WithModifiers</a>, <a href="../-with-type-parameters/index.html">Node.WithTypeParameters</a></div><div class="brief "><p class="paragraph">AST node that represents a type alias declaration. The node corresponds to KtTypeAlias.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="1831727097%2FProperties%2F-1242834013" anchor-label="supplement" id="1831727097%2FProperties%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../supplement.html"><span><span>supplement</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1831727097%2FProperties%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../supplement.html">supplement</a><span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a></div><div class="brief "><p class="paragraph">Supplemental data for the node.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+</body>
+</html>
+
