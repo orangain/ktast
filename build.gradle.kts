@@ -1,7 +1,7 @@
 plugins {
     kotlin("multiplatform") version "1.8.22" // Kotlin plugin is required for Dokka to work properly.
     id("com.palantir.git-version") version "3.0.0"
-    id("org.jetbrains.dokka") version "1.8.20"
+    id("org.jetbrains.dokka") version "1.9.10"
 }
 
 val gitVersion: groovy.lang.Closure<String> by extra
