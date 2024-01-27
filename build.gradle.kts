@@ -5,7 +5,7 @@ plugins {
 }
 
 val gitVersion: groovy.lang.Closure<String> by extra
-val kotlinVersion by extra { "1.8.21" }
+val kotlinVersion by extra { "1.9.22" }
 
 kotlin {
     jvm()
