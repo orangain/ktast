@@ -13,9 +13,9 @@ jobs:
       fail-fast: false
       matrix:
         # See: https://adoptium.net/temurin/releases/
-        java: [ 8, 11, 17, 20 ]
+        java: [ 8, 11, 17, 21 ]
         # See: https://github.com/JetBrains/kotlin/releases
-        kotlin: [ v1.7.22, v1.8.21 ]
+        kotlin: [ v1.7.22, v1.8.22, v1.9.22 ]
 
     steps:
       - uses: actions/checkout@v3
