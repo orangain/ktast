@@ -109,10 +109,7 @@ open class Writer(
                     writeExtrasWithin()
                 }
                 is Node.KotlinScript -> {
-                    children(annotationSets)
-                    children(packageDirective)
-                    children(importDirectives)
-                    children(expressions)
+                    children(body)
                     writeExtrasWithin()
                 }
                 is Node.PackageDirective -> {
@@ -260,6 +257,9 @@ open class Writer(
                     append("=")
                     children(type)
                 }
+                is Node.Declaration.ScriptInitializer -> {
+                    children(body)
+                }
                 is Node.Type.ParenthesizedType -> {
                     children(modifiers)
                     children(lPar)
@@ -370,8 +370,13 @@ open class Writer(
                     appendLabel(label)
                 }
                 is Node.Expression.BlockExpression -> {
-                    writeBlock {
+                    if (parent?.node is Node.KotlinScript) {
                         children(statements)
+                        writeExtrasWithin()
+                    } else {
+                        writeBlock {
+                            children(statements)
+                        }
                     }
                 }
                 is Node.Expression.CallExpression -> {

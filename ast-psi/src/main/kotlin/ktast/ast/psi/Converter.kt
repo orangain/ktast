@@ -29,6 +29,10 @@ open class Converter {
         declarations = v.declarations.map(::convertDeclaration)
     ).map(v)
 
+    protected fun convertKotlinScript(v: KtScript) = Node.KotlinScript(
+        body = convertBlockExpression(v.blockExpression)
+    ).map(v)
+
     protected fun convertPackageDirective(v: KtPackageDirective): Node.PackageDirective {
         if (v.modifierList != null) {
             throw Unsupported("Package directive with modifiers is not supported")
@@ -91,12 +95,14 @@ open class Converter {
         is KtEnumEntry -> error("KtEnumEntry is handled in convertEnumEntry")
         is KtClass -> convertClassDeclaration(v)
         is KtObjectDeclaration -> convertObjectDeclaration(v)
-        is KtAnonymousInitializer -> convertInitializer(v)
+        is KtClassInitializer -> convertClassInitializer(v)
         is KtNamedFunction -> convertFunctionDeclaration(v)
         is KtDestructuringDeclaration -> convertPropertyDeclaration(v)
         is KtProperty -> convertPropertyDeclaration(v)
         is KtTypeAlias -> convertTypeAliasDeclaration(v)
         is KtSecondaryConstructor -> convertSecondaryConstructor(v)
+        is KtScriptInitializer -> convertScriptInitializer(v)
+        is KtScript -> convertKotlinScript(v)
         else -> error("Unrecognized declaration type for $v")
     }
 
@@ -198,7 +204,7 @@ open class Converter {
             classBody = v.body?.let(::convertClassBody),
         ).map(v)
 
-    protected fun convertInitializer(v: KtAnonymousInitializer): Node.Declaration.ClassOrObject.ClassBody.Initializer {
+    protected fun convertClassInitializer(v: KtClassInitializer): Node.Declaration.ClassOrObject.ClassBody.Initializer {
         if (v.modifierList != null) {
             throw Unsupported("Anonymous initializer with modifiers not supported")
         }
@@ -321,6 +327,15 @@ open class Converter {
         rAngle = v.typeParameterList?.rightAngle?.let(::convertKeyword),
         type = convertType(v.getTypeReference() ?: error("No type alias ref for $v"))
     ).map(v)
+
+    protected fun convertScriptInitializer(v: KtScriptInitializer): Node.Declaration.ScriptInitializer {
+        if (v.modifierList != null) {
+            throw Unsupported("Anonymous initializer with modifiers not supported")
+        }
+        return Node.Declaration.ScriptInitializer(
+            body = convertStatement(v.body ?: error("No init block for $v"))
+        ).map(v)
+    }
 
     protected fun convertType(v: KtTypeReference): Node.Type {
         return convertType(v, v.nonExtraChildren())
