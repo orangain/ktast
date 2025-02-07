@@ -8,6 +8,7 @@ import org.junit.Assume
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
+import kotlin.io.path.name
 import kotlin.test.assertEquals
 
 @RunWith(Parameterized::class)
@@ -18,12 +19,15 @@ class CorpusParseAndWriteWithExtrasTest(private val unit: Corpus.Unit) {
         // In order to test, we parse the test code (failing and validating errors if present),
         // convert to our AST, write out our AST, and compare
         try {
-            if (unit is Corpus.Unit.FromFile) {
+            val path = if (unit is Corpus.Unit.FromFile) {
                 println("Loading ${unit.fullPath}")
+                unit.fullPath.name
+            } else {
+                "test.kt"
             }
             val origCode = StringUtilRt.convertLineSeparators(unit.read())
 //            println("----ORIG CODE----\n$origCode\n------------")
-            val origFile = Parser.parseFile(origCode)
+            val origFile = Parser.parseFile(origCode, path)
             println("----ORIG AST----\n${Dumper.dump(origFile)}\n------------")
 
             val newCode = Writer.write(origFile)

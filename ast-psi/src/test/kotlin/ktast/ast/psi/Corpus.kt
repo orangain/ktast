@@ -11,6 +11,8 @@ object Corpus {
         Paths.get("kdoc", "Simple.kt") to listOf("Unclosed comment")
     )
 
+    private val fileExtensions = Regex("\\.kts?$")
+
     val default: List<Unit> by lazy { localTestData + kotlinRepoTestData + stringTestData }
 
     private val localTestData by lazy {
@@ -18,7 +20,7 @@ object Corpus {
     }
 
     private val kotlinRepoTestData by lazy {
-        // Recursive from $KOTLIN_REPO/compiler/testData/psi/**/*.kt
+        // Recursive from $KOTLIN_REPO/compiler/testData/psi/**/*.kt and *.kts
         val dir = Paths.get(
             System.getenv("KOTLIN_REPO") ?: error("No KOTLIN_REPO env var"),
             "compiler/testData/psi"
@@ -156,8 +158,8 @@ object Corpus {
         )
     }
 
-    private fun loadTestDataFromDir(root: Path, canSkip: Boolean) = Files.walk(root)
-        .filter { it.toString().endsWith(".kt") }
+    private fun loadTestDataFromDir(root: Path, canSkip: Boolean): List<Unit.FromFile> = Files.walk(root)
+        .filter { fileExtensions.containsMatchIn(it.fileName.toString()) }
         .toList<Path>()
         .map { ktPath ->
             val relativePath = root.relativize(ktPath)
@@ -166,7 +168,7 @@ object Corpus {
                 fullPath = ktPath,
                 // Text files (same name w/ ext changed from kt to txt) have <whitespace>PsiElement:<error>
                 errorMessages = overrideErrors[relativePath]
-                    ?: Paths.get(ktPath.toString().replace(".kt", ".txt")).let { txtPath ->
+                    ?: Paths.get(ktPath.toString().replace(fileExtensions, ".txt")).let { txtPath ->
                         if (!Files.isRegularFile(txtPath)) {
                             emptyList()
                         } else {

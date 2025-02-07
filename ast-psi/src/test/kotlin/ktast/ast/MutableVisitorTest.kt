@@ -6,16 +6,14 @@ import org.junit.Test
 class MutableVisitorTest {
     @Test
     fun testIdentityVisitor() {
+        val source = """
+            val x = 1
+            val y = 2
+        """.trimIndent()
         assertMutateAndWriteExact(
-            """
-                val x = 1
-                val y = 2
-            """.trimIndent(),
+            source,
             { path -> path.node },
-            """
-                val x = 1
-                val y = 2
-            """.trimIndent(),
+            source,
         )
     }
 
@@ -44,15 +42,37 @@ class MutableVisitorTest {
             """.trimIndent(),
         )
     }
+
+    @Test
+    fun testScript() {
+        val script = """
+            println("this is a script")
+            
+            val x = 1
+            val y = 2
+            
+            fun Project.call(v: Int){
+                println("this is a function with " + (v + y))
+            }
+            call(x)
+        """.trimIndent()
+        assertMutateAndWriteExact(
+            script,
+            { path -> path.node },
+            script,
+            script = true,
+        )
+    }
 }
 
 
 private fun assertMutateAndWriteExact(
     origCode: String,
     fn: (path: NodePath<*>) -> Node,
-    expectedCode: String
+    expectedCode: String,
+    script: Boolean = false,
 ) {
-    val origFile = Parser.parseFile(origCode)
+    val origFile = Parser.parseFile(origCode, path = if (script) "temp.kts" else "temp.kt")
     println("----ORIG AST----\n${Dumper.dump(origFile)}\n------------")
 
     val newFile = MutableVisitor.traverse(origFile, fn)
