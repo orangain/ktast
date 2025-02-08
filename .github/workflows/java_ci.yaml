@@ -24,13 +24,13 @@ jobs:
         with:
           java-version: ${{ matrix.java }}
           distribution: temurin
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
       - uses: actions/checkout@v4
         with:
           repository: JetBrains/kotlin
           path: kotlin
           ref: ${{ matrix.kotlin }}
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
       - name: Build
         run: ./gradlew build
         env:
