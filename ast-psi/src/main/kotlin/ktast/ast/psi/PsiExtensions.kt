@@ -1,5 +1,6 @@
 package ktast.ast.psi
 
+import org.jetbrains.kotlin.KtNodeTypes
 import org.jetbrains.kotlin.com.intellij.psi.PsiComment
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
@@ -13,6 +14,9 @@ internal fun PsiElement.nonExtraChildren() =
 
 internal val KtImportDirective.asterisk: PsiElement?
     get() = findChildByType(this, KtTokens.MUL)
+
+internal val KtDestructuringDeclaration.delegate: KtPropertyDelegate?
+    get() = findChildByType(this, KtNodeTypes.PROPERTY_DELEGATE) as? KtPropertyDelegate
 
 internal val KtTypeParameterList.leftAngle: PsiElement?
     get() = findChildByType(this, KtTokens.LT)
