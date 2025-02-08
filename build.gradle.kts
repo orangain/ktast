@@ -3,11 +3,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("multiplatform") version "2.1.10" // Kotlin plugin is required for Dokka to work properly.
-    id("com.palantir.git-version") version "3.1.0"
     id("org.jetbrains.dokka") version "1.9.20"
 }
 
-val gitVersion: groovy.lang.Closure<String> by extra
 val kotlinVersion by extra { "2.1.10" }
 
 kotlin {
@@ -21,8 +19,8 @@ kotlin {
 }
 
 allprojects {
-    group = "com.github.orangain.ktast"
-    version = gitVersion()
+    group = "io.github.orangain.ktast"
+    version = "0.9.4"
 
     repositories {
         mavenCentral()
