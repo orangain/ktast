@@ -44,7 +44,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.orangain.ktast:ast-psi:1.0.0")
+    implementation("com.github.orangain.ktast:ast-psi:0.9.3")
 }
 ```
 
@@ -55,7 +55,7 @@ multiplatform projects. If you need the AST only, instead use:
 
 ```kts
 dependencies {
-    implementation("com.github.orangain.ktast:ast:1.0.0")
+    implementation("com.github.orangain.ktast:ast:0.9.3")
 }
 ```
 
@@ -204,5 +204,5 @@ written and confirms it matches the original AST field for field.
 ## Releasing new version
 
 1. Update the versions in README.md.
-2. Create a new tag in GitHub, e.g. `1.0.0`.
+2. Create a new tag in GitHub, e.g. `0.9.4`.
 3. JitPack will automatically build the library and publish it.
