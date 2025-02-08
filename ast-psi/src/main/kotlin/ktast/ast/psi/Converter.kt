@@ -285,7 +285,7 @@ open class Converter {
         rPar = v.rPar?.let(::convertKeyword),
         typeConstraintSet = null,
         initializerExpression = v.initializer?.let(::convertExpression),
-        delegateExpression = null,
+        delegateExpression = v.delegate?.expression?.let(::convertExpression),
         accessors = listOf(),
     ).map(v)
 
