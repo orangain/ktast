@@ -200,3 +200,9 @@ KOTLIN_REPO=~/kotlin ./gradlew :ast-psi:test
 This will ignore all Kotlin files with expected parse errors and only test against the ones that are valid (178 as of
 this writing). The test parses the Kotlin code into this AST, then re-writes this AST, then re-parses what was just
 written and confirms it matches the original AST field for field.
+
+## Releasing new version
+
+1. Update the versions in README.md.
+2. Create a new tag in GitHub, e.g. `0.9.4`.
+3. JitPack will automatically build the library and publish it.
