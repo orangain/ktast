@@ -3,8 +3,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     `maven-publish`
-    kotlin("multiplatform") version "2.1.10" // Kotlin plugin is required for Dokka to work properly.
-    id("org.jetbrains.dokka") version "1.9.20"
+    kotlin("multiplatform") version "2.1.10"
+    id("org.jetbrains.dokka") version "2.0.0"
 }
 
 val kotlinVersion by extra { "2.1.10" }
