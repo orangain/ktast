@@ -1,0 +1,153 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>BinaryOperator</title>
+<link href="../../../../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../../../../styles/style.css" rel="Stylesheet">
+<link href="../../../../../../styles/main.css" rel="Stylesheet">
+<link href="../../../../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<link href="../../../../../../ui-kit/ui-kit.min.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../../../../ui-kit/ui-kit.min.js" defer></script>
+<script type="text/javascript" src="../../../../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+    <div class="root">
+    <nav class="navigation theme-dark" id="navigation-wrapper">
+<a class="library-name--link" href="../../../../../../index.html">
+                    ktast
+            </a>        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle" type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">0.9.4
+        </div>
+        <div class="navigation-controls">
+        <div class="filter-section filter-section_loading" id="filter-section">
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":ast:dokkaHtmlPartial/commonMain">common</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox">
+                    <div class="dropdown--header"><span>Platform filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close platform filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":ast:dokkaHtmlPartial/commonMain" data-filter=":ast:dokkaHtmlPartial/commonMain">
+                                <span class="checkbox--icon"></span>
+                                common
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </div>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button" type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
+        </div>
+    </nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                    <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox">
+                        <div class="dropdown--header">
+                            <span>
+                                    ktast
+                            </span>
+                            <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                                <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                            </button>
+                        </div>
+                        <div class="sidebar--inner" id="sideMenu"></div>
+                    </ul>
+                    <div class="dropdown--overlay"></div>
+                </div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="ast::ktast.ast/Node.Expression.BinaryExpression.BinaryOperator///PointingToDeclaration//-1242834013">
+  <div class="breadcrumbs"><a href="../../../../../index.html">ast</a><span class="delimiter">/</span><a href="../../../../index.html">ktast.ast</a><span class="delimiter">/</span><a href="../../../index.html">Node</a><span class="delimiter">/</span><a href="../../index.html">Expression</a><span class="delimiter">/</span><a href="../index.html">BinaryExpression</a><span class="delimiter">/</span><span class="current">BinaryOperator</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Binary</span><wbr><span><span>Operator</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">interface </span><a href="index.html">BinaryOperator</a> : <a href="../../../-simple-text-node/index.html">Node.SimpleTextNode</a></div><p class="paragraph">Common interface for AST nodes that represent binary operators. Note that <a href="../../-name-expression/index.html">NameExpression</a> implements <a href="index.html">BinaryOperator</a> because it can be used as a infix operator.</p><h4 class="">Inheritors</h4><div class="table"><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../-name-expression/index.html">NameExpression</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../../-keyword/-asterisk/index.html">Asterisk</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../../-keyword/-slash/index.html">Slash</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../../-keyword/-percent/index.html">Percent</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../../-keyword/-plus/index.html">Plus</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../../-keyword/-minus/index.html">Minus</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../../-keyword/-in/index.html">In</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../../-keyword/-not-in/index.html">NotIn</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../../-keyword/-less/index.html">Less</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../../-keyword/-less-equal/index.html">LessEqual</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../../-keyword/-greater/index.html">Greater</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../../-keyword/-greater-equal/index.html">GreaterEqual</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../../-keyword/-equal-equal/index.html">EqualEqual</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../../-keyword/-not-equal/index.html">NotEqual</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../../-keyword/-asterisk-equal/index.html">AsteriskEqual</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../../-keyword/-slash-equal/index.html">SlashEqual</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../../-keyword/-percent-equal/index.html">PercentEqual</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../../-keyword/-plus-equal/index.html">PlusEqual</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../../-keyword/-minus-equal/index.html">MinusEqual</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../../-keyword/-or-or/index.html">OrOr</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../../-keyword/-and-and/index.html">AndAnd</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../../-keyword/-question-colon/index.html">QuestionColon</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../../-keyword/-dot-dot/index.html">DotDot</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../../-keyword/-dot-dot-less/index.html">DotDotLess</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../../-keyword/-dot/index.html">Dot</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../../-keyword/-question-dot/index.html">QuestionDot</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../../-keyword/-question/index.html">Question</a></div></span></div><div></div></div></div></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="1831727097%2FProperties%2F-1242834013" anchor-label="supplement" id="1831727097%2FProperties%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../supplement.html"><span><span>supplement</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1831727097%2FProperties%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="../../../supplement.html">supplement</a><span class="token operator">: </span><a href="../../../../-node-supplement/index.html">NodeSupplement</a></div><div class="brief "><p class="paragraph">Supplemental data for the node.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="868628652%2FProperties%2F-1242834013" anchor-label="text" id="868628652%2FProperties%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../../-simple-text-node/text.html"><span><span>text</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="868628652%2FProperties%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="../../../-simple-text-node/text.html">text</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div><div class="brief "><p class="paragraph">text representation of the node.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="footer">
+        <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+        <span>© 2025 Copyright</span>
+        <span class="pull-right">
+            <span>Generated by </span>
+            <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                <span>dokka</span>
+            </a>
+        </span>
+    </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
