@@ -68,8 +68,8 @@ publishing {
 tasks.named<SonatypeCentralUploadTask>("sonatypeCentralUpload") {
     dependsOn("jar", "sourcesJar", "javadocJar", "generatePomFileForMavenPublication")
 
-    username = System.getenv("SONATYPE_CENTRAL_USERNAME")  // This is your Sonatype generated username
-    password = System.getenv("SONATYPE_CENTRAL_PASSWORD")  // This is your sonatype generated password
+    username = System.getenv("MAVEN_CENTRAL_USERNAME")  // This is your Sonatype generated username
+    password = System.getenv("MAVEN_CENTRAL_PASSWORD")  // This is your sonatype generated password
 
     // This is a list of files to upload. Ideally you would point to your jar file, source and javadoc jar (required by central)
     archives = files(
