@@ -1,3 +1,4 @@
+import cl.franciscosolis.sonatypecentralupload.SonatypeCentralUploadTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -5,6 +6,7 @@ plugins {
     `maven-publish`
     kotlin("multiplatform") version "2.1.10"
     id("org.jetbrains.dokka") version "2.0.0"
+    id("cl.franciscosolis.sonatype-central-upload") version "1.0.3"
 }
 
 val kotlinVersion by extra { "2.1.10" }
@@ -61,4 +63,26 @@ publishing {
             url = layout.buildDirectory.dir("staging-deploy").get().asFile.toURI()
         }
     }
+}
+
+tasks.named<SonatypeCentralUploadTask>("sonatypeCentralUpload") {
+    dependsOn("jar", "sourcesJar", "javadocJar", "generatePomFileForMavenPublication")
+
+    username = System.getenv("SONATYPE_CENTRAL_USERNAME")  // This is your Sonatype generated username
+    password = System.getenv("SONATYPE_CENTRAL_PASSWORD")  // This is your sonatype generated password
+
+    // This is a list of files to upload. Ideally you would point to your jar file, source and javadoc jar (required by central)
+    archives = files(
+        tasks.named("jar"),
+        tasks.named("sourcesJar"),
+        tasks.named("javadocJar"),
+    )
+    // This is the pom file to upload. This is required by central
+    pom = file(
+        tasks.named("generatePomFileForMavenPublication").get().outputs.files.single()
+    )
+
+    signingKey = System.getenv("PGP_SIGNING_KEY")  // This is your PGP private key. This is required to sign your files
+    signingKeyPassphrase =
+        System.getenv("PGP_SIGNING_KEY_PASSPHRASE")  // This is your PGP private key passphrase (optional) to decrypt your private key
 }
