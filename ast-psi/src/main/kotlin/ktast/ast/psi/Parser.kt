@@ -40,17 +40,18 @@ open class Parser(protected val converter: Converter = ConverterWithExtras()) {
      *
      * @param code Kotlin source code
      * @param throwOnError whether to throw an exception if there are errors
+     * @param path path of the file
      * @return AST node that represents the Kotlin file
      */
-    fun parseFile(code: String, throwOnError: Boolean = true): Node.KotlinFile =
-        converter.convert(parsePsiFile(code).also { file ->
+    fun parseFile(code: String, path: String = "temp.kt", throwOnError: Boolean = true): Node.KotlinFile =
+        converter.convert(parsePsiFile(code, path).also { file ->
             if (throwOnError) file.collectDescendantsOfType<PsiErrorElement>().let {
                 if (it.isNotEmpty()) throw ParseError(file, it)
             }
         })
 
-    protected fun parsePsiFile(code: String): KtFile =
-        PsiManager.getInstance(proj).findFile(LightVirtualFile("temp.kt", KotlinFileType.INSTANCE, code)) as KtFile
+    protected fun parsePsiFile(code: String, path: String): KtFile =
+        PsiManager.getInstance(proj).findFile(LightVirtualFile(path, KotlinFileType.INSTANCE, code)) as KtFile
 
     data class ParseError(
         val file: KtFile,
