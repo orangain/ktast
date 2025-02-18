@@ -145,12 +145,12 @@ sealed interface Node {
     ) : Node, KotlinEntry, WithDeclarations
 
     /**
-     * @property body contents of the script.
+     * @property statements contents of the script.
      */
     data class KotlinScript(
-        val body: Expression.BlockExpression,
+        override val statements: List<Statement>,
         override val supplement: NodeSupplement = NodeSupplement(),
-    ) : Node, Declaration
+    ) : Node, Declaration, WithStatements
 
     /**
      * AST node that represents a package directive. The node corresponds to KtPackageDirective.

@@ -64,7 +64,7 @@ open class MutableVisitor {
                         declarations = visitChildren(declarations, newCh)
                     )
                     is Node.KotlinScript -> copy(
-                        body = visitChildren(body, newCh)
+                        statements = visitChildren(statements, newCh)
                     )
                     is Node.PackageDirective -> copy(
                         names = visitChildren(names, newCh),

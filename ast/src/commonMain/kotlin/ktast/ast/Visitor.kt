@@ -41,7 +41,7 @@ open class Visitor {
                     visitChildren(declarations)
                 }
                 is Node.KotlinScript -> {
-                    visitChildren(body)
+                    visitChildren(statements)
                 }
                 is Node.PackageDirective -> {
                     visitChildren(names)

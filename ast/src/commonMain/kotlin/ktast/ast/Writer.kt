@@ -109,7 +109,7 @@ open class Writer(
                     writeExtrasWithin()
                 }
                 is Node.KotlinScript -> {
-                    children(body)
+                    children(statements)
                     writeExtrasWithin()
                 }
                 is Node.PackageDirective -> {
@@ -370,13 +370,8 @@ open class Writer(
                     appendLabel(label)
                 }
                 is Node.Expression.BlockExpression -> {
-                    if (parent?.node is Node.KotlinScript) {
+                    writeBlock {
                         children(statements)
-                        writeExtrasWithin()
-                    } else {
-                        writeBlock {
-                            children(statements)
-                        }
                     }
                 }
                 is Node.Expression.CallExpression -> {
