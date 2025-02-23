@@ -13,6 +13,9 @@ import kotlin.test.assertEquals
 @RunWith(Parameterized::class)
 class CorpusParseAndWriteHeuristicTest(private val unit: Corpus.Unit) {
 
+    /**
+     * Test case to verify that the AST -> source code -> AST conversion matches the original AST, even if the Writer does not have Extra (e.g., whitespace) information.
+     */
     @Test
     fun testParseAndWriteHeuristic() {
         // In order to test, we parse the test code (failing and validating errors if present),
