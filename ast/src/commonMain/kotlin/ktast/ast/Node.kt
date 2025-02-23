@@ -633,9 +633,9 @@ sealed interface Node {
         ) : Declaration, WithDeclarations
 
         /**
-         * AST node that represents script contents. The node corresponds to KtScriptInitializer.
+         * AST node that represents a script initializer, which wraps non-declaration statements in the script. The node corresponds to KtScriptInitializer.
          *
-         * @property body contents of the initializer.
+         * @property body content statement of the initializer.
          */
         data class ScriptInitializer(
             val body: Statement,
