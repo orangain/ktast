@@ -96,7 +96,6 @@ open class Writer(
 
     override fun visit(path: NodePath<*>): Unit = path.run {
         writeExtrasBefore()
-        writeHeuristicSemicolon()
         writeHeuristicNewline()
         writeHeuristicSpace()
 
@@ -596,18 +595,6 @@ open class Writer(
         children(body)
     }
 
-    protected open fun NodePath<*>.writeHeuristicSemicolon() {
-        val parentNode = parent?.node
-        if (parentNode is Node.WithDeclarations && parentNode.declarations.indexOf(node).takeIf { it > 1 }
-                ?.let { parentNode.declarations[it - 1] } is Node.Declaration.PropertyDeclaration && node is Node.Declaration.ScriptInitializer && !containsSemicolon(
-                extrasSinceLastNonSymbol
-            )) {
-            // if it's method that looks like a getter or setter and comes after a property declaration, we need to properly separate them
-            // see kotlin/compiler/testData/psi/script/topLevelPropertiesWithGetSet.kts
-            append(";")
-        }
-    }
-
     protected open fun NodePath<*>.writeHeuristicNewline() {
         val parentNode = parent?.node
         if (parentNode is Node.WithStatements && node is Node.Statement) {
@@ -694,6 +681,13 @@ open class Writer(
             }
         }
         if (node is Node.Expression.CallExpression && node.lambdaArgument == null && next is Node.Expression.LambdaExpression) {
+            if (!containsSemicolon(extrasSinceLastNonSymbol)) {
+                append(";")
+            }
+        }
+        if (node is Node.Declaration.PropertyDeclaration && next is Node.Declaration.ScriptInitializer) {
+            // if it's method that looks like a getter or setter and comes after a property declaration, we need to properly separate them
+            // see kotlin/compiler/testData/psi/script/topLevelPropertiesWithGetSet.kts
             if (!containsSemicolon(extrasSinceLastNonSymbol)) {
                 append(";")
             }
