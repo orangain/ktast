@@ -40,7 +40,7 @@ open class Visitor {
                     visitChildren(importDirectives)
                     visitChildren(declarations)
                 }
-                is Node.KotlinScript -> {
+                is Node.Declaration.KotlinScript -> {
                     visitChildren(declarations)
                 }
                 is Node.PackageDirective -> {

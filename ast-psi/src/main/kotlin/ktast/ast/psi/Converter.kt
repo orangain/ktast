@@ -29,7 +29,7 @@ open class Converter {
         declarations = v.declarations.map(::convertDeclaration)
     ).map(v)
 
-    protected fun convertKotlinScript(v: KtScript) = Node.KotlinScript(
+    protected fun convertKotlinScript(v: KtScript) = Node.Declaration.KotlinScript(
         declarations = v.declarations.map(::convertDeclaration),
     ).map(v)
 
