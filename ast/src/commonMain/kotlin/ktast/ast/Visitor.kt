@@ -40,9 +40,6 @@ open class Visitor {
                     visitChildren(importDirectives)
                     visitChildren(declarations)
                 }
-                is Node.KotlinScript -> {
-                    visitChildren(statements)
-                }
                 is Node.PackageDirective -> {
                     visitChildren(names)
                 }
@@ -185,6 +182,9 @@ open class Visitor {
                     visitChildren(typeParameters)
                     visitChildren(rAngle)
                     visitChildren(type)
+                }
+                is Node.Declaration.ScriptBody -> {
+                    visitChildren(declarations)
                 }
                 is Node.Declaration.ScriptInitializer -> {
                     visitChildren(body)

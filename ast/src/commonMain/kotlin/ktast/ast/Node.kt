@@ -145,14 +145,6 @@ sealed interface Node {
     ) : Node, KotlinEntry, WithDeclarations
 
     /**
-     * @property statements contents of the script.
-     */
-    data class KotlinScript(
-        override val statements: List<Statement>,
-        override val supplement: NodeSupplement = NodeSupplement(),
-    ) : Node, Declaration, WithStatements
-
-    /**
      * AST node that represents a package directive. The node corresponds to KtPackageDirective.
      *
      * @property names list of names separated by dots.
@@ -631,14 +623,24 @@ sealed interface Node {
         ) : Declaration, WithModifiers, WithTypeParameters
 
         /**
-         * AST node that represents script contents. The node corresponds to KtScriptInitializer.
+         * AST node that represents a body of Kotlin script. The node corresponds to KtScript and its child KtBlockExpression.
          *
-         * @property body contents of the initializer.
+         * @property declarations contents of the script body.
+         */
+        data class ScriptBody(
+            override val declarations: List<Declaration>,
+            override val supplement: NodeSupplement = NodeSupplement(),
+        ) : Declaration, WithDeclarations
+
+        /**
+         * AST node that represents a script initializer, which wraps non-declaration statements in the script. The node corresponds to KtScriptInitializer.
+         *
+         * @property body content statement of the initializer.
          */
         data class ScriptInitializer(
             val body: Statement,
             override val supplement: NodeSupplement = NodeSupplement(),
-        ) : Declaration, Statement
+        ) : Declaration
     }
 
     /**

@@ -96,7 +96,6 @@ open class Writer(
 
     override fun visit(path: NodePath<*>): Unit = path.run {
         writeExtrasBefore()
-        writeHeuristicSemicolon()
         writeHeuristicNewline()
         writeHeuristicSpace()
 
@@ -107,10 +106,6 @@ open class Writer(
                     children(packageDirective)
                     children(importDirectives)
                     children(declarations)
-                    writeExtrasWithin()
-                }
-                is Node.KotlinScript -> {
-                    children(statements)
                     writeExtrasWithin()
                 }
                 is Node.PackageDirective -> {
@@ -257,6 +252,10 @@ open class Writer(
                     commaSeparatedChildren(lAngle, typeParameters, rAngle)
                     append("=")
                     children(type)
+                }
+                is Node.Declaration.ScriptBody -> {
+                    children(declarations)
+                    writeExtrasWithin()
                 }
                 is Node.Declaration.ScriptInitializer -> {
                     children(body)
@@ -596,18 +595,6 @@ open class Writer(
         children(body)
     }
 
-    protected open fun NodePath<*>.writeHeuristicSemicolon() {
-        val parentNode = parent?.node
-        if (parentNode is Node.WithStatements && parentNode.statements.indexOf(node).takeIf { it > 1 }
-                ?.let { parentNode.statements[it - 1] } is Node.Declaration.PropertyDeclaration && node is Node.Declaration.ScriptInitializer && !containsSemicolon(
-                extrasSinceLastNonSymbol
-            )) {
-            // if it's method that looks like a getter or setter and comes after a property declaration, we need to properly separate them
-            // see kotlin/compiler/testData/psi/script/topLevelPropertiesWithGetSet.kts
-            append(";")
-        }
-    }
-
     protected open fun NodePath<*>.writeHeuristicNewline() {
         val parentNode = parent?.node
         if (parentNode is Node.WithStatements && node is Node.Statement) {
@@ -694,6 +681,13 @@ open class Writer(
             }
         }
         if (node is Node.Expression.CallExpression && node.lambdaArgument == null && next is Node.Expression.LambdaExpression) {
+            if (!containsSemicolon(extrasSinceLastNonSymbol)) {
+                append(";")
+            }
+        }
+        if (node is Node.Declaration.PropertyDeclaration && next is Node.Declaration.ScriptInitializer) {
+            // if it's method that looks like a getter or setter and comes after a property declaration, we need to properly separate them
+            // see kotlin/compiler/testData/psi/script/topLevelPropertiesWithGetSet.kts
             if (!containsSemicolon(extrasSinceLastNonSymbol)) {
                 append(";")
             }

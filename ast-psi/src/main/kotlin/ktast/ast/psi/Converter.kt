@@ -29,10 +29,6 @@ open class Converter {
         declarations = v.declarations.map(::convertDeclaration)
     ).map(v)
 
-    protected fun convertKotlinScript(v: KtScript) = Node.KotlinScript(
-        statements = v.blockExpression.statements.map(::convertStatement),
-    ).map(v)
-
     protected fun convertPackageDirective(v: KtPackageDirective): Node.PackageDirective {
         if (v.modifierList != null) {
             throw Unsupported("Package directive with modifiers is not supported")
@@ -101,8 +97,8 @@ open class Converter {
         is KtProperty -> convertPropertyDeclaration(v)
         is KtTypeAlias -> convertTypeAliasDeclaration(v)
         is KtSecondaryConstructor -> convertSecondaryConstructor(v)
+        is KtScript -> convertScriptBody(v)
         is KtScriptInitializer -> convertScriptInitializer(v)
-        is KtScript -> convertKotlinScript(v)
         else -> error("Unrecognized declaration type for $v")
     }
 
@@ -326,6 +322,10 @@ open class Converter {
         typeParameters = convertTypeParameters(v.typeParameterList),
         rAngle = v.typeParameterList?.rightAngle?.let(::convertKeyword),
         type = convertType(v.getTypeReference() ?: error("No type alias ref for $v"))
+    ).map(v)
+
+    protected fun convertScriptBody(v: KtScript) = Node.Declaration.ScriptBody(
+        declarations = v.declarations.map(::convertDeclaration),
     ).map(v)
 
     protected fun convertScriptInitializer(v: KtScriptInitializer): Node.Declaration.ScriptInitializer {
