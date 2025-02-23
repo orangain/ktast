@@ -14,6 +14,9 @@ import kotlin.test.assertEquals
 @RunWith(Parameterized::class)
 class CorpusParseAndWriteWithExtrasTest(private val unit: Corpus.Unit) {
 
+    /**
+     * Test case to verify that the source code matches the original source code when converted from source code -> AST -> source code using Extra (e.g., whitespace) information.
+     */
     @Test
     fun testParseAndWriteWithExtras() {
         // In order to test, we parse the test code (failing and validating errors if present),
