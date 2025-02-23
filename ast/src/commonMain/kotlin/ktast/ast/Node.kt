@@ -640,7 +640,7 @@ sealed interface Node {
         data class ScriptInitializer(
             val body: Statement,
             override val supplement: NodeSupplement = NodeSupplement(),
-        ) : Declaration, Statement
+        ) : Declaration
     }
 
     /**
