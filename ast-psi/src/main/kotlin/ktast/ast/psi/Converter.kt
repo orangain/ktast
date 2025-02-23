@@ -29,7 +29,7 @@ open class Converter {
         declarations = v.declarations.map(::convertDeclaration)
     ).map(v)
 
-    protected fun convertKotlinScript(v: KtScript) = Node.Declaration.KotlinScript(
+    protected fun convertScriptBody(v: KtScript) = Node.Declaration.ScriptBody(
         declarations = v.declarations.map(::convertDeclaration),
     ).map(v)
 
@@ -102,7 +102,7 @@ open class Converter {
         is KtTypeAlias -> convertTypeAliasDeclaration(v)
         is KtSecondaryConstructor -> convertSecondaryConstructor(v)
         is KtScriptInitializer -> convertScriptInitializer(v)
-        is KtScript -> convertKotlinScript(v)
+        is KtScript -> convertScriptBody(v)
         else -> error("Unrecognized declaration type for $v")
     }
 

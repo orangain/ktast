@@ -109,7 +109,7 @@ open class Writer(
                     children(declarations)
                     writeExtrasWithin()
                 }
-                is Node.Declaration.KotlinScript -> {
+                is Node.Declaration.ScriptBody -> {
                     children(declarations)
                     writeExtrasWithin()
                 }

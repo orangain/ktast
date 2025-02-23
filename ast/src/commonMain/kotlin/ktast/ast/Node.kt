@@ -623,9 +623,11 @@ sealed interface Node {
         ) : Declaration, WithModifiers, WithTypeParameters
 
         /**
-         * @property declarations contents of the script.
+         * AST node that represents a body of Kotlin script. The node corresponds to KtScript and its child KtBlockExpression.
+         *
+         * @property declarations contents of the script body.
          */
-        data class KotlinScript(
+        data class ScriptBody(
             override val declarations: List<Declaration>,
             override val supplement: NodeSupplement = NodeSupplement(),
         ) : Declaration, WithDeclarations
