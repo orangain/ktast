@@ -145,18 +145,12 @@ sealed interface Node {
     ) : Node, KotlinEntry, WithDeclarations
 
     /**
-     * @property annotationSets list of annotation sets.
-     * @property packageDirective package directive if exists, otherwise `null`.
-     * @property importDirectives list of import directives.
-     * @property expressions list of expressions.
+     * @property statements contents of the script.
      */
     data class KotlinScript(
-        override val annotationSets: List<Modifier.AnnotationSet>,
-        override val packageDirective: PackageDirective?,
-        override val importDirectives: List<ImportDirective>,
-        val expressions: List<Expression>,
+        override val statements: List<Statement>,
         override val supplement: NodeSupplement = NodeSupplement(),
-    ) : Node, KotlinEntry
+    ) : Node, Declaration, WithStatements
 
     /**
      * AST node that represents a package directive. The node corresponds to KtPackageDirective.
@@ -635,6 +629,16 @@ sealed interface Node {
             val type: Type,
             override val supplement: NodeSupplement = NodeSupplement(),
         ) : Declaration, WithModifiers, WithTypeParameters
+
+        /**
+         * AST node that represents script contents. The node corresponds to KtScriptInitializer.
+         *
+         * @property body contents of the initializer.
+         */
+        data class ScriptInitializer(
+            val body: Statement,
+            override val supplement: NodeSupplement = NodeSupplement(),
+        ) : Declaration, Statement
     }
 
     /**

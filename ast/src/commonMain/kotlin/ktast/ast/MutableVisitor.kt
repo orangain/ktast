@@ -64,10 +64,7 @@ open class MutableVisitor {
                         declarations = visitChildren(declarations, newCh)
                     )
                     is Node.KotlinScript -> copy(
-                        annotationSets = visitChildren(annotationSets, newCh),
-                        packageDirective = visitChildren(packageDirective, newCh),
-                        importDirectives = visitChildren(importDirectives, newCh),
-                        expressions = visitChildren(expressions, newCh)
+                        statements = visitChildren(statements, newCh)
                     )
                     is Node.PackageDirective -> copy(
                         names = visitChildren(names, newCh),
@@ -210,6 +207,9 @@ open class MutableVisitor {
                         typeParameters = visitChildren(typeParameters, newCh),
                         rAngle = visitChildren(rAngle, newCh),
                         type = visitChildren(type, newCh)
+                    )
+                    is Node.Declaration.ScriptInitializer -> copy(
+                        body = visitChildren(body, newCh),
                     )
                     is Node.Type.ParenthesizedType -> copy(
                         modifiers = visitChildren(modifiers, newCh),

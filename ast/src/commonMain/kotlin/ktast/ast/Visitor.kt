@@ -41,10 +41,7 @@ open class Visitor {
                     visitChildren(declarations)
                 }
                 is Node.KotlinScript -> {
-                    visitChildren(annotationSets)
-                    visitChildren(packageDirective)
-                    visitChildren(importDirectives)
-                    visitChildren(expressions)
+                    visitChildren(statements)
                 }
                 is Node.PackageDirective -> {
                     visitChildren(names)
@@ -188,6 +185,9 @@ open class Visitor {
                     visitChildren(typeParameters)
                     visitChildren(rAngle)
                     visitChildren(type)
+                }
+                is Node.Declaration.ScriptInitializer -> {
+                    visitChildren(body)
                 }
                 is Node.Type.ParenthesizedType -> {
                     visitChildren(modifiers)

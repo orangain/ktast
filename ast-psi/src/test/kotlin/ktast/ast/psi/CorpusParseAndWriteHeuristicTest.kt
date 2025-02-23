@@ -7,6 +7,7 @@ import org.junit.Assume
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
+import kotlin.io.path.name
 import kotlin.test.assertEquals
 
 @RunWith(Parameterized::class)
@@ -17,18 +18,21 @@ class CorpusParseAndWriteHeuristicTest(private val unit: Corpus.Unit) {
         // In order to test, we parse the test code (failing and validating errors if present),
         // convert to our AST, write out our AST, re-parse what we wrote, re-convert, and compare
         try {
-            if (unit is Corpus.Unit.FromFile) {
+            val path = if (unit is Corpus.Unit.FromFile) {
                 println("Loading ${unit.fullPath}")
+                unit.fullPath.name
+            } else {
+                "test.kt"
             }
             val origCode = StringUtilRt.convertLineSeparators(unit.read())
             println("----ORIG CODE----\n$origCode\n------------")
-            val origFile = Parser(Converter()).parseFile(origCode)
+            val origFile = Parser(Converter()).parseFile(origCode, path)
             val origDump = Dumper.dump(origFile)
             println("----ORIG AST----\n$origDump\n------------")
 
             val newCode = Writer.write(origFile)
             println("----NEW CODE----\n$newCode\n-----------")
-            val newFile = Parser(Converter()).parseFile(newCode)
+            val newFile = Parser(Converter()).parseFile(newCode, path)
             val newDump = Dumper.dump(newFile)
 
 //            assertEquals(origCode, newCode)
