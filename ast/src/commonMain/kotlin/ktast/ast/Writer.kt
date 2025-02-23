@@ -109,10 +109,6 @@ open class Writer(
                     children(declarations)
                     writeExtrasWithin()
                 }
-                is Node.Declaration.ScriptBody -> {
-                    children(declarations)
-                    writeExtrasWithin()
-                }
                 is Node.PackageDirective -> {
                     append("package")
                     children(names, ".")
@@ -257,6 +253,10 @@ open class Writer(
                     commaSeparatedChildren(lAngle, typeParameters, rAngle)
                     append("=")
                     children(type)
+                }
+                is Node.Declaration.ScriptBody -> {
+                    children(declarations)
+                    writeExtrasWithin()
                 }
                 is Node.Declaration.ScriptInitializer -> {
                     children(body)
