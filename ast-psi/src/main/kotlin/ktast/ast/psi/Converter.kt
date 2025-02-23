@@ -30,7 +30,7 @@ open class Converter {
     ).map(v)
 
     protected fun convertKotlinScript(v: KtScript) = Node.KotlinScript(
-        statements = v.blockExpression.statements.map(::convertStatement),
+        declarations = v.declarations.map(::convertDeclaration),
     ).map(v)
 
     protected fun convertPackageDirective(v: KtPackageDirective): Node.PackageDirective {
