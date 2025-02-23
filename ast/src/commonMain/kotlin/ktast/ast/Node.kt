@@ -118,17 +118,6 @@ sealed interface Node {
     }
 
     /**
-     * Common interface for AST nodes that can be root node.
-     *
-     * @property packageDirective package directive if exists, otherwise `null`.
-     * @property importDirectives list of import directives.
-     */
-    sealed interface KotlinEntry : Node, WithAnnotationSets {
-        val packageDirective: PackageDirective?
-        val importDirectives: List<ImportDirective>
-    }
-
-    /**
      * AST node that represents whole Kotlin file. The node corresponds to KtFile.
      *
      * @property annotationSets list of annotation sets.
@@ -137,12 +126,12 @@ sealed interface Node {
      * @property declarations list of declarations.
      */
     data class KotlinFile(
-        override val annotationSets: List<Modifier.AnnotationSet>,
-        override val packageDirective: PackageDirective?,
-        override val importDirectives: List<ImportDirective>,
+        val annotationSets: List<Modifier.AnnotationSet>,
+        val packageDirective: PackageDirective?,
+        val importDirectives: List<ImportDirective>,
         override val declarations: List<Declaration>,
         override val supplement: NodeSupplement = NodeSupplement(),
-    ) : Node, KotlinEntry, WithDeclarations
+    ) : Node, WithDeclarations
 
     /**
      * AST node that represents a package directive. The node corresponds to KtPackageDirective.

@@ -40,7 +40,7 @@ open class ConverterWithExtras : Converter() {
         }
     }
 
-    protected open fun fillWholeExtras(rootNode: Node.KotlinEntry, rootElement: PsiElement) {
+    protected open fun fillWholeExtras(rootNode: Node.KotlinFile, rootElement: PsiElement) {
         val extraElementsSinceLastNode = mutableListOf<PsiElement>()
 
         val visitor = object : PsiElementAndNodeVisitor({ psiIdentitiesToNodes[System.identityHashCode(it)] }) {
