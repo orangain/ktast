@@ -1,4 +1,4 @@
-package ktast.ast.psi
+package ktast.builder
 
 import ktast.ast.Node
 import ktast.ast.NodeSupplement
