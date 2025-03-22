@@ -3,6 +3,5 @@ $dokka.linkExtension:html
 
 module:ast
 ktast.ast
-ktast.builder
 module:ast-psi
 ktast.ast.psi
