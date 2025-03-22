@@ -1,0 +1,1462 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>Keyword</title>
+<link href="../../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../../styles/style.css" rel="Stylesheet">
+<link href="../../../../styles/main.css" rel="Stylesheet">
+<link href="../../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<link href="../../../../ui-kit/ui-kit.min.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../../ui-kit/ui-kit.min.js" defer></script>
+<script type="text/javascript" src="../../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+    <div class="root">
+    <nav class="navigation theme-dark" id="navigation-wrapper">
+<a class="library-name--link" href="../../../../index.html">
+                    ktast
+            </a>        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle" type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">0.10.0
+        </div>
+        <div class="navigation-controls">
+        <div class="filter-section filter-section_loading" id="filter-section">
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":ast:dokkaHtmlPartial/commonMain">common</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox">
+                    <div class="dropdown--header"><span>Platform filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close platform filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":ast:dokkaHtmlPartial/commonMain" data-filter=":ast:dokkaHtmlPartial/commonMain">
+                                <span class="checkbox--icon"></span>
+                                common
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </div>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button" type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
+        </div>
+    </nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                    <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox">
+                        <div class="dropdown--header">
+                            <span>
+                                    ktast
+                            </span>
+                            <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                                <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                            </button>
+                        </div>
+                        <div class="sidebar--inner" id="sideMenu"></div>
+                    </ul>
+                    <div class="dropdown--overlay"></div>
+                </div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="ast::ktast.ast/Node.Keyword///PointingToDeclaration//-1242834013">
+  <div class="breadcrumbs"><a href="../../../index.html">ast</a><span class="delimiter">/</span><a href="../../index.html">ktast.ast</a><span class="delimiter">/</span><a href="../index.html">Node</a><span class="delimiter">/</span><span class="current">Keyword</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Keyword</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">interface </span><a href="index.html">Keyword</a> : <a href="../-simple-text-node/index.html">Node.SimpleTextNode</a></div><p class="paragraph">Common interface for keywords.</p><h4 class="">Inheritors</h4><div class="table"><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-declaration/-class-or-object/-class-declaration-keyword/index.html">ClassDeclarationKeyword</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-expression/-when-expression/-when-condition-operator/index.html">WhenConditionOperator</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-expression/-unary-expression/-unary-operator/index.html">UnaryOperator</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-expression/-binary-type-expression/-binary-type-operator/index.html">BinaryTypeOperator</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-modifier/-annotation-set/-annotation-target/index.html">AnnotationTarget</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-modifier/-keyword-modifier/index.html">KeywordModifier</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-val-or-var-keyword/index.html">ValOrVarKeyword</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-class/index.html">Class</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-interface/index.html">Interface</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-object/index.html">Object</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-constructor/index.html">Constructor</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-val/index.html">Val</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-var/index.html">Var</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-when/index.html">When</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-field/index.html">Field</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-file/index.html">File</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-property/index.html">Property</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-get/index.html">Get</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-set/index.html">Set</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-receiver/index.html">Receiver</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-param/index.html">Param</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-set-param/index.html">SetParam</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-delegate/index.html">Delegate</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-l-par/index.html">LPar</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-r-par/index.html">RPar</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-l-bracket/index.html">LBracket</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-r-bracket/index.html">RBracket</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-arrow/index.html">Arrow</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-asterisk/index.html">Asterisk</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-slash/index.html">Slash</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-percent/index.html">Percent</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-plus/index.html">Plus</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-minus/index.html">Minus</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-in/index.html">In</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-not-in/index.html">NotIn</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-less/index.html">Less</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-less-equal/index.html">LessEqual</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-greater/index.html">Greater</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-greater-equal/index.html">GreaterEqual</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-equal-equal/index.html">EqualEqual</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-not-equal/index.html">NotEqual</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-asterisk-equal/index.html">AsteriskEqual</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-slash-equal/index.html">SlashEqual</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-percent-equal/index.html">PercentEqual</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-plus-equal/index.html">PlusEqual</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-minus-equal/index.html">MinusEqual</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-or-or/index.html">OrOr</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-and-and/index.html">AndAnd</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-question-colon/index.html">QuestionColon</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-dot-dot/index.html">DotDot</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-dot-dot-less/index.html">DotDotLess</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-dot/index.html">Dot</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-question-dot/index.html">QuestionDot</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-question/index.html">Question</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-plus-plus/index.html">PlusPlus</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-minus-minus/index.html">MinusMinus</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-not/index.html">Not</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-not-not/index.html">NotNot</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-as/index.html">As</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-as-question/index.html">AsQuestion</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-is/index.html">Is</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-not-is/index.html">NotIs</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-abstract/index.html">Abstract</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-final/index.html">Final</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-open/index.html">Open</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-annotation/index.html">Annotation</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-sealed/index.html">Sealed</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-data/index.html">Data</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-override/index.html">Override</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-late-init/index.html">LateInit</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-inner/index.html">Inner</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-enum/index.html">Enum</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-companion/index.html">Companion</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-value/index.html">Value</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-private/index.html">Private</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-protected/index.html">Protected</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-public/index.html">Public</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-internal/index.html">Internal</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-out/index.html">Out</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-noinline/index.html">Noinline</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-cross-inline/index.html">CrossInline</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-vararg/index.html">Vararg</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-reified/index.html">Reified</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-tail-rec/index.html">TailRec</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-operator/index.html">Operator</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-infix/index.html">Infix</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-inline/index.html">Inline</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-external/index.html">External</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-suspend/index.html">Suspend</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-const/index.html">Const</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-fun/index.html">Fun</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-actual/index.html">Actual</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-expect/index.html">Expect</a></div></span></div><div></div></div></div></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="-182265024%2FClasslikes%2F-1242834013" anchor-label="Abstract" id="-182265024%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-abstract/index.html"><span><span>Abstract</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-182265024%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-abstract/index.html">Abstract</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-keyword-modifier/index.html">Node.Modifier.KeywordModifier</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="229530516%2FClasslikes%2F-1242834013" anchor-label="Actual" id="229530516%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-actual/index.html"><span><span>Actual</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="229530516%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-actual/index.html">Actual</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-keyword-modifier/index.html">Node.Modifier.KeywordModifier</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1878602978%2FClasslikes%2F-1242834013" anchor-label="AndAnd" id="1878602978%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-and-and/index.html"><span>And</span><wbr><span><span>And</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1878602978%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-and-and/index.html">AndAnd</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-expression/-binary-expression/-binary-operator/index.html">Node.Expression.BinaryExpression.BinaryOperator</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-48791405%2FClasslikes%2F-1242834013" anchor-label="Annotation" id="-48791405%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-annotation/index.html"><span><span>Annotation</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-48791405%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-annotation/index.html">Annotation</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-keyword-modifier/index.html">Node.Modifier.KeywordModifier</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2061422345%2FClasslikes%2F-1242834013" anchor-label="Arrow" id="-2061422345%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-arrow/index.html"><span><span>Arrow</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2061422345%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-arrow/index.html">Arrow</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="213694960%2FClasslikes%2F-1242834013" anchor-label="As" id="213694960%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-as/index.html"><span><span>As</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="213694960%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-as/index.html">As</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-expression/-binary-type-expression/-binary-type-operator/index.html">Node.Expression.BinaryTypeExpression.BinaryTypeOperator</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-253239894%2FClasslikes%2F-1242834013" anchor-label="AsQuestion" id="-253239894%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-as-question/index.html"><span>As</span><wbr><span><span>Question</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-253239894%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-as-question/index.html">AsQuestion</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-expression/-binary-type-expression/-binary-type-operator/index.html">Node.Expression.BinaryTypeExpression.BinaryTypeOperator</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="370617840%2FClasslikes%2F-1242834013" anchor-label="Asterisk" id="370617840%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-asterisk/index.html"><span><span>Asterisk</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="370617840%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-asterisk/index.html">Asterisk</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-expression/-binary-expression/-binary-operator/index.html">Node.Expression.BinaryExpression.BinaryOperator</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="718693694%2FClasslikes%2F-1242834013" anchor-label="AsteriskEqual" id="718693694%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-asterisk-equal/index.html"><span>Asterisk</span><wbr><span><span>Equal</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="718693694%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-asterisk-equal/index.html">AsteriskEqual</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-expression/-binary-expression/-binary-operator/index.html">Node.Expression.BinaryExpression.BinaryOperator</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1855497832%2FClasslikes%2F-1242834013" anchor-label="Class" id="1855497832%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-class/index.html"><span><span>Class</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1855497832%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-class/index.html">Class</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-declaration/-class-declaration/-class-or-interface-keyword/index.html">Node.Declaration.ClassDeclaration.ClassOrInterfaceKeyword</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1904497708%2FClasslikes%2F-1242834013" anchor-label="Companion" id="-1904497708%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-companion/index.html"><span><span>Companion</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1904497708%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-companion/index.html">Companion</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-keyword-modifier/index.html">Node.Modifier.KeywordModifier</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="654247645%2FClasslikes%2F-1242834013" anchor-label="Const" id="654247645%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-const/index.html"><span><span>Const</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="654247645%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-const/index.html">Const</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-keyword-modifier/index.html">Node.Modifier.KeywordModifier</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1065905894%2FClasslikes%2F-1242834013" anchor-label="Constructor" id="1065905894%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-constructor/index.html"><span><span>Constructor</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1065905894%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-constructor/index.html">Constructor</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1803887417%2FClasslikes%2F-1242834013" anchor-label="CrossInline" id="-1803887417%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-cross-inline/index.html"><span>Cross</span><wbr><span><span>Inline</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1803887417%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-cross-inline/index.html">CrossInline</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-keyword-modifier/index.html">Node.Modifier.KeywordModifier</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-620493512%2FClasslikes%2F-1242834013" anchor-label="Data" id="-620493512%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-data/index.html"><span><span>Data</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-620493512%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-data/index.html">Data</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-keyword-modifier/index.html">Node.Modifier.KeywordModifier</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1459008317%2FClasslikes%2F-1242834013" anchor-label="Delegate" id="1459008317%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-delegate/index.html"><span><span>Delegate</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1459008317%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-delegate/index.html">Delegate</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-annotation-set/-annotation-target/index.html">Node.Modifier.AnnotationSet.AnnotationTarget</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1963779959%2FClasslikes%2F-1242834013" anchor-label="Dot" id="1963779959%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-dot/index.html"><span><span>Dot</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1963779959%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-dot/index.html">Dot</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-expression/-binary-expression/-binary-operator/index.html">Node.Expression.BinaryExpression.BinaryOperator</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1840765474%2FClasslikes%2F-1242834013" anchor-label="DotDot" id="1840765474%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-dot-dot/index.html"><span>Dot</span><wbr><span><span>Dot</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1840765474%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-dot-dot/index.html">DotDot</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-expression/-binary-expression/-binary-operator/index.html">Node.Expression.BinaryExpression.BinaryOperator</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-591587831%2FClasslikes%2F-1242834013" anchor-label="DotDotLess" id="-591587831%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-dot-dot-less/index.html"><span>Dot</span><wbr><span>Dot</span><wbr><span><span>Less</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-591587831%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-dot-dot-less/index.html">DotDotLess</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-expression/-binary-expression/-binary-operator/index.html">Node.Expression.BinaryExpression.BinaryOperator</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1905115199%2FClasslikes%2F-1242834013" anchor-label="Enum" id="-1905115199%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-enum/index.html"><span><span>Enum</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1905115199%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-enum/index.html">Enum</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-keyword-modifier/index.html">Node.Modifier.KeywordModifier</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1001292930%2FClasslikes%2F-1242834013" anchor-label="EqualEqual" id="1001292930%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-equal-equal/index.html"><span>Equal</span><wbr><span><span>Equal</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1001292930%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-equal-equal/index.html">EqualEqual</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-expression/-binary-expression/-binary-operator/index.html">Node.Expression.BinaryExpression.BinaryOperator</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1050166057%2FClasslikes%2F-1242834013" anchor-label="Expect" id="1050166057%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-expect/index.html"><span><span>Expect</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1050166057%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-expect/index.html">Expect</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-keyword-modifier/index.html">Node.Modifier.KeywordModifier</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1688381367%2FClasslikes%2F-1242834013" anchor-label="External" id="1688381367%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-external/index.html"><span><span>External</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1688381367%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-external/index.html">External</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-keyword-modifier/index.html">Node.Modifier.KeywordModifier</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="184534310%2FClasslikes%2F-1242834013" anchor-label="Field" id="184534310%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-field/index.html"><span><span>Field</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="184534310%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-field/index.html">Field</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-annotation-set/-annotation-target/index.html">Node.Modifier.AnnotationSet.AnnotationTarget</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-251080794%2FClasslikes%2F-1242834013" anchor-label="File" id="-251080794%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-file/index.html"><span><span>File</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-251080794%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-file/index.html">File</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-annotation-set/-annotation-target/index.html">Node.Modifier.AnnotationSet.AnnotationTarget</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="447211562%2FClasslikes%2F-1242834013" anchor-label="Final" id="447211562%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-final/index.html"><span><span>Final</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="447211562%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-final/index.html">Final</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-keyword-modifier/index.html">Node.Modifier.KeywordModifier</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1552062463%2FClasslikes%2F-1242834013" anchor-label="Fun" id="-1552062463%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-fun/index.html"><span><span>Fun</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1552062463%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-fun/index.html">Fun</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-keyword-modifier/index.html">Node.Modifier.KeywordModifier</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="173364746%2FClasslikes%2F-1242834013" anchor-label="Get" id="173364746%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-get/index.html"><span><span>Get</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="173364746%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-get/index.html">Get</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-annotation-set/-annotation-target/index.html">Node.Modifier.AnnotationSet.AnnotationTarget</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="371419750%2FClasslikes%2F-1242834013" anchor-label="Greater" id="371419750%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-greater/index.html"><span><span>Greater</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="371419750%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-greater/index.html">Greater</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-expression/-binary-expression/-binary-operator/index.html">Node.Expression.BinaryExpression.BinaryOperator</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2120974984%2FClasslikes%2F-1242834013" anchor-label="GreaterEqual" id="2120974984%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-greater-equal/index.html"><span>Greater</span><wbr><span><span>Equal</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2120974984%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-greater-equal/index.html">GreaterEqual</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-expression/-binary-expression/-binary-operator/index.html">Node.Expression.BinaryExpression.BinaryOperator</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-838426531%2FClasslikes%2F-1242834013" anchor-label="In" id="-838426531%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-in/index.html"><span><span>In</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-838426531%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-in/index.html">In</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-expression/-binary-expression/-binary-operator/index.html">Node.Expression.BinaryExpression.BinaryOperator</a>, <a href="../-modifier/-keyword-modifier/index.html">Node.Modifier.KeywordModifier</a>, <a href="../-expression/-when-expression/-when-condition-range-operator/index.html">Node.Expression.WhenExpression.WhenConditionRangeOperator</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1164808720%2FClasslikes%2F-1242834013" anchor-label="Infix" id="1164808720%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-infix/index.html"><span><span>Infix</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1164808720%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-infix/index.html">Infix</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-keyword-modifier/index.html">Node.Modifier.KeywordModifier</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="71374057%2FClasslikes%2F-1242834013" anchor-label="Inline" id="71374057%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-inline/index.html"><span><span>Inline</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="71374057%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-inline/index.html">Inline</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-keyword-modifier/index.html">Node.Modifier.KeywordModifier</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-610691254%2FClasslikes%2F-1242834013" anchor-label="Inner" id="-610691254%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-inner/index.html"><span><span>Inner</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-610691254%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-inner/index.html">Inner</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-keyword-modifier/index.html">Node.Modifier.KeywordModifier</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-860684729%2FClasslikes%2F-1242834013" anchor-label="Interface" id="-860684729%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-interface/index.html"><span><span>Interface</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-860684729%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-interface/index.html">Interface</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-declaration/-class-declaration/-class-or-interface-keyword/index.html">Node.Declaration.ClassDeclaration.ClassOrInterfaceKeyword</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="169810181%2FClasslikes%2F-1242834013" anchor-label="Internal" id="169810181%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-internal/index.html"><span><span>Internal</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="169810181%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-internal/index.html">Internal</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-keyword-modifier/index.html">Node.Modifier.KeywordModifier</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-683327496%2FClasslikes%2F-1242834013" anchor-label="Is" id="-683327496%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-is/index.html"><span><span>Is</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-683327496%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-is/index.html">Is</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-expression/-binary-type-expression/-binary-type-operator/index.html">Node.Expression.BinaryTypeExpression.BinaryTypeOperator</a>, <a href="../-expression/-when-expression/-when-condition-type-operator/index.html">Node.Expression.WhenExpression.WhenConditionTypeOperator</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-725969652%2FClasslikes%2F-1242834013" anchor-label="LateInit" id="-725969652%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-late-init/index.html"><span>Late</span><wbr><span><span>Init</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-725969652%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-late-init/index.html">LateInit</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-keyword-modifier/index.html">Node.Modifier.KeywordModifier</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1530628602%2FClasslikes%2F-1242834013" anchor-label="LBracket" id="-1530628602%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-l-bracket/index.html"><span><span>LBracket</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1530628602%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-l-bracket/index.html">LBracket</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-792850903%2FClasslikes%2F-1242834013" anchor-label="Less" id="-792850903%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-less/index.html"><span><span>Less</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-792850903%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-less/index.html">Less</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-expression/-binary-expression/-binary-operator/index.html">Node.Expression.BinaryExpression.BinaryOperator</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-960511835%2FClasslikes%2F-1242834013" anchor-label="LessEqual" id="-960511835%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-less-equal/index.html"><span>Less</span><wbr><span><span>Equal</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-960511835%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-less-equal/index.html">LessEqual</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-expression/-binary-expression/-binary-operator/index.html">Node.Expression.BinaryExpression.BinaryOperator</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="101446317%2FClasslikes%2F-1242834013" anchor-label="LPar" id="101446317%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-l-par/index.html"><span><span>LPar</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="101446317%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-l-par/index.html">LPar</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1498993040%2FClasslikes%2F-1242834013" anchor-label="Minus" id="-1498993040%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-minus/index.html"><span><span>Minus</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1498993040%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-minus/index.html">Minus</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-expression/-binary-expression/-binary-operator/index.html">Node.Expression.BinaryExpression.BinaryOperator</a>, <a href="../-expression/-unary-expression/-unary-operator/index.html">Node.Expression.UnaryExpression.UnaryOperator</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1320334526%2FClasslikes%2F-1242834013" anchor-label="MinusEqual" id="1320334526%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-minus-equal/index.html"><span>Minus</span><wbr><span><span>Equal</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1320334526%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-minus-equal/index.html">MinusEqual</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-expression/-binary-expression/-binary-operator/index.html">Node.Expression.BinaryExpression.BinaryOperator</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-81244414%2FClasslikes%2F-1242834013" anchor-label="MinusMinus" id="-81244414%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-minus-minus/index.html"><span>Minus</span><wbr><span><span>Minus</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-81244414%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-minus-minus/index.html">MinusMinus</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-expression/-unary-expression/-unary-operator/index.html">Node.Expression.UnaryExpression.UnaryOperator</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1473218248%2FClasslikes%2F-1242834013" anchor-label="Noinline" id="1473218248%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-noinline/index.html"><span><span>Noinline</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1473218248%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-noinline/index.html">Noinline</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-keyword-modifier/index.html">Node.Modifier.KeywordModifier</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-583585491%2FClasslikes%2F-1242834013" anchor-label="Not" id="-583585491%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-not/index.html"><span><span>Not</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-583585491%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-not/index.html">Not</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-expression/-unary-expression/-unary-operator/index.html">Node.Expression.UnaryExpression.UnaryOperator</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1582817313%2FClasslikes%2F-1242834013" anchor-label="NotEqual" id="1582817313%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-not-equal/index.html"><span>Not</span><wbr><span><span>Equal</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1582817313%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-not-equal/index.html">NotEqual</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-expression/-binary-expression/-binary-operator/index.html">Node.Expression.BinaryExpression.BinaryOperator</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1626071176%2FClasslikes%2F-1242834013" anchor-label="NotIn" id="1626071176%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-not-in/index.html"><span>Not</span><wbr><span><span>In</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1626071176%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-not-in/index.html">NotIn</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-expression/-binary-expression/-binary-operator/index.html">Node.Expression.BinaryExpression.BinaryOperator</a>, <a href="../-expression/-when-expression/-when-condition-range-operator/index.html">Node.Expression.WhenExpression.WhenConditionRangeOperator</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1781170211%2FClasslikes%2F-1242834013" anchor-label="NotIs" id="1781170211%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-not-is/index.html"><span>Not</span><wbr><span><span>Is</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1781170211%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-not-is/index.html">NotIs</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-expression/-binary-type-expression/-binary-type-operator/index.html">Node.Expression.BinaryTypeExpression.BinaryTypeOperator</a>, <a href="../-expression/-when-expression/-when-condition-type-operator/index.html">Node.Expression.WhenExpression.WhenConditionTypeOperator</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1493567902%2FClasslikes%2F-1242834013" anchor-label="NotNot" id="-1493567902%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-not-not/index.html"><span>Not</span><wbr><span><span>Not</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1493567902%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-not-not/index.html">NotNot</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-expression/-unary-expression/-unary-operator/index.html">Node.Expression.UnaryExpression.UnaryOperator</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="150600451%2FClasslikes%2F-1242834013" anchor-label="Object" id="150600451%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-object/index.html"><span><span>Object</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="150600451%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-object/index.html">Object</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-declaration/-class-or-object/-class-declaration-keyword/index.html">Node.Declaration.ClassOrObject.ClassDeclarationKeyword</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2046526104%2FClasslikes%2F-1242834013" anchor-label="Open" id="2046526104%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-open/index.html"><span><span>Open</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2046526104%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-open/index.html">Open</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-keyword-modifier/index.html">Node.Modifier.KeywordModifier</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-254945026%2FClasslikes%2F-1242834013" anchor-label="Operator" id="-254945026%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-operator/index.html"><span><span>Operator</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-254945026%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-operator/index.html">Operator</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-keyword-modifier/index.html">Node.Modifier.KeywordModifier</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1980460348%2FClasslikes%2F-1242834013" anchor-label="OrOr" id="1980460348%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-or-or/index.html"><span>Or</span><wbr><span><span>Or</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1980460348%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-or-or/index.html">OrOr</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-expression/-binary-expression/-binary-operator/index.html">Node.Expression.BinaryExpression.BinaryOperator</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="636394770%2FClasslikes%2F-1242834013" anchor-label="Out" id="636394770%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-out/index.html"><span><span>Out</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="636394770%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-out/index.html">Out</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-keyword-modifier/index.html">Node.Modifier.KeywordModifier</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-121814314%2FClasslikes%2F-1242834013" anchor-label="Override" id="-121814314%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-override/index.html"><span><span>Override</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-121814314%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-override/index.html">Override</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-keyword-modifier/index.html">Node.Modifier.KeywordModifier</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1677399821%2FClasslikes%2F-1242834013" anchor-label="Param" id="-1677399821%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-param/index.html"><span><span>Param</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1677399821%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-param/index.html">Param</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-annotation-set/-annotation-target/index.html">Node.Modifier.AnnotationSet.AnnotationTarget</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="380947579%2FClasslikes%2F-1242834013" anchor-label="Percent" id="380947579%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-percent/index.html"><span><span>Percent</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="380947579%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-percent/index.html">Percent</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-expression/-binary-expression/-binary-operator/index.html">Node.Expression.BinaryExpression.BinaryOperator</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1891818093%2FClasslikes%2F-1242834013" anchor-label="PercentEqual" id="-1891818093%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-percent-equal/index.html"><span>Percent</span><wbr><span><span>Equal</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1891818093%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-percent-equal/index.html">PercentEqual</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-expression/-binary-expression/-binary-operator/index.html">Node.Expression.BinaryExpression.BinaryOperator</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2119628104%2FClasslikes%2F-1242834013" anchor-label="Plus" id="2119628104%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-plus/index.html"><span><span>Plus</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2119628104%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-plus/index.html">Plus</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-expression/-binary-expression/-binary-operator/index.html">Node.Expression.BinaryExpression.BinaryOperator</a>, <a href="../-expression/-unary-expression/-unary-operator/index.html">Node.Expression.UnaryExpression.UnaryOperator</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1015379174%2FClasslikes%2F-1242834013" anchor-label="PlusEqual" id="1015379174%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-plus-equal/index.html"><span>Plus</span><wbr><span><span>Equal</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1015379174%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-plus-equal/index.html">PlusEqual</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-expression/-binary-expression/-binary-operator/index.html">Node.Expression.BinaryExpression.BinaryOperator</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1308158642%2FClasslikes%2F-1242834013" anchor-label="PlusPlus" id="-1308158642%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-plus-plus/index.html"><span>Plus</span><wbr><span><span>Plus</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1308158642%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-plus-plus/index.html">PlusPlus</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-expression/-unary-expression/-unary-operator/index.html">Node.Expression.UnaryExpression.UnaryOperator</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1438036739%2FClasslikes%2F-1242834013" anchor-label="Private" id="-1438036739%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-private/index.html"><span><span>Private</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1438036739%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-private/index.html">Private</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-keyword-modifier/index.html">Node.Modifier.KeywordModifier</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1038658797%2FClasslikes%2F-1242834013" anchor-label="Property" id="1038658797%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-property/index.html"><span><span>Property</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1038658797%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-property/index.html">Property</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-annotation-set/-annotation-target/index.html">Node.Modifier.AnnotationSet.AnnotationTarget</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-868565646%2FClasslikes%2F-1242834013" anchor-label="Protected" id="-868565646%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-protected/index.html"><span><span>Protected</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-868565646%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-protected/index.html">Protected</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-keyword-modifier/index.html">Node.Modifier.KeywordModifier</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1369215207%2FClasslikes%2F-1242834013" anchor-label="Public" id="-1369215207%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-public/index.html"><span><span>Public</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1369215207%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-public/index.html">Public</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-keyword-modifier/index.html">Node.Modifier.KeywordModifier</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1185453052%2FClasslikes%2F-1242834013" anchor-label="Question" id="1185453052%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-question/index.html"><span><span>Question</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1185453052%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-question/index.html">Question</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-expression/-binary-expression/-binary-operator/index.html">Node.Expression.BinaryExpression.BinaryOperator</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="712905959%2FClasslikes%2F-1242834013" anchor-label="QuestionColon" id="712905959%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-question-colon/index.html"><span>Question</span><wbr><span><span>Colon</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="712905959%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-question-colon/index.html">QuestionColon</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-expression/-binary-expression/-binary-operator/index.html">Node.Expression.BinaryExpression.BinaryOperator</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1062657155%2FClasslikes%2F-1242834013" anchor-label="QuestionDot" id="-1062657155%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-question-dot/index.html"><span>Question</span><wbr><span><span>Dot</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1062657155%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-question-dot/index.html">QuestionDot</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-expression/-binary-expression/-binary-operator/index.html">Node.Expression.BinaryExpression.BinaryOperator</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1747788276%2FClasslikes%2F-1242834013" anchor-label="RBracket" id="-1747788276%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-r-bracket/index.html"><span><span>RBracket</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1747788276%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-r-bracket/index.html">RBracket</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1285722643%2FClasslikes%2F-1242834013" anchor-label="Receiver" id="1285722643%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-receiver/index.html"><span><span>Receiver</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1285722643%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-receiver/index.html">Receiver</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-annotation-set/-annotation-target/index.html">Node.Modifier.AnnotationSet.AnnotationTarget</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1053312488%2FClasslikes%2F-1242834013" anchor-label="Reified" id="1053312488%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-reified/index.html"><span><span>Reified</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1053312488%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-reified/index.html">Reified</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-keyword-modifier/index.html">Node.Modifier.KeywordModifier</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-34910797%2FClasslikes%2F-1242834013" anchor-label="RPar" id="-34910797%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-r-par/index.html"><span><span>RPar</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-34910797%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-r-par/index.html">RPar</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-711444090%2FClasslikes%2F-1242834013" anchor-label="Sealed" id="-711444090%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-sealed/index.html"><span><span>Sealed</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-711444090%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-sealed/index.html">Sealed</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-keyword-modifier/index.html">Node.Modifier.KeywordModifier</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1411493502%2FClasslikes%2F-1242834013" anchor-label="Set" id="1411493502%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-set/index.html"><span><span>Set</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1411493502%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-set/index.html">Set</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-annotation-set/-annotation-target/index.html">Node.Modifier.AnnotationSet.AnnotationTarget</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="595550775%2FClasslikes%2F-1242834013" anchor-label="SetParam" id="595550775%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-set-param/index.html"><span>Set</span><wbr><span><span>Param</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="595550775%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-set-param/index.html">SetParam</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-annotation-set/-annotation-target/index.html">Node.Modifier.AnnotationSet.AnnotationTarget</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1695337987%2FClasslikes%2F-1242834013" anchor-label="Slash" id="1695337987%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-slash/index.html"><span><span>Slash</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1695337987%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-slash/index.html">Slash</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-expression/-binary-expression/-binary-operator/index.html">Node.Expression.BinaryExpression.BinaryOperator</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="349231371%2FClasslikes%2F-1242834013" anchor-label="SlashEqual" id="349231371%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-slash-equal/index.html"><span>Slash</span><wbr><span><span>Equal</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="349231371%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-slash-equal/index.html">SlashEqual</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-expression/-binary-expression/-binary-operator/index.html">Node.Expression.BinaryExpression.BinaryOperator</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-101178268%2FClasslikes%2F-1242834013" anchor-label="Suspend" id="-101178268%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-suspend/index.html"><span><span>Suspend</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-101178268%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-suspend/index.html">Suspend</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-keyword-modifier/index.html">Node.Modifier.KeywordModifier</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1321468672%2FClasslikes%2F-1242834013" anchor-label="TailRec" id="1321468672%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-tail-rec/index.html"><span>Tail</span><wbr><span><span>Rec</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1321468672%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-tail-rec/index.html">TailRec</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-keyword-modifier/index.html">Node.Modifier.KeywordModifier</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="847636639%2FClasslikes%2F-1242834013" anchor-label="Val" id="847636639%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-val/index.html"><span><span>Val</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="847636639%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-val/index.html">Val</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="-val-or-var-keyword/index.html">Node.Keyword.ValOrVarKeyword</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1111405594%2FClasslikes%2F-1242834013" anchor-label="ValOrVarKeyword" id="1111405594%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-val-or-var-keyword/index.html"><span>Val</span><wbr><span>Or</span><wbr><span>Var</span><wbr><span><span>Keyword</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1111405594%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">interface </span><a href="-val-or-var-keyword/index.html">ValOrVarKeyword</a> : <a href="index.html">Node.Keyword</a></div><div class="brief "><p class="paragraph">Common interface for val or var keywords.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1723168911%2FClasslikes%2F-1242834013" anchor-label="Value" id="1723168911%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-value/index.html"><span><span>Value</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1723168911%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-value/index.html">Value</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-keyword-modifier/index.html">Node.Modifier.KeywordModifier</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1033755481%2FClasslikes%2F-1242834013" anchor-label="Var" id="1033755481%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-var/index.html"><span><span>Var</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1033755481%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-var/index.html">Var</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="-val-or-var-keyword/index.html">Node.Keyword.ValOrVarKeyword</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1704759923%2FClasslikes%2F-1242834013" anchor-label="Vararg" id="1704759923%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-vararg/index.html"><span><span>Vararg</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1704759923%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-vararg/index.html">Vararg</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a>, <a href="../-modifier/-keyword-modifier/index.html">Node.Modifier.KeywordModifier</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1039297448%2FClasslikes%2F-1242834013" anchor-label="When" id="1039297448%2FClasslikes%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-when/index.html"><span><span>When</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1039297448%2FClasslikes%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-when/index.html">When</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>supplement<span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a><span class="token operator"> = </span>NodeSupplement()</span></span><span class="token punctuation">)</span> : <a href="index.html">Node.Keyword</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="1831727097%2FProperties%2F-1242834013" anchor-label="supplement" id="1831727097%2FProperties%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../supplement.html"><span><span>supplement</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1831727097%2FProperties%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="../supplement.html">supplement</a><span class="token operator">: </span><a href="../../-node-supplement/index.html">NodeSupplement</a></div><div class="brief "><p class="paragraph">Supplemental data for the node.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="868628652%2FProperties%2F-1242834013" anchor-label="text" id="868628652%2FProperties%2F-1242834013" data-filterable-set=":ast:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":ast:dokkaHtmlPartial/commonMain" data-filterable-set=":ast:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-simple-text-node/text.html"><span><span>text</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="868628652%2FProperties%2F-1242834013"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":ast:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="../-simple-text-node/text.html">text</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div><div class="brief "><p class="paragraph">text representation of the node.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="footer">
+        <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+        <span>© 2025 Copyright</span>
+        <span class="pull-right">
+            <span>Generated by </span>
+            <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                <span>dokka</span>
+            </a>
+        </span>
+    </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
