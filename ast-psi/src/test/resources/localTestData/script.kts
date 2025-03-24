@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 import com.google.gson.Gson
 import gradlebuild.basics.capitalize
 import java.net.URI

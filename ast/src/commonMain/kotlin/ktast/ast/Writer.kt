@@ -524,7 +524,7 @@ open class Writer(
                     children(type)
                     commaSeparatedChildren(lPar, arguments, rPar)
                     val parentNode = path.parent?.node
-                    if (parentNode is Node.Modifier.AnnotationSet && parentNode.rBracket == null) {
+                    if (parentNode is Node.Modifier.AnnotationSet && parentNode.rBracket == null && parentNode.target !is Node.Keyword.File) {
                         nextHeuristicWhitespace = " " // Insert heuristic space after annotation if single form
                     }
                 }
