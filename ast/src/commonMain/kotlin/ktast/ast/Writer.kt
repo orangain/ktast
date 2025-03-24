@@ -685,7 +685,7 @@ open class Writer(
                 append(";")
             }
         }
-        if (node is Node.Declaration.PropertyDeclaration && next is Node.Declaration.ScriptInitializer) {
+        if (node is Node.Declaration.PropertyDeclaration && next is Node.Declaration.ScriptInitializer && next.startsWithGetterSetterLikeObject()) {
             // if it's method that looks like a getter or setter and comes after a property declaration, we need to properly separate them
             // see kotlin/compiler/testData/psi/script/topLevelPropertiesWithGetSet.kts
             if (!containsSemicolon(extrasSinceLastNonSymbol)) {
@@ -697,6 +697,22 @@ open class Writer(
                 append(",")
             }
         }
+    }
+
+    protected fun Node.Declaration.ScriptInitializer.startsWithGetterSetterLikeObject(): Boolean {
+        fun checkLeftMostCall(node: Node): Boolean = when (node) {
+            is Node.Expression.BinaryExpression -> checkLeftMostCall(node.lhs)
+            is Node.Expression.CallExpression -> {
+                if (node.calleeExpression is Node.Expression.NameExpression) {
+                    node.calleeExpression.text == "get" || node.calleeExpression.text == "set"
+                } else {
+                    checkLeftMostCall(node.calleeExpression)
+                }
+            }
+
+            else -> false
+        }
+        return checkLeftMostCall(this.body)
     }
 
     protected fun containsNewlineOrSemicolon(extras: List<Node.Extra>): Boolean {
