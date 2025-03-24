@@ -1662,6 +1662,11 @@ sealed interface Node {
             override val text = "when"
         }
 
+        data class All(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
+            Modifier.AnnotationSet.AnnotationTarget {
+            override val text = "all"
+        }
+
         data class Field(override val supplement: NodeSupplement = NodeSupplement()) : Keyword,
             Modifier.AnnotationSet.AnnotationTarget {
             override val text = "field"
