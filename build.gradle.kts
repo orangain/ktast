@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("multiplatform") version "2.1.10" // Kotlin plugin is required for Dokka to work properly.
-    id("com.palantir.git-version") version "3.1.0"
+    id("com.palantir.git-version") version "3.3.0"
     id("org.jetbrains.dokka") version "2.0.0"
 }
 
