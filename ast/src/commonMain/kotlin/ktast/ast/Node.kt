@@ -1203,10 +1203,12 @@ sealed interface Node {
         /**
          * AST node that represents a string literal expression. The node corresponds to KtStringTemplateExpression.
          *
+         * @property interpolationPrefix prefix of the string literal, e.g. "$" or "$$". This is null if the string does not have an interpolation prefix.
          * @property entries list of string entries.
          * @property raw `true` if this is raw string surrounded by `"""`, `false` if this is regular string surrounded by `"`.
          */
         data class StringLiteralExpression(
+            val interpolationPrefix: String?,
             val entries: List<StringEntry>,
             val raw: Boolean,
             override val supplement: NodeSupplement = NodeSupplement(),
@@ -1245,10 +1247,12 @@ sealed interface Node {
             /**
              * AST node that represents a template string entry with expression. The node corresponds to KtStringTemplateEntryWithExpression.
              *
+             * @property prefix prefix of the template string entry, e.g. `$` or `$$`.
              * @property expression template expression of this entry.
              * @property short `true` if this is short template string entry, e.g. `$x`, `false` if this is long template string entry, e.g. `${x}`. When this is `true`, [expression] must be [NameExpression].
              */
             data class TemplateStringEntry(
+                val prefix: String,
                 val expression: Expression,
                 val short: Boolean,
                 override val supplement: NodeSupplement = NodeSupplement(),

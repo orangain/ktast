@@ -417,6 +417,9 @@ open class Writer(
                 is Node.Expression.ParenthesizedExpression ->
                     append('(').also { children(innerExpression) }.append(')')
                 is Node.Expression.StringLiteralExpression -> {
+                    if (interpolationPrefix != null) {
+                        append(interpolationPrefix)
+                    }
                     if (raw) {
                         append("\"\"\"")
                         children(entries)
@@ -434,9 +437,9 @@ open class Writer(
                 }
                 is Node.Expression.StringLiteralExpression.TemplateStringEntry -> {
                     val (prefix, suffix) = if (short) {
-                        Pair("$", "")
+                        Pair(prefix, "")
                     } else {
-                        Pair("\${", "}")
+                        Pair("$prefix{", "}")
                     }
                     doAppend(prefix)
                     children(expression)
