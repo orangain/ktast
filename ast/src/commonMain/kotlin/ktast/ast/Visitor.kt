@@ -230,6 +230,11 @@ open class Visitor {
                     visitChildren(name)
                     visitChildren(type)
                 }
+                is Node.Type.IntersectionType -> {
+                    visitChildren(modifiers)
+                    visitChildren(leftType)
+                    visitChildren(rightType)
+                }
                 is Node.Expression.IfExpression -> {
                     visitChildren(lPar)
                     visitChildren(condition)

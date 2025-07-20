@@ -252,6 +252,11 @@ open class MutableVisitor {
                         name = visitChildren(name, newCh),
                         type = visitChildren(type, newCh),
                     )
+                    is Node.Type.IntersectionType -> copy(
+                        modifiers = visitChildren(modifiers, newCh),
+                        leftType = visitChildren(leftType, newCh),
+                        rightType = visitChildren(rightType, newCh),
+                    )
                     is Node.Expression.IfExpression -> copy(
                         lPar = visitChildren(lPar, newCh),
                         condition = visitChildren(condition, newCh),

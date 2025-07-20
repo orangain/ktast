@@ -746,6 +746,14 @@ sealed interface Node {
                 override val supplement: NodeSupplement = NodeSupplement(),
             ) : Node
         }
+
+        data class IntersectionType(
+            override val modifiers: List<Modifier>,
+            val leftType: Type,
+            val rightType: Type,
+            override val supplement: NodeSupplement = NodeSupplement(),
+        ) : Type {
+        }
     }
 
     /**

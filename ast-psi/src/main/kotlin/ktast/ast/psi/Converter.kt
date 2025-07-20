@@ -366,6 +366,7 @@ open class Converter {
             is KtUserType -> convertSimpleType(v, modifierList, typeEl)
             is KtNullableType -> convertNullableType(v, modifierList, typeEl)
             is KtDynamicType -> convertDynamicType(v, modifierList, typeEl)
+            is KtIntersectionType -> convertIntersectionType(v, modifierList, typeEl)
             else -> error("Unrecognized type of $typeEl")
         }
     }
@@ -403,6 +404,17 @@ open class Converter {
     ) =
         Node.Type.DynamicType(
             modifiers = convertModifiers(modifierList),
+        ).map(v)
+
+    protected fun convertIntersectionType(
+        v: KtElement,
+        modifierList: KtModifierList?,
+        typeEl: KtIntersectionType,
+    ) =
+        Node.Type.IntersectionType(
+            modifiers = convertModifiers(modifierList),
+            leftType = convertType(typeEl.getLeftTypeRef() ?: error("No left type for $typeEl")),
+            rightType = convertType(typeEl.getRightTypeRef() ?: error("No right type for $typeEl")),
         ).map(v)
 
     protected fun convertFunctionType(v: KtElement, modifierList: KtModifierList?, typeEl: KtFunctionType) =

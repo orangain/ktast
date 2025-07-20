@@ -301,6 +301,12 @@ open class Writer(
                     if (name != null) children(name).append(":")
                     children(type)
                 }
+                is Node.Type.IntersectionType -> {
+                    children(modifiers)
+                    children(leftType)
+                    append("&")
+                    children(rightType)
+                }
                 is Node.Expression.IfExpression -> {
                     append("if")
                     children(lPar, condition, rPar, body)
