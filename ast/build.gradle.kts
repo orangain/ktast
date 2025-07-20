@@ -13,7 +13,7 @@ kotlin {
     jvm {
         tasks.withType<KotlinCompile> {
             compilerOptions {
-                jvmTarget.set(JvmTarget.JVM_1_8)
+                jvmTarget.set(JvmTarget.JVM_11)
             }
         }
     }
@@ -21,7 +21,7 @@ kotlin {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(8))
+        languageVersion.set(JavaLanguageVersion.of(11))
     }
 }
 
