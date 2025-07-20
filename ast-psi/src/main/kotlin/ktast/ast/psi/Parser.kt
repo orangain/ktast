@@ -18,11 +18,14 @@ import org.jetbrains.kotlin.psi.psiUtil.collectDescendantsOfType
  * Parses Kotlin source codes into PSI and converts it to AST.
  */
 open class Parser(protected val converter: Converter = ConverterWithExtras()) {
-    companion object : Parser() {
+    companion object {
         init {
             // To hide annoying warning on Windows
             System.setProperty("idea.use.native.fs.for.win", "false")
         }
+
+        fun parseFile(code: String, path: String = "temp.kt", throwOnError: Boolean = true): Node.KotlinFile =
+            Parser().parseFile(code, path, throwOnError)
     }
 
     protected val proj by lazy {
