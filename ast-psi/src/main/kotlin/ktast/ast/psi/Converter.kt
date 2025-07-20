@@ -858,7 +858,7 @@ open class Converter {
         expression = convertExpression(v.getArgumentExpression() ?: error("No expression for value argument"))
     ).map(v)
 
-    protected fun convertContextReceiver(v: KtContextReceiverList) = Node.ContextReceiver(
+    protected fun convertContextReceiver(v: KtContextReceiverList) = Node.Modifier.ContextReceiver(
         lPar = convertKeyword(v.leftParenthesis),
         receiverTypes = v.contextReceivers()
             .map { convertType(it.typeReference() ?: error("No type reference for $it")) },
@@ -870,6 +870,11 @@ open class Converter {
             when (element) {
                 is KtAnnotationEntry -> convertAnnotationSet(element)
                 is KtAnnotation -> convertAnnotationSet(element)
+                is KtContextReceiverList -> if (element.contextReceivers().isNotEmpty()) {
+                    convertContextReceiver(element)
+                } else {
+                    convertContextParameter(element)
+                }
                 else -> convertKeyword<Node.Modifier.KeywordModifier>(element)
             }
         }
@@ -906,6 +911,12 @@ open class Converter {
         lPar = v.valueArgumentList?.leftParenthesis?.let(::convertKeyword),
         arguments = convertValueArguments(v.valueArgumentList),
         rPar = v.valueArgumentList?.rightParenthesis?.let(::convertKeyword),
+    ).map(v)
+
+    protected fun convertContextParameter(v: KtContextReceiverList) = Node.Modifier.ContextParameter(
+        lPar = convertKeyword(v.leftParenthesis),
+        parameters = v.contextParameters().map(::convertFunctionParameter),
+        rPar = convertKeyword(v.rightParenthesis),
     ).map(v)
 
     protected fun convertPostModifiers(v: KtElement): List<Node.PostModifier> {
