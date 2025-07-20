@@ -1581,6 +1581,20 @@ sealed interface Node {
         }
 
         /**
+         * AST node that represents a context parameter. The node corresponds to KtContextReceiverList.
+         *
+         * @property lPar left parenthesis of the parameters.
+         * @property parameters list of the parameters.
+         * @property rPar right parenthesis of the parameters.
+         */
+        data class ContextParameter(
+            val lPar: Keyword.LPar,
+            val parameters: List<FunctionParameter>,
+            val rPar: Keyword.RPar,
+            override val supplement: NodeSupplement = NodeSupplement(),
+        ) : Modifier
+
+        /**
          * Common interface for keyword modifiers.
          */
         sealed interface KeywordModifier : Modifier, Keyword

@@ -455,6 +455,11 @@ open class MutableVisitor {
                         arguments = visitChildren(arguments, newCh),
                         rPar = visitChildren(rPar, newCh),
                     )
+                    is Node.Modifier.ContextParameter -> copy(
+                        lPar = visitChildren(lPar, newCh),
+                        parameters = visitChildren(parameters, newCh),
+                        rPar = visitChildren(rPar, newCh),
+                    )
                     is Node.PostModifier.TypeConstraintSet -> copy(
                         constraints = visitChildren(constraints, newCh),
                     )

@@ -433,6 +433,11 @@ open class Visitor {
                     visitChildren(arguments)
                     visitChildren(rPar)
                 }
+                is Node.Modifier.ContextParameter -> {
+                    visitChildren(lPar)
+                    visitChildren(parameters)
+                    visitChildren(rPar)
+                }
                 is Node.PostModifier.TypeConstraintSet -> {
                     visitChildren(constraints)
                 }

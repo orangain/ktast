@@ -534,6 +534,12 @@ open class Writer(
                         nextHeuristicWhitespace = " " // Insert heuristic space after annotation if single form
                     }
                 }
+                is Node.Modifier.ContextParameter -> {
+                    append("context")
+                    children(lPar)
+                    commaSeparatedChildren(parameters)
+                    children(rPar)
+                }
                 is Node.PostModifier.TypeConstraintSet -> {
                     append("where")
                     commaSeparatedChildren(constraints)
