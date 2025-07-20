@@ -4,6 +4,7 @@ import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import kotlin.io.path.pathString
 import kotlin.streams.toList
 
 object Corpus {
@@ -13,7 +14,11 @@ object Corpus {
 
     private val fileExtensions = Regex("\\.kts?$")
 
-    val default: List<Unit> by lazy { localTestData + kotlinRepoTestData + stringTestData }
+    private val kotlinRepoPath: String by lazy {
+        System.getenv("KOTLIN_REPO") ?: error("No KOTLIN_REPO env var")
+    }
+
+    val default: List<Unit> by lazy { localTestData + kotlinRepoTestData + kotlinRepoScripts + stringTestData }
 
     private val localTestData by lazy {
         loadTestDataFromDir(File(javaClass.getResource("/localTestData").toURI()).toPath(), canSkip = false)
@@ -22,11 +27,21 @@ object Corpus {
     private val kotlinRepoTestData by lazy {
         // Recursive from $KOTLIN_REPO/compiler/testData/psi/**/*.kt and *.kts
         val dir = Paths.get(
-            System.getenv("KOTLIN_REPO") ?: error("No KOTLIN_REPO env var"),
+            kotlinRepoPath,
             "compiler/testData/psi"
         ).also { require(Files.isDirectory(it)) { "Dir not found at $it" } }
 
         loadTestDataFromDir(dir, canSkip = true)
+    }
+
+    // all gradle kts scripts used in the Kotlin repo
+    private val kotlinRepoScripts by lazy {
+        val dir = Paths.get(kotlinRepoPath)
+
+        loadTestDataFromDir(dir, canSkip = true) {
+            it.fileName.toString().endsWith("gradle.kts") &&
+                    !it.toString().contains("testProject") // test project sripts use placeholders and not valid
+        }
     }
 
     private val stringTestData by lazy {
@@ -158,8 +173,12 @@ object Corpus {
         )
     }
 
-    private fun loadTestDataFromDir(root: Path, canSkip: Boolean): List<Unit.FromFile> = Files.walk(root)
-        .filter { fileExtensions.containsMatchIn(it.fileName.toString()) }
+    private fun loadTestDataFromDir(
+        root: Path,
+        canSkip: Boolean,
+        pathFilter: (Path) -> Boolean = { fileExtensions.containsMatchIn(it.fileName.toString()) }
+    ): List<Unit.FromFile> = Files.walk(root)
+        .filter(pathFilter)
         .toList<Path>()
         .map { ktPath ->
             val relativePath = root.relativize(ktPath)

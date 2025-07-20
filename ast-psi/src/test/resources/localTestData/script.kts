@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 import com.google.gson.Gson
 import gradlebuild.basics.capitalize
 import java.net.URI
@@ -5,6 +7,8 @@ import java.net.URI
 wrapperUpdateTask("nightly", "nightly")
 wrapperUpdateTask("rc", "release-candidate")
 wrapperUpdateTask("current", "current")
+
+val someVar = "someValue"
 
 tasks.withType<Wrapper>().configureEach {
     val jvmOpts = "-Dfile.encoding=UTF-8"
