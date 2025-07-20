@@ -512,7 +512,7 @@ fun dynamicType(modifiers: List<Node.Modifier> = listOf(), supplement: NodeSuppl
  */
 fun functionType(
     modifiers: List<Node.Modifier> = listOf(),
-    contextReceiver: Node.ContextReceiver? = null,
+    contextReceiver: Node.Modifier.ContextReceiver? = null,
     receiverType: Node.Type? = null,
     lPar: Node.Keyword.LPar = Node.Keyword.LPar(),
     parameters: List<Node.Type.FunctionType.FunctionTypeParameter> = listOf(),
@@ -1052,7 +1052,7 @@ fun contextReceiver(
     receiverTypes: List<Node.Type> = listOf(),
     rPar: Node.Keyword.RPar = Node.Keyword.RPar(),
     supplement: NodeSupplement = NodeSupplement()
-) = Node.ContextReceiver(lPar = lPar, receiverTypes = receiverTypes, rPar = rPar, supplement = supplement)
+) = Node.Modifier.ContextReceiver(lPar = lPar, receiverTypes = receiverTypes, rPar = rPar, supplement = supplement)
 
 /**
  * Creates a new [Node.Modifier.AnnotationSet] instance.

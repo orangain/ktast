@@ -724,7 +724,7 @@ sealed interface Node {
          */
         data class FunctionType(
             override val modifiers: List<Modifier>,
-            val contextReceiver: ContextReceiver?,
+            val contextReceiver: Modifier.ContextReceiver?,
             val receiverType: Type?,
             val lPar: Keyword.LPar,
             val parameters: List<FunctionTypeParameter>,
@@ -1528,20 +1528,6 @@ sealed interface Node {
     ) : Node
 
     /**
-     * AST node that represents a context receiver. The node corresponds to KtContextReceiverList.
-     *
-     * @property lPar left parenthesis of the receiver types.
-     * @property receiverTypes list of receiver types.
-     * @property rPar right parenthesis of the receiver types.
-     */
-    data class ContextReceiver(
-        val lPar: Keyword.LPar,
-        val receiverTypes: List<Type>,
-        val rPar: Keyword.RPar,
-        override val supplement: NodeSupplement = NodeSupplement(),
-    ) : Node
-
-    /**
      * Common interface for modifiers.
      */
     sealed interface Modifier : Node {
@@ -1579,6 +1565,20 @@ sealed interface Node {
                 override val supplement: NodeSupplement = NodeSupplement(),
             ) : Node, WithValueArguments
         }
+
+        /**
+         * AST node that represents a context receiver. The node corresponds to KtContextReceiverList.
+         *
+         * @property lPar left parenthesis of the receiver types.
+         * @property receiverTypes list of receiver types.
+         * @property rPar right parenthesis of the receiver types.
+         */
+        data class ContextReceiver(
+            val lPar: Keyword.LPar,
+            val receiverTypes: List<Type>,
+            val rPar: Keyword.RPar,
+            override val supplement: NodeSupplement = NodeSupplement(),
+        ) : Modifier
 
         /**
          * AST node that represents a context parameter. The node corresponds to KtContextReceiverList.

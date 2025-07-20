@@ -416,7 +416,7 @@ open class Visitor {
                     visitChildren(spreadOperator)
                     visitChildren(expression)
                 }
-                is Node.ContextReceiver -> {
+                is Node.Modifier.ContextReceiver -> {
                     visitChildren(lPar)
                     visitChildren(receiverTypes)
                     visitChildren(rPar)

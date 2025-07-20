@@ -438,7 +438,7 @@ open class MutableVisitor {
                         spreadOperator = visitChildren(spreadOperator, newCh),
                         expression = visitChildren(expression, newCh)
                     )
-                    is Node.ContextReceiver -> copy(
+                    is Node.Modifier.ContextReceiver -> copy(
                         lPar = visitChildren(lPar, newCh),
                         receiverTypes = visitChildren(receiverTypes, newCh),
                         rPar = visitChildren(rPar, newCh),

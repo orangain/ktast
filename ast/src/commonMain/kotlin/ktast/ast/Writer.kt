@@ -512,7 +512,7 @@ open class Writer(
                     children(spreadOperator)
                     children(expression)
                 }
-                is Node.ContextReceiver -> {
+                is Node.Modifier.ContextReceiver -> {
                     append("context")
                     commaSeparatedChildren(lPar, receiverTypes, rPar)
                 }
