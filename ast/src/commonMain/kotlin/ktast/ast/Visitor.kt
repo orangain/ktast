@@ -230,6 +230,11 @@ open class Visitor {
                     visitChildren(name)
                     visitChildren(type)
                 }
+                is Node.Type.IntersectionType -> {
+                    visitChildren(modifiers)
+                    visitChildren(leftType)
+                    visitChildren(rightType)
+                }
                 is Node.Expression.IfExpression -> {
                     visitChildren(lPar)
                     visitChildren(condition)
@@ -411,7 +416,7 @@ open class Visitor {
                     visitChildren(spreadOperator)
                     visitChildren(expression)
                 }
-                is Node.ContextReceiver -> {
+                is Node.Modifier.ContextReceiver -> {
                     visitChildren(lPar)
                     visitChildren(receiverTypes)
                     visitChildren(rPar)
@@ -426,6 +431,11 @@ open class Visitor {
                     visitChildren(type)
                     visitChildren(lPar)
                     visitChildren(arguments)
+                    visitChildren(rPar)
+                }
+                is Node.Modifier.ContextParameter -> {
+                    visitChildren(lPar)
+                    visitChildren(parameters)
                     visitChildren(rPar)
                 }
                 is Node.PostModifier.TypeConstraintSet -> {

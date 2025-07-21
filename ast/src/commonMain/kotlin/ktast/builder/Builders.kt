@@ -512,7 +512,7 @@ fun dynamicType(modifiers: List<Node.Modifier> = listOf(), supplement: NodeSuppl
  */
 fun functionType(
     modifiers: List<Node.Modifier> = listOf(),
-    contextReceiver: Node.ContextReceiver? = null,
+    contextReceiver: Node.Modifier.ContextReceiver? = null,
     receiverType: Node.Type? = null,
     lPar: Node.Keyword.LPar = Node.Keyword.LPar(),
     parameters: List<Node.Type.FunctionType.FunctionTypeParameter> = listOf(),
@@ -826,10 +826,16 @@ fun parenthesizedExpression(innerExpression: Node.Expression, supplement: NodeSu
  * Creates a new [Node.Expression.StringLiteralExpression] instance.
  */
 fun stringLiteralExpression(
+    interpolationPrefix: String? = null,
     entries: List<Node.Expression.StringLiteralExpression.StringEntry> = listOf(),
     raw: Boolean = false,
     supplement: NodeSupplement = NodeSupplement()
-) = Node.Expression.StringLiteralExpression(entries = entries, raw = raw, supplement = supplement)
+) = Node.Expression.StringLiteralExpression(
+    interpolationPrefix = interpolationPrefix,
+    entries = entries,
+    raw = raw,
+    supplement = supplement
+)
 
 /**
  * Creates a new [Node.Expression.StringLiteralExpression.LiteralStringEntry] instance.
@@ -847,10 +853,12 @@ fun escapeStringEntry(text: String, supplement: NodeSupplement = NodeSupplement(
  * Creates a new [Node.Expression.StringLiteralExpression.TemplateStringEntry] instance.
  */
 fun templateStringEntry(
+    prefix: String = "$",
     expression: Node.Expression,
     short: Boolean = false,
     supplement: NodeSupplement = NodeSupplement()
 ) = Node.Expression.StringLiteralExpression.TemplateStringEntry(
+    prefix = prefix,
     expression = expression,
     short = short,
     supplement = supplement
@@ -1052,7 +1060,7 @@ fun contextReceiver(
     receiverTypes: List<Node.Type> = listOf(),
     rPar: Node.Keyword.RPar = Node.Keyword.RPar(),
     supplement: NodeSupplement = NodeSupplement()
-) = Node.ContextReceiver(lPar = lPar, receiverTypes = receiverTypes, rPar = rPar, supplement = supplement)
+) = Node.Modifier.ContextReceiver(lPar = lPar, receiverTypes = receiverTypes, rPar = rPar, supplement = supplement)
 
 /**
  * Creates a new [Node.Modifier.AnnotationSet] instance.

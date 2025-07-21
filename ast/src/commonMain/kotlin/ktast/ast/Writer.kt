@@ -301,6 +301,12 @@ open class Writer(
                     if (name != null) children(name).append(":")
                     children(type)
                 }
+                is Node.Type.IntersectionType -> {
+                    children(modifiers)
+                    children(leftType)
+                    append("&")
+                    children(rightType)
+                }
                 is Node.Expression.IfExpression -> {
                     append("if")
                     children(lPar, condition, rPar, body)
@@ -411,6 +417,9 @@ open class Writer(
                 is Node.Expression.ParenthesizedExpression ->
                     append('(').also { children(innerExpression) }.append(')')
                 is Node.Expression.StringLiteralExpression -> {
+                    if (interpolationPrefix != null) {
+                        append(interpolationPrefix)
+                    }
                     if (raw) {
                         append("\"\"\"")
                         children(entries)
@@ -428,9 +437,9 @@ open class Writer(
                 }
                 is Node.Expression.StringLiteralExpression.TemplateStringEntry -> {
                     val (prefix, suffix) = if (short) {
-                        Pair("$", "")
+                        Pair(prefix, "")
                     } else {
-                        Pair("\${", "}")
+                        Pair("$prefix{", "}")
                     }
                     doAppend(prefix)
                     children(expression)
@@ -506,7 +515,7 @@ open class Writer(
                     children(spreadOperator)
                     children(expression)
                 }
-                is Node.ContextReceiver -> {
+                is Node.Modifier.ContextReceiver -> {
                     append("context")
                     commaSeparatedChildren(lPar, receiverTypes, rPar)
                 }
@@ -527,6 +536,12 @@ open class Writer(
                     if (parentNode is Node.Modifier.AnnotationSet && parentNode.rBracket == null) {
                         nextHeuristicWhitespace = " " // Insert heuristic space after annotation if single form
                     }
+                }
+                is Node.Modifier.ContextParameter -> {
+                    append("context")
+                    children(lPar)
+                    commaSeparatedChildren(parameters)
+                    children(rPar)
                 }
                 is Node.PostModifier.TypeConstraintSet -> {
                     append("where")
