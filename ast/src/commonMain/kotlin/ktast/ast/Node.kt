@@ -1220,6 +1220,12 @@ sealed interface Node {
                 get() = prefix.replace(stringMultiDollarPrefixRegex, "")
 
             /**
+             * Returns `true` if this is a raw string literal, i.e. it starts and ends with triple quotes `"""`. Otherwise, returns `false`.
+             */
+            val raw: Boolean
+                get() = prefix.endsWith("\"\"\"")
+
+            /**
              * Common interface for string entries. The node corresponds to KtStringTemplateEntry.
              */
             sealed interface StringEntry : Node
