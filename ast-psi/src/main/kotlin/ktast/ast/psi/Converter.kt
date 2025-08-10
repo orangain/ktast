@@ -692,9 +692,8 @@ open class Converter {
 
     protected fun convertTemplateStringEntry(v: KtStringTemplateEntryWithExpression) =
         Node.Expression.StringLiteralExpression.TemplateStringEntry(
-            prefix = (v.allChildren.first ?: error("No prefix for $v")).text.removeSuffix("{"),
+            prefix = (v.allChildren.first ?: error("No prefix for $v")).text,
             expression = convertExpression(v.expression ?: error("No expression for $v")),
-            short = v is KtSimpleNameStringTemplateEntry,
         ).map(v)
 
     protected fun convertConstantLiteralExpression(v: KtConstantExpression): Node.Expression.ConstantLiteralExpression =

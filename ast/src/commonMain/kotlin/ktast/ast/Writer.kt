@@ -427,11 +427,6 @@ open class Writer(
                     doAppend(text)
                 }
                 is Node.Expression.StringLiteralExpression.TemplateStringEntry -> {
-                    val (prefix, suffix) = if (short) {
-                        Pair(prefix, "")
-                    } else {
-                        Pair("$prefix{", "}")
-                    }
                     doAppend(prefix)
                     children(expression)
                     doAppend(suffix)

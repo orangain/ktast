@@ -853,12 +853,10 @@ fun escapeStringEntry(text: String, supplement: NodeSupplement = NodeSupplement(
 fun templateStringEntry(
     prefix: String = "$",
     expression: Node.Expression,
-    short: Boolean = false,
     supplement: NodeSupplement = NodeSupplement()
 ) = Node.Expression.StringLiteralExpression.TemplateStringEntry(
     prefix = prefix,
     expression = expression,
-    short = short,
     supplement = supplement
 )
 

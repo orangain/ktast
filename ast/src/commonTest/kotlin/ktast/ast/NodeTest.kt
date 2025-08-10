@@ -36,3 +36,21 @@ class StringLiteralExpressionTest {
         assertEquals(true, node.raw)
     }
 }
+
+class TemplateStringEntryTest {
+    @Test
+    fun testShortExpression() {
+        val node = Node.Expression.StringLiteralExpression.TemplateStringEntry("\$", Node.Expression.NameExpression("a"))
+
+        assertEquals("", node.suffix)
+        assertEquals(true, node.short)
+    }
+
+    @Test
+    fun testLongExpression() {
+        val node = Node.Expression.StringLiteralExpression.TemplateStringEntry("\${", Node.Expression.NameExpression("a"))
+
+        assertEquals("}", node.suffix)
+        assertEquals(false, node.short)
+    }
+}

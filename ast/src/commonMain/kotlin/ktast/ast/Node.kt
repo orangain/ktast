@@ -1259,14 +1259,12 @@ sealed interface Node {
             /**
              * AST node that represents a template string entry with expression. The node corresponds to KtStringTemplateEntryWithExpression.
              *
-             * @property prefix prefix of the template string entry, e.g. `$` or `$$`.
+             * @property prefix prefix of the template string entry. Typically, it is `$` for short template strings, or `${` for long template strings. In case of multi-dollar template strings, it can be `$$`, `$${`, etc.
              * @property expression template expression of this entry.
-             * @property short `true` if this is short template string entry, e.g. `$x`, `false` if this is long template string entry, e.g. `${x}`. When this is `true`, [expression] must be [NameExpression].
              */
             data class TemplateStringEntry(
                 val prefix: String,
                 val expression: Expression,
-                val short: Boolean,
                 override val supplement: NodeSupplement = NodeSupplement(),
             ) : StringEntry {
                 init {
@@ -1274,6 +1272,18 @@ sealed interface Node {
                         "Short template string entry must be a name expression or this expression."
                     }
                 }
+
+                /**
+                 * Suffix of the template string entry, which is `}` for long template strings, or empty string for short template strings.
+                 */
+                val suffix: String
+                    get() = if (short) "" else "}"
+
+                /**
+                 * Returns `true` if this is a short template string entry, e.g. `$x`, `false` if it is a long template string entry, e.g. `${x}`.
+                 */
+                val short: Boolean
+                    get() = !prefix.endsWith("{")
             }
         }
 

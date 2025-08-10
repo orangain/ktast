@@ -97,7 +97,7 @@ class Dumper(
             node.apply {
                 when (this) {
                     is Node.Expression.StringLiteralExpression -> mapOf("prefix" to prefix)
-                    is Node.Expression.StringLiteralExpression.TemplateStringEntry -> mapOf("short" to short)
+                    is Node.Expression.StringLiteralExpression.TemplateStringEntry -> mapOf("prefix" to prefix)
                     is Node.SimpleTextNode -> mapOf("text" to text)
                     else -> null
                 }?.let { m ->
