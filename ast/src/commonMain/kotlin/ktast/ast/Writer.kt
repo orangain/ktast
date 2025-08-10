@@ -417,7 +417,7 @@ open class Writer(
                 is Node.Expression.ParenthesizedExpression ->
                     append('(').also { children(innerExpression) }.append(')')
                 is Node.Expression.StringLiteralExpression -> {
-                    if (interpolationPrefix != null) {
+                    if (interpolationPrefix.isNotEmpty()) {
                         append(interpolationPrefix)
                     }
                     if (raw) {

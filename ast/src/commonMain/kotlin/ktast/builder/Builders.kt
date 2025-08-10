@@ -826,7 +826,7 @@ fun parenthesizedExpression(innerExpression: Node.Expression, supplement: NodeSu
  * Creates a new [Node.Expression.StringLiteralExpression] instance.
  */
 fun stringLiteralExpression(
-    interpolationPrefix: String? = null,
+    interpolationPrefix: String = "",
     entries: List<Node.Expression.StringLiteralExpression.StringEntry> = listOf(),
     raw: Boolean = false,
     supplement: NodeSupplement = NodeSupplement()
