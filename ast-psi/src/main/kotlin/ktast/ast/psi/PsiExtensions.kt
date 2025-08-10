@@ -57,6 +57,8 @@ internal val KtContractEffectList.leftBracket: PsiElement
     get() = findChildByType(this, KtTokens.LBRACKET) ?: error("No left bracket for $this")
 internal val KtContractEffectList.rightBracket: PsiElement
     get() = findChildByType(this, KtTokens.RBRACKET) ?: error("No right bracket for $this")
+internal val KtStringTemplateExpression.openQuote: PsiElement
+    get() = findChildByType(this, KtTokens.OPEN_QUOTE) ?: error("No open quote for $this")
 
 private fun findChildByType(v: KtElement, type: IElementType): PsiElement? =
     v.node.findChildByType(type)?.psi

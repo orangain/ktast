@@ -15,7 +15,7 @@ jobs:
         # See: https://adoptium.net/temurin/releases/
         java: [ 11, 17, 21 ]
         # See: https://github.com/JetBrains/kotlin/releases
-        kotlin: [ v1.9.25, v2.0.21, v2.1.10 ]
+        kotlin: [ v1.9.25, v2.1.21, v2.2.0 ]
 
     steps:
       - uses: actions/checkout@v4

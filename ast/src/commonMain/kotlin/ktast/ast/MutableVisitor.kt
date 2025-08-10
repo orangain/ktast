@@ -252,6 +252,11 @@ open class MutableVisitor {
                         name = visitChildren(name, newCh),
                         type = visitChildren(type, newCh),
                     )
+                    is Node.Type.IntersectionType -> copy(
+                        modifiers = visitChildren(modifiers, newCh),
+                        leftType = visitChildren(leftType, newCh),
+                        rightType = visitChildren(rightType, newCh),
+                    )
                     is Node.Expression.IfExpression -> copy(
                         lPar = visitChildren(lPar, newCh),
                         condition = visitChildren(condition, newCh),
@@ -433,7 +438,7 @@ open class MutableVisitor {
                         spreadOperator = visitChildren(spreadOperator, newCh),
                         expression = visitChildren(expression, newCh)
                     )
-                    is Node.ContextReceiver -> copy(
+                    is Node.Modifier.ContextReceiver -> copy(
                         lPar = visitChildren(lPar, newCh),
                         receiverTypes = visitChildren(receiverTypes, newCh),
                         rPar = visitChildren(rPar, newCh),
@@ -448,6 +453,11 @@ open class MutableVisitor {
                         type = visitChildren(type, newCh),
                         lPar = visitChildren(lPar, newCh),
                         arguments = visitChildren(arguments, newCh),
+                        rPar = visitChildren(rPar, newCh),
+                    )
+                    is Node.Modifier.ContextParameter -> copy(
+                        lPar = visitChildren(lPar, newCh),
+                        parameters = visitChildren(parameters, newCh),
                         rPar = visitChildren(rPar, newCh),
                     )
                     is Node.PostModifier.TypeConstraintSet -> copy(

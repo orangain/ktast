@@ -366,6 +366,7 @@ open class Converter {
             is KtUserType -> convertSimpleType(v, modifierList, typeEl)
             is KtNullableType -> convertNullableType(v, modifierList, typeEl)
             is KtDynamicType -> convertDynamicType(v, modifierList, typeEl)
+            is KtIntersectionType -> convertIntersectionType(v, modifierList, typeEl)
             else -> error("Unrecognized type of $typeEl")
         }
     }
@@ -403,6 +404,17 @@ open class Converter {
     ) =
         Node.Type.DynamicType(
             modifiers = convertModifiers(modifierList),
+        ).map(v)
+
+    protected fun convertIntersectionType(
+        v: KtElement,
+        modifierList: KtModifierList?,
+        typeEl: KtIntersectionType,
+    ) =
+        Node.Type.IntersectionType(
+            modifiers = convertModifiers(modifierList),
+            leftType = convertType(typeEl.getLeftTypeRef() ?: error("No left type for $typeEl")),
+            rightType = convertType(typeEl.getRightTypeRef() ?: error("No right type for $typeEl")),
         ).map(v)
 
     protected fun convertFunctionType(v: KtElement, modifierList: KtModifierList?, typeEl: KtFunctionType) =
@@ -656,8 +668,8 @@ open class Converter {
 
     protected fun convertStringLiteralExpression(v: KtStringTemplateExpression) =
         Node.Expression.StringLiteralExpression(
+            prefix = (v.interpolationPrefix?.text ?: "") + v.openQuote.text,
             entries = v.entries.map(::convertStringEntry),
-            raw = v.text.startsWith("\"\"\"")
         ).map(v)
 
     protected fun convertStringEntry(v: KtStringTemplateEntry): Node.Expression.StringLiteralExpression.StringEntry =
@@ -680,8 +692,8 @@ open class Converter {
 
     protected fun convertTemplateStringEntry(v: KtStringTemplateEntryWithExpression) =
         Node.Expression.StringLiteralExpression.TemplateStringEntry(
-            expression = convertExpression(v.expression ?: error("No expr tmpl")),
-            short = v is KtSimpleNameStringTemplateEntry,
+            prefix = (v.allChildren.first ?: error("No prefix for $v")).text,
+            expression = convertExpression(v.expression ?: error("No expression for $v")),
         ).map(v)
 
     protected fun convertConstantLiteralExpression(v: KtConstantExpression): Node.Expression.ConstantLiteralExpression =
@@ -846,7 +858,7 @@ open class Converter {
         expression = convertExpression(v.getArgumentExpression() ?: error("No expression for value argument"))
     ).map(v)
 
-    protected fun convertContextReceiver(v: KtContextReceiverList) = Node.ContextReceiver(
+    protected fun convertContextReceiver(v: KtContextReceiverList) = Node.Modifier.ContextReceiver(
         lPar = convertKeyword(v.leftParenthesis),
         receiverTypes = v.contextReceivers()
             .map { convertType(it.typeReference() ?: error("No type reference for $it")) },
@@ -858,6 +870,11 @@ open class Converter {
             when (element) {
                 is KtAnnotationEntry -> convertAnnotationSet(element)
                 is KtAnnotation -> convertAnnotationSet(element)
+                is KtContextReceiverList -> if (element.contextReceivers().isNotEmpty()) {
+                    convertContextReceiver(element)
+                } else {
+                    convertContextParameter(element)
+                }
                 else -> convertKeyword<Node.Modifier.KeywordModifier>(element)
             }
         }
@@ -894,6 +911,12 @@ open class Converter {
         lPar = v.valueArgumentList?.leftParenthesis?.let(::convertKeyword),
         arguments = convertValueArguments(v.valueArgumentList),
         rPar = v.valueArgumentList?.rightParenthesis?.let(::convertKeyword),
+    ).map(v)
+
+    protected fun convertContextParameter(v: KtContextReceiverList) = Node.Modifier.ContextParameter(
+        lPar = convertKeyword(v.leftParenthesis),
+        parameters = v.contextParameters().map(::convertFunctionParameter),
+        rPar = convertKeyword(v.rightParenthesis),
     ).map(v)
 
     protected fun convertPostModifiers(v: KtElement): List<Node.PostModifier> {
