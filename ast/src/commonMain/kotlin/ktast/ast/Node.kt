@@ -1,5 +1,7 @@
 package ktast.ast
 
+private val stringMultiDollarPrefixRegex = Regex("^\\$+")
+
 /**
  * Common interface for all the AST nodes.
  */
@@ -1203,16 +1205,20 @@ sealed interface Node {
         /**
          * AST node that represents a string literal expression. The node corresponds to KtStringTemplateExpression.
          *
-         * @property interpolationPrefix prefix of the string literal, e.g. `"$"` or `"$$"`. This is empty string if the string does not have an interpolation prefix.
+         * @property prefix prefix of the string literal. Typically, it is single double quote `"`, but can be triple quotes `"""` for raw strings. In case of multi-dollar string, it can be `$$"` or similar.
          * @property entries list of string entries.
-         * @property raw `true` if this is raw string surrounded by `"""`, `false` if this is regular string surrounded by `"`.
          */
         data class StringLiteralExpression(
-            val interpolationPrefix: String,
+            val prefix: String,
             val entries: List<StringEntry>,
-            val raw: Boolean,
             override val supplement: NodeSupplement = NodeSupplement(),
         ) : Expression {
+            /**
+             * Suffix of the string literal, which is the prefix without any multi-dollar prefix. For example, if the prefix is `$$"`, the suffix will be `"`.
+             */
+            val suffix: String
+                get() = prefix.replace(stringMultiDollarPrefixRegex, "")
+
             /**
              * Common interface for string entries. The node corresponds to KtStringTemplateEntry.
              */

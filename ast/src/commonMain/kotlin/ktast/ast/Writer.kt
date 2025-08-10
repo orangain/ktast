@@ -417,18 +417,9 @@ open class Writer(
                 is Node.Expression.ParenthesizedExpression ->
                     append('(').also { children(innerExpression) }.append(')')
                 is Node.Expression.StringLiteralExpression -> {
-                    if (interpolationPrefix.isNotEmpty()) {
-                        append(interpolationPrefix)
-                    }
-                    if (raw) {
-                        append("\"\"\"")
-                        children(entries)
-                        append("\"\"\"")
-                    } else {
-                        append('"')
-                        children(entries)
-                        append('"')
-                    }
+                    append(prefix)
+                    children(entries)
+                    append(suffix)
                 }
                 is Node.Expression.StringLiteralExpression.LiteralStringEntry ->
                     doAppend(text)

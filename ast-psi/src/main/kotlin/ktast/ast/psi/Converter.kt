@@ -668,9 +668,8 @@ open class Converter {
 
     protected fun convertStringLiteralExpression(v: KtStringTemplateExpression) =
         Node.Expression.StringLiteralExpression(
-            interpolationPrefix = v.interpolationPrefix?.interpolationPrefix ?: "",
+            prefix = (v.interpolationPrefix?.text ?: "") + v.openQuote.text,
             entries = v.entries.map(::convertStringEntry),
-            raw = v.text.startsWith("\"\"\"")
         ).map(v)
 
     protected fun convertStringEntry(v: KtStringTemplateEntry): Node.Expression.StringLiteralExpression.StringEntry =

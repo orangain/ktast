@@ -826,14 +826,12 @@ fun parenthesizedExpression(innerExpression: Node.Expression, supplement: NodeSu
  * Creates a new [Node.Expression.StringLiteralExpression] instance.
  */
 fun stringLiteralExpression(
-    interpolationPrefix: String = "",
+    prefix: String = "\"",
     entries: List<Node.Expression.StringLiteralExpression.StringEntry> = listOf(),
-    raw: Boolean = false,
     supplement: NodeSupplement = NodeSupplement()
 ) = Node.Expression.StringLiteralExpression(
-    interpolationPrefix = interpolationPrefix,
+    prefix = prefix,
     entries = entries,
-    raw = raw,
     supplement = supplement
 )
 
